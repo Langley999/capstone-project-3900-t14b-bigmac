@@ -1,0 +1,6 @@
+Week 1
+Group formed. I read through the proposal spec and research about a few websites to come up with some project 'novel' functionalities. 
+I discussed with the team about how to divide the tasks for next week.
+Week 2
+I wrote the user stories about collections, community/friends, search/browsing, second hand market, quiz/callenges.
+I desgined data structures about users, collections and books.
