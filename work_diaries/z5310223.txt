@@ -1,0 +1,8 @@
+Week 1
+- Took on role of Scrum Master and set up Jira
+- Set up and shared Google Doc for Project Proposal
+- Recorded Meeting Minutes in Google Doc and on webcms group wiki
+- Added User Stories and Acceptance Criteria to Epic Stories related to login profile, book details and marketplace
+
+Week 2
+- Started making and shared draw.io file for database relational schema
