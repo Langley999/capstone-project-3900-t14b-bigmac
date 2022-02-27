@@ -17,7 +17,6 @@ function App() {
 
       </Header>
       <Router>
-        <Link to="Header">Header</Link>
         <Link to="Main">Main</Link>
         <Link to="Login">Login</Link>
 
