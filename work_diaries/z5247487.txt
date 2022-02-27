@@ -1,0 +1,7 @@
+Daoting's work diaries
+Week 1
+Forming group. Book recommendation system is chosen to be our project.
+Read project spec and discussed in group meeting. Wrote some simple user stories for giving some ideas and came up with some novel ideas.
+Week 2
+I wrote detailed user stories for recommendation modes, data visualization and events.
+Initialized some backend api for auth, user and basic book functions.
