@@ -1,1 +1,9 @@
+Week 1:
+- Discussed with team members on project specification, clarifying misudnerstanding and understanding proposal requirmenets
+- with group created 8 epics to represent the main objectives of our system
 
+Week 2:
+- Wrote user stories and acceptance criteria on search/browsing/filtering, book details, recommendation modes
+- Wrote background section that explores problem being solved, our systems novel features and how other
+  existing systems compare with pros and cons.
+- with team updated relational schema to more closesly match desired system.
