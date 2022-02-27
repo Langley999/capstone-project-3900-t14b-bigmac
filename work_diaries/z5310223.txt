@@ -6,3 +6,8 @@ Week 1
 
 Week 2
 - Started making and shared draw.io file for database relational schema
+- Started UI Storyboard of book recommendation system with Home Page, Book Details Page, User Account Page and Book Collection Page
+- Team discussed all user stories and changes to relational schema in a meeting
+- Summarised all epic stories, user stories and acceptance criteria in Jira project backlog
+- Set structure and dates of three sprints and assigned stories to sprints
+- Continued to record Meeting Minutes
