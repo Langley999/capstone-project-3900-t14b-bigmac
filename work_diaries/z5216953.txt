@@ -1,1 +1,9 @@
 Lan's Work Diary
+Week 1:
+- Formed group, chose project and discussed specification with teammates.
+- I wrote some user stories.
+
+Week 2:
+- I wrote user stories and acceptance criteria on login/profile, visualization,
+friends/feeds and collections.
+- I drew interface flow diagram.
