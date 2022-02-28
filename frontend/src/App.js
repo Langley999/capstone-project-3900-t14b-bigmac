@@ -1,4 +1,5 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
+import {useState} from "react";
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -11,11 +12,10 @@ import Header from './components/Header';
 import Login from './components/Login';
 
 function App() {
+
   return (
     <div className="App">
-      <Header className="App-header">
-
-      </Header>
+      <Header/>
       <Router>
         <Link to="Main">Main</Link>
         <Link to="Login">Login</Link>
