@@ -1,5 +1,5 @@
 from json import dumps
-from sqlite3 import Timestamp
+import re
 import time
 from bookstation import app, request, db, error
 from bookstation.models.User import User
@@ -21,10 +21,7 @@ def login():
         raise error.InputError(description="not a valid user")
     if pw_encode(password) != user.password:
         raise error.InputError(description="wrong password")
-    token = jwt.encode({
-        "username": user.username,
-        "time": time.time()
-    }, SECRET, algorithm='HS256').decode('utf-8')
+    token = generate_token(user.username)
     user.token = token
     db.session.commit()
     return dumps({
@@ -42,16 +39,11 @@ def register():
         raise error.InputError(description="invalid email") 
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="invalid username")
-    new_user = User(username, email, pw_encode(password))
-    token = jwt.encode({
-        "username": username,
-        "time": time.time()
-    }, SECRET, algorithm='HS256').decode('utf-8')
-    new_user.login(token)
+    new_user = User(username, email, pw_encode(password), generate_token(username))
     db.session.add(new_user)
     db.session.commit()
     return dumps({
-        'token': token
+        'token': new_user.token
     })
 
 @app.route(url_prefix + "/logout", methods=["POST"])
@@ -81,3 +73,9 @@ def pw_encode(password):
         encoded password
     '''
     return hashlib.sha256(password.encode()).hexdigest()
+
+def generate_token(username):
+    return jwt.encode({
+            "username": username,
+            "time": time.time()
+        }, SECRET, algorithm='HS256').decode('utf-8')

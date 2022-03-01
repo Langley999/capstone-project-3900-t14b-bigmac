@@ -22,6 +22,6 @@ app.register_error_handler(Exception, defaultHandler)
 # app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
-from bookstation import views
+from bookstation import controllers
 from bookstation import models
 from bookstation import error
