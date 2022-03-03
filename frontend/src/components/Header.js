@@ -15,7 +15,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import {useState} from "react";
 
-const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
+const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: theme.shadows[3],
   color: 'grey',
@@ -121,14 +121,11 @@ function Header () {
   }
 
   return (
-    <>
-      <DashboardNavbarRoot position="fixed" className='header'
+
+      <HeaderContainer position="fixed" className='header'
         sx={{
-          left: {
-            lg: 280
-          },
           width: {
-            lg: 'calc(100% - 280px)'
+            lg: '100%'
           }
         }}
       >
@@ -168,8 +165,8 @@ function Header () {
           <Box sx={{ flexGrow: 1 }} />
           <NavBarV2/>
         </Toolbar>
-      </DashboardNavbarRoot>
-    </>
+      </HeaderContainer>
+
   );
 }
 
