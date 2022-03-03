@@ -22,15 +22,16 @@ import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import HomeIcon from '@mui/icons-material/Home';
 
 
-const StyledLink = styled(Link)`
-    text-decoration: none;
-
-    &:focus, &:hover, &:visited, &:link, &:active {
-      text-decoration: none;
-    }
-`;
+// const StyledLink = styled(Link)`
+//     text-decoration: none;
+//
+//     &:focus, &:hover, &:visited, &:link, &:active {
+//       text-decoration: none;
+//     }
+// `;
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -39,7 +40,7 @@ const HeaderContainer = styled(AppBar)(({ theme }) => ({
 }));
 
 const Slogan = styled('h1')(({ theme }) => ({
-  color: '#22447b',
+  color: '#6985c4',
 }));
 
 const Search = styled('div')(({ theme }) => ({
@@ -123,13 +124,13 @@ function Header () {
             <RssFeedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Search Users" component={Link} to='users'>
-          <IconButton sx={{ ml: 1 }}>
+        <Tooltip title="Search Users">
+          <IconButton sx={{ ml: 1 }}  component={Link} to='users'>
             <GroupIcon fontSize="large" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Notifications" component={Link} to='notifications'>
-          <IconButton sx={{ ml: 1 }}>
+        <Tooltip title="Notifications">
+          <IconButton sx={{ ml: 1 }} component={Link} to='notifications'>
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
@@ -179,25 +180,31 @@ function Header () {
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          <MenuItem>
+          <MenuItem component={Link} to='/'>
+            <ListItemIcon>
+              <HomeIcon fontSize="small" />
+            </ListItemIcon>
+            Home
+          </MenuItem>
+          <MenuItem component={Link} to='/user/profile'>
             <ListItemIcon>
               <PersonIcon fontSize="small" />
             </ListItemIcon>
             Profile
           </MenuItem>
-          <MenuItem>
+          <MenuItem component={Link} to='/user/collections'>
             <ListItemIcon>
               <CollectionsBookmarkIcon fontSize="small" />
             </ListItemIcon>
             Collections
           </MenuItem>
-          <MenuItem>
+          <MenuItem component={Link} to='/user/posts'>
             <ListItemIcon>
               <AutoFixHighIcon fontSize="small" />
             </ListItemIcon>
             Posts
           </MenuItem>
-          <MenuItem>
+          <MenuItem component={Link} to='/user/analytics'>
             <ListItemIcon>
               <BarChartIcon fontSize="small" />
             </ListItemIcon>
@@ -233,9 +240,7 @@ function Header () {
           }}
         >
           <Slogan>
-            <StyledLink to='/' >
               BookStation
-            </StyledLink>
           </Slogan>
           <Box component="form" onSubmit={()=>console.log(searchValue)}>
             <Search>

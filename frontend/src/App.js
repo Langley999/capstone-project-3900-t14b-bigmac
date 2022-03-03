@@ -1,4 +1,3 @@
-// import logo from './logo.svg';
 import {useState} from "react";
 import './App.css';
 import {
@@ -16,6 +15,10 @@ import Quiz from './components/Quiz';
 import Feed from './components/Feed';
 import SearchUsers from './components/SearchUsers';
 import Notifications from './components/Notifications';
+import Profile from './components/Profile';
+import Collections from './components/Collections';
+import Posts from './components/Posts';
+import Analytics from './components/Analytics';
 
 function App() {
 
@@ -31,13 +34,24 @@ function App() {
           }>
             <Route path='/' element={<Home />} />
             <Route path='quiz' element={<Quiz />} />
-            <Route path='/feed' element={<Feed />} />
-            <Route path='/users' element={<SearchUsers />} />
-            <Route path='/notifications' element={<Notifications />} />
-            <Route path="main" element={<Main />} />
+            <Route path='feed' element={<Feed />} />
+            <Route path='users' element={<SearchUsers />} />
+            <Route path='notifications' element={<Notifications />} />
+            <Route path='main' element={<Main />} />
+            <Route path='user' element={
+              <>
+                <h1 className='centre'>nav tabs</h1>
+                <Outlet />
+              </>
+            }>
+              <Route path='profile' element={<Profile />}/>
+              <Route path='collections' element={<Collections />}/>
+              <Route path='posts' element={<Posts />}/>
+              <Route path='analytics' element={<Analytics />}/>
+            </Route>
           </Route>
 
-          <Route path="user" element={
+          <Route path="bookstation" element={
             <>
               <Link to="main">Main</Link>
               <Link to="login">Login</Link>
