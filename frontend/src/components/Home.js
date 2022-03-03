@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Grid } from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
+import '../App.css'
 import Card from '@material-ui/core/Card'
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';

@@ -12,6 +12,10 @@ import Main from './components/Main';
 import Header from './components/Header';
 import Login from './components/Login';
 import Home from './components/Home';
+import Quiz from './components/Quiz';
+import Feed from './components/Feed';
+import SearchUsers from './components/SearchUsers';
+import Notifications from './components/Notifications';
 
 function App() {
 
@@ -26,6 +30,10 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home />} />
+            <Route path='quiz' element={<Quiz />} />
+            <Route path='/feed' element={<Feed />} />
+            <Route path='/users' element={<SearchUsers />} />
+            <Route path='/notifications' element={<Notifications />} />
             <Route path="main" element={<Main />} />
           </Route>
 

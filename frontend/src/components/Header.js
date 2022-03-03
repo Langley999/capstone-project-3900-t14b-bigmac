@@ -1,4 +1,4 @@
-import {Avatar, Badge, Box, IconButton, Toolbar, Tooltip} from '@mui/material';
+import {Avatar, Badge, Box, Divider, IconButton, Toolbar, Tooltip} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -7,13 +7,30 @@ import HelpIcon from '@mui/icons-material/Help';
 import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import {useState} from "react";
+import { Link } from 'react-router-dom';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import Logout from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import BarChartIcon from '@mui/icons-material/BarChart';
+
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+
+    &:focus, &:hover, &:visited, &:link, &:active {
+      text-decoration: none;
+    }
+`;
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -70,6 +87,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function Header () {
   const [radioValue, setRadioValue] = useState('by title');
   const [searchValue, setSearchValue] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const onChangeRadio = (e) => {
     setRadioValue(e.target.value);
@@ -88,34 +114,103 @@ function Header () {
     return (
       <>
         <Tooltip title="Quiz">
-          <IconButton sx={{ ml: 1 }}>
-            <HelpIcon fontSize="large" />
+          <IconButton sx={{ ml: 1 }} component={Link} to='quiz'>
+            <HelpIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
         <Tooltip title="Feed">
-          <IconButton sx={{ ml: 1 }}>
+          <IconButton sx={{ ml: 1 }} component={Link} to='feed'>
             <RssFeedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Search Users">
+        <Tooltip title="Search Users" component={Link} to='users'>
           <IconButton sx={{ ml: 1 }}>
             <GroupIcon fontSize="large" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Notifications">
+        <Tooltip title="Notifications" component={Link} to='notifications'>
           <IconButton sx={{ ml: 1 }}>
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
-        <Avatar
-          sx={{
-            height: 40,
-            width: 40,
-            ml: 1
+        <Tooltip title="profile">
+          <IconButton
+            sx={{ ml: 1 }}
+            onClick={handleClick}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar fontSize="large" />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&:before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
           }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          <AccountCircleIcon fontSize="large" />
-        </Avatar>
+          <MenuItem>
+            <ListItemIcon>
+              <PersonIcon fontSize="small" />
+            </ListItemIcon>
+            Profile
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <CollectionsBookmarkIcon fontSize="small" />
+            </ListItemIcon>
+            Collections
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <AutoFixHighIcon fontSize="small" />
+            </ListItemIcon>
+            Posts
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <BarChartIcon fontSize="small" />
+            </ListItemIcon>
+            Analytics
+          </MenuItem>
+          <Divider/>
+          <MenuItem>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </Menu>
       </>
     )
   }
@@ -137,7 +232,11 @@ function Header () {
             px: 2
           }}
         >
-          <Slogan>BookStation</Slogan>
+          <Slogan>
+            <StyledLink to='/' >
+              BookStation
+            </StyledLink>
+          </Slogan>
           <Box component="form" onSubmit={()=>console.log(searchValue)}>
             <Search>
               <SearchIconWrapper>
