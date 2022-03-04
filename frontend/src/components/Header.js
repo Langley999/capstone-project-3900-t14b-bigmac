@@ -134,96 +134,89 @@ function Header () {
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
-        <Tooltip title="profile">
-          <IconButton
-            sx={{ ml: 1 }}
-            onClick={handleClick}
-            aria-controls={open ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-          >
-            <Avatar fontSize="large" />
-          </IconButton>
-        </Tooltip>
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&:before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem component={Link} to='/'>
-            <ListItemIcon>
-              <HomeIcon fontSize="small" />
-            </ListItemIcon>
-            Home
-          </MenuItem>
-          <MenuItem component={Link} to='/user/profile'>
-            <ListItemIcon>
-              <PersonIcon fontSize="small" />
-            </ListItemIcon>
-            Profile
-          </MenuItem>
-          <MenuItem component={Link} to='/user/collections'>
-            <ListItemIcon>
-              <CollectionsBookmarkIcon fontSize="small" />
-            </ListItemIcon>
-            Collections
-          </MenuItem>
-          <MenuItem component={Link} to='/user/posts'>
-            <ListItemIcon>
-              <AutoFixHighIcon fontSize="small" />
-            </ListItemIcon>
-            Posts
-          </MenuItem>
-          <MenuItem component={Link} to='/user/analytics'>
-            <ListItemIcon>
-              <BarChartIcon fontSize="small" />
-            </ListItemIcon>
-            Analytics
-          </MenuItem>
-          <Divider/>
-          <MenuItem>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </>
     )
   }
 
-  return (
+  const Dropdown = () => {
+    return (
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 20,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+      >
+        <MenuItem component={Link} to='/'>
+          <ListItemIcon>
+            <HomeIcon fontSize="small" />
+          </ListItemIcon>
+          Home
+        </MenuItem>
+        <MenuItem component={Link} to='/user/profile'>
+          <ListItemIcon>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
+        <MenuItem component={Link} to='/user/collections'>
+          <ListItemIcon>
+            <CollectionsBookmarkIcon fontSize="small" />
+          </ListItemIcon>
+          Collections
+        </MenuItem>
+        <MenuItem component={Link} to='/user/posts'>
+          <ListItemIcon>
+            <AutoFixHighIcon fontSize="small" />
+          </ListItemIcon>
+          Posts
+        </MenuItem>
+        <MenuItem component={Link} to='/user/analytics'>
+          <ListItemIcon>
+            <BarChartIcon fontSize="small" />
+          </ListItemIcon>
+          Analytics
+        </MenuItem>
+        <Divider/>
+        <MenuItem>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+    )
+  }
 
+  return (
       <HeaderContainer position="fixed" className='header'
         sx={{
           width: {
@@ -265,12 +258,26 @@ function Header () {
               <FormControlLabel value="male" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          <Button variant="contained">Filter</Button>
+          <Button
+            variant="contained"
+
+          >Filter</Button>
           <Box sx={{ flexGrow: 1 }} />
           <NavBarV2/>
+          <Tooltip title="profile">
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={handleClick}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+            >
+              <Avatar fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          <Dropdown/>
         </Toolbar>
       </HeaderContainer>
-
   );
 }
 
