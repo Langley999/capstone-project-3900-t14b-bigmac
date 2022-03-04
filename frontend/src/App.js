@@ -19,6 +19,7 @@ import Profile from './components/Profile';
 import Collections from './components/Collections';
 import Posts from './components/Posts';
 import Analytics from './components/Analytics';
+import NavTabs from './components/NavTabs';
 
 function App() {
 
@@ -40,7 +41,7 @@ function App() {
             <Route path='main' element={<Main />} />
             <Route path='user' element={
               <>
-                <h1 className='centre'>nav tabs</h1>
+                <NavTabs/>
                 <Outlet />
               </>
             }>
