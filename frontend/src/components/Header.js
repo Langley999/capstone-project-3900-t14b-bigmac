@@ -85,7 +85,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header () {
+function Header ({ ifLogin }) {
   const [radioValue, setRadioValue] = useState('by title');
   const [searchValue, setSearchValue] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -105,8 +105,8 @@ function Header () {
   function NavBarV1 () {
     return (
       <>
-        <Button color="inherit">Login</Button>
-        <Button color="inherit">Register</Button>
+        <Button color="inherit" component={Link} to='/bookstation/login'>Login</Button>
+        <Button color="inherit" component={Link} to='/bookstation/register'>Register</Button>
       </>
     )
   }
@@ -263,7 +263,7 @@ function Header () {
 
           >Filter</Button>
           <Box sx={{ flexGrow: 1 }} />
-          <NavBarV2/>
+          {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           <Tooltip title="profile">
             <IconButton
               sx={{ ml: 1 }}

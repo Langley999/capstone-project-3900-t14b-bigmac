@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -10,6 +10,7 @@ import {
 import Main from './components/Main';
 import Header from './components/Header';
 import Login from './components/Login';
+import Register from './components/Register';
 import Home from './components/Home';
 import Quiz from './components/Quiz';
 import Feed from './components/Feed';
@@ -22,6 +23,11 @@ import Analytics from './components/Analytics';
 import NavTabs from './components/NavTabs';
 
 function App() {
+  const [ifLogin, setIfLogin] = useState(false);
+
+  const updateLogin = (ifLogin) => {
+    setIfLogin(ifLogin);
+  }
 
   return (
     <div>
@@ -29,7 +35,7 @@ function App() {
         <Routes>
           <Route path='/' element={
             <>
-              <Header/>
+              <Header ifLogin={ifLogin}/>
               <Outlet />
             </>
           }>
@@ -54,12 +60,11 @@ function App() {
 
           <Route path="bookstation" element={
             <>
-              <Link to="main">Main</Link>
-              <Link to="login">Login</Link>
               <Outlet />
             </>
           }>
-            <Route path="login" element={<Login />} />
+            <Route path="login" element={<Login updateLogin={updateLogin}/>} />
+            <Route path="register" element={<Register updateLogin={updateLogin}/>} />
           </Route>
         </Routes>
       </Router>
