@@ -1,12 +1,15 @@
 astroid==2.5
 attrs==21.4.0
 blinker==1.4
+cachelib==0.6.0
 certifi==2021.10.8
 chardet==4.0.0
 click==8.0.4
+Deprecated==1.2.13
 Flask==1.1.2
 Flask-Cors==3.0.10
 Flask-Mail==0.9.1
+Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
 greenlet==1.1.2
 idna==2.10
@@ -26,6 +29,7 @@ pylint-venv==2.1.1
 PyMySQL==1.0.2
 pyparsing==3.0.7
 pytest==6.2.2
+redis==4.1.4
 requests==2.25.1
 six==1.16.0
 SQLAlchemy==1.4.31
