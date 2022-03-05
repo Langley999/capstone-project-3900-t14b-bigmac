@@ -21,6 +21,7 @@ import Collections from './components/Collections';
 import Posts from './components/Posts';
 import Analytics from './components/Analytics';
 import NavTabs from './components/NavTabs';
+import {AvatarBanner} from './components/AvatarBanner';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -39,7 +40,7 @@ function App() {
               <Outlet />
             </>
           }>
-            <Route path='/' element={<Home />} />
+            <Route path='/' element={<Home ifLogin={ifLogin}/>} />
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
@@ -48,6 +49,7 @@ function App() {
             <Route path='user' element={
               <>
                 <NavTabs/>
+                <AvatarBanner/>
                 <Outlet />
               </>
             }>

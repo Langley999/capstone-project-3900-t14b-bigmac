@@ -11,13 +11,13 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CardActions } from '@mui/material';
 
-const Home = () => {
+const Home = ({ifLogin}) => {
   const data = {
     bookTitle: 'Harry Potter',
     bookAuthor: 'J.K.Rowling',
     bookRating: '4.5',
     likeAuthor: 'J.K.Rowling',
-    likeSubject: 'ScienceFiction'
+    likeSubject: 'Science Fiction'
   }
 
   const Recommendations = () => {
@@ -27,12 +27,12 @@ const Home = () => {
         <h1>Recommendations</h1>
         <div className='flex-container'>
           <Button variant="outlined">{data.likeAuthor}</Button>
-          <Button variant="outlined">{data.likeSubject}</Button>
+          <Button variant="outlined" color='success'>{data.likeSubject}</Button>
         </div>
         <div className='flex-container'>
-          <Button variant="outlined">4-5 star rating</Button>
-          <Button variant="outlined">Guess you like...</Button>
-          <Button variant="outlined">Most Popular</Button>
+          <Button variant="outlined" color='error'>4-5 star rating</Button>
+          <Button variant="outlined" color='warning'>Guess you like...</Button>
+          <Button variant="outlined" color='secondary'>Most Popular</Button>
         </div>
       </>
     )
@@ -192,9 +192,11 @@ const Home = () => {
   return (
     <>
       <div className='centre'>
+        {ifLogin ?
         <div className='space'>
           <Recommendations/>
-        </div>
+        </div> : null
+        }
         <div className='space'>
           <Subjects/>
         </div>

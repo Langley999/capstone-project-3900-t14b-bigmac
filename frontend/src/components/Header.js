@@ -264,17 +264,29 @@ function Header ({ ifLogin }) {
           >Filter</Button>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
-          <Tooltip title="profile">
-            <IconButton
-              sx={{ ml: 1 }}
-              onClick={handleClick}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              <Avatar fontSize="large" />
-            </IconButton>
-          </Tooltip>
+          {ifLogin ?
+            <Tooltip title="profile">
+              <IconButton
+                sx={{ml: 1}}
+                onClick={handleClick}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                {localStorage.getItem('userAvatar') === undefined ?
+                  <Avatar fontSize="large"/> :
+                  <Avatar
+                    src={localStorage.getItem('userAvatar')}
+                    sx={{
+                      height: 45,
+                      mb: 0,
+                      width: 45
+                    }}
+                  />
+                }
+              </IconButton>
+            </Tooltip> : null
+          }
           <Dropdown/>
         </Toolbar>
       </HeaderContainer>
