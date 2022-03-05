@@ -1,8 +1,8 @@
 from json import dumps
-import re
 import time
 from bookstation import app, request, db, error
-from bookstation.models.User import User
+from bookstation.models import User
+from flask import session
 from config import SECRET
 import hashlib
 import jwt
@@ -22,7 +22,7 @@ def login():
     if pw_encode(password) != user.password:
         raise error.InputError(description="wrong password")
     token = generate_token(user.username)
-    user.token = token
+    session[email] = token
     db.session.commit()
     return dumps({
         'token': token
@@ -39,11 +39,11 @@ def register():
         raise error.InputError(description="invalid email") 
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="invalid username")
-    new_user = User(username, email, pw_encode(password), generate_token(username))
+    new_user = User(username, email, pw_encode(password))
     db.session.add(new_user)
     db.session.commit()
     return dumps({
-        'token': new_user.token
+        'token': generate_token(username)
     })
 
 @app.route(url_prefix + "/logout", methods=["POST"])

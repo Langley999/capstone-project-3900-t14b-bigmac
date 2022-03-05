@@ -1,4 +1,3 @@
-from email import message
 from werkzeug.exceptions import HTTPException
 
 class BadReqError(HTTPException):
