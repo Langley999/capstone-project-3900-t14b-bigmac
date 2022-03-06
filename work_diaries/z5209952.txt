@@ -1,9 +1,15 @@
 ----- Jane Yin ------
 Week 1
-Group formed. I read through the proposal spec and research about a few websites to come up with some project 'novel' functionalities. 
-I discussed with the team about how to divide the tasks for next week.
+- Group formed. 
+- I read through the proposal spec and research about a few websites to come up with some project 'novel' functionalities. 
+- I discussed with the team about how to divide the tasks for next week.
+
 Week 2
-I wrote the user stories about collections, community/friends, search/browsing, second hand market, quiz/callenges.
-I desgined data structures about users, collections and books.
-I edited the flow diagrams for book details page.
-I started to put the structure of frontend into the repo.
+- I wrote the user stories about collections, community/friends, search/browsing, second hand market, quiz/callenges.
+- I desgined data structures about users, collections and books.
+- I edited the flow diagrams for book details page.
+- I started to put the structure of frontend into the repo.
+
+Week 3
+- I edited the background and comparision with existing websites for proposal and formatted proposal
+- I wrote book details page for frontend
