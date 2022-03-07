@@ -10,7 +10,19 @@ import {
 import Main from './components/Main';
 import Header from './components/Header';
 import Login from './components/Login';
-import Book from './components/Book';
+import Register from './components/Register';
+import Home from './components/Home';
+import Quiz from './components/Quiz';
+import Feed from './components/Feed';
+import SearchUsers from './components/SearchUsers';
+import Notifications from './components/Notifications';
+import Profile from './components/Profile';
+import Collections from './components/Collections';
+import Posts from './components/Posts';
+import Analytics from './components/Analytics';
+import NavTabs from './components/NavTabs';
+import {AvatarBanner} from './components/AvatarBanner';
+
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
 
