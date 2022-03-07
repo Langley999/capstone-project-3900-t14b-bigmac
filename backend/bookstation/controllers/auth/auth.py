@@ -1,11 +1,8 @@
 from json import dumps
-import time
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User
 from flask import session
-from config import SECRET
-import hashlib
-import jwt
+from bookstation.utlis.auth_util import generate_token, pw_encode
 
 url_prefix = "/auth"
 
@@ -127,30 +124,3 @@ def logout():
         raise error.AccessError(description="you logout invalid account")
     session.pop(email, None)
     return dumps({})
-
-def pw_encode(password):
-    '''
-    It will encode raw password by sha256 from hashlib.
-
-    Args:
-        password (string): raw password
-
-    Return:
-        (string) encoded password
-    '''
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def generate_token(username):
-    '''
-    It will generate a new token by username and current time with SECRET.
-
-    Args:
-        username (string): username
-
-    Return:
-        (string) encoded token
-    '''
-    return jwt.encode({
-            "username": username,
-            "time": time.time()
-        }, SECRET, algorithm='HS256').decode('utf-8')
