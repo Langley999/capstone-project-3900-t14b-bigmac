@@ -48,7 +48,7 @@ const Book = () => {
 
     return (  
       <Box sx={{ flexGrow: 1, mt: 12,ml: 0 }} >
-        <Grid container direction="row" spacing={0}>
+        <Grid container direction="row" spacing={3}>
           <Grid item xs={3}>
          
             <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
@@ -88,13 +88,9 @@ const Book = () => {
                 </Box>
                 
               </Grid>
-                  
-                        
-  
-
-              
             </Grid>
           </Grid>
+
           <Grid item xs={6}>
             <Grid container direction="row" spacing={1}>
               <Grid item xs={12}>
@@ -200,12 +196,58 @@ const Book = () => {
             </Grid>
           </Grid>
           <Grid item xs={3}>
+            <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h6" display="block" gutterBottom>
+                  You may also like ...
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                  component="img"
+                  sx={{
+                    width: 70,
+                    ml: 0
+                  }}
+                  alt="book cover"
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
+                />
+                <Typography variant="body2" display="block" gutterBottom>
+                  Harry potter
+                </Typography>
 
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                    component="img"
+                    sx={{
+                      width: 70,
+                      my:0
+                    }}
+                    alt="book cover"
+                    src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
+                  />
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                  component="img"
+                  sx={{
+                    width: 70,
+                    my:0
+                  }}
+                  alt="book cover"
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
+                />                
+              </Grid>
+
+            </Grid>
           </Grid>
-          <Grid item xs={8}>
-        
-          </Grid>
+       
         </Grid>
+
+
+
+
       <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
         <Box
           sx={{
