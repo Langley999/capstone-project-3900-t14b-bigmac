@@ -7,3 +7,7 @@ Week 2:
 - I wrote user stories and acceptance criteria on login/profile, visualization,
 friends/feeds and collections.
 - I drew interface flow diagram.
+
+Week 3:
+- I wrote justification for frontend including framework and UI library.
+- I updated the router and made the header, initial page, navigation tabs.
