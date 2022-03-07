@@ -21,7 +21,7 @@ import Dialog from '@mui/material/Dialog';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import Popover from '@mui/material/Popover';
-
+import TextField from '@mui/material/TextField';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 const text1 = ""
 const Book = () => {
@@ -207,18 +207,35 @@ const Book = () => {
           </Grid>
         </Grid>
       <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
-        <DialogTitle>Set backup account</DialogTitle>
-        <List sx={{ pt: 0 }}>
+        <Box
+          sx={{
+            width: 1000,
+            height: 500,
+            maxWidth: '100%',
+          }}
+        >
+         <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
+          <DialogTitle>Write a review</DialogTitle>
+            <Rating
+              name="simple-controlled"
+              value={rating}
+              onChange={(event, newValue) => {
+                setRating(newValue);
+              }}
+            /> 
+            <Box
+              sx={{
+                paddingTop:3,
+                width: 500,
+                maxWidth: '100%',
+              }}
+            >
+              <TextField fullWidth label="" id="fullWidth" multiline={true} rows={12} />
+            </Box>
+            <Button>Submit</Button>
+         </Grid>
 
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <AddIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Add account" />
-          </ListItem>
-        </List>
+        </Box>
       </Dialog>
       <Popover
         id={id}
