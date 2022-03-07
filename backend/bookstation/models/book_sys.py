@@ -13,6 +13,8 @@ class Book_author(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id'))
     author_id = db.Column(db.Integer, db.ForeignKey('author.author_id'))
     role = db.Column(db.String(32))
+    book = db.relationship('Book', back_populates='authors')
+    author = db.relationship('Author', back_populates='books')
     
 class Author(db.Model):
 
@@ -20,7 +22,7 @@ class Author(db.Model):
 
     author_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    books = db.relationship('Book', secondary=Book_author.__tablename__, backref='author')
+    books = db.relationship('Book_author', back_populates='author')
 
 class Genre(db.Model):
 
@@ -28,8 +30,7 @@ class Genre(db.Model):
 
     genre_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
-    books = db.relationship('Book', secondary=book_genre, lazy='subquery',
-        backref=db.backref('genres', lazy=True))
+    books = db.relationship('Book', secondary=book_genre)
 
 class Collection_book(db.Model):
 
@@ -40,6 +41,8 @@ class Collection_book(db.Model):
     collection_id = db.Column(db.Integer, db.ForeignKey('collection.collection_id'))
     created_time = db.Column(db.Time)
     finish_time = db.Column(db.Time)
+    book = db.relationship('Book', back_populates='collections')
+    collection = db.relationship('Collection', back_populates='books')
 
 class Review(db.Model):
 
@@ -51,6 +54,8 @@ class Review(db.Model):
     rating = db.Column(db.SmallInteger)
     content = db.Column(db.String(2048))
     created_time = db.Column(db.Time)
+    book = db.relationship('Book', back_populates='reviews')
+    user = db.relationship('User', back_populates='reviews')
 
     def __init__(self, rating):
         self.rating = rating
@@ -62,7 +67,7 @@ class Book(db.Model):
     book_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
     isbn = db.Column(db.String(32))
-    publish_date = db.Column(db.String(128))
+    publish_date = db.Column(db.String(32))
     publisher = db.Column(db.String(256))
     blurb = db.Column(db.String(1024))
     average_rating = db.Column(db.Float)
@@ -70,6 +75,7 @@ class Book(db.Model):
     cover_image = db.Column(db.String(512))
     genre_string = db.Column(db.String(4096))
     author_string = db.Column(db.String(512))
-    reviews = db.relationship('User', secondary=Review.__tablename__, backref='book')
-    collections = db.relationship('Collection', secondary=Collection_book.__tablename__, backref='book')
-    authors = db.relationship('Author', secondary=Book_author.__tablename__, backref='book')
+    genres = db.relationship("Genre", secondary=book_genre)
+    reviews = db.relationship('Review', back_populates='book')
+    authors = db.relationship('Book_author', back_populates='book')
+    collections = db.relationship('Collection_book', back_populates='book')
