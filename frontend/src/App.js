@@ -21,6 +21,7 @@ import Collections from './components/Collections';
 import Posts from './components/Posts';
 import Analytics from './components/Analytics';
 import NavTabs from './components/NavTabs';
+import Book from './components/Book';
 import {AvatarBanner} from './components/AvatarBanner';
 
 function App() {
@@ -34,18 +35,23 @@ function App() {
     <div>
       <Router>
         <Routes>
+        
           <Route path='/' element={
             <>
               <Header ifLogin={ifLogin}/>
+              
+
               <Outlet />
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
+            <Route path="book" element={<Book />} />
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
+            
             <Route path='user' element={
               <>
                 <NavTabs/>
@@ -59,13 +65,14 @@ function App() {
               <Route path='analytics' element={<Analytics />}/>
             </Route>
           </Route>
-
+          
           <Route path="bookstation" element={
             <>
               <Outlet />
             </>
           }>
             <Route path="login" element={<Login updateLogin={updateLogin}/>} />
+            
             <Route path="register" element={<Register updateLogin={updateLogin}/>} />
           </Route>
         </Routes>
