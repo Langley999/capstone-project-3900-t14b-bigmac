@@ -14,26 +14,33 @@ import Button from '@mui/material/Button';
 const Login = () => {
   // sets password and its visibility
   const [pass, setPass] = React.useState({password: '', showPassword: false});
-  const [passConfirm, setPassConfirm] = React.useState({password: '', showPassword: false});
 
   const handlePassChange = (prop) => (event) => {
     setPass({ ...pass, [prop]: event.target.value });
-  };
-  const handlePassConfirmChange = (prop) => (event) => {
-    setPassConfirm({ ...passConfirm, [prop]: event.target.value });
   };
 
   // toggle password visibility
   const handleClickShowPassword = () => {
     setPass({...pass, showPassword: !pass.showPassword});
   };
-  const handleClickShowPasswordConfirm = () => {
-    setPassConfirm({...passConfirm, showPassword: !passConfirm.showPassword});
-  };
+
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const pressLogin = () => {
+    // await fetch('', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `${token}`,
+    //   },
+    //   body: JSON.stringify({
+
+    //   })
+    // })
+  }
 
   // style of the login form box
   const formStyle = {
@@ -41,14 +48,14 @@ const Login = () => {
     justifyContent: "space-evenly",
     flexDirection: "column",
     width: "400px",
-    height: "600px",
+    height: "450px",
     position: "fixed",
     top: "50%",
     left: "50%",
-    marginTop: "-300px",
-    marginLeft: "-250px",
-    paddingLeft: "50px",
-    paddingRight: "50px",
+    marginTop: "-250px",
+    marginLeft: "-270px",
+    paddingLeft: "70px",
+    paddingRight: "70px",
     paddingBottom: "30px",
     outline: "1px solid grey",
     borderRadius: "15px"
@@ -62,12 +69,8 @@ const Login = () => {
           autoComplete="off"
           style={formStyle}
         >
-          <h1>login</h1>
-          <TextField
-            required
-            id="outlined-username"
-            label="Username"
-          />
+          <h1>Login</h1>
+
           <TextField
             required
             id="outlined-email"
@@ -94,28 +97,6 @@ const Login = () => {
                 </InputAdornment>
               }
               label="Password"
-            />
-          </FormControl>
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password2"
-              type={passConfirm.showPassword ? 'text' : 'password'}
-              value={passConfirm.password}
-              onChange={handlePassConfirmChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPasswordConfirm}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Confirm Password"
             />
           </FormControl>
 

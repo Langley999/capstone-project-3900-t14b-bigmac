@@ -9,6 +9,7 @@ import {
 import Main from './components/Main';
 import Header from './components/Header';
 import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   return (
@@ -19,10 +20,12 @@ function App() {
       <Router>
         <Link to="Main">Main</Link>
         <Link to="Login">Login</Link>
+        <Link to="Register">Register</Link>
 
         <Routes>
           <Route path="/main" element={<Main />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
         </Routes>
       </Router>
     </div>
