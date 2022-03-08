@@ -12,10 +12,13 @@ import Button from '@mui/material/Button';
 
 
 const Register = () => {
-  // sets password and its visibility
+  
   const [pass, setPass] = React.useState({password: '', showPassword: false});
   const [passConfirm, setPassConfirm] = React.useState({password: '', showPassword: false});
+  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
 
+  // handle password changes
   const handlePassChange = (prop) => (event) => {
     setPass({ ...pass, [prop]: event.target.value });
   };
@@ -35,17 +38,16 @@ const Register = () => {
     event.preventDefault();
   };
 
-  const pressRegister = () => {
-    // await fetch('', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `${token}`,
-    //   },
-    //   body: JSON.stringify({
-
-    //   })
-    // })
+  const pressRegister = async () => {
+    await fetch('http://127.0.0.1:8080/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        username,
+        password: pass.password,
+        confirmPassword: passConfirm.password
+      })
+    })
   }
 
   // style of the login form box
@@ -80,12 +82,14 @@ const Register = () => {
             required
             id="outlined-username"
             label="Username"
+            onChange={e => setUsername(e.target.value)}
           />
           <TextField
             required
             id="outlined-email"
             label="Email"
             type="email"
+            onChange={e => setEmail(e.target.value)}
           />
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -132,7 +136,7 @@ const Register = () => {
             />
           </FormControl>
 
-          <Button variant="contained">Register</Button>
+          <Button variant="contained" onClick={pressRegister}>Register</Button>
         </Box>
       </div>
     );

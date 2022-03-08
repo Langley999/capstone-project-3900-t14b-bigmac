@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 const Login = () => {
   // sets password and its visibility
   const [pass, setPass] = React.useState({password: '', showPassword: false});
+  const [email, setEmail] = React.useState('');
 
   const handlePassChange = (prop) => (event) => {
     setPass({ ...pass, [prop]: event.target.value });
@@ -24,22 +25,18 @@ const Login = () => {
     setPass({...pass, showPassword: !pass.showPassword});
   };
 
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  const pressLogin = () => {
-    // await fetch('', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `${token}`,
-    //   },
-    //   body: JSON.stringify({
-
-    //   })
-    // })
+  const pressLogin = async () => {
+    await fetch('http://127.0.0.1:8080/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        password: pass.password
+      })
+    })
   }
 
   // style of the login form box
@@ -76,6 +73,7 @@ const Login = () => {
             id="outlined-email"
             label="Email"
             type="email"
+            onChange={e => setEmail(e.target.value)}
           />
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
@@ -100,7 +98,7 @@ const Login = () => {
             />
           </FormControl>
 
-          <Button variant="contained">Login</Button>
+          <Button variant="contained" onClick={pressLogin}>Login</Button>
         </Box>
       </div>
     );
