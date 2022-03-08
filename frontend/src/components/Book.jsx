@@ -57,7 +57,7 @@ const Book = () => {
                   component="img"
                   sx={{
                     height: 350,
-                    my:1
+                    my:2
                   }}
                   alt="book cover"
                   src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
@@ -94,7 +94,7 @@ const Book = () => {
           <Grid item xs={6}>
             <Grid container direction="row" spacing={1}>
               <Grid item xs={12}>
-                <Typography variant="h4" style={{ fontWeight: 700 }} gutterBottom component="div">The Hunger Game</Typography>
+                <Typography variant="h4" style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component="div">The Hunger Game</Typography>
               </Grid>
               <Grid item xs={12}>
                 <Grid container direction="row" spacing={0}>
@@ -189,8 +189,11 @@ const Book = () => {
                   </Grid>
             
                 </Grid>
-                 
-                <Pagination count={10} size="small" />
+                <Grid item xs={12}>
+                  <Box sx={{ flexGrow: 1, mt: 3,ml: 50,mb: 5}} >
+                    <Pagination count={10} size="small" />
+                  </Box>
+                </Grid>
               </Grid>
 
             </Grid>
@@ -206,7 +209,7 @@ const Book = () => {
                 <Box
                   component="img"
                   sx={{
-                    width: 70,
+                    width: 100,
                     ml: 0
                   }}
                   alt="book cover"
@@ -221,23 +224,29 @@ const Book = () => {
                 <Box
                     component="img"
                     sx={{
-                      width: 70,
+                      width: 100,
                       my:0
                     }}
                     alt="book cover"
                     src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
                   />
+                <Typography variant="body2" display="block" gutterBottom>
+                  Harry potter
+                </Typography>
               </Grid>
               <Grid item xs={3}>
                 <Box
                   component="img"
                   sx={{
-                    width: 70,
+                    width: 100,
                     my:0
                   }}
                   alt="book cover"
                   src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg" 
-                />                
+                />  
+                <Typography variant="body2" display="block" gutterBottom>
+                  Harry potter
+                </Typography>              
               </Grid>
 
             </Grid>
