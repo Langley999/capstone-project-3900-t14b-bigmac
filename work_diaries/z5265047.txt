@@ -12,3 +12,6 @@ Week 3:
 - Added API documenation for book search, detail, genre, reviews and ratings
 - documenation included HTTP request type, endpoint name, expected input paramaters, return value, exceptions and description of the function
 - Added notes on backend tasks to complete - initialising the database with csv file, creating python classes to MAP objects to database table
+- Added documentation for justification of backend technologies
+- Coded skeleton functionality for book details and reviews/ratings
+- added documenation for how our system will achieve all 8 objectives through our user stories.
