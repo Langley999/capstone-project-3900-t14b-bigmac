@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -8,58 +8,79 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
+import Button from '@mui/material/Button';
 
 
 const Login = () => {
-  const [values, setValues] = React.useState({
-    password: '',
-    showPassword: false,
-  });
+  // sets password and its visibility
+  const [pass, setPass] = React.useState({password: '', showPassword: false});
+  const [passConfirm, setPassConfirm] = React.useState({password: '', showPassword: false});
 
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+  const handlePassChange = (prop) => (event) => {
+    setPass({ ...pass, [prop]: event.target.value });
+  };
+  const handlePassConfirmChange = (prop) => (event) => {
+    setPassConfirm({ ...passConfirm, [prop]: event.target.value });
   };
 
+  // toggle password visibility
   const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+    setPass({...pass, showPassword: !pass.showPassword});
+  };
+  const handleClickShowPasswordConfirm = () => {
+    setPassConfirm({...passConfirm, showPassword: !passConfirm.showPassword});
   };
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
+  // style of the login form box
+  const formStyle = {
+    display: "flex",
+    justifyContent: "space-evenly",
+    flexDirection: "column",
+    width: "400px",
+    height: "600px",
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    marginTop: "-300px",
+    marginLeft: "-250px",
+    paddingLeft: "50px",
+    paddingRight: "50px",
+    paddingBottom: "30px",
+    outline: "1px solid grey",
+    borderRadius: "15px"
+  }
+
     return (
       <div>
-        <h1>login</h1>
         <Box
           component="form"
           noValidate
           autoComplete="off"
+          style={formStyle}
         >
+          <h1>login</h1>
           <TextField
             required
             id="outlined-username"
             label="Username"
-            sx={{ m: 1, width: '25ch' }}
           />
           <TextField
             required
             id="outlined-email"
             label="Email"
             type="email"
-            sx={{ m: 1, width: '25ch' }}
           />
-          <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+          <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
-              type={values.showPassword ? 'text' : 'password'}
-              value={values.password}
-              onChange={handleChange('password')}
+              type={pass.showPassword ? 'text' : 'password'}
+              value={pass.password}
+              onChange={handlePassChange('password')}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -68,35 +89,37 @@ const Login = () => {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    {pass.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
               label="Password"
             />
           </FormControl>
-          <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+          <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password2"
-              type={values.showPassword ? 'text' : 'password'}
-              value={values.password}
-              onChange={handleChange('password')}
+              type={passConfirm.showPassword ? 'text' : 'password'}
+              value={passConfirm.password}
+              onChange={handlePassConfirmChange('password')}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
+                    onClick={handleClickShowPasswordConfirm}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
               label="Confirm Password"
             />
           </FormControl>
+
+          <Button variant="contained">Login</Button>
         </Box>
       </div>
     );
