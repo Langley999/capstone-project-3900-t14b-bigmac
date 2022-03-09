@@ -42,8 +42,15 @@ const Register = ({ updateLogin }) => {
     event.preventDefault();
   };
 
+  const passwordValidLength = () => {
+    if (pass.length < 6 && pass.length > 18) return true
+    // error, password must be between 6 and 18 characters
+    return false
+  }
+
   const passwordsMatch = () => {
     if (pass == passConfirm) return true
+    // error, passwords must match
     return false
   }
 
