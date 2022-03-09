@@ -11,3 +11,10 @@ Week 2
 - Summarised all epic stories, user stories and acceptance criteria in Jira project backlog
 - Set structure and dates of three sprints and assigned stories to sprints
 - Continued to record Meeting Minutes
+
+Week 3
+- Finalised backlog, added story points and started Sprint 1
+- Worked on background, existing systems and user stories sections of proposal and submitted it a day before the deadline
+- Started coding Login frontend page
+- Wrote error messages in our team's shared API documentation
+- Recorded meeting minutes
