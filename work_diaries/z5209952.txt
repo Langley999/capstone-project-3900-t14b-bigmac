@@ -11,5 +11,5 @@ Week 2
 - I started to put the structure of frontend into the repo.
 
 Week 3
-- I modified the background and comparision with existing websites for proposal and formatted proposal
+- I edited the background and comparision with existing websites for proposal and formatted proposal
 - I wrote book details page for frontend
