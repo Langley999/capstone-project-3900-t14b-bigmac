@@ -97,6 +97,47 @@ def add_book():
         "success": []
     })
 
+@app.route(url_prefix + '/removebook', methods=["DELETE"])
+def remove_book():
+
+    user_name = request.args.get('user')
+    c_id = request.args.get('collection_id')
+    b_id = request.args.get('book_id')
+    user = User.query.filter_by(username = user_name).first()
+    collection = Collection.query.filter_by(collection_id = id).first()
+    if collection.user_id != user.user_id:
+      raise error.AccessError(description="You don't have permission to add this book")
+
+    book_collection = Collection_book.query.filter_by(collection_id = c_id, book_id = b_id)
+    if book_collection == None:
+      raise error.AccessError(description="This book doesn't exist in the collection")
+
+    db.session.delete(book_collection)
+    db.session.commit()
+
+    return dumps({
+        "success": []
+    })
+
+@app.route(url_prefix + '/removecollection', methods=["DELETE"])
+def remove_collection():
+
+    user_name = request.args.get('user')
+    c_id = request.args.get('collection_id')
+
+    user = User.query.filter_by(username = user_name).first()
+    collection = Collection.query.filter_by(collection_id = id).first()
+    if collection.user_id != user.user_id:
+      raise error.AccessError(description="You don't have permission to add this book")
+
+
+    db.session.delete(collection)
+    db.session.commit()
+
+    return dumps({
+        "success": []
+    })
+
 
 
 
