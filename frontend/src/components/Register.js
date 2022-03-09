@@ -42,6 +42,11 @@ const Register = ({ updateLogin }) => {
     event.preventDefault();
   };
 
+  const passwordsMatch = () => {
+    if (pass == passConfirm) return true
+    return false
+  }
+
   const pressRegister = async () => {
     await fetch('http://127.0.0.1:8080/auth/register', {
       method: 'POST',
