@@ -126,7 +126,7 @@ def remove_collection():
     c_id = request.args.get('collection_id')
 
     user = User.query.filter_by(username = user_name).first()
-    collection = Collection.query.filter_by(collection_id = id).first()
+    collection = Collection.query.filter_by(collection_id = c_id).first()
     if collection.user_id != user.user_id:
       raise error.AccessError(description="You don't have permission to add this book")
 
