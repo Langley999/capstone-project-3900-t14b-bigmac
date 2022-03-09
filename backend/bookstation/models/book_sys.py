@@ -41,6 +41,13 @@ class Collection_book(db.Model):
     created_time = db.Column(db.Time)
     finish_time = db.Column(db.Time)
 
+    def __init__(self, collection_id, book_id, created_time):
+        self.collection_id  = collection_id
+        self.book_id = book_id
+        self.created_time = created_time
+        self.finish_time = created_time
+
+
 class Review(db.Model):
 
     __tablename__ = 'review'
