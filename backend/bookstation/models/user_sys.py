@@ -51,11 +51,15 @@ class Collection(db.Model):
     collection_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     is_default = db.Column(db.Integer)
-    created_time = db.Column(db.Time)
+    created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+
     books = db.relationship('Collection_book')
     user = db.relationship('User')
 
-    def __init__(self, name):
-        self.is_default = 0
+
+    def __init__(self, is_default, name, time, user_id):
+        self.is_default = is_default
         self.name = name
+        self.created_time = time
+        self.user_id = user_id
