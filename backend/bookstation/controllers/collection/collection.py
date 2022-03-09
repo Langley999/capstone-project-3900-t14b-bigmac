@@ -61,9 +61,9 @@ def get_collection():
 
     user_name = request.args.get('user')
     id = request.args.get('collection_id')
-    user = User.query.filter_by(username = user_name).first()
+    #user = User.query.filter_by(username = user_name).first()
     # sql select user
-    collection = Collection.query.filter_by(collection_id = id).first()
+    collection = Collection.query.get(id)
     books = collection.books
     booklist = []
     for book in books:
