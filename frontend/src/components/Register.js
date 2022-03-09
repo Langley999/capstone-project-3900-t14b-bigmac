@@ -21,6 +21,8 @@ const Register = ({ updateLogin }) => {
   const [passConfirm, setPassConfirm] = React.useState({password: '', showPassword: false});
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const [passErr, setPassErr] = React.useState('');
 
   // handle password changes
   const handlePassChange = (prop) => (event) => {
@@ -42,21 +44,30 @@ const Register = ({ updateLogin }) => {
     event.preventDefault();
   };
 
-  const passwordValidLength = () => {
-    if (pass.length < 6 && pass.length > 18) return true
-    // error, password must be between 6 and 18 characters
-    return false
-  }
-
-  const passwordsMatch = () => {
-    if (pass == passConfirm) return true
-    // error, passwords must match
-    return false
+  // checks if passwords match on blur
+  const passwordMatchCheck = () => {
+    if (password !== password2) {
+      // show error
+      setPassErr('Passwords must match');
+    } else {
+      setPassErr('');
+    }
   }
 
   const pressRegister = async () => {
+    // set error message and return if passwords are not empty and don't match
+    if (pass !== '' && passConfirm !== '' && pass !== passConfirm) {
+      setErrorMsg('Password and confirm password must match')
+      return
+    }
+    // set error message and return if password not between 6 and 18 characters
+    if (pass.length < 6 || pass.length > 18) {
+      setErrorMsg('Password must be between 6 and 18 characters')
+      return
+    }
     await fetch('http://127.0.0.1:8080/auth/register', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
         username,
@@ -64,7 +75,14 @@ const Register = ({ updateLogin }) => {
         confirmPassword: passConfirm.password
       })
     })
-    loginSuccess()
+    const data = await r.json();
+    if (typeof data.message !== 'undefined') {
+      // show error
+      console.log(data.message)
+      setErrorMsg(data.message)
+    } else {
+      loginSuccess()
+    }
   }
 
   const loginSuccess = () => {
@@ -119,6 +137,7 @@ const Register = ({ updateLogin }) => {
               id="outlined-adornment-password"
               type={pass.showPassword ? 'text' : 'password'}
               value={pass.password}
+              helperText={passErr}
               onChange={handlePassChange('password')}
               endAdornment={
                 <InputAdornment position="end">
