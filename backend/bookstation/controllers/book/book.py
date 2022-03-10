@@ -3,9 +3,11 @@ from json import dumps
 import ast
 import time
 from bookstation import app, request, db, error
-from bookstation.models.book_sys import Book, Genre, Review
+from bookstation.models.book_sys import Book, Genre, Review, Collection_book
+from bookstation.models.user_sys import User, Collection
 from flask import session
 from config import SECRET
+from datetime import datetime
 import hashlib
 import jwt
 
@@ -91,3 +93,36 @@ def removeRating():
     deleted = Review.query.filter_by(review_id=treview_id).delete()
     db.session.commit()
     return dumps({"sucess": True})
+
+#delete review
+@app.route("/book/completereading", methods=["POST"])
+def completeReading():
+    try:
+        data = request.get_json()
+        email, book_id = data['email'], data['book_id']
+    except:
+        raise error.BadReqError(description="post body error")
+
+    user = User.query.filter_by(email = email).first()
+ 
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection != None:
+      raise error.BadReqError(description="This book has already been added to the collection")
+
+    try:
+      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now()) 
+      db.session.add(new_book_collection)
+      db.session.commit()
+
+      return dumps({
+          "success": []
+      })
+    except:
+      raise error.BadReqError(description="Cannot add the book to this collection")
+ 
