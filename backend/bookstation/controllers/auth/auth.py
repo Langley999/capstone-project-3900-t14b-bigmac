@@ -1,43 +1,13 @@
 from json import dumps
 import time
 from bookstation import app, request, db, error
-
-from bookstation.models.user_sys import *
-from bookstation.models.book_sys import *
-
+from bookstation.models.user_sys import User, Collection
 from flask import session
 from config import SECRET
 import hashlib
 import jwt
 
 url_prefix = "/auth"
-
-@app.route(url_prefix, methods=["POST"])
-def test():
-    user = User.query.filter_by(user_id=4).first()
-    for r in user.collections:
-        print(r.name)
-    '''test1'''
-    # collection = Collection(name="test")
-    # collection.user_id = 4
-    # collection.created_time = '2022-03-09 22:10:57'
-    # db.session.add(collection)
-    # db.session.commit()
-    # for r in user.collections:
-    #     print(r.name)
-    '''test2'''
-    # collection = user.collections[-1]
-    # print(collection.name)
-    # print(collection.books)
-    # collection_book = Collection_book()
-    # collection_book.book_id = 12
-    # collection_book.collection_id = collection.collection_id
-    # collection_book.created_time = '2022-03-09 22:10:57'
-    # db.session.add(collection_book)
-    # db.session.commit()
-    # for book in collection.books:
-    #     print(book.title)
-    return dumps({})
 
 @app.route(url_prefix + "/login", methods=["POST"])
 def login():
