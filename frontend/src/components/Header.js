@@ -24,15 +24,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 
-
-// const StyledLink = styled(Link)`
-//     text-decoration: none;
-//
-//     &:focus, &:hover, &:visited, &:link, &:active {
-//       text-decoration: none;
-//     }
-// `;
-
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: theme.shadows[3],

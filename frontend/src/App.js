@@ -25,9 +25,14 @@ import {AvatarBanner} from './components/AvatarBanner';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
+  }
+
+  const updateUserInfo = (info) => {
+    setUserInfo(info);
   }
 
   return (
@@ -37,7 +42,10 @@ function App() {
           <Route path='/' element={
             <>
               <Header ifLogin={ifLogin}/>
-              <Outlet />
+              <div className='centre'>
+                <Outlet />
+              </div>
+
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
@@ -48,12 +56,12 @@ function App() {
             <Route path='main' element={<Main />} />
             <Route path='user' element={
               <>
+                <AvatarBanner userInfo={userInfo}/>
                 <NavTabs/>
-                <AvatarBanner/>
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile />}/>
+              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections />}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics />}/>
@@ -65,8 +73,8 @@ function App() {
               <Outlet />
             </>
           }>
-            <Route path="login" element={<Login updateLogin={updateLogin}/>} />
-            <Route path="register" element={<Register updateLogin={updateLogin}/>} />
+            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
           </Route>
         </Routes>
       </Router>
