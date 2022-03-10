@@ -4,13 +4,12 @@ import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
-import CardActions from '@mui/material/CardActions';
+
 import {
   Box,
   Button,
   Dialog, DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Grid,
   TextField,
@@ -21,9 +20,88 @@ import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 
 
+const collection1 = {
+  collectionName: 'Favourite',
+  books: [
+    {
+      title: 'book1',
+      author: 'auth1',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book2',
+      author: 'auth2',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    },
+    {
+      title: 'book3',
+      author: 'auth1',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book4',
+      author: 'auth2',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    },
+    {
+      title: 'book5',
+      author: 'auth1',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book6',
+      author: 'auth2',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    },
+    {
+      title: 'book7',
+      author: 'auth1',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book8',
+      author: 'auth2',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    }
+  ]
+}
+const collection2 = {
+  collectionName: 'Complete',
+  books: [
+    {
+      title: 'book3',
+      author: 'auth3',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book4',
+      author: 'auth4',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    }
+  ]
+}
+
+const collection3 = {
+  collectionName: 'new',
+  books: [
+    {
+      title: 'book3',
+      author: 'auth3',
+      cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
+    },
+    {
+      title: 'book4',
+      author: 'auth4',
+      cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
+    }
+  ]
+}
+
 const Collections = () => {
-  const [open, setOpen] = React.useState(false);
-  const [newCollection, setNewCollection] = useState('');
+  const [collections, setCollections] = useState(['Favourite', 'Complete']);
+  const [open, setOpen] = useState(false);
+  const [currentCollection, setCurrentCollection] = useState(collection1);
+  let newCollection = '';
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,74 +111,13 @@ const Collections = () => {
     setOpen(false);
   };
 
-  const collections = ['Favourite', 'Complete'];
-  const collection1 = {
-    collectionName: 'Favourite',
-    books: [
-      {
-        title: 'book1',
-        author: 'auth1',
-        cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
-      },
-      {
-        title: 'book2',
-        author: 'auth2',
-        cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
-      },
-      {
-        title: 'book3',
-        author: 'auth1',
-        cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
-      },
-      {
-        title: 'book4',
-        author: 'auth2',
-        cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
-      },
-      {
-        title: 'book5',
-        author: 'auth1',
-        cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
-      },
-      {
-        title: 'book6',
-        author: 'auth2',
-        cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
-      },
-      {
-        title: 'book7',
-        author: 'auth1',
-        cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
-      },
-      {
-        title: 'book8',
-        author: 'auth2',
-        cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
-      }
-    ]
-  }
-  const collection2 = {
-    collectionName: 'Complete',
-    books: [
-      {
-        title: 'book3',
-        author: 'auth3',
-        cover: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6'
-      },
-      {
-        title: 'book4',
-        author: 'auth4',
-        cover: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6'
-      }
-    ]
-  }
-  const [currentCollection, setCurrentCollection] = useState(collection1);
-
   const getCollection = (collectionName) => {
     if (collectionName === 'Favourite')
       setCurrentCollection(collection1);
-    else
+    else if (collectionName === 'Complete')
       setCurrentCollection(collection2);
+    else
+      setCurrentCollection(collection3);
   }
 
   const removeBook = (title) => {
@@ -112,8 +129,21 @@ const Collections = () => {
     setCurrentCollection(newCollection);
   }
 
-  const createCollection = () => {
+  const removeCollection = () => {
+    const newCollections = collections.filter((collection) => collection !== currentCollection.collectionName);
+    setCollections(newCollections);
+    setCurrentCollection(collection1);
+  }
 
+  const createCollection = () => {
+    const newCollections = [...collections];
+    newCollections.push(newCollection);
+    setCollections(newCollections);
+    handleClose();
+  }
+
+  const handleChange = (event) => {
+    newCollection = event.target.value;
   }
 
   const Sidebar = () => {
@@ -129,9 +159,9 @@ const Collections = () => {
               <TextField
                 autoFocus
                 margin="dense"
-                id="name"
+                id="new name"
                 label="Collection Name"
-                value={}
+                onChange={handleChange}
                 type="text"
                 fullWidth
                 variant="standard"
@@ -139,7 +169,7 @@ const Collections = () => {
             </DialogContent>
             <DialogActions>
               <button onClick={handleClose}>Cancel</button>
-              <button onClick={handleClose}>Create Collection</button>
+              <button onClick={createCollection}>Create Collection</button>
             </DialogActions>
           </Dialog>
           <Divider />
@@ -166,7 +196,7 @@ const Collections = () => {
           null :
           <div>
             <button>Edit Name</button>
-            <button>Remove</button>
+            <button onClick={removeCollection}>Remove</button>
           </div>
         }
       </Box>

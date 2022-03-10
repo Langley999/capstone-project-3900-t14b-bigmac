@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { ProfileAvatar } from './ProfileAvatar';
-import { ProfileDetail } from './ProfileDetail';
+import { ProfileAvatar } from './components/ProfileAvatar';
+import { ProfileDetail } from './components/ProfileDetail';
 
 
 const Profile = ({userInfo, updateUserInfo}) => {
