@@ -19,7 +19,7 @@ import FormControl from "@mui/material/FormControl";
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
   const [ifVisible, setIfVisible] = useState(false);
-  const [ifShow, setIfShow] = useState(true);
+  const [ifShow, setIfShow] = useState(false);
 
   useEffect(async () => {
     setValues(userInfo);
@@ -27,7 +27,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   }, [])
 
   const handleIfShow = () => {
-    setIfShow(false);
+    setIfShow(true);
   }
 
   const getButtonStatus = () => {
