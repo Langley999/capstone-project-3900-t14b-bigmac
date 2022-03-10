@@ -7,7 +7,6 @@ book_author = db.Table('book_author',
     db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True),
     db.Column('author_id', db.Integer, db.ForeignKey('author.author_id'), primary_key=True)
 )
-
 book_genre = db.Table('book_genre',
     db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True),
     db.Column('genre_id', db.Integer, db.ForeignKey('genre.genre_id'), primary_key=True)
@@ -46,8 +45,8 @@ class Collection_book(db.Model):
     collection_book_id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id'))
     collection_id = db.Column(db.Integer, db.ForeignKey('collection.collection_id'))
-    created_time = db.Column(db.Time)
-    finish_time = db.Column(db.Time)
+    created_time = db.Column(db.DateTime)
+    finish_time = db.Column(db.DateTime)
 
     def __init__(self, collection_id, book_id, created_time):
         self.collection_id  = collection_id
@@ -83,6 +82,7 @@ class Book(db.Model):
     average_rating = db.Column(db.Float)
     num_rating = db.Column(db.Integer)
     cover_image = db.Column(db.String(512))
-    reviews = db.relationship('Review', backref='book', lazy=True)
-    collections = db.relationship('Collection', secondary=Collection_book.__tablename__, backref='book')
-
+    genre_string = db.Column(db.String(4096))
+    author_string = db.Column(db.String(512))
+    reviews = db.relationship('Review')
+    #collections = db.relationship('Collection_book', backref='book')
