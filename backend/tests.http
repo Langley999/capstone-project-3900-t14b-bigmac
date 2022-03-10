@@ -54,7 +54,7 @@ DELETE http://127.0.0.1:8080/book/ratings
 content-type: application/json
 
 {
-    "review_id": "6"
+    "review_id": "4"
 }
 
 ### get details of harrpy potter, should have no reivews
