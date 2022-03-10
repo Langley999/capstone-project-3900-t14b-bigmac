@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { Grid } from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
-import '../App.css'
 import Card from '@material-ui/core/Card'
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -191,17 +190,15 @@ const Home = ({ifLogin}) => {
 
   return (
     <>
-      <div className='centre'>
-        {ifLogin ?
-        <div className='space'>
-          <Recommendations/>
-        </div> : null
-        }
-        <div className='space'>
-          <Subjects/>
-        </div>
-        <TopBooks/>
+      {ifLogin ?
+      <div className='space'>
+        <Recommendations/>
+      </div> : null
+      }
+      <div className='space'>
+        <Subjects/>
       </div>
+      <TopBooks/>
     </>
   );
 };
