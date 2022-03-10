@@ -47,7 +47,7 @@ class Review(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id'))
     rating = db.Column(db.SmallInteger)
     content = db.Column(db.String(2048))
-    created_time = db.Column(db.Time)
+    created_time = db.Column(db.DateTime)
 
     def __init__(self, rating):
         self.rating = rating
@@ -65,5 +65,5 @@ class Book(db.Model):
     average_rating = db.Column(db.Float)
     num_rating = db.Column(db.Integer)
     cover_image = db.Column(db.String(512))
-    reviews = db.relationship('User', secondary=Review.__tablename__, backref='book')
+    reviews = db.relationship('Review', backref='book', lazy=True)
     collections = db.relationship('Collection', secondary=Collection_book.__tablename__, backref='book')
