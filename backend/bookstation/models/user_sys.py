@@ -1,5 +1,5 @@
 from bookstation import db
-from bookstation.models.book_sys import Collection_book, Review
+#from bookstation.models.book_sys import Collection_book
 '''
 follow_relationship = db.Table('follow_relationship',
     db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True),

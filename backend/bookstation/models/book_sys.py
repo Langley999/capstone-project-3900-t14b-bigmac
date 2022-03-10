@@ -1,5 +1,7 @@
 from redis import AuthenticationWrongNumberOfArgsError
 from bookstation import db
+#from bookstation.models.user_sys import User
+
 '''
 book_author = db.Table('book_author',
     db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True),
@@ -61,6 +63,7 @@ class Review(db.Model):
     review_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id'))
+    user = db.relationship('User')
     rating = db.Column(db.SmallInteger)
     content = db.Column(db.String(2048))
     created_time = db.Column(db.DateTime)
