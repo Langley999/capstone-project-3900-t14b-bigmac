@@ -1,7 +1,8 @@
 from json import dumps
 import time
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import User, Collection, Collection_book
+from bookstation.models.user_sys import User, Collection
+from bookstation.models.book_sys import Collection_book
 from flask import session
 from config import SECRET
 import hashlib
