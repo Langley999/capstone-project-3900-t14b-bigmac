@@ -22,7 +22,7 @@ class User(db.Model):
     email = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256))
     #posts = db.relationship('Post')
-    #collections = db.relationship('Collection')
+    collections = db.relationship('Collection')
     #reviews = db.relationship('Review')
     #followers = db.relationship('Follow_relationship')
 
