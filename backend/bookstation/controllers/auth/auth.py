@@ -1,7 +1,7 @@
 from json import dumps
 import time
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import User
+from bookstation.models.user_sys import User, Collection
 from flask import session
 from config import SECRET
 import hashlib
@@ -46,6 +46,7 @@ def login():
     # generate token and store
     token = generate_token(user.username)
     session[email] = token
+
     return dumps({
         'token': token
     })
@@ -87,6 +88,7 @@ def register():
         raise error.InputError(description="invalid username")
     # store new user
     new_user = User(username, email, pw_encode(password))
+    
     db.session.add(new_user)
     db.session.commit()
     return dumps({

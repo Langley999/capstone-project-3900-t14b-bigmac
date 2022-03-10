@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "dev.cvanxbxjrdkv.ap-southeast-2.rds.amazonaws.com",
+            "port": 3306,
+            "askForPassword": true,
+            "driver": "MySQL",
+            "name": "mySqlCon",
+            "database": "bookstationDB",
+            "username": "admin"
+        }
+    ]
+}
