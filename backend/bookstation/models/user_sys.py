@@ -21,10 +21,17 @@ class User(db.Model):
     username = db.Column(db.String(32), unique=True, nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256))
-    #posts = db.relationship('Post')
-    collections = db.relationship('Collection')
-    #reviews = db.relationship('Review')
-    #followers = db.relationship('Follow_relationship')
+
+    posts = db.relationship('Post', backref='user', lazy=True)
+    collections = db.relationship('Collection', backref='user', lazy=True)
+    reviews = db.relationship('Review', backref='user', lazy=True)
+    # followers may contain some bugs
+    followers = db.relationship('User',
+                                secondary=follow_relationship,
+                                primaryjoin=user_id==follow_relationship.c.user_id,
+                                secondaryjoin=user_id==follow_relationship.c.follower_user_id,
+                                backref="followings")
+
 
     def __init__(self, username, email, password):
         self.username   = username
@@ -38,8 +45,8 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     content = db.Column(db.String(1024))
-    created_time = db.Column(db.Time)
-    user = db.relationship('User')
+    created_time = db.Column(db.DateTime)
+
 
     def __init__(self, content):
         self.content = content
