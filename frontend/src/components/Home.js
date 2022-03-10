@@ -94,9 +94,9 @@ const Home = ({ifLogin}) => {
       <>
         <h1>Popular Subjects</h1>
         <div className='subjects-container'>
-          {itemData.map((item) => (
-            <div className='img-container'>
-              <ImageListItem key={item.img}>
+          {itemData.map((item, idx) => (
+            <div className='img-container' key={idx}>
+              <ImageListItem>
                 <img
                   src={`${item.img}?w=248&fit=crop&auto=format`}
                   srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -150,7 +150,7 @@ const Home = ({ifLogin}) => {
         <Grid
           container
           spacing={3}
-          justifyContent="centre"
+          justifyContent="center"
         >
           <Grid item xs={12} sm={6} md={3}>
             <BookCard />
