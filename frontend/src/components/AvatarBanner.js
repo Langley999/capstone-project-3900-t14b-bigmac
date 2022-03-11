@@ -30,7 +30,7 @@ export const AvatarBanner = ({userInfo}) => {
           }}
         >
           <Avatar
-            src={userInfo.userAvatar}
+            src={userInfo.avatar}
             sx={{
               height: 64,
               mb: 2,
@@ -41,7 +41,7 @@ export const AvatarBanner = ({userInfo}) => {
             color="textPrimary"
             variant="h5"
           >
-            {userInfo.userName}
+            {userInfo.username}
           </Typography>
         </Box>
       </CardContent>

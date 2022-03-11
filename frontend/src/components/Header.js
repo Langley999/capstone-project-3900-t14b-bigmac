@@ -76,7 +76,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin }) {
+function Header ({ ifLogin, userInfo }) {
   const [radioValue, setRadioValue] = useState('by title');
   const [searchValue, setSearchValue] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -264,10 +264,10 @@ function Header ({ ifLogin }) {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                {localStorage.getItem('userAvatar') === undefined ?
+                {userInfo.avatar === undefined ?
                   <Avatar fontSize="large"/> :
                   <Avatar
-                    src={localStorage.getItem('userAvatar')}
+                    src={userInfo.avatar}
                     sx={{
                       height: 45,
                       mb: 0,

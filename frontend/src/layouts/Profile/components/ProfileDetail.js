@@ -15,6 +15,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import FormControl from "@mui/material/FormControl";
+import axios from "axios";
+import {checkProfileInput} from '../../../components/CheckProfileInput';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
@@ -23,7 +25,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
 
   useEffect(async () => {
     setValues(userInfo);
-    console.log(values)
   }, [])
 
   const handleIfShow = () => {
@@ -50,7 +51,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       ...values,
       [event.target.name]: event.target.value
     });
-    console.log(values);
   };
 
   const handleChangePwd = (prop) => (event) => {
@@ -67,7 +67,22 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   }
 
   const handleSubmit = () => {
-    updateUserInfo(values);
+    if (!checkProfileInput(values.username, values.email,values.password))
+      return;
+    
+
+    axios.post('http://localhost:8080/user/update', {
+      origin: userInfo.email,
+      token: localStorage.getItem('token'),
+      email: values.email,
+      username: values.username,
+      password: values.password
+    }).then(function (response) {
+      updateUserInfo(values);
+      alert("Edit profile success!")
+    }).catch(function (error) {
+      alert(error);
+    });
   }
 
   return (
@@ -104,20 +119,20 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
             </Box>
             <TextField
               fullWidth
-              label="Username"
-              name="userName"
+              label="username"
+              name="username"
               onChange={handleChange}
               required
-              value={values.userName}
+              value={values.username}
               variant="outlined"
             />
             <TextField
               fullWidth
               label="Email"
-              name="userEmail"
+              name="email"
               onChange={handleChange}
               required
-              value={values.userEmail}
+              value={values.email}
               variant="outlined"
             />
             <Button sx={{
@@ -136,8 +151,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 fullWidth
                 id="input-password"
                 type={ifVisible ? 'text' : 'password'}
-                value={values.userPassword}
-                onChange={handleChangePwd('userPassword')}
+                value={values.password}
+                onChange={handleChangePwd('password')}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton

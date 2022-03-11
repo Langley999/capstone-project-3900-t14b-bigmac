@@ -41,7 +41,7 @@ function App() {
         <Routes>
           <Route path='/' element={
             <>
-              <Header ifLogin={ifLogin}/>
+              <Header ifLogin={ifLogin} userInfo={userInfo}/>
               <div className='centre'>
                 <Outlet />
               </div>

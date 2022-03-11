@@ -29,7 +29,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
           }}
         >
           <Avatar
-            src={values.userAvatar}
+            src={values.avatar}
             sx={{
               height: 150,
               mb: 2,

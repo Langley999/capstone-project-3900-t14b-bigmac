@@ -19,6 +19,7 @@ def defaultHandler(err):
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 CORS(app)
+app.config['TRAP_HTTP_EXCEPTIONS'] = True
 app.register_error_handler(Exception, defaultHandler)
 app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
 # next line is for multi env
