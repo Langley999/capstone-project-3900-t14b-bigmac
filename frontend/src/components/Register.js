@@ -46,7 +46,7 @@ const Register = ({ updateLogin }) => {
 
   // checks if passwords match on blur
   const passwordMatchCheck = () => {
-    if (password !== password2) {
+    if (pass !== passConfirm) {
       // show error
       setPassErr('Passwords must match');
     } else {
@@ -65,24 +65,24 @@ const Register = ({ updateLogin }) => {
       setErrorMsg('Password must be between 6 and 18 characters')
       return
     }
-    await fetch('http://127.0.0.1:8080/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        username,
-        password: pass.password,
-        confirmPassword: passConfirm.password
-      })
-    })
-    const data = await r.json();
-    if (typeof data.message !== 'undefined') {
-      // show error
-      console.log(data.message)
-      setErrorMsg(data.message)
-    } else {
-      loginSuccess()
-    }
+    // r = await fetch('http://127.0.0.1:8080/auth/register', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     email,
+    //     username,
+    //     password: pass.password,
+    //     confirmPassword: passConfirm.password
+    //   })
+    // })
+    // const data = await r.json();
+    // if (typeof data.message !== 'undefined') {
+    //   // show error
+    //   console.log(data.message)
+    //   setErrorMsg(data.message)
+    // } else {
+    //   loginSuccess()
+    // }
   }
 
   const loginSuccess = () => {
