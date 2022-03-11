@@ -30,14 +30,25 @@ def getTestOldway():
     for review in book.reviews:
         reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
         'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
-    print(reviews)
+
     book_dict['reviews'] = reviews
     return dumps(book_dict)
 '''
 
-#get book details
 @app.route("/book/details", methods=["GET"])
 def getDetails():
+    '''
+    Get book details
+    Args (GET):
+
+        bookId (integer): request bookId
+
+    Returns:
+        json object of book details
+    Raises:
+        InputError: no book has been found for book_id
+
+    '''
     #get input
     book_id = request.args.get('bookId')
     book = Book.query.get(book_id)
@@ -58,7 +69,7 @@ def getDetails():
     for review in book.reviews:
         reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
         'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
-    print(reviews)
+
     book_dict['reviews'] = reviews
 
     return dumps(book_dict)
@@ -67,15 +78,18 @@ def getDetails():
 #get reviews for a user_id
 @app.route("/book/reviews", methods=["GET"])
 def getReview():
+    '''
+    Get reviews for a user_id
+    Args (GET):
+        userId (integer): user_id of user requesting reviews
+
+    Returns:
+        json object of user reviews
+    '''     
     #get input
     target_user_id = request.args.get('userId')
     review_rows = Review.query.filter_by(user_id=target_user_id).all()
     reviews = []
-
-    #check review in db
-    if review_rows == None:
-        print("review none")
-        raise error.InputError(description="review does not exist")
 
     #modify review dict to get rid of uncessary fields and serialize timestamp
     for review in review_rows:
@@ -90,6 +104,19 @@ def getReview():
 #add comment and rating
 @app.route("/book/reviews", methods=["POST"])
 def addReview():
+    '''
+    Add comment and rating
+    Args (POST):
+        book_id (integer): bookId of book being dded
+        user_id (integer): User who's adding
+        rating (integer): rating value
+        content (string): optional comment
+        created_time (string): time of review creation
+
+    Returns:
+        none
+
+    '''     
     #get body
     body = request.get_json()
 
@@ -113,6 +140,17 @@ def addReview():
 #add rating only
 @app.route("/book/ratings", methods=["POST"])
 def addRating():
+    '''
+    Add rating only
+    Args (POST):
+        book_id (integer): bookId of book being dded
+        user_id (integer): User who's adding
+        rating (integer): rating value
+        created_time (string): time of review creation
+
+    Returns:
+        none
+    '''  
     #get body
     body = request.get_json()
 
@@ -135,6 +173,16 @@ def addRating():
 #add or update comment to review
 @app.route("/book/reviews", methods=["PUT"])
 def editReview():
+    '''
+    Add or update comment to review
+    Args (PUT):
+        review_id (integer): review being updated
+
+    Returns:
+        None
+    Raises:
+        BadReqError: Review cannot be updated
+    '''  
     #get body
     body = request.get_json()
 
@@ -157,6 +205,15 @@ def editReview():
 #change rating
 @app.route("/book/ratings", methods=["PUT"])
 def editRating():
+    '''
+    Change rating
+    Args (PUT):
+        review_id (integer): Review being updated
+    Returns:
+        None
+    Raises:
+        BadReqError: Review cannot be updated to change rating value
+    '''  
     #get body
     body = request.get_json()
 
@@ -180,6 +237,15 @@ def editRating():
 #delete review
 @app.route("/book/ratings", methods=["DELETE"])
 def removeRating():
+    '''
+    Delete review
+    Args (DELETE):
+        review_id (integer): review being deleted
+    Returns:
+        None
+    Raises:
+        BadReqError: Review cannot be deleted
+    '''  
     #get body
     body = request.get_json()
 
