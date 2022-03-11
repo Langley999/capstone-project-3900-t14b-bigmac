@@ -36,8 +36,8 @@ class Collection_book(db.Model):
     collection_book_id = db.Column(db.Integer, primary_key=True)
     book_id = db.Column(db.Integer, db.ForeignKey('book.book_id'))
     collection_id = db.Column(db.Integer, db.ForeignKey('collection.collection_id'))
-    created_time = db.Column(db.Time)
-    finish_time = db.Column(db.Time)
+    created_time = db.Column(db.DateTime)
+    finish_time = db.Column(db.DateTime)
 
     def __init__(self, collection_id, book_id, created_time):
         self.collection_id  = collection_id
@@ -76,4 +76,6 @@ class Book(db.Model):
     genre_string = db.Column(db.String(4096))
     author_string = db.Column(db.String(512))
     reviews = db.relationship('Review')
+
     #book_genre = db.relationship('Book_genre') #comment this out
+
