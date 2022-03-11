@@ -1,11 +1,5 @@
 from bookstation import db
 #from bookstation.models.book_sys import Collection_book
-'''
-follow_relationship = db.Table('follow_relationship',
-    db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-)
-'''
 
 class Follow_relationship(db.Model):
     follower_user_id = db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
@@ -21,10 +15,6 @@ class User(db.Model):
     username = db.Column(db.String(32), unique=True, nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256))
-    #posts = db.relationship('Post')
-    collections = db.relationship('Collection')
-    #reviews = db.relationship('Review')
-    #followers = db.relationship('Follow_relationship')
 
     def __init__(self, username, email, password):
         self.username   = username
