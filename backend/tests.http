@@ -13,6 +13,32 @@ content-type: application/json
 GET http://127.0.0.1:8080/book/details?bookId=2 HTTP/1.1
 
 
+### post rating&review
+
+POST http://127.0.0.1:8080/book/reviews 
+content-type: application/json
+
+{
+    "book_id": "2",
+    "user_id": "14",
+    "rating": "4",
+    "content": "I love harry potter! Yasin",
+    "created_time": "2020-01-01 00:00:01"
+}
+
+
+### post rating&review
+
+POST http://127.0.0.1:8080/book/reviews 
+content-type: application/json
+
+{
+    "book_id": "1",
+    "user_id": "14",
+    "rating": "4",
+    "content": "I lhate hunger games! Yasin",
+    "created_time": "2019-01-01 00:00:01"
+}
 ### post review with no content
 
 POST http://127.0.0.1:8080/book/ratings 
@@ -25,6 +51,11 @@ content-type: application/json
     "content": "",
     "created_time": "2020-01-01 00:00:01"
 }
+
+
+### get reviews for user 
+
+GET http://127.0.0.1:8080/book/reviews?userId=14 HTTP/1.1
 
 ### add review comment
 PUT http://127.0.0.1:8080/book/reviews 
@@ -54,9 +85,15 @@ DELETE http://127.0.0.1:8080/book/ratings
 content-type: application/json
 
 {
-    "review_id": "7"
+    "review_id": "10"
 }
 
 ### get details of harrpy potter, should have no reivews
-GET http://127.0.0.1:8080/book/details?bookId=2 HTTP/1.1
+GET http://127.0.0.1:8080/book/details?bookId=21431 HTTP/1.1
 
+###
+GET http://127.0.0.1:8080/test/daoting?bookId=21 HTTP/1.1
+
+###
+
+GET http://127.0.0.1:8080/book/reviews?review_id=5 HTTP/1.1
