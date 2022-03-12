@@ -19,9 +19,13 @@ def defaultHandler(err):
     return response
 
 app = Flask(__name__)
-app.secret_key = 'BIGMAC'
+#app.secret_key = 'BIGMAC'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookstation.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'BIGMAC'
+app.config['SESSION_TYPE'] = 'filesystem'
+
+
 CORS(app)
 Session(app)
 app.register_error_handler(Exception, defaultHandler)
