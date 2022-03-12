@@ -287,31 +287,39 @@ const Collections = ({userInfo}) => {
       }})
       .then(res => {
         setCollections(res.data.collections);
+        // default show Favourite Collection
+        getCollection(getFavouriteCollectionIdByFlag());
       })
       .catch(function (error) {
         alert(error.response.data.message);
       });
   }, [])
 
+  // get favourite collection id by flag
+  const getFavouriteCollectionIdByFlag = () => {
+    const fav = collections.filter((collection) => collection.flag === 1);
+    return fav.id;
+  }
+
+  // show books when click a specific collection
+  const getCollection = (collection_id) => {
+    axios.get(`${url}/collection/getCollection`, {params: {
+        collection_id: collection_id
+      }})
+      .then(res => {
+        setCurrentCollection({
+          collection_id: collection_id,
+          name: res.data.name,
+          books: res.data.books
+        })
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
+  }
+
 
   const Sidebar = () => {
-
-    // show books when click a specific collection
-    const getCollection = (collection_id) => {
-      axios.get(`${url}/collection/getCollection`, {params: {
-          collection_id: collection_id
-        }})
-        .then(res => {
-          setCurrentCollection({
-            collection_id: collection_id,
-            name: res.data.name,
-            books: res.data.books
-          })
-        })
-        .catch(function (error) {
-          alert(error.response.data.message);
-        });
-    }
 
     // for create collection dialog
     const handleChange = (event) => {
@@ -339,8 +347,13 @@ const Collections = ({userInfo}) => {
         name: newCollection,
         token: localStorage.getItem('token')
       }).then(res => {
+        const created = {
+          id: res["id"],
+          name: newCollection,
+          flag: 3
+        }
         const newCollections = [...collections];
-        setCollections([...newCollections, res]);
+        setCollections([...newCollections, created]);
         handleClose();
       })
         .catch(function (error) {
@@ -492,8 +505,6 @@ const Collections = ({userInfo}) => {
       </Paper>
     )
   }
-
-
 
   return (
     <>

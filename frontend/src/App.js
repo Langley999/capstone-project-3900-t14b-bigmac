@@ -23,11 +23,14 @@ import Analytics from './layouts/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
-import SearchBooks from "./layouts/SearchBooks";
+import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [radioValue, setRadioValue] = useState('title');
+  const [searchValue, setSearchValue] = useState('');
+  const [searchResult, setSearchResult] = useState([]);
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
@@ -37,13 +40,33 @@ function App() {
     setUserInfo(info);
   }
 
+  const updateRadioValue = (radioValue) => {
+    setRadioValue(radioValue);
+  }
+
+  const updateSearchValue = (searchValue) => {
+    setSearchValue(searchValue);
+  }
+
+  const updateSearchResult = (searchResult) => {
+    setSearchResult(searchResult);
+  }
+
   return (
     <div>
       <Router>
         <Routes>
           <Route path='/' element={
             <>
-              <Header ifLogin={ifLogin} userInfo={userInfo}/>
+              <Header
+                ifLogin={ifLogin}
+                userInfo={userInfo}
+                updateSearchValue={updateSearchValue}
+                searchValue={searchValue}
+                updateRadioValue={updateRadioValue}
+                radioValue={radioValue}
+                updateSearchResult={updateSearchResult}
+              />
               <div className='centre'>
                 <Outlet />
               </div>
@@ -55,7 +78,7 @@ function App() {
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
-            <Route path='searchbooks' element={<SearchBooks />} />
+            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
             <Route path='user' element={
