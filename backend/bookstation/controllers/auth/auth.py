@@ -76,7 +76,8 @@ def login():
         raise error.InputError(description="wrong password")
     # generate token and store
     token = generate_token(user.username)
-    session[token] = user.user_id
+    #session[token] = user.user_id
+    session[email] = token
 
     return dumps({
         'token': token
