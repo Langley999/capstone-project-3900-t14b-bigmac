@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import {message} from "antd";
@@ -14,6 +14,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import HomeButton from '../components/HomeButton';
+import ErrorPopup from '../components/ErrorPopup';
+import {checkProfileInput} from '../components/CheckProfileInput';
 
 const Register = ({ updateLogin, updateUserInfo }) => {
   const navigate = useNavigate();
@@ -45,26 +47,25 @@ const Register = ({ updateLogin, updateUserInfo }) => {
     event.preventDefault();
   };
 
-  // checks if passwords match on blur
-  const passwordMatchCheck = () => {
-    if (pass !== passConfirm) {
-      // show error
-      setPassErr('Passwords must match');
-    } else {
-      setPassErr('');
-    }
-  }
-
   const submitRegister = () => {
-    // set error message and return if passwords are not empty and don't match
-    if (pass !== '' && passConfirm !== '' && pass !== passConfirm) {
-      setErrorMsg('Password and confirm password must match')
-      return
+    // show error message for 5 secs if any inputs are blank
+    if (email === '' || username === '' || pass.password === '' || passConfirm.password === '') {
+      setErrorMsg('All input fields must be filled');
+      setTimeout(() => {setErrorMsg('')}, 5000);
+      return;
     }
-    // set error message and return if password not between 6 and 18 characters
-    if (pass.length < 6 || pass.length > 18) {
-      setErrorMsg('Password must be between 6 and 18 characters')
-      return
+    // set error message and return if passwords are not empty and don't match
+    if (pass.password !== '' && passConfirm.password !== '' && pass.password !== passConfirm.password) {
+      setErrorMsg('Password and confirm password must match');
+      setTimeout(() => {setErrorMsg('')}, 5000);
+      return;
+    }
+    // set error message for any invalid inputs
+    const checkInputs = checkProfileInput(username, email, pass.password);
+    if (checkInputs !== '') {
+      setErrorMsg(checkInputs);
+      setTimeout(() => {setErrorMsg('')}, 3000);
+      return;
     }
     updateLogin(true);
     updateUserInfo({
@@ -84,6 +85,9 @@ const Register = ({ updateLogin, updateUserInfo }) => {
       navigate('/');
     }).catch(function (error) {
       message.error(error, 1);
+      // show server error message for 5 secs
+      setErrorMsg(JSON.stringify(error.message));
+      setTimeout(() => {setErrorMsg('')}, 3000);
     });
   }
 
@@ -115,80 +119,81 @@ const Register = ({ updateLogin, updateUserInfo }) => {
 
   return (
     <div>
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          style={formStyle}
-        >
-          <Stack direction="row" style={headingStyle}>
-            <HomeButton/>
-            <h1 style={{textAlign: "center"}}>Register</h1>
-            <div style={{width: "20px"}}></div>
-          </Stack>
-          <TextField
-            required
-            id="outlined-username"
-            label="Username"
-            onChange={e => setUsername(e.target.value)}
+      <ErrorPopup errorMsg={errorMsg}/>
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        style={formStyle}
+      >
+        <Stack direction="row" style={headingStyle}>
+          <HomeButton/>
+          <h1 style={{textAlign: "center"}}>Register</h1>
+          <div style={{width: "20px"}}></div>
+        </Stack>
+        <TextField
+          required
+          id="outlined-username"
+          label="Username"
+          onChange={e => setUsername(e.target.value)}
+        />
+        <TextField
+          required
+          id="outlined-email"
+          label="Email"
+          type="email"
+          onChange={e => setEmail(e.target.value)}
+        />
+        <FormControl variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            type={pass.showPassword ? 'text' : 'password'}
+            value={pass.password}
+            helperText={passErr}
+            onChange={handlePassChange('password')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {pass.showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
           />
-          <TextField
-            required
-            id="outlined-email"
-            label="Email"
-            type="email"
-            onChange={e => setEmail(e.target.value)}
+        </FormControl>
+        <FormControl variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password2"
+            type={passConfirm.showPassword ? 'text' : 'password'}
+            value={passConfirm.password}
+            onChange={handlePassConfirmChange('password')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPasswordConfirm}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Confirm Password"
           />
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              type={pass.showPassword ? 'text' : 'password'}
-              value={pass.password}
-              helperText={passErr}
-              onChange={handlePassChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {pass.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password2"
-              type={passConfirm.showPassword ? 'text' : 'password'}
-              value={passConfirm.password}
-              onChange={handlePassConfirmChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPasswordConfirm}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Confirm Password"
-            />
-          </FormControl>
+        </FormControl>
 
-          <Button variant="contained" onClick={submitRegister}>Register</Button>
-          <span style={{height: "20px", textAlign: "center"}}>Already have an account? <a href="http://localhost:3000/bookstation/login">Login</a></span>
-        </Box>
-      </div>
+        <Button variant="contained" onClick={submitRegister}>Register</Button>
+        <span style={{height: "20px", textAlign: "center"}}>Already have an account? <a href="http://localhost:3000/bookstation/login">Login</a></span>
+      </Box>
+    </div>
   );
 };
 export default Register;

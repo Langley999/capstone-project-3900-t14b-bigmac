@@ -14,7 +14,7 @@ const ErrorPopup = ({ errorMsg }) => {
     position: "fixed",
     paddingTop: "15px",
     paddingLeft: "20px",
-    width: "97%"
+    width: "97%",
   }
 
   return (

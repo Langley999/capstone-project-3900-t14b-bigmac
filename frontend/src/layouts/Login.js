@@ -71,7 +71,6 @@ const Login = ({ updateLogin, updateUserInfo }) => {
       setErrorMsg('');
 
     }).catch(function (error) {
-      console.log(JSON.stringify(error));
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
       setTimeout(() => {setErrorMsg('')}, 3000);

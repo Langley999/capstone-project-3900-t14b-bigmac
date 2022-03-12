@@ -10,9 +10,8 @@ export const checkProfileInput = (username, email, password) => {
     return "Password has to be between 8 and 16 characters inclusively";
   } else if (email.length < 1) {
     return "Email should not be empty";
-  }else if (!email.match(regex)) {
+  } else if (!email.match(regex)) {
     return "Email is not valid";
   }
-
   return '';
 }
