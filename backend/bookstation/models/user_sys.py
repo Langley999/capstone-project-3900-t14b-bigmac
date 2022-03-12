@@ -44,7 +44,7 @@ class Collection(db.Model):
     created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
 
-    books = db.relationship('Collection_book')
+    #books = db.relationship('Collection_book')
     user = db.relationship('User')
 
 

@@ -38,6 +38,7 @@ class Collection_book(db.Model):
     collection_id = db.Column(db.Integer, db.ForeignKey('collection.collection_id'))
     created_time = db.Column(db.DateTime)
     finish_time = db.Column(db.DateTime)
+    book = db.relationship('Book')
 
     def __init__(self, collection_id, book_id, created_time):
         self.collection_id  = collection_id

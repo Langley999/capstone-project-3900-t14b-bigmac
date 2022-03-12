@@ -2,7 +2,7 @@ from json import dumps
 import time
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
-from bookstation.models.book_sys import Collection_book
+from bookstation.models.book_sys import Collection_book, Book
 from flask import session, abort
 from config import SECRET
 import hashlib
@@ -29,14 +29,15 @@ def get_all_collections():
     """
     user_name = request.args.get('user')
     user = User.query.filter_by(username = user_name).first()
-    collections = user.collections
+    collections = Collection.query.filter_by(user_id = user.user_id).all()
+    #collections = user.collections
     if len(collections) == 0:
-      new_default_collection = Collection(1, "Favourate", datetime.now(), user.user_id) 
+      new_default_collection = Collection(1, "Favourite", datetime.now(), user.user_id) 
       new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
       db.session.add(new_default_collection)
       db.session.add(new_history_collection)
       db.session.commit()
-    collections = user.collections
+    collections = Collection.query.filter_by(user_id = user.user_id).all()
     collection_info = []
     for collection in collections:
       new = {}
@@ -84,6 +85,7 @@ def create_collection():
     '''
 
     user = User.query.filter_by(email = email).first()
+
     try:
       new_default_collection = Collection(0, collection_name, datetime.now(), user.user_id) 
       db.session.add(new_default_collection)
@@ -116,12 +118,13 @@ def get_collection():
           - when the user does not exist
     """
     # user_name = request.args.get('user')
-    id = request.args.get('collection_id')
+    collection_id = request.args.get('collection_id')
     try: 
       collection = Collection.query.get(id)
-      books = collection.books
+      collection_books = Collection_book.query.filter_by(collection_id=collection_id)
       booklist = []
-      for book in books:
+      for book in collection_books.book:
+        #book = Book.query.filter_by(book_id=collection_book.book_id)
         new = {}
         new['id'] = book.book_id
         new['title'] = book.title
@@ -129,7 +132,8 @@ def get_collection():
         booklist.append(new)
 
       return dumps({
-          "books": booklist
+          "books": booklist,
+          "name": collection.name
       })
     except:
       raise error.NotFoundError(description="Cannot get the collection")
@@ -236,7 +240,6 @@ def remove_collection():
     Args:
         email (string): email of the user
         collection_id (int): id of the collection
-        book_id (int): id of the book
 
     Returns:
         success message

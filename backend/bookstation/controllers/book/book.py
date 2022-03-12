@@ -11,31 +11,7 @@ from datetime import datetime
 import hashlib
 import jwt
 
-'''
-@app.route("/test", methods=["GET"])
-def getTest():
-    Review.query.get(1)
-    return dumps({})
 
-@app.route("/test/daoting", methods=["GET"])
-def getTestOldway():
-    book_id = request.args.get('bookId')
-    book = Book.query.get(book_id)
-    book_dict = book.__dict__.copy()
-    book_dict.pop('_sa_instance_state', None)
-    book_dict.pop("genre_string", None)
-    genres = []
-    for genre in book.book_genre:
-        genres.append(genre.genre.name)
-    book_dict['genres'] = genres
-    reviews = []
-    for review in book.reviews:
-        reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
-        'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
-
-    book_dict['reviews'] = reviews
-    return dumps(book_dict)
-'''
 
 @app.route("/book/details", methods=["GET"])
 def getDetails():
@@ -135,7 +111,7 @@ def addReview():
     #post to databse
     db.session.add(review)
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -168,7 +144,7 @@ def addRating():
     #post to databse
     db.session.add(review)
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -200,7 +176,7 @@ def editReview():
         raise(error.BadReqError("Bad request cannot update"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -231,7 +207,7 @@ def editRating():
         raise(error.BadReqError("Bad request cannot update"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -261,9 +237,9 @@ def removeRating():
         raise(error.BadReqError("Bad request cannot delete"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
-#delete review
+#complete reading
 @app.route("/book/completereading", methods=["POST"])
 def completeReading():
     try:
