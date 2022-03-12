@@ -5,7 +5,6 @@ import time
 from bookstation import app, request, db, error
 from bookstation.models.book_sys import Book, Genre, Review
 from flask import session
-from config import SECRET
 import hashlib
 import jwt
 
@@ -34,6 +33,32 @@ def getTestOldway():
     book_dict['reviews'] = reviews
     return dumps(book_dict)
 '''
+
+
+@app.route("/test", methods=["GET"])
+def getTest():
+    Review.query.get(1)
+    return dumps({})
+
+@app.route("/test/daoting", methods=["GET"])
+def getTestOldway():
+    book_id = request.args.get('bookId')
+    book = Book.query.get(book_id)
+    book_dict = book.__dict__.copy()
+    book_dict.pop('_sa_instance_state', None)
+    book_dict.pop("genre_string", None)
+    genres = []
+    for genre in book.book_genre: #join genre
+        genres.append(genre.genre.name)
+    book_dict['genres'] = genres
+    reviews = []
+    for review in book.reviews:
+        reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
+        'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
+
+    book_dict['reviews'] = reviews
+    return dumps(book_dict)
+
 
 @app.route("/book/details", methods=["GET"])
 def getDetails():

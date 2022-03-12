@@ -92,11 +92,21 @@ content-type: application/json
 GET http://127.0.0.1:8080/book/details?bookId=2131 HTTP/1.1
 
 ###
-
 GET http://127.0.0.1:8080/book/reviews?review_id=5 HTTP/1.1
 
+
+
+
+
+
+
+
+### round trip time
+GET http://127.0.0.1:8080/test/ HTTP/1.1
+
+
 ### Daoting
-GET http://127.0.0.1:8080/test/daoting?bookId=14875 HTTP/1.1
+GET http://127.0.0.1:8080/test/daoting?bookId=1375 HTTP/1.1
 
 ### Mine 
-GET http://127.0.0.1:8080/book/details?bookId=2 HTTP/1.1
+GET http://127.0.0.1:8080/book/details?bookId=28283 HTTP/1.1

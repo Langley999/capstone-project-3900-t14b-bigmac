@@ -3,9 +3,10 @@ import time
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
 from flask import session
-from config import SECRET
+#from config import SECRET
 import hashlib
 import jwt
+
 
 url_prefix = "/auth"
 
@@ -45,7 +46,7 @@ def login():
         raise error.InputError(description="wrong password")
     # generate token and store
     token = generate_token(user.username)
-    session[email] = token
+    session[token] = user.user_id
 
     return dumps({
         'token': token
@@ -81,11 +82,12 @@ def register():
     except:
         raise error.BadReqError(description="post body error")
     # check validity of email
+
     if User.query.filter_by(email = email).first() is not None:
-        raise error.InputError(description="invalid email") 
+        raise error.InputError(description="email already exists") 
     # check validity of username
     if User.query.filter_by(username = username).first() is not None:
-        raise error.InputError(description="invalid username")
+        raise error.InputError(description="username already exists")
     # store new user
     new_user = User(username, email, pw_encode(password))
     
@@ -118,16 +120,15 @@ def logout():
     """
     try:
         data = request.get_json()
-        email, token = data['email'], data['token']
+        token = data['token']
     except:
         raise error.BadReqError(description="post body error")
     try:
-        stored_token = session.get(email)
+        stored_token = session.get(token)
     except:
-        raise error.AccessError(description="user doesn't exist")
-    if stored_token != token:
-        raise error.AccessError(description="you logout invalid account")
-    session.pop(email, None)
+        raise error.AccessError(description="user doesn't exist or invalid token")
+
+    session.pop(token, None)
     return dumps({})
 
 def pw_encode(password):
@@ -155,4 +156,4 @@ def generate_token(username):
     return jwt.encode({
             "username": username,
             "time": time.time()
-        }, SECRET, algorithm='HS256').decode('utf-8')
+        }, 'BIGMAC', algorithm='HS256').decode('utf-8')

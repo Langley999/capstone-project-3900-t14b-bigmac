@@ -4,7 +4,6 @@ from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
 from bookstation.models.book_sys import Collection_book
 from flask import session
-from config import SECRET
 import hashlib
 import jwt
 from datetime import datetime
