@@ -19,7 +19,7 @@ const ErrorPopup = ({ errorMsg }) => {
 
   return (
     <Stack sx={{ width: '100%' }} spacing={2} style={errorStyle}>
-      <Alert severity="error" color="error">
+      <Alert severity="error" style={{color: "#fceded" }}>
         <AlertTitle>Error</AlertTitle>
         {errorMsg}
       </Alert>
