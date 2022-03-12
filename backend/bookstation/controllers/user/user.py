@@ -1,29 +1,29 @@
 from json import dumps
 from backend.bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import User, Collection
+from bookstation.models.user_sys import User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode
-from datetime import datetime
+from datetime import datetime,date
 
 url_prefix = '/user'
+
 
 @app.route(url_prefix + '/checkgoal', methods=["GET"])
 def get_goal():
     '''
-    It returns profile data of target user.
+    It returns the goal of current month and current progress: if the goal is not set, - 1 will be returned
 
     Args (GET):
         operator (string): the requester's email
         token (string): valid token
 
     Returns:
-        is_self (boolean): True if the user is requesting his own profile, else False
-        username (string): target user's username
-        email (string): target user's email
+        goal (int): -1 if the user hasn't set a goal for this month
+        finished (int): the number of books finished in this month
 
     Raises:
         AccessError: login check
-        NotFoundError: when target email is an invalid email
+        NotFoundError: when the user is not found
     '''
     operator_email = request.args.get('operator')
     token = request.args.get('token')
@@ -36,7 +36,11 @@ def get_goal():
 
     month = datetime.date.today().month
     year = datetime.date.today().year
-
+    curr_goal = -1
+    goals = Goal.query.filter_by(user_id=user.user_id).all()
+    for goal in goals:
+        if goal.created_date.year == year and goal.created_date.month == month:
+            curr_goal = goal.books_set
     book_done = 0
     for book_collection in book_collections:
         date = book_collection.created_time
@@ -46,7 +50,7 @@ def get_goal():
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
-        "goal": 20,
+        "goal": curr_goal,
         "finished": book_done,
 
     })
@@ -55,40 +59,104 @@ def get_goal():
 @app.route(url_prefix + '/setgoal', methods=["POST"])
 def set_goal():
     '''
-    It returns profile data of target user.
+    It sets the goal of this user for this month
 
     Args (GET):
-        operator (string): the requester's email
-        target (string): target user's email
+        email (string): the requester's email
         token (string): valid token
+        goal (int): the goal of user for this month
 
     Returns:
-        is_self (boolean): True if the user is requesting his own profile, else False
-        username (string): target user's username
-        email (string): target user's email
-        TODO: add more returns and profile image
+        "success"
 
     Raises:
         AccessError: login check
-        NotFoundError: when target email is an invalid email
+        NotFoundError: when the user is not found
+    '''
+    try:
+        data = request.get_json()
+        email, goal, token = data['email'], data['goal'], data['token']
+    except:
+        raise error.BadReqError(description="post body error")
+    login_status_check(email, token)
+    # sql select user
+    user = User.query.filter_by(email=email).first()
+    if (user == None):
+        raise error.NotFoundError(description="cannot find user")
 
-    TODO:
-        1. add returns
-        2. find a way to prevent potential security issues
+
+    today = date.today()
+    new_goal = Goal(user.user_id, today, goal, 0) 
+    db.session.add(new_goal)
+    db.session.commit()
+
+    year = today.year
+    month = today.month-1
+    if month == 0:
+      month = 12
+      year = year-1
+    prev_goal = None
+    goals = Goal.query.filter_by(user_id=user.user_id).all()
+    for goal in goals:
+        if goal.created_date.year == year and goal.created_date.month == month:
+            prev_goal = goal
+ 
+    collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
+    book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
+    book_done = 0
+    for book_collection in book_collections:
+        date = book_collection.created_time
+        if date.month == month and date.year == year:
+            book_done += 1
+    prev_goal.books_completed = book_done
+    db.session.add(prev_goal)
+    db.session.commit()
+
+    return dumps({
+        "succuss":[]
+    })
+
+
+@app.route(url_prefix + '/getallgoal', methods=["GET"])
+def get_all_goal():
+    '''
+    It gets goal histories of a user
+
+    Args (GET):
+        email (string): the requester's email
+        token (string): valid token
+        goal (int): the goal of user for this month
+
+    Returns:
+        "goal_history" (list):
+            - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
+            - goal (int): goal of this user for that month
+            - books_completed (int): number of books user completed during that month
+
+    Raises:
+        AccessError: login check
+        NotFoundError: when the user is not found
     '''
     operator_email = request.args.get('operator')
-    target_email = request.args.get('target')
     token = request.args.get('token')
     login_status_check(operator_email, token)
+
     # sql select user
-    user = User.query.filter_by(email=target_email).first()
+    user = User.query.filter_by(email=operator_email).first()
+    all_history = []
+    goals = Goal.query.filter_by(user_id=user.user_id).all()
+    for goal in goals:
+        history = {}
+        history['created_time'] = goal.created_time
+        history['goal'] = goal.books_set
+        history['books_completed'] = goal.books_completed
+        all_history.append(history)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
-        "is_self": True if (operator_email == target_email) else False,
-        "username": user.username,
-        "email": user.email
+        "goal_history": all_history,
     })
+
 
 
 @app.route(url_prefix + '/profile', methods=["GET"])

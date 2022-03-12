@@ -61,8 +61,7 @@ class Goal(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     books_set = db.Column(db.Integer)
     books_completed = db.Column(db.Integer)
-    def __init__(self, goal_id, user_id, created_date, books_set,books_completed):
-        self.goal_id = goal_id
+    def __init__(self, user_id, created_date, books_set,books_completed):
         self.user_id = user_id
         self.created_time = created_date
         self.books_set = books_set

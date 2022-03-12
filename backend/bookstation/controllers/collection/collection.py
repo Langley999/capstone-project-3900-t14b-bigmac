@@ -121,7 +121,7 @@ def get_collection():
     # user_name = request.args.get('user')
     collection_id = request.args.get('collection_id')
     try: 
-      collection = Collection.query.get(id)
+      collection = Collection.query.get(collection_id)
       collection_books = Collection_book.query.filter_by(collection_id=collection_id)
       booklist = []
       for book in collection_books.book:
