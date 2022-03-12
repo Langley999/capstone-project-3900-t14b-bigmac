@@ -1,29 +1,36 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
-  CardActions,
   CardContent,
   Divider,
   Typography
 } from '@mui/material';
+import {CardMedia} from "@material-ui/core";
+import banner from '../assets/banner.png'
 
 
+export const AvatarBanner = ({userInfo}) => {
 
-export const AvatarBanner = () => (
-  <div className='centre'>
-    <Card >
+  return (
+    <Card>
+      <CardMedia
+        component="img"
+        alt="Contemplative Reptile"
+        height="100"
+        image={banner}
+        title="Contemplative Reptile"
+      />
       <CardContent>
         <Box
           sx={{
-            alignItems: 'left',
+            alignItems: 'center',
             display: 'flex',
-            flexDirection: 'column'
+            gap: '25px'
           }}
         >
           <Avatar
-            src={localStorage.getItem('userAvatar')}
+            src={userInfo.avatar}
             sx={{
               height: 64,
               mb: 2,
@@ -32,16 +39,13 @@ export const AvatarBanner = () => (
           />
           <Typography
             color="textPrimary"
-            gutterBottom
             variant="h5"
           >
-            {localStorage.getItem('userName')}
+            {userInfo.username}
           </Typography>
         </Box>
       </CardContent>
-      <Divider />
+      <Divider/>
     </Card>
-  </div>
-);
-
-export default AvatarBanner;
+  )
+};
