@@ -1,3 +1,5 @@
+export const url = 'http://localhost:8080';
+
 export const checkProfileInput = (username, email, password) => {
   const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$';
 

@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
+import { url } from '../../components/Helper';
 
 import {
   Box,
@@ -18,6 +19,7 @@ import {
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
+import axios from "axios";
 
 
 const collection1 = {
@@ -97,56 +99,254 @@ const collection3 = {
   ]
 }
 
-const Collections = () => {
-  const [collections, setCollections] = useState(['Favourite', 'Complete']);
+// const Collections = () => {
+//   const [collections, setCollections] = useState(['Favourite', 'Complete']);
+//   const [open, setOpen] = useState(false);
+//   const [currentCollection, setCurrentCollection] = useState(collection1);
+//   let newCollection = '';
+//
+//   const handleClickOpen = () => {
+//     setOpen(true);
+//   };
+//
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+//
+//   const getCollection = (collectionName) => {
+//     if (collectionName === 'Favourite')
+//       setCurrentCollection(collection1);
+//     else if (collectionName === 'Complete')
+//       setCurrentCollection(collection2);
+//     else
+//       setCurrentCollection(collection3);
+//   }
+//
+//   const removeBook = (title) => {
+//     const newBooks = currentCollection.books.filter((book) => book.title !== title);
+//     const newCollection = {
+//       collectionName: currentCollection.collectionName,
+//       books: newBooks
+//     }
+//     setCurrentCollection(newCollection);
+//   }
+//
+//   const removeCollection = () => {
+//     const newCollections = collections.filter((collection) => collection !== currentCollection.collectionName);
+//     setCollections(newCollections);
+//     setCurrentCollection(collection1);
+//   }
+//
+//   const createCollection = () => {
+//     const newCollections = [...collections];
+//     newCollections.push(newCollection);
+//     setCollections(newCollections);
+//     handleClose();
+//   }
+//
+//   const handleChange = (event) => {
+//     newCollection = event.target.value;
+//   }
+//
+//   const Sidebar = () => {
+//     return (
+//       <Paper sx={{ width: 200, maxWidth: '100%', height: 500, overflow: 'auto'}}>
+//         <MenuList>
+//           <MenuItem>
+//             <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
+//           </MenuItem>
+//           <Dialog open={open} onClose={handleClose}>
+//             <DialogTitle>Create New Collection</DialogTitle>
+//             <DialogContent>
+//               <TextField
+//                 autoFocus
+//                 margin="dense"
+//                 id="new name"
+//                 label="Collection Name"
+//                 onChange={handleChange}
+//                 type="text"
+//                 fullWidth
+//                 variant="standard"
+//               />
+//             </DialogContent>
+//             <DialogActions>
+//               <button onClick={handleClose}>Cancel</button>
+//               <button onClick={createCollection}>Create Collection</button>
+//             </DialogActions>
+//           </Dialog>
+//           <Divider />
+//           {collections.map((collection, idx) => {
+//             return (
+//               <MenuItem
+//                 key={idx}
+//                 onClick={() => getCollection(collection)}
+//               >
+//                 <ListItemText>{collection}</ListItemText>
+//               </MenuItem>
+//             )
+//           })}
+//         </MenuList>
+//       </Paper>
+//     )
+//   }
+//
+//   const CollectionBar = () => {
+//     return (
+//       <Box sx={{display: 'flex'}}>
+//         <h1>{currentCollection.collectionName}</h1>
+//         {currentCollection.collectionName === 'Favourite' || currentCollection.collectionName === 'Complete' ?
+//           null :
+//           <div>
+//             <button>Edit Name</button>
+//             <button onClick={removeCollection}>Remove</button>
+//           </div>
+//         }
+//       </Box>
+//     )
+//   }
+//
+//   const Book = ({title, author, cover}) => {
+//     return (
+//       <>
+//         <Card sx={{maxWidth: 345}}>
+//           <CardMedia
+//             component="img"
+//             height="140"
+//             image={cover}
+//             alt="book card"
+//           />
+//           <CardContent>
+//             <Typography gutterBottom variant="h6" component="div">
+//               {title}
+//             </Typography>
+//             <Typography variant="body2">
+//               {author}
+//             </Typography>
+//           </CardContent>
+//         </Card>
+//         <button onClick={()=>removeBook(title)}>Remove</button>
+//       </>
+//     )
+//   }
+//
+//   const Books = () => {
+//     return (
+//       <Paper sx={{
+//         width: '100%',
+//         height: '500px',
+//         marginLeft: '40px',
+//         padding: '20px',
+//         overflow: 'auto'
+//       }}>
+//         <CollectionBar/>
+//         <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
+//         <Grid
+//           container
+//           spacing={3}
+//         >
+//           {currentCollection.books.map((book, idx) => {
+//             return (
+//               <Grid item xs={12} sm={6} md={2} key={idx}>
+//                 <Book title={book.title} author={book.author} cover={book.cover}/>
+//               </Grid>
+//             )
+//           })}
+//         </Grid>
+//       </Paper>
+//     )
+//   }
+//
+//
+//
+//   return (
+//     <>
+//       <Box
+//         sx={{
+//           display: 'flex',
+//         }}
+//       >
+//         <Sidebar/>
+//         <Books/>
+//       </Box>
+//     </>
+//   );
+// };
+// export default Collections;
+
+
+const Collections = ({userInfo}) => {
+  const [collections, setCollections] = useState([]);
   const [open, setOpen] = useState(false);
-  const [currentCollection, setCurrentCollection] = useState(collection1);
-  let newCollection = '';
+  const [currentCollection, setCurrentCollection] = useState({});
+  let newCollection = '';   // the name of created collection
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  useEffect(async () => {
+    axios.get(`${url}/collection/getall`, {params: {
+        user: userInfo.username
+      }})
+      .then(res => {
+        setCollections(res.data.collections);
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
+  }, [])
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const getCollection = (collectionName) => {
-    if (collectionName === 'Favourite')
-      setCurrentCollection(collection1);
-    else if (collectionName === 'Complete')
-      setCurrentCollection(collection2);
-    else
-      setCurrentCollection(collection3);
-  }
-
-  const removeBook = (title) => {
-    const newBooks = currentCollection.books.filter((book) => book.title !== title);
-    const newCollection = {
-      collectionName: currentCollection.collectionName,
-      books: newBooks
-    }
-    setCurrentCollection(newCollection);
-  }
-
-  const removeCollection = () => {
-    const newCollections = collections.filter((collection) => collection !== currentCollection.collectionName);
-    setCollections(newCollections);
-    setCurrentCollection(collection1);
-  }
-
-  const createCollection = () => {
-    const newCollections = [...collections];
-    newCollections.push(newCollection);
-    setCollections(newCollections);
-    handleClose();
-  }
-
-  const handleChange = (event) => {
-    newCollection = event.target.value;
-  }
 
   const Sidebar = () => {
+
+    // show books when click a specific collection
+    const getCollection = (collection_id) => {
+      axios.get(`${url}/collection/getCollection`, {params: {
+          collection_id: collection_id
+        }})
+        .then(res => {
+          setCurrentCollection({
+            collection_id: collection_id,
+            name: res.data.name,
+            books: res.data.books
+          })
+        })
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
+    }
+
+    // for create collection dialog
+    const handleChange = (event) => {
+      newCollection = event.target.value;
+    }
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+    ////////////////////////////////
+    // create a new collection
+    const createCollection = () => {
+
+      if (collections.filter((collection) => collection.name === newCollection) !== []) {
+        alert("Cannot have duplicate collection name");
+        return;
+      }
+
+      axios.post(`${url}/collection/create`, {
+        email: userInfo.email,
+        name: newCollection,
+        token: localStorage.getItem('token')
+      }).then(res => {
+        const newCollections = [...collections];
+        setCollections([...newCollections, res]);
+        handleClose();
+      })
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
+    }
+
     return (
       <Paper sx={{ width: 200, maxWidth: '100%', height: 500, overflow: 'auto'}}>
         <MenuList>
@@ -173,13 +373,13 @@ const Collections = () => {
             </DialogActions>
           </Dialog>
           <Divider />
-          {collections.map((collection, idx) => {
+          {collections.map((collection) => {
             return (
               <MenuItem
-                key={idx}
-                onClick={() => getCollection(collection)}
+                key={collection.id}
+                onClick={() => getCollection(collection.id)}
               >
-                <ListItemText>{collection}</ListItemText>
+                <ListItemText>{collection.name}</ListItemText>
               </MenuItem>
             )
           })}
@@ -189,10 +389,26 @@ const Collections = () => {
   }
 
   const CollectionBar = () => {
+
+    const removeCollection = () => {
+
+      axios.delete(`${url}/collection/removecollection`, {data: {
+          email: userInfo.email,
+          collection_id: currentCollection.collection_id
+        }
+      })
+        .then(res => {
+          const newCollections = collections.filter((collection) => collection.collection_id !== currentCollection.collection_id);
+          setCollections(newCollections);
+          // automatically show Favourite Collection after removing a collection
+          setCurrentCollection(collections.filter((collection) => collection.name === 'Favourite'));
+        })
+    }
+
     return (
       <Box sx={{display: 'flex'}}>
-        <h1>{currentCollection.collectionName}</h1>
-        {currentCollection.collectionName === 'Favourite' || currentCollection.collectionName === 'Complete' ?
+        <h1>{currentCollection.name}</h1>
+        {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' ?
           null :
           <div>
             <button>Edit Name</button>
@@ -203,7 +419,29 @@ const Collections = () => {
     )
   }
 
-  const Book = ({title, author, cover}) => {
+  const Book = ({id, title, author, cover}) => {
+
+    const removeBook = () => {
+
+      axios.delete(`${url}/collection/removebook`, {data: {
+          email: userInfo.email,
+          collection_id: currentCollection.collection_id,
+          book_id: id
+        }
+      }).then(res => {
+        const newBooks = currentCollection.books.filter((book) => book.title !== title);
+        const newCollection = {
+          collection_id: currentCollection.collection_id,
+          name: currentCollection.name,
+          books: newBooks
+        }
+        setCurrentCollection(newCollection);
+      })
+        .catch(error => {
+          alert(error.response.data.message);
+        });
+    }
+
     return (
       <>
         <Card sx={{maxWidth: 345}}>
@@ -222,7 +460,7 @@ const Collections = () => {
             </Typography>
           </CardContent>
         </Card>
-        <button onClick={()=>removeBook(title)}>Remove</button>
+        <button onClick={removeBook}>Remove</button>
       </>
     )
   }
@@ -242,10 +480,10 @@ const Collections = () => {
           container
           spacing={3}
         >
-          {currentCollection.books.map((book, idx) => {
+          {currentCollection.books.map((book) => {
             return (
-              <Grid item xs={12} sm={6} md={2} key={idx}>
-                <Book title={book.title} author={book.author} cover={book.cover}/>
+              <Grid item xs={12} sm={6} md={2} key={book.id}>
+                <Book id={book.id} title={book.title} author={book.author} cover={book.cover}/>
               </Grid>
             )
           })}

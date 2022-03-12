@@ -62,7 +62,7 @@ function App() {
               </>
             }>
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
-              <Route path='collections' element={<Collections />}/>
+              <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics />}/>
             </Route>

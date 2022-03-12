@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import {checkProfileInput} from '../../../components/CheckProfileInput';
+import {url, checkProfileInput} from '../../../components/Helper';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
@@ -69,20 +69,21 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const handleSubmit = () => {
     if (!checkProfileInput(values.username, values.email,values.password))
       return;
-    
+    updateUserInfo(values);
+    alert("Edit Success")
 
-    axios.post('http://localhost:8080/user/update', {
-      origin: userInfo.email,
-      token: localStorage.getItem('token'),
-      email: values.email,
-      username: values.username,
-      password: values.password
-    }).then(function (response) {
-      updateUserInfo(values);
-      alert("Edit profile success!")
-    }).catch(function (error) {
-      alert(error);
-    });
+    // axios.post(`${url}/user/update`, {
+    //   origin: userInfo.email,
+    //   token: localStorage.getItem('token'),
+    //   email: values.email,
+    //   username: values.username,
+    //   password: values.password
+    // }).then(function (response) {
+    //   updateUserInfo(values);
+    //   alert("Edit profile success!")
+    // }).catch(function (error) {
+    //   alert(error.response.data);
+    // });
   }
 
   return (
@@ -123,7 +124,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               name="username"
               onChange={handleChange}
               required
-              value={values.username}
+              value={values.username ?? ''}
               variant="outlined"
             />
             <TextField
@@ -132,7 +133,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               name="email"
               onChange={handleChange}
               required
-              value={values.email}
+              value={values.email ?? ''}
               variant="outlined"
             />
             <Button sx={{
@@ -151,7 +152,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 fullWidth
                 id="input-password"
                 type={ifVisible ? 'text' : 'password'}
-                value={values.password}
+                value={values.password ?? ''}
                 onChange={handleChangePwd('password')}
                 endAdornment={
                   <InputAdornment position="end">
