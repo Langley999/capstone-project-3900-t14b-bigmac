@@ -22,6 +22,8 @@ import Posts from './layouts/Posts';
 import Analytics from './layouts/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
+import BookDetail from  './layouts/BookDetail'
+import SearchBooks from "./layouts/SearchBooks";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -49,9 +51,11 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
+            <Route path='book/:id' element={<BookDetail />} />
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
+            <Route path='searchbooks' element={<SearchBooks />} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
             <Route path='user' element={

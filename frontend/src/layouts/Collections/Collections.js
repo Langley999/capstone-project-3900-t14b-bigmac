@@ -20,6 +20,7 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 
 const collection1 = {
@@ -444,7 +445,7 @@ const Collections = ({userInfo}) => {
 
     return (
       <>
-        <Card sx={{maxWidth: 345}}>
+        <Card sx={{maxWidth: 345}} component={Link} to={`/book/${id}`}>
           <CardMedia
             component="img"
             height="140"
