@@ -1,9 +1,10 @@
 from csv import unregister_dialect
 from json import dumps
 import ast
+import csv
 import time
 from bookstation import app, request, db, error
-from bookstation.models.book_sys import Book, Genre, Review
+from bookstation.models.book_sys import Book, Book_genre, Book_author, Genre, Review, Author
 from flask import session
 import hashlib
 import jwt
@@ -32,33 +33,74 @@ def getTestOldway():
 
     book_dict['reviews'] = reviews
     return dumps(book_dict)
+
+
+
+
+@app.route("/initialise", methods=["GET"])
+def loadbooks():
+    f = open('bookstation/controllers/book/bookcsv.csv') 
+    csv_reader = csv.reader(f, delimiter=',')
+    genre_set = set()
+    author_set = set()
+    first_line = True
+    #title 1 , isbn 7, pubdate 14, publiser 13, blurb 5, avg rating - , num rating -, coverimg 21, genrestring 8, authorstring 3
+    for row in csv_reader:
+
+        if first_line:
+            first_line = False
+            continue
+
+        book = Book(title=row[1], isbn=row[7], publish_date=row[14], publisher=row[13], blurb=row[5], average_rating=0, num_rating=0, cover_image=row[21], genre_string=row[8], author_string=row[3])
+        db.session.add(book)
+        #create book object
+
+        genres = ast.literal_eval(row[8])
+        for genre in genres:
+            if genre not in genre_set:
+                genre_set.add(genre)
+                db.session.add(Genre(name=genre)) #create genre object
+
+        #break
+        authors = row[3].split(", ")
+        for author in authors:
+            if author not in author_set:
+                author_set.add(author)
+                db.session.add(Author(name=author))#create author object
+
+    db.session.commit()      
+    return dumps({"successfully loaded" : True})
+
+@app.route("/loadbookgenre", methods=["GET"])
+def loadbookgenre():
+
+    books = Book.query.all()
+    for book in books:
+        tbook_id = book.book_id
+        genres = ast.literal_eval(book.genre_string)
+        for genrename in genres:
+            genre = Genre.query.filter_by(name=genrename).first()
+            tgenre_id = genre.genre_id
+            db.session.add(Book_genre(book_id=tbook_id, genre_id=tgenre_id))
+    db.session.commit()
+    return dumps({"successfully loaded joins" : True})
+
+@app.route("/loadbookauthor", methods=["GET"])
+def loadbookauthor():
+
+    books = Book.query.all()
+    for book in books:
+        tbook_id = book.book_id
+        authorslist = book.author_string.split(", ")
+        authors = set(authorslist)
+        for authorname in authors:
+            author = Author.query.filter_by(name=authorname).first()
+            tauthor_id = author.author_id
+            db.session.add(Book_author(book_id=tbook_id, author_id=tauthor_id))
+    db.session.commit()
+    return dumps({"successfully loaded joins author" : True})
+
 '''
-
-
-@app.route("/test", methods=["GET"])
-def getTest():
-    Review.query.get(1)
-    return dumps({})
-
-@app.route("/test/daoting", methods=["GET"])
-def getTestOldway():
-    book_id = request.args.get('bookId')
-    book = Book.query.get(book_id)
-    book_dict = book.__dict__.copy()
-    book_dict.pop('_sa_instance_state', None)
-    book_dict.pop("genre_string", None)
-    genres = []
-    for genre in book.book_genre: #join genre
-        genres.append(genre.genre.name)
-    book_dict['genres'] = genres
-    reviews = []
-    for review in book.reviews:
-        reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
-        'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
-
-    book_dict['reviews'] = reviews
-    return dumps(book_dict)
-
 
 @app.route("/book/details", methods=["GET"])
 def getDetails():
@@ -112,7 +154,8 @@ def getReview():
         json object of user reviews
     '''     
     #get input
-    target_user_id = request.args.get('userId')
+    token = request.args.get('token')
+    target_user_id = session.get(token)
     review_rows = Review.query.filter_by(user_id=target_user_id).all()
     reviews = []
 
@@ -147,7 +190,8 @@ def addReview():
 
     #extract information
     new_book_id = body['book_id']
-    new_user_id = body['user_id']
+    token = request.args.get('token')
+    new_user_id = session.get(token)
     new_rating = body['rating']
     new_content = body['content']
     new_created_time = body['created_time']
@@ -181,6 +225,7 @@ def addRating():
 
     #extract information
     new_book_id = body['book_id']
+    token = request.args.get('token')
     new_user_id = body['user_id']
     new_rating = body['rating']
     new_created_time = body['created_time']
