@@ -4,16 +4,14 @@ import ast
 import csv
 import time
 from bookstation import app, request, db, error
+
 from bookstation.models.book_sys import Book, Book_genre, Book_author, Genre, Review, Author
 from flask import session
+
 import hashlib
 import jwt
 
-'''
-@app.route("/test", methods=["GET"])
-def getTest():
-    Review.query.get(1)
-    return dumps({})
+
 
 @app.route("/test/daoting", methods=["GET"])
 def getTestOldway():
@@ -101,6 +99,7 @@ def loadbookauthor():
     return dumps({"successfully loaded joins author" : True})
 
 '''
+
 
 @app.route("/book/details", methods=["GET"])
 def getDetails():
@@ -202,7 +201,7 @@ def addReview():
     #post to databse
     db.session.add(review)
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -236,7 +235,7 @@ def addRating():
     #post to databse
     db.session.add(review)
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -268,7 +267,7 @@ def editReview():
         raise(error.BadReqError("Bad request cannot update"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -299,7 +298,7 @@ def editRating():
         raise(error.BadReqError("Bad request cannot update"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
 
 
 
@@ -329,4 +328,37 @@ def removeRating():
         raise(error.BadReqError("Bad request cannot delete"))
 
     db.session.commit()
-    return dumps({"sucess": True})
+    return dumps({"success": True})
+
+#complete reading
+@app.route("/book/completereading", methods=["POST"])
+def completeReading():
+    try:
+        data = request.get_json()
+        email, book_id = data['email'], data['book_id']
+    except:
+        raise error.BadReqError(description="post body error")
+
+    user = User.query.filter_by(email = email).first()
+ 
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection != None:
+      raise error.BadReqError(description="This book has already been added to the collection")
+
+    try:
+      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now()) 
+      db.session.add(new_book_collection)
+      db.session.commit()
+
+      return dumps({
+          "success": []
+      })
+    except:
+      raise error.BadReqError(description="Cannot add the book to this collection")
+ 
