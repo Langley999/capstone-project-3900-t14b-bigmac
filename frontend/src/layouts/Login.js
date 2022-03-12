@@ -68,7 +68,6 @@ const Login = ({ updateLogin, updateUserInfo }) => {
       localStorage.setItem('token', response['token']);
       navigate('/');
       setErrorMsg('');
-      setSuccessMsg('You are logged in!');
 
     }).catch(function (error) {
       console.log(JSON.stringify(error));
