@@ -11,7 +11,7 @@ from flask import session
 import hashlib
 import jwt
 
-
+'''
 
 @app.route("/test/daoting", methods=["GET"])
 def getTestOldway():
