@@ -18,12 +18,14 @@ import FormControl from "@mui/material/FormControl";
 import axios from "axios";
 import {checkProfileInput} from '../../../components/CheckProfileInput';
 import ErrorPopup from '../../../components/ErrorPopup';
+import SuccessPopup from '../../../components/ErrorPopup';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
   const [ifVisible, setIfVisible] = useState(false);
   const [ifShow, setIfShow] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(async () => {
     setValues(userInfo);
@@ -71,7 +73,9 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const handleSubmit = () => {
     const checkInputs = checkProfileInput(values.username, values.email,values.password)
     if (checkInputs !== '') {
+      setSuccessMsg('');
       setErrorMsg(checkInputs);
+      setTimeout(() => {setErrorMsg('')}, 3000);
       return;
     }
       
@@ -83,15 +87,20 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       password: values.password
     }).then(function (response) {
       updateUserInfo(values);
-      alert("Edit profile success!")
+      setErrorMsg('');
+      setSuccessMsg('Profile details updated!');
+      setTimeout(() => {setSuccessMsg('')}, 3000);
     }).catch(function (error) {
-      alert(error);
+      setSuccessMsg('');
+      setErrorMsg(JSON.stringify(error.message));
+      setTimeout(() => {setErrorMsg('')}, 3000);
     });
   }
 
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg}/>
+      <SuccessPopup successMsg={successMsg}/>
       <form
         autoComplete="off"
         noValidate

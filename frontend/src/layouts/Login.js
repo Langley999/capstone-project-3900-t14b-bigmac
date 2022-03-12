@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {message} from 'antd';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -15,7 +14,6 @@ import Button from '@mui/material/Button';
 import ErrorPopup from '../components/ErrorPopup';
 import Stack from '@mui/material/Stack';
 import HomeButton from '../components/HomeButton';
-import SuccessPopup from '../components/SuccessPopup';
 import {checkProfileInput} from '../components/CheckProfileInput';
 
 
@@ -44,14 +42,17 @@ const Login = ({ updateLogin, updateUserInfo }) => {
 
   
   const submitLogin = () => {
-    // checks if input fields are blank
+    // shows error message for 5 secs if any input is blank
     if (email === '' || pass.password === '') {
       setErrorMsg('All input fields must be filled');
+      setTimeout(() => {setErrorMsg('')}, 5000);
       return;
     }
+    // shows error message for 5 secs if any input is invalid
     const checkInputs = checkProfileInput('username', email, pass.password);
     if (checkInputs !== '') {
       setErrorMsg(checkInputs);
+      setTimeout(() => {setErrorMsg('')}, 3000);
       return;
     }
     updateLogin(true);
@@ -71,8 +72,9 @@ const Login = ({ updateLogin, updateUserInfo }) => {
 
     }).catch(function (error) {
       console.log(JSON.stringify(error));
-      // alert(error);
+      // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
+      setTimeout(() => {setErrorMsg('')}, 3000);
     });
   }
 
