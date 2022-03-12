@@ -98,7 +98,7 @@ def loadbookauthor():
     db.session.commit()
     return dumps({"successfully loaded joins author" : True})
 
-'''
+
 
 
 @app.route("/book/details", methods=["GET"])

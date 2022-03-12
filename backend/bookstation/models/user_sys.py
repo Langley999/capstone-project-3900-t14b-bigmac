@@ -54,33 +54,16 @@ class Collection(db.Model):
         self.created_time = time
         self.user_id = user_id
 
-
 class Goal(db.Model):
     __tablename__ = 'goals'
     goal_id = db.Column(db.Integer, primary_key=True)
-    ceated_date = db.Column(db.Date)
+    created_date = db.Column(db.Date)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     books_set = db.Column(db.Integer)
     books_completed = db.Column(db.Integer)
-
-'''
-CREATE TABLE goal (
-    goal_id INTEGER NOT NULL,
-    created_date DATE,
-    user_id INTEGER NOT NULL,
-    books_set INTEGER,
-    books_completed INTEGER,
-    PRIMARY KEY (goal_id),
-    FOREIGN KEY(user_id) REFERENCES user (user_id)
-);
-
-'''
-
-
-'''
-user_id = 5
-[{monthyear: 'jan-22', numbooksgoal: 7, numbooksread: 3}, {monthyear: 'jan-22', numbooksgoal: 7, numbooksread: 3}, {monthyear: 'jan-22', numbooksgoal: 7, numbooksread: 3}
-]
-
-
-'''
+    def __init__(self, goal_id, user_id, created_date, books_set,books_completed):
+        self.goal_id = goal_id
+        self.user_id = user_id
+        self.created_time = created_date
+        self.books_set = books_set
+        self.books_completed = books_completed
