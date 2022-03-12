@@ -67,7 +67,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   }
 
   const handleSubmit = () => {
-    if (checkProfileInput(values.username, values.email,values.password) == '')
+    if (checkProfileInput(values.username, values.email,values.password) !== '')
       return;
     
 
