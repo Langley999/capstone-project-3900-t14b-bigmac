@@ -5,8 +5,8 @@ import ast
 import csv
 import time
 from typing import Collection
-from backend.bookstation.models.book_sys import Collection_book
-from backend.bookstation.models.user_sys import User
+from bookstation.models.book_sys import Collection_book
+from bookstation.models.user_sys import User
 from bookstation import app, request, db, error
 
 from bookstation.models.book_sys import Book, Book_genre, Book_author, Genre, Review, Author
