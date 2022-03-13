@@ -98,6 +98,7 @@ const GoalPage = ({ display, userInfo }) => {
       <br/>
       <span>You have completed {completed} books so far and there are {goalLast-completed} books to go</span>
       <br/>
+      <br/>
       <span>You have {daysUntilEndOfMonth} day{daySuffix} left</span>
     </div>
   )

@@ -19,7 +19,7 @@ import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
 import Posts from './layouts/Posts';
-import Analytics from './layouts/Analytics';
+import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import Book from './components/Book';
 import {AvatarBanner} from './components/AvatarBanner';
