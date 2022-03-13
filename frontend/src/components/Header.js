@@ -23,6 +23,9 @@ import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
+import axios from "axios";
+import {url} from './Helper';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -76,11 +79,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin, userInfo }) {
-  const [radioValue, setRadioValue] = useState('by title');
-  const [searchValue, setSearchValue] = useState('');
+function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -90,7 +92,24 @@ function Header ({ ifLogin, userInfo }) {
   };
 
   const onChangeRadio = (e) => {
-    setRadioValue(e.target.value);
+    console.log(e.target.value)
+    updateRadioValue(e.target.value);
+  }
+
+  const submitSearch = () => {
+    console.log(radioValue)
+    console.log(searchValue)
+    axios.get(`${url}/search/searchbook`, {params: {
+        type: radioValue,
+        value: searchValue
+    }})
+      .then(res => {
+        updateSearchResult(res.data.books);
+        navigate('searchbooks');
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
   }
 
   function NavBarV1 () {
@@ -226,14 +245,15 @@ function Header ({ ifLogin, userInfo }) {
           <Slogan>
               BookStation
           </Slogan>
-          <Box component="form" onSubmit={()=>console.log(searchValue)}>
+          <Box component="form">
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
-                onChange={(e) => setSearchValue(e.target.value)}
+                value={searchValue}
+                onChange={(e) => updateSearchValue(e.target.value)}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
@@ -245,14 +265,12 @@ function Header ({ ifLogin, userInfo }) {
               value={radioValue}
               onChange={onChangeRadio}
             >
-              <FormControlLabel value="female" control={<Radio />} label="by title" />
-              <FormControlLabel value="male" control={<Radio />} label="by author" />
+              <FormControlLabel value="title" control={<Radio />} label="by title" />
+              <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          <Button
-            variant="contained"
-
-          >Filter</Button>
+          <Button variant="outlined">Filter</Button>
+          <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?

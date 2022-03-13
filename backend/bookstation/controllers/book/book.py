@@ -41,7 +41,7 @@ def getTestOldway():
 
 @app.route("/initialise", methods=["GET"])
 def loadbooks():
-    f = open('bookstation/controllers/book/bookcsv.csv') 
+    f = open('bookstation/controllers/book/bookcsv.csv')
     csv_reader = csv.reader(f, delimiter=',')
     genre_set = set()
     author_set = set()
@@ -70,7 +70,7 @@ def loadbooks():
                 author_set.add(author)
                 db.session.add(Author(name=author))#create author object
 
-    db.session.commit()      
+    db.session.commit()
     return dumps({"successfully loaded" : True})
 
 @app.route("/loadbookgenre", methods=["GET"])
@@ -110,14 +110,11 @@ def getDetails():
     '''
     Get book details
     Args (GET):
-
         bookId (integer): request bookId
-
     Returns:
         json object of book details
     Raises:
         InputError: no book has been found for book_id
-
     '''
     #get input
     book_id = request.args.get('bookId')
@@ -155,10 +152,9 @@ def getReview():
         email
         token
         bookId (integer): book_id of user requesting reviews
-
     Returns:
         json object of user reviews
-    '''     
+    '''
     #get input
     token = request.args.get('token')
     email = request.args.get('email')
@@ -174,7 +170,6 @@ def getReview():
         review_dict.pop('_sa_instance_state', None)
         review_dict['created_time'] = str(review.created_time)
         reviews.append(review_dict)
-    
     return dumps({"reviews": reviews})
 
 
@@ -189,11 +184,9 @@ def addReview():
         rating (integer): rating value
         content (string): optional comment
         created_time (string): time of review creation
-
     Returns:
         none
-
-    '''     
+    '''
     #get body
     try:
         body = request.get_json()
@@ -204,7 +197,6 @@ def addReview():
         new_content = body['content']
         new_created_time = body['created_time']
         user = User.query.filter_by(email=email).first()
-    
     except:
         raise error.BadReqError(description="post body error")
 
@@ -230,10 +222,9 @@ def addRating():
         email (integer): email of user who's adding
         rating (integer): rating value
         created_time (string): time of review creation
-
     Returns:
         none
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -271,10 +262,9 @@ def addRatingReview():
         rating (integer): rating value
         created_time (string): time of review creation
         review (string): content of review
-
     Returns:
         none
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -308,12 +298,11 @@ def editReview():
     Add or update comment to review
     Args (PUT):
         review_id (integer): review being updated
-
     Returns:
         None
     Raises:
         BadReqError: Review cannot be updated
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -330,7 +319,6 @@ def editReview():
 
     db.session.commit()
     return dumps({"success": True})
- 
 
 
 #change rating ------
@@ -346,7 +334,7 @@ def editRating():
         None
     Raises:
         BadReqError: Review cannot be updated to change rating value
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -378,7 +366,7 @@ def removeRating():
         None
     Raises:
         BadReqError: Review cannot be deleted
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -404,7 +392,6 @@ def completeReading():
         raise error.BadReqError(description="post body error")
 
     user = User.query.filter_by(email = email).first()
- 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
@@ -416,7 +403,7 @@ def completeReading():
       raise error.BadReqError(description="This book has already been added to the collection")
 
     try:
-      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now()) 
+      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
       db.session.add(new_book_collection)
       db.session.commit()
 
@@ -425,4 +412,3 @@ def completeReading():
       })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
- 
