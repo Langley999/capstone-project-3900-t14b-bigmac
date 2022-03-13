@@ -19,8 +19,8 @@ const SuccessPopup = ({ successMsg }) => {
 
   return (
     <Stack sx={{ width: '100%' }} spacing={2} style={successStyle}>
-      <Alert severity="success">
-        <AlertTitle>Cuccess</AlertTitle>
+      <Alert severity="success" style={{backgroundColor: "edf7ec"}}>
+        <AlertTitle>Success</AlertTitle>
         {successMsg}
       </Alert>
     </Stack>
