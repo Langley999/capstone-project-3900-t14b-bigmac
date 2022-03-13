@@ -137,8 +137,9 @@ def getDetails():
     #modify review dict to serialise timestamp of reivews
     reviews = []
     for review in book.reviews:
-        reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
-        'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
+        if review.content != None:
+            reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
+            'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
 
     book_dict['reviews'] = reviews
 
@@ -164,7 +165,7 @@ def getReview():
     book_id = request.args.get('bookId')
     user = User.query.filter_by(email = email).first()
     #target_user_id = session.get(token)
-    review_rows = Review.query.filter_by(user_id=user.user_id, book_id=book_id).all()
+    review_rows = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
 
     #modify review dict to get rid of uncessary fields and serialize timestamp
@@ -261,7 +262,7 @@ def addRating():
 
 #add rating and review
 @app.route("/book/ratings_reviews", methods=["POST"])
-def addRating():
+def addRatingReview():
     '''
     Add rating and review
     Args (POST):
@@ -332,7 +333,7 @@ def editReview():
  
 
 
-#change rating
+#change rating ------
 @app.route("/book/ratings", methods=["PUT"])
 def editRating():
     '''
