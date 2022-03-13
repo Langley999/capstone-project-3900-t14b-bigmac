@@ -45,19 +45,6 @@ def login():
     """
     Function for users to login. It will store new valid token to
     redis and session.
-<<<<<<< HEAD
-    Args (POST body):
-        email (string): user email.
-        password (string): raw password.
-    Returns:
-        token (string): the new valid token
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters a unregistered email
-            2. incorrect password
-
-=======
 
     Args (POST body):
         email (string): user email.
@@ -72,7 +59,6 @@ def login():
             1. when user enters a unregistered email
             2. incorrect password
     
->>>>>>> new-db
     TODO:
         modify error msg
     """
@@ -104,24 +90,11 @@ def register():
     """
     Function for users to register an account. It will store new valid token to
     redis and session. It will stored encoded passwords into database.
-<<<<<<< HEAD
-=======
 
->>>>>>> new-db
     Args (POST body):
         email (string): user email.
         password (string): raw password.
         username (string): username
-<<<<<<< HEAD
-    Returns:
-        token (string): the new valid token
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters a registerd email
-            2. when user enters a registerd username
-
-=======
 
     Returns:
         token (string): the new valid token
@@ -132,7 +105,6 @@ def register():
             1. when user enters a registerd email
             2. when user enters a registerd username
     
->>>>>>> new-db
     TODO:
         modify error msg
     """
@@ -145,44 +117,25 @@ def register():
     # check validity of email
 
     if User.query.filter_by(email = email).first() is not None:
-<<<<<<< HEAD
-        raise error.InputError(description="email already exists")
-=======
         raise error.InputError(description="email already exists") 
->>>>>>> new-db
     # check validity of username
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
     # store new user
     new_user = User(username, email, pw_encode(password))
-<<<<<<< HEAD
-
-=======
     
->>>>>>> new-db
     db.session.add(new_user)
     db.session.commit()
     return dumps({
-        'token': generate_token(username)
+        'token': generate_token(username),
+        'username': username,
+        'email': email
     })
 
 @app.route(url_prefix + "/logout", methods=["POST"])
 def logout():
     """
     Function for users to logout. It will clean the valid token.
-<<<<<<< HEAD
-    Args (POST body):
-        email (string): user email
-        token (string): valid token
-    Returns:
-        no returns
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters an unregistered email
-            2. incorrect password
-
-=======
 
     Args (POST body):
         email (string): user email
@@ -197,7 +150,6 @@ def logout():
             1. when user enters an unregistered email
             2. incorrect password
     
->>>>>>> new-db
     TODO:
         modify error msg
     """
@@ -217,15 +169,10 @@ def logout():
 def pw_encode(password):
     '''
     It will encode raw password by sha256 from hashlib.
-<<<<<<< HEAD
-    Args:
-        password (string): raw password
-=======
 
     Args:
         password (string): raw password
 
->>>>>>> new-db
     Return:
         (string) encoded password
     '''
@@ -234,23 +181,14 @@ def pw_encode(password):
 def generate_token(username):
     '''
     It will generate a new token by username and current time with SECRET.
-<<<<<<< HEAD
-    Args:
-        username (string): username
-=======
 
     Args:
         username (string): username
 
->>>>>>> new-db
     Return:
         (string) encoded token
     '''
     return jwt.encode({
             "username": username,
             "time": time.time()
-<<<<<<< HEAD
         }, 'BIGMAC', algorithm='HS256').decode('utf-8')
-=======
-        }, 'BIGMAC', algorithm='HS256').decode('utf-8')
->>>>>>> new-db

@@ -11,7 +11,7 @@ const BookSection = ({bookInfo}) => {
 
 
   return (
-    <Card sx={{ maxWidth: 345 }} component={Link} to={`/book/${bookInfo.id}`}>
+    <Card sx={{ maxWidth: 345 }} component={Link} to={`/book/?id=${bookInfo.id}`}>
       <CardActionArea>
         <CardMedia
           component="img"

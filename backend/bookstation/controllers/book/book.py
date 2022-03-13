@@ -4,9 +4,9 @@ from json import dumps
 import ast
 import csv
 import time
-from typing import Collection
+
 from bookstation.models.book_sys import Collection_book
-from bookstation.models.user_sys import User
+from bookstation.models.user_sys import User, Collection
 from bookstation import app, request, db, error
 
 from bookstation.models.book_sys import Book, book_genre, book_author, Genre, Review, Author
@@ -83,7 +83,8 @@ def loadbookgenre():
         for genrename in genres:
             genre = Genre.query.filter_by(name=genrename).first()
             tgenre_id = genre.genre_id
-            db.session.add(Book_genre(book_id=tbook_id, genre_id=tgenre_id))
+            #db.session.add(Book_genre(book_id=tbook_id, genre_id=tgenre_id))
+            db.session.add(book_genre(book_id=tbook_id, genre_id=tgenre_id))
     db.session.commit()
     return dumps({"successfully loaded joins" : True})
 
@@ -98,7 +99,8 @@ def loadbookauthor():
         for authorname in authors:
             author = Author.query.filter_by(name=authorname).first()
             tauthor_id = author.author_id
-            db.session.add(Book_author(book_id=tbook_id, author_id=tauthor_id))
+            #db.session.add(Book_author(book_id=tbook_id, author_id=tauthor_id))
+            db.session.add(book_author(book_id=tbook_id, author_id=tauthor_id))
     db.session.commit()
     return dumps({"successfully loaded joins author" : True})
 
