@@ -13,3 +13,8 @@ Week 2
 Week 3
 - I edited the background and comparision with existing websites for proposal and formatted proposal
 - I wrote book details page for frontend
+
+week 4
+- I finished and improved frontend for book details page
+- I did backend api for search, and collections
+- I debugged for connections to backend
