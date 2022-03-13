@@ -6,10 +6,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FormControl from '@mui/material/FormControl';
 import Input from '@mui/material/Input';
 
-const GoalPage = () => {
+const GoalPage = ({ display }) => {
   const [goal, setGoal] = React.useState('');
   const [enableEditGoal, setEnableEditGoal] = React.useState(false);
-
+  
+  if (display !== 'goals') return null;
+  
   // api set goal fetch
   const submitGoal = () => {
 
@@ -18,7 +20,7 @@ const GoalPage = () => {
   const toggleEditGoal = () => {
     setEnableEditGoal(!enableEditGoal)
   }
-  
+
   return (
     <div>
       <h2 style={{fontWeight: "normal"}}>Reading Goal</h2>
