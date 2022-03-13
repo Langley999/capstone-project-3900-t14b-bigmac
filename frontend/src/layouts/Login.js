@@ -63,7 +63,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
     });
 
     axios.post('http://localhost:8080/auth/login', {
-      email,
+      email: email,
       password: pass.password
     }).then(function (response) {
       localStorage.setItem('token', response['token']);

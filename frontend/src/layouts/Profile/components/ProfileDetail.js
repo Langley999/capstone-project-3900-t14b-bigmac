@@ -89,7 +89,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       updateUserInfo(values);
       setErrorMsg('');
       setSuccessMsg('Profile details updated!');
-      setTimeout(() => {setSuccessMsg('')}, 3000);
+      setTimeout(() => {setSuccessMsg('')}, 5000);
     }).catch(function (error) {
       setSuccessMsg('');
       setErrorMsg(JSON.stringify(error.message));

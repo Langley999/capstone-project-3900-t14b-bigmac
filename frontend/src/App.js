@@ -68,7 +68,7 @@ function App() {
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections />}/>
               <Route path='posts' element={<Posts />}/>
-              <Route path='analytics' element={<Analytics />}/>
+              <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
             </Route>
           </Route>
           

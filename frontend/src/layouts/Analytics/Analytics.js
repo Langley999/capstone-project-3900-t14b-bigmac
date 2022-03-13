@@ -9,7 +9,7 @@ import GoalPage from '../Analytics/GoalPage';
 import GenrePage from '../Analytics/GenrePage';
 import FriendPage from '../Analytics/FriendPage';
 
-const Analytics = () => {
+const Analytics = ({ userInfo }) => {
   // can be goals, friends or genres
   const [analyticView, setAnalyticView] = React.useState('goals');
 
@@ -56,7 +56,7 @@ const Analytics = () => {
       <h1>Analytics</h1>
       <p>View your monthly progress!</p>
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-      <GoalPage display={analyticView}/>
+      <GoalPage display={analyticView} userInfo={userInfo}/>
       <FriendPage display={analyticView}/>
       <GenrePage display={analyticView}/>
     </Paper>
