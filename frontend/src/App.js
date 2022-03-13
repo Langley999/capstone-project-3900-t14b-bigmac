@@ -19,7 +19,7 @@ import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
 import Posts from './layouts/Posts';
-import Analytics from './layouts/Analytics';
+import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
@@ -74,7 +74,7 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
-            <Route path='book/:id' element={<BookDetail />} />
+            <Route path='book/:id' element={<BookDetail userInfo={userInfo}/>} />
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
@@ -91,7 +91,7 @@ function App() {
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
-              <Route path='analytics' element={<Analytics />}/>
+              <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
             </Route>
           </Route>
 

@@ -67,8 +67,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   }
 
   const handleSubmit = () => {
-    if (!checkProfileInput(values.username, values.email,values.password))
-      return;
+    const errorMsg = checkProfileInput(values.username, values.email,values.password);
+    if (errorMsg !== '') {
+      alert(errorMsg);
+      return
+    }
 
     axios.post(`${url}/user/update`, {
       origin: userInfo.email,
