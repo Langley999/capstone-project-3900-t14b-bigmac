@@ -4,13 +4,14 @@ import {CardActionArea} from "@mui/material";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import {Link} from "react-router-dom";
 
 
 const BookSection = ({bookInfo}) => {
 
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345 }} component={Link} to={`/book/${bookInfo.id}`}>
       <CardActionArea>
         <CardMedia
           component="img"

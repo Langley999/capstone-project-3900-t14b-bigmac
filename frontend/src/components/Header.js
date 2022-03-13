@@ -97,13 +97,15 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
   }
 
   const submitSearch = () => {
+    console.log(radioValue)
+    console.log(searchValue)
     axios.get(`${url}/search/searchbook`, {params: {
         type: radioValue,
         value: searchValue
     }})
       .then(res => {
         updateSearchResult(res.data.books);
-        navigate('searchbook');
+        navigate('searchbooks');
       })
       .catch(function (error) {
         alert(error.response.data.message);
@@ -243,7 +245,7 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
           <Slogan>
               BookStation
           </Slogan>
-          <Box component="form" onSubmit={submitSearch}>
+          <Box component="form">
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -267,10 +269,8 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          <Button
-            variant="contained"
-
-          >Filter</Button>
+          <Button variant="outlined">Filter</Button>
+          <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?

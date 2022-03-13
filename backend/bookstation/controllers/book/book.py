@@ -9,7 +9,7 @@ from bookstation.models.book_sys import Collection_book
 from bookstation.models.user_sys import User
 from bookstation import app, request, db, error
 
-from bookstation.models.book_sys import Book, Book_genre, Book_author, Genre, Review, Author
+from bookstation.models.book_sys import Book, book_genre, book_author, Genre, Review, Author
 from flask import session
 
 import hashlib
