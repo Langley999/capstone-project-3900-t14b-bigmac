@@ -149,17 +149,22 @@ def getDetails():
 @app.route("/book/reviews", methods=["GET"])
 def getReview():
     '''
-    Get reviews for a user_id
+    Get reviews for a user given a book
     Args (GET):
-        userId (integer): user_id of user requesting reviews
+        email
+        token
+        bookId (integer): book_id of user requesting reviews
 
     Returns:
         json object of user reviews
     '''     
     #get input
     token = request.args.get('token')
-    target_user_id = session.get(token)
-    review_rows = Review.query.filter_by(user_id=target_user_id).all()
+    email = request.args.get('email')
+    book_id = request.args.get('bookId')
+    user = User.query.filter_by(email = email).first()
+    #target_user_id = session.get(token)
+    review_rows = Review.query.filter_by(user_id=user.user_id, book_id=book_id).all()
     reviews = []
 
     #modify review dict to get rid of uncessary fields and serialize timestamp
@@ -172,7 +177,7 @@ def getReview():
     return dumps({"reviews": reviews})
 
 
-#add comment and rating
+#add comment and rating  -------
 @app.route("/book/reviews", methods=["POST"])
 def addReview():
     '''
@@ -189,18 +194,23 @@ def addReview():
 
     '''     
     #get body
-    body = request.get_json()
+    try:
+        body = request.get_json()
+        token = body['token']
+        new_book_id = body['book_id']
+        email = body['email']
+        new_rating = body['rating']
+        new_content = body['content']
+        new_created_time = body['created_time']
+        user = User.query.filter_by(email=email).first()
+    
+    except:
+        raise error.BadReqError(description="post body error")
 
     #extract information
-    new_book_id = body['book_id']
-    token = request.args.get('token')
-    new_user_id = session.get(token)
-    new_rating = body['rating']
-    new_content = body['content']
-    new_created_time = body['created_time']
-    
+
     #create record
-    review = Review(book_id = new_book_id, user_id = new_user_id, rating = new_rating, content = new_content, created_time = new_created_time)
+    review = Review(book_id = new_book_id, user_id = user.user_id, rating = new_rating, content = new_content, created_time = new_created_time)
 
     #post to databse
     db.session.add(review)
@@ -216,7 +226,7 @@ def addRating():
     Add rating only
     Args (POST):
         book_id (integer): bookId of book being dded
-        user_id (integer): User who's adding
+        email (integer): email of user who's adding
         rating (integer): rating value
         created_time (string): time of review creation
 
@@ -227,23 +237,70 @@ def addRating():
     body = request.get_json()
 
     #extract information
-    new_book_id = body['book_id']
-    token = request.args.get('token')
-    new_user_id = body['user_id']
+    book_id = body['book_id']
+    token = body['token']
+    email = body['email']
+    user = User.query.filter_by(email=email).first()
     new_rating = body['rating']
-    new_created_time = body['created_time']
 
-    #create record
-    review = Review(book_id = new_book_id, user_id = new_user_id, rating = new_rating, content = None, created_time = new_created_time)
+    review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
+    if review == None:
+        #create record
+        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now())
+        #post to databse
+        db.session.add(review)
+        db.session.commit()
+    else:
+        review.rating = new_rating
+        review.created_time = datetime.now()
+        db.session.add(review)
+        db.session.commit()
 
-    #post to databse
-    db.session.add(review)
-    db.session.commit()
     return dumps({"success": True})
 
 
+#add rating and review
+@app.route("/book/ratings_reviews", methods=["POST"])
+def addRating():
+    '''
+    Add rating and review
+    Args (POST):
+        book_id (integer): bookId of book being dded
+        email (integer): email of user who's adding
+        rating (integer): rating value
+        created_time (string): time of review creation
+        review (string): content of review
 
-#add or update comment to review
+    Returns:
+        none
+    '''  
+    #get body
+    body = request.get_json()
+
+    #extract information
+    book_id = body['book_id']
+    token = body['token']
+    email = body['email']
+    user = User.query.filter_by(email=email).first()
+    new_rating = body['rating']
+    content = body['review']
+    review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
+    if review == None:
+        #create record
+        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = content, created_time = datetime.now())
+        #post to databse
+        db.session.add(review)
+        db.session.commit()
+    else:
+        review.rating = new_rating
+        review.content = content
+        review.created_time = datetime.now()
+        db.session.add(review)
+        db.session.commit()
+
+    return dumps({"success": True})
+
+#add or update comment to review --------
 @app.route("/book/reviews", methods=["PUT"])
 def editReview():
     '''
@@ -272,7 +329,7 @@ def editReview():
 
     db.session.commit()
     return dumps({"success": True})
-
+ 
 
 
 #change rating
@@ -281,7 +338,9 @@ def editRating():
     '''
     Change rating
     Args (PUT):
-        review_id (integer): Review being updated
+        book_id (integer): Review being updated
+        email (string): email
+        new rating
     Returns:
         None
     Raises:
@@ -291,8 +350,8 @@ def editRating():
     body = request.get_json()
 
     #extract new rating
-    target_review_id = body['review_id']
-    new_rating = body['rating']
+    email = body['email']
+    book_id = body['book_id']
 
     #post to database
     updated = Review.query.filter_by(review_id=target_review_id).update({Review.rating: new_rating})

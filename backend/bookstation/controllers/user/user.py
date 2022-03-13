@@ -159,6 +159,7 @@ def get_all_goal():
 
 
 
+
 @app.route(url_prefix + '/profile', methods=["GET"])
 def get_user_profile():
     '''
@@ -166,7 +167,7 @@ def get_user_profile():
 
     Args (GET):
         operator (string): the requester's email
-        target (string): target user's email
+        username (string): target user's username
         token (string): valid token
 
     Returns:
@@ -184,54 +185,15 @@ def get_user_profile():
         2. find a way to prevent potential security issues
     '''
     operator_email = request.args.get('operator')
-    target_email = request.args.get('target')
+    username = request.args.get('username')
     token = request.args.get('token')
     login_status_check(operator_email, token)
     # sql select user
-    user = User.query.filter_by(email=target_email).first()
+    user = User.query.filter_by(username=username).first()
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
-        "is_self": True if (operator_email == target_email) else False,
-        "username": user.username,
-        "email": user.email
-    })
-
-
-@app.route(url_prefix + '/profile', methods=["GET"])
-def get_user_profile():
-    '''
-    It returns profile data of target user.
-
-    Args (GET):
-        operator (string): the requester's email
-        target (string): target user's email
-        token (string): valid token
-
-    Returns:
-        is_self (boolean): True if the user is requesting his own profile, else False
-        username (string): target user's username
-        email (string): target user's email
-        TODO: add more returns and profile image
-
-    Raises:
-        AccessError: login check
-        NotFoundError: when target email is an invalid email
-
-    TODO:
-        1. add returns
-        2. find a way to prevent potential security issues
-    '''
-    operator_email = request.args.get('operator')
-    target_email = request.args.get('target')
-    token = request.args.get('token')
-    login_status_check(operator_email, token)
-    # sql select user
-    user = User.query.filter_by(email=target_email).first()
-    if (user == None):
-        raise error.NotFoundError(description="cannot find user")
-    return dumps({
-        "is_self": True if (operator_email == target_email) else False,
+        "is_self": True if (user.username == username) else False,
         "username": user.username,
         "email": user.email
     })
@@ -289,5 +251,4 @@ def update_user_profile():
     db.session.commit()
     return dumps({})
     
-# TODO
-# need to decide how to do reading plan
+
