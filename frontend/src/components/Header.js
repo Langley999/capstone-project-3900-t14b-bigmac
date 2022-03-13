@@ -24,15 +24,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 
-
-// const StyledLink = styled(Link)`
-//     text-decoration: none;
-//
-//     &:focus, &:hover, &:visited, &:link, &:active {
-//       text-decoration: none;
-//     }
-// `;
-
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: theme.shadows[3],
@@ -85,7 +76,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin }) {
+function Header ({ ifLogin, userInfo }) {
   const [radioValue, setRadioValue] = useState('by title');
   const [searchValue, setSearchValue] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -273,10 +264,10 @@ function Header ({ ifLogin }) {
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
               >
-                {localStorage.getItem('userAvatar') === undefined ?
+                {userInfo.avatar === undefined ?
                   <Avatar fontSize="large"/> :
                   <Avatar
-                    src={localStorage.getItem('userAvatar')}
+                    src={userInfo.avatar}
                     sx={{
                       height: 45,
                       mb: 0,

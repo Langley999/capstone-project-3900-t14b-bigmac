@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { Grid } from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
-import '../App.css'
 import Card from '@material-ui/core/Card'
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -95,9 +94,9 @@ const Home = ({ifLogin}) => {
       <>
         <h1>Popular Subjects</h1>
         <div className='subjects-container'>
-          {itemData.map((item) => (
-            <div className='img-container'>
-              <ImageListItem key={item.img}>
+          {itemData.map((item, idx) => (
+            <div className='img-container' key={idx}>
+              <ImageListItem>
                 <img
                   src={`${item.img}?w=248&fit=crop&auto=format`}
                   srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -151,7 +150,7 @@ const Home = ({ifLogin}) => {
         <Grid
           container
           spacing={3}
-          justifyContent="centre"
+          justifyContent="center"
         >
           <Grid item xs={12} sm={6} md={3}>
             <BookCard />
@@ -191,17 +190,15 @@ const Home = ({ifLogin}) => {
 
   return (
     <>
-      <div className='centre'>
-        {ifLogin ?
-        <div className='space'>
-          <Recommendations/>
-        </div> : null
-        }
-        <div className='space'>
-          <Subjects/>
-        </div>
-        <TopBooks/>
+      {ifLogin ?
+      <div className='space'>
+        <Recommendations/>
+      </div> : null
+      }
+      <div className='space'>
+        <Subjects/>
       </div>
+      <TopBooks/>
     </>
   );
 };
