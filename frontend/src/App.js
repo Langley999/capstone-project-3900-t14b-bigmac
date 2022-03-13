@@ -45,7 +45,11 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
-            <Route path="book" element={<Book />} />
+         
+            <Route path="book/:id" element={<Book />} />
+            <Route path="book" element={<Book />}>
+                <Route path=":id" element={<Book />} />
+            </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
