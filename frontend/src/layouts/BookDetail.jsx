@@ -147,22 +147,37 @@ const BookDetail = ({userInfo}) => {
       email: userInfo.email,
       book_id: book_id
     });
-    axios.post('http://127.0.0.1:8080/collection/addbook', body,{
-      headers: {
-        'Content-Type': 'application/json'
-      }
+
+    console.log(key)
+
+    axios.post('http://127.0.0.1:8080/collection/addbook', {
+      email: userInfo.email,
+      collection_id: key,
+      book_id: book_id
+    }).then(res => {
+      alert("Complete book success!");
+      setAnchorEl(null);
+    }).catch(error => {
+      alert(error.response.data.message);
     })
-      .then(function (response) {
-        console.log(response)
-        if (response['status'] === 200) {
-          alert('success');
-          setAnchorEl(null);
-        }
-      })
-      .catch(function (error) {
-        alert(error);
-        console.log(error);
-      });
+
+
+    // axios.post('http://127.0.0.1:8080/collection/addbook', body,{
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // })
+    //   .then(function (response) {
+    //     console.log(response)
+    //     if (response['status'] === 200) {
+    //       alert('success');
+    //       setAnchorEl(null);
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     alert(error);
+    //     console.log(error);
+    //   });
   }
   useEffect(() => {
     // Update the document title using the browser API
