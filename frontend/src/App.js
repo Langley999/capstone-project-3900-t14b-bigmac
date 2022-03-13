@@ -21,6 +21,7 @@ import Collections from './layouts/Collections/Collections';
 import Posts from './layouts/Posts';
 import Analytics from './layouts/Analytics';
 import NavTabs from './components/NavTabs';
+import Book from './components/Book';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
@@ -56,6 +57,7 @@ function App() {
     <div>
       <Router>
         <Routes>
+        
           <Route path='/' element={
             <>
               <Header
@@ -74,13 +76,18 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
-            <Route path='book/:id' element={<BookDetail />} />
+         
+            <Route path="book/:id" element={<Book />} />
+            <Route path="book" element={<Book />}>
+                <Route path=":id" element={<Book />} />
+            </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
+            
             <Route path='user' element={
               <>
                 <AvatarBanner userInfo={userInfo}/>
@@ -91,10 +98,10 @@ function App() {
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
-              <Route path='analytics' element={<Analytics />}/>
+              <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
             </Route>
           </Route>
-
+          
           <Route path="bookstation" element={
             <>
               <Outlet />

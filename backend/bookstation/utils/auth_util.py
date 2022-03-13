@@ -17,7 +17,6 @@ def login_status_check(email, token):
         AccessError:
             1. incorrect token
             2. cannot get token
-
     TODO:
         make this function into decorator
     '''

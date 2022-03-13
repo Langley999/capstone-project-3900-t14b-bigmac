@@ -43,7 +43,6 @@ def get_goal():
         date = book_collection.created_time
         if date.month == month and date.year == year:
             book_done += 1
-
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
@@ -51,7 +50,6 @@ def get_goal():
         "finished": book_done,
 
     })
-
 
 @app.route(url_prefix + '/setgoal', methods=["POST"])
 def set_goal():
@@ -94,7 +92,6 @@ def set_goal():
     for goal in goals:
         if goal.created_date.year == year and goal.created_date.month == month:
             prev_goal = goal
-
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
     book_done = 0

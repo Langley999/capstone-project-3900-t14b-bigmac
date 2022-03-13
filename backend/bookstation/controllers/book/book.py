@@ -170,7 +170,6 @@ def getReview():
         review_dict.pop('_sa_instance_state', None)
         review_dict['created_time'] = str(review.created_time)
         reviews.append(review_dict)
-
     return dumps({"reviews": reviews})
 
 
@@ -198,7 +197,6 @@ def addReview():
         new_content = body['content']
         new_created_time = body['created_time']
         user = User.query.filter_by(email=email).first()
-
     except:
         raise error.BadReqError(description="post body error")
 
@@ -323,7 +321,6 @@ def editReview():
     return dumps({"success": True})
 
 
-
 #change rating ------
 @app.route("/book/ratings", methods=["PUT"])
 def editRating():
@@ -395,7 +392,6 @@ def completeReading():
         raise error.BadReqError(description="post body error")
 
     user = User.query.filter_by(email = email).first()
-
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)

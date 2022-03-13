@@ -34,7 +34,6 @@ def search():
         search_result = search_book_author(search_value)
     if (search_type == 'title'):
         search_result = search_book_title(search_value)
-
     return search_result
 
 def search_book_author(author_name):
