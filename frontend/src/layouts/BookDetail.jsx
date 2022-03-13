@@ -28,6 +28,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
 const BookDetail = ({userInfo}) => {
+  console.log(userInfo)
 
   const [rating, setRating] = React.useState(2);
 
@@ -72,9 +73,10 @@ const BookDetail = ({userInfo}) => {
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
-      email: 'yinjingyuan@outlook.com',
-      book_id: 4
+      email: userInfo.email,
+      book_id: book_id
     });
+
     axios.post('http://127.0.0.1:8080/book/completereading', body,{
       headers: {
         'Content-Type': 'application/json'
@@ -95,8 +97,8 @@ const BookDetail = ({userInfo}) => {
   const handleCreateCollectionForm = () => {
     const body = JSON.stringify( {
       name: textFieldValue,
-      email: 'yinjingyuan@outlook.com',
-      token: 'dsdfsd'
+      email: userInfo.email,
+      token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/collection/create', body,{
       headers: {
@@ -109,8 +111,8 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           let json = JSON.stringify( {
             collection_id: c_id,
-            email: 'yinjingyuan@outlook.com',
-            book_id: 1
+            email: userInfo.email,
+            book_id: book_id
           });
           axios.post('http://127.0.0.1:8080/collection/addbook', json,{
             headers: {
@@ -142,8 +144,8 @@ const BookDetail = ({userInfo}) => {
     console.log(key)
     const body = JSON.stringify( {
       collection_id: key,
-      email: 'yinjingyuan@outlook.com',
-      book_id: 2
+      email: userInfo.email,
+      book_id: book_id
     });
     axios.post('http://127.0.0.1:8080/collection/addbook', body,{
       headers: {
@@ -190,8 +192,8 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/reviews', {
       params: {
-        email: 'jane@gmail.com',
-        token: 'addfw',
+        email: userInfo.email,
+        token: localStorage.getItem('token'),
         book_id: book_id
 
       }

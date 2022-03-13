@@ -223,7 +223,7 @@ const Collections = ({userInfo}) => {
 
     return (
       <>
-        <Card sx={{maxWidth: 345}} component={Link} to={`/book/${id}`}>
+        <Card sx={{maxWidth: 345}} component={Link} to={`/book/?id=${id}`}>
           <CardMedia
             component="img"
             height="140"

@@ -4,9 +4,9 @@ from json import dumps
 import ast
 import csv
 import time
-from typing import Collection
+# from typing import Collection
 from bookstation.models.book_sys import Collection_book
-from bookstation.models.user_sys import User
+from bookstation.models.user_sys import User, Collection
 from bookstation import app, request, db, error
 
 from bookstation.models.book_sys import Book, book_genre, book_author, Genre, Review, Author

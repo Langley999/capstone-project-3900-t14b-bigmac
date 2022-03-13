@@ -74,7 +74,9 @@ function App() {
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
-            <Route path='book/:id' element={<BookDetail userInfo={userInfo}/>} />
+            <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
+              <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
+            </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='users' element={<SearchUsers />} />
