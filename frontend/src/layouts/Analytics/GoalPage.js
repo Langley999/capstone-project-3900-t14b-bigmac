@@ -10,6 +10,7 @@ import SuccessPopup from '../../components/SuccessPopup';
 
 const GoalPage = ({ display, userInfo }) => {
   const [goal, setGoal] = React.useState(0);
+  const [goalLast, setGoalLast] = React.useState(0);
   const [completed, setCompleted] = React.useState(0);
   const [errorMsg, setErrorMsg] = React.useState('');
   const [successMsg, setSuccessMsg] = React.useState('');
@@ -29,7 +30,7 @@ const GoalPage = ({ display, userInfo }) => {
 
   // get goal that user set
   const getGoal = () => {
-    axios.get('http://localhost:8080/checkgoal', {
+    axios.get('http://localhost:8080/user/checkgoal', {
       email: userInfo.email,
       token: localStorage.getItem('token')
     }).then(function (response) {
@@ -49,13 +50,15 @@ const GoalPage = ({ display, userInfo }) => {
   
   // set new reading goal
   const submitGoal = () => {
-    axios.post('http://localhost:8080/setgoal', {
+    axios.post('http://localhost:8080/user/setgoal', {
       email: userInfo.email,
       token: localStorage.getItem('token'),
       goal: goal
     }).then(function (response) {
+      setGoalLast(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
+      console.log('success');
       setTimeout(() => {setSuccessMsg('')}, 5000);
 
     }).catch(function (error) {
@@ -93,7 +96,7 @@ const GoalPage = ({ display, userInfo }) => {
         </IconButton>
       </span>
       <br/>
-      <span>You have completed {completed} books so far and there are {goal-completed} books to go</span>
+      <span>You have completed {completed} books so far and there are {goalLast-completed} books to go</span>
       <br/>
       <span>You have {daysUntilEndOfMonth} day{daySuffix} left</span>
     </div>
