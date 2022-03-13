@@ -12,22 +12,19 @@ url_prefix = '/user'
 def get_goal():
     '''
     It returns the goal of current month and current progress: if the goal is not set, - 1 will be returned
-
     Args (GET):
         operator (string): the requester's email
         token (string): valid token
-
     Returns:
         goal (int): -1 if the user hasn't set a goal for this month
         finished (int): the number of books finished in this month
-
     Raises:
         AccessError: login check
         NotFoundError: when the user is not found
     '''
     operator_email = request.args.get('operator')
     token = request.args.get('token')
-    login_status_check(operator_email, token)
+#     login_status_check(operator_email, token)
 
     # sql select user
     user = User.query.filter_by(email=operator_email).first()
@@ -46,7 +43,6 @@ def get_goal():
         date = book_collection.created_time
         if date.month == month and date.year == year:
             book_done += 1
-    
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
@@ -55,20 +51,16 @@ def get_goal():
 
     })
 
-    
 @app.route(url_prefix + '/setgoal', methods=["POST"])
 def set_goal():
     '''
     It sets the goal of this user for this month
-
     Args (GET):
         email (string): the requester's email
         token (string): valid token
         goal (int): the goal of user for this month
-
     Returns:
         "success"
-
     Raises:
         AccessError: login check
         NotFoundError: when the user is not found
@@ -78,7 +70,7 @@ def set_goal():
         email, goal, token = data['email'], data['goal'], data['token']
     except:
         raise error.BadReqError(description="post body error")
-    login_status_check(email, token)
+#     login_status_check(email, token)
     # sql select user
     user = User.query.filter_by(email=email).first()
     if (user == None):
@@ -86,7 +78,7 @@ def set_goal():
 
 
     today = date.today()
-    new_goal = Goal(user.user_id, today, goal, 0) 
+    new_goal = Goal(user.user_id, today, goal, 0)
     db.session.add(new_goal)
     db.session.commit()
 
@@ -100,7 +92,6 @@ def set_goal():
     for goal in goals:
         if goal.created_date.year == year and goal.created_date.month == month:
             prev_goal = goal
- 
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
     book_done = 0
@@ -121,25 +112,22 @@ def set_goal():
 def get_all_goal():
     '''
     It gets goal histories of a user
-
     Args (GET):
         email (string): the requester's email
         token (string): valid token
         goal (int): the goal of user for this month
-
     Returns:
         "goal_history" (list):
             - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
             - goal (int): goal of this user for that month
             - books_completed (int): number of books user completed during that month
-
     Raises:
         AccessError: login check
         NotFoundError: when the user is not found
     '''
     operator_email = request.args.get('operator')
     token = request.args.get('token')
-    login_status_check(operator_email, token)
+#     login_status_check(operator_email, token)
 
     # sql select user
     user = User.query.filter_by(email=operator_email).first()
@@ -164,22 +152,18 @@ def get_all_goal():
 def get_user_profile():
     '''
     It returns profile data of target user.
-
     Args (GET):
         operator (string): the requester's email
         username (string): target user's username
         token (string): valid token
-
     Returns:
         is_self (boolean): True if the user is requesting his own profile, else False
         username (string): target user's username
         email (string): target user's email
         TODO: add more returns and profile image
-
     Raises:
         AccessError: login check
         NotFoundError: when target email is an invalid email
-
     TODO:
         1. add returns
         2. find a way to prevent potential security issues
@@ -187,7 +171,7 @@ def get_user_profile():
     operator_email = request.args.get('operator')
     username = request.args.get('username')
     token = request.args.get('token')
-    login_status_check(operator_email, token)
+#     login_status_check(operator_email, token)
     # sql select user
     user = User.query.filter_by(username=username).first()
     if (user == None):
@@ -202,7 +186,6 @@ def get_user_profile():
 def update_user_profile():
     '''
     It will update user's details like username, email.
-
     Args (POST):
         origin (string): the origin email
         token (string): valid token
@@ -210,17 +193,14 @@ def update_user_profile():
         username (string): new username
         password (string): new raw password
         TODO: add more data
-
     Returns:
         no returns.
-
     Raises:
         AccessError: login check
         BadReqError: when post body is invalid
         InputError:
             1. new username has been registered
             2. new email has been registerd
-
     TODO:
         1. add more params
     '''
@@ -230,7 +210,7 @@ def update_user_profile():
             data['origin'], data['email'], data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
-    login_status_check(origin_email, token)
+#     login_status_check(origin_email, token)
     # sql select origin user
     user = User.query.filter_by(email=origin_email).first()
     if (user == None):
@@ -250,5 +230,3 @@ def update_user_profile():
     db.session.add(user)
     db.session.commit()
     return dumps({})
-    
-

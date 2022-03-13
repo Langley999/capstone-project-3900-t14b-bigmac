@@ -10,11 +10,9 @@ url_prefix = '/search'
 def search():
     """
     Function for users to to get results of the search. 
-
     Args:
         type (string): author or title
         value (string): the search text
-
     Returns:
         books (list): list of all books from the search
            - id (int): book id
@@ -36,7 +34,6 @@ def search():
         search_result = search_book_author(search_value)
     if (search_type == 'title'):
         search_result = search_book_title(search_value)
-        
     return search_result
 
 def search_book_author(author_name):
