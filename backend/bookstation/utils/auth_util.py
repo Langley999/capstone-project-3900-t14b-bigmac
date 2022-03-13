@@ -1,10 +1,11 @@
 import time
 import hashlib
 import jwt
-from config import SECRET
+
 from bookstation import error
 from flask import session
 
+SECRET = "BIGMAC"
 def login_status_check(email, token):
     '''
     It check wheter this user has logined or not

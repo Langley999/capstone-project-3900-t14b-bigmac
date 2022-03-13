@@ -1,5 +1,5 @@
 from json import dumps
-from backend.bookstation.models.book_sys import Collection_book
+from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode

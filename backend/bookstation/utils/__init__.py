@@ -1,1 +1,1 @@
-from bookstation.utlis import auth_util
+from bookstation.utils import auth_util
