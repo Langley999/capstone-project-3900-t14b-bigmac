@@ -69,21 +69,19 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const handleSubmit = () => {
     if (!checkProfileInput(values.username, values.email,values.password))
       return;
-    updateUserInfo(values);
-    alert("Edit Success")
 
-    // axios.post(`${url}/user/update`, {
-    //   origin: userInfo.email,
-    //   token: localStorage.getItem('token'),
-    //   email: values.email,
-    //   username: values.username,
-    //   password: values.password
-    // }).then(function (response) {
-    //   updateUserInfo(values);
-    //   alert("Edit profile success!")
-    // }).catch(function (error) {
-    //   alert(error.response.data);
-    // });
+    axios.post(`${url}/user/update`, {
+      origin: userInfo.email,
+      token: localStorage.getItem('token'),
+      email: values.email,
+      username: values.username,
+      password: values.password
+    }).then(function (response) {
+      updateUserInfo(values);
+      alert("Edit profile success!")
+    }).catch(function (error) {
+      alert(error.response.data);
+    });
   }
 
   return (

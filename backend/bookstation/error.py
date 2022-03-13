@@ -18,4 +18,4 @@ class PermissionError(HTTPException):
 
 class NotFoundError(HTTPException):
     code = 404
-    message = "NOT FOUND"
+    message = "unknown not found error"
