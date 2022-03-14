@@ -6,6 +6,7 @@ import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
 import { Link } from "react-router-dom";
+import '../App.css';
 
 const indigo = {
   50: '#e8eaf6',

@@ -55,7 +55,7 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       <Router>
         <Routes>
           <Route path='/' element={
@@ -109,7 +109,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </ThemeProvider>
+    </div>
   );
 }
 

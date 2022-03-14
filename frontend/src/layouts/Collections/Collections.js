@@ -5,10 +5,12 @@ import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import { url } from '../../components/Helper';
+import '../../App.css';
 
+import Button from '@mui/material/Button';
 import {
   Box,
-  Button,
+  CardActionArea,
   Dialog, DialogActions,
   DialogContent,
   DialogTitle,
@@ -16,7 +18,6 @@ import {
   TextField,
   Typography
 } from "@material-ui/core";
-import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
@@ -134,19 +135,28 @@ const Collections = ({userInfo}) => {
             <DialogTitle>Create New Collection</DialogTitle>
             <DialogContent>
               <TextField
-                autoFocus
-                margin="dense"
-                id="new name"
-                label="Collection Name"
-                onChange={handleChange}
-                type="text"
                 fullWidth
-                variant="standard"
+                label="Collection Name"
+                name="collectionName"
+                onChange={handleChange}
+                required
+                variant="outlined"
               />
             </DialogContent>
             <DialogActions>
-              <button onClick={handleClose}>Cancel</button>
-              <button onClick={createCollection}>Create Collection</button>
+              <Button
+                variant='outlined'
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant='contained'
+                onClick={createCollection}
+                sx={{textTransform: 'none'}}
+              >
+                Create Collection
+              </Button>
             </DialogActions>
           </Dialog>
           <Divider />
@@ -193,16 +203,16 @@ const Collections = ({userInfo}) => {
         <h1>{currentCollection.name}</h1>
         {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' ?
           null :
-          <div>
-            <button>Edit Name</button>
-            <button onClick={removeCollection}>Remove</button>
-          </div>
+          <>
+            <Button  sx={{textTransform: 'none', marginLeft: '20px'}}>Edit Name</Button>
+            <Button  sx={{textTransform: 'none'}} onClick={removeCollection}>Remove</Button>
+          </>
         }
       </Box>
     )
   }
 
-  const Book = ({id, title, author, cover}) => {
+  const Book = ({id, title, cover}) => {
 
     const removeBook = () => {
       console.log(id)
@@ -213,7 +223,6 @@ const Collections = ({userInfo}) => {
         }
       }).then(res => {
         const newBooks = currentCollection.books.filter((book) => book.title !== title);
-        console.log(newBooks)
         const newCollection = {
           collection_id: currentCollection.collection_id,
           name: currentCollection.name,
@@ -228,23 +237,17 @@ const Collections = ({userInfo}) => {
 
     return (
       <>
-        <Card sx={{maxWidth: 345}} component={Link} to={`/book/?id=${id}`}>
-          <CardMedia
-            component="img"
-            height="140"
-            image={cover}
-            alt="book card"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
-              {title}
-            </Typography>
-            <Typography variant="body2">
-              {author}
-            </Typography>
-          </CardContent>
-        </Card>
-        <button onClick={removeBook}>Remove</button>
+        <Box sx={{height: '300px', width: '140px'}}>
+          <Box component={Link} to={`/book/?id=${id}`} className='remove-underline' sx={{color: 'black'}} >
+            <img src={cover} alt="" style={{height: '200px', width: '140px'}}/>
+            <Box sx={{height: '55px', overflow: 'auto'}}>
+              <Typography variant="body2" color="text.secondary">
+                {title}
+              </Typography>
+            </Box>
+          </Box>
+          <Button onClick={removeBook}>Remove</Button>
+        </Box>
       </>
     )
   }
@@ -256,22 +259,23 @@ const Collections = ({userInfo}) => {
         height: '500px',
         marginLeft: '40px',
         padding: '20px',
-        overflow: 'auto'
       }}>
         <CollectionBar/>
         <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-        <Grid
-          container
-          spacing={3}
-        >
-          {currentCollection.books.map((book) => {
-            return (
-              <Grid item xs={12} sm={6} md={2} key={book.id}>
-                <Book id={book.id} title={book.title} author={book.author} cover={book.cover}/>
-              </Grid>
-            )
-          })}
-        </Grid>
+        <Box sx={{overflow: 'auto'}}>
+          <Grid
+            container
+            spacing={3}
+          >
+            {currentCollection.books.map((book) => {
+              return (
+                <Grid item xs={12} sm={6} md={2} key={book.id}>
+                  <Book id={book.id} title={book.title} cover={book.cover}/>
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Box>
       </Paper>
     )
   }

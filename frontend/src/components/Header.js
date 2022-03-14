@@ -26,6 +26,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import axios from "axios";
 import {url} from './Helper';
 import { useNavigate } from 'react-router-dom';
+import '../App.css';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -144,6 +145,11 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
+        <Tooltip title='Home'>
+          <IconButton sx={{ ml: 1 }} component={Link} to='/'>
+            <HomeIcon fontSize="large"/>
+          </IconButton>
+        </Tooltip>
       </>
     )
   }
@@ -185,12 +191,6 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to='/'>
-          <ListItemIcon>
-            <HomeIcon fontSize="small" />
-          </ListItemIcon>
-          Home
-        </MenuItem>
         <MenuItem component={Link} to='/user/profile'>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -242,11 +242,16 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
             px: 2
           }}
         >
-          <Slogan>
-              BookStation
-          </Slogan>
+          <Box component={Link} to='/' className='remove-underline' sx={{color: '#6985c4'}} >
+            <Slogan >
+                BookStation
+            </Slogan>
+          </Box>
           <Box component="form">
             <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
                 value={searchValue}

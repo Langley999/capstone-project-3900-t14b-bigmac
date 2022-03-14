@@ -27,24 +27,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     setValues(userInfo);
   }, [])
 
-  const handleIfShow = () => {
-    setIfShow(true);
-  }
-
-  const getButtonStatus = () => {
-    if (ifShow)
-      return 'none';
-    else
-      return 'block';
-  }
-
-  const getPasswordFieldStatus = () => {
-    if (ifShow)
-      return 'block';
-    else
-      return 'none';
-  }
-
 
   const handleChange = (event) => {
     setValues({
@@ -137,15 +119,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               value={values.email ?? ''}
               variant="outlined"
             />
-            <Button sx={{
-              display: getButtonStatus
-            }}
-              onClick={handleIfShow}
-            >
-              Change Password
-            </Button>
             <FormControl
-              sx={{ m: 1, width: '100%', display: getPasswordFieldStatus}}
+              sx={{ m: 1, width: '100%'}}
               variant="outlined"
             >
               <InputLabel htmlFor="input-password">Password</InputLabel>

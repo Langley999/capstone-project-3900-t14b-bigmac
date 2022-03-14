@@ -13,8 +13,8 @@
   padding-top: 85px;
 }
 
-.remove-underline {
-  text-decoration: none;
+.remove-underline{
+  text-decoration: none !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
