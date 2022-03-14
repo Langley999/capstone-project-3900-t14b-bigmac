@@ -286,7 +286,7 @@ const BookDetail = ({userInfo}) => {
       setsnackbaropen(true);
       setAnchorEl(null);
     }).catch(error => {
-      console.log(error.response);
+      console.log(error);
  
       setwarningcontent(error.response.data.message);
       setwarningopen(true);

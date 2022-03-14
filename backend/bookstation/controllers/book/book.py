@@ -398,6 +398,15 @@ def removeRating():
 #complete reading
 @app.route("/book/completereading", methods=["POST"])
 def completeReading():
+    '''
+    Delete review
+    Args (DELETE):
+        review_id (integer): review being deleted
+    Returns:
+        None
+    Raises:
+        BadReqError: Review cannot be deleted
+    '''
     try:
         data = request.get_json()
         email, book_id = data['email'], data['book_id']
