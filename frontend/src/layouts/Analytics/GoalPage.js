@@ -28,7 +28,7 @@ const GoalPage = ({ display, userInfo }) => {
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
-  if (daysUntilEndOfMonth > 1) daySuffix = 's';
+  if (daysUntilEndOfMonth !== 1) daySuffix = 's';
 
   // get goal that user set
   const getGoal = () => {
