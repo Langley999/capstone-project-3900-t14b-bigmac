@@ -4,9 +4,9 @@ from json import dumps
 import ast
 import csv
 import time
-from typing import Collection
+# from typing import Collection
 from bookstation.models.book_sys import Collection_book
-from bookstation.models.user_sys import User
+from bookstation.models.user_sys import User, Collection
 from bookstation import app, request, db, error
 
 from bookstation.models.book_sys import Book, Book_genre, Book_author, Genre, Review, Author
@@ -41,7 +41,7 @@ def getTestOldway():
 
 @app.route("/initialise", methods=["GET"])
 def loadbooks():
-    f = open('bookstation/controllers/book/bookcsv.csv') 
+    f = open('bookstation/controllers/book/bookcsv.csv')
     csv_reader = csv.reader(f, delimiter=',')
     genre_set = set()
     author_set = set()
@@ -70,7 +70,7 @@ def loadbooks():
                 author_set.add(author)
                 db.session.add(Author(name=author))#create author object
 
-    db.session.commit()      
+    db.session.commit()
     return dumps({"successfully loaded" : True})
 
 @app.route("/loadbookgenre", methods=["GET"])
@@ -83,7 +83,7 @@ def loadbookgenre():
         for genrename in genres:
             genre = Genre.query.filter_by(name=genrename).first()
             tgenre_id = genre.genre_id
-            db.session.add(Book_genre(book_id=tbook_id, genre_id=tgenre_id))
+            db.session.add(book_genre(book_id=tbook_id, genre_id=tgenre_id))
     db.session.commit()
     return dumps({"successfully loaded joins" : True})
 
@@ -98,7 +98,7 @@ def loadbookauthor():
         for authorname in authors:
             author = Author.query.filter_by(name=authorname).first()
             tauthor_id = author.author_id
-            db.session.add(Book_author(book_id=tbook_id, author_id=tauthor_id))
+            db.session.add(book_author(book_id=tbook_id, author_id=tauthor_id))
     db.session.commit()
     return dumps({"successfully loaded joins author" : True})
 
@@ -110,14 +110,11 @@ def getDetails():
     '''
     Get book details
     Args (GET):
-
         bookId (integer): request bookId
-
     Returns:
         json object of book details
     Raises:
         InputError: no book has been found for book_id
-
     '''
     #get input
     book_id = request.args.get('bookId')
@@ -155,27 +152,27 @@ def getReview():
         email
         token
         bookId (integer): book_id of user requesting reviews
-
     Returns:
         json object of user reviews
-    '''     
+    '''
     #get input
     token = request.args.get('token')
     email = request.args.get('email')
     book_id = request.args.get('bookId')
     user = User.query.filter_by(email = email).first()
     #target_user_id = session.get(token)
-    review_rows = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
+    review = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
 
     #modify review dict to get rid of uncessary fields and serialize timestamp
-    for review in review_rows:
+    if review != None:
         review_dict = review.__dict__
         review_dict.pop('_sa_instance_state', None)
         review_dict['created_time'] = str(review.created_time)
         reviews.append(review_dict)
-    
-    return dumps({"reviews": reviews})
+        return dumps({"reviews": reviews})
+    else:
+        return dumps({"reviews": []})
 
 
 #add comment and rating  -------
@@ -189,11 +186,9 @@ def addReview():
         rating (integer): rating value
         content (string): optional comment
         created_time (string): time of review creation
-
     Returns:
         none
-
-    '''     
+    '''
     #get body
     try:
         body = request.get_json()
@@ -204,7 +199,6 @@ def addReview():
         new_content = body['content']
         new_created_time = body['created_time']
         user = User.query.filter_by(email=email).first()
-    
     except:
         raise error.BadReqError(description="post body error")
 
@@ -230,10 +224,9 @@ def addRating():
         email (integer): email of user who's adding
         rating (integer): rating value
         created_time (string): time of review creation
-
     Returns:
         none
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -245,13 +238,20 @@ def addRating():
     new_rating = body['rating']
 
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
+    book = Book.query.get(book_id)
+
     if review == None:
         #create record
         review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now())
         #post to databse
+        book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
+        book.num_rating = book.num_rating + 1
+        db.session.add(book)
         db.session.add(review)
         db.session.commit()
     else:
+        book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)
+        db.session.add(book)
         review.rating = new_rating
         review.created_time = datetime.now()
         db.session.add(review)
@@ -271,10 +271,9 @@ def addRatingReview():
         rating (integer): rating value
         created_time (string): time of review creation
         review (string): content of review
-
     Returns:
         none
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -301,6 +300,8 @@ def addRatingReview():
 
     return dumps({"success": True})
 
+
+
 #add or update comment to review --------
 @app.route("/book/reviews", methods=["PUT"])
 def editReview():
@@ -308,12 +309,11 @@ def editReview():
     Add or update comment to review
     Args (PUT):
         review_id (integer): review being updated
-
     Returns:
         None
     Raises:
         BadReqError: Review cannot be updated
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -330,7 +330,6 @@ def editReview():
 
     db.session.commit()
     return dumps({"success": True})
- 
 
 
 #change rating ------
@@ -346,7 +345,7 @@ def editRating():
         None
     Raises:
         BadReqError: Review cannot be updated to change rating value
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -378,7 +377,7 @@ def removeRating():
         None
     Raises:
         BadReqError: Review cannot be deleted
-    '''  
+    '''
     #get body
     body = request.get_json()
 
@@ -404,7 +403,6 @@ def completeReading():
         raise error.BadReqError(description="post body error")
 
     user = User.query.filter_by(email = email).first()
- 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
@@ -416,7 +414,7 @@ def completeReading():
       raise error.BadReqError(description="This book has already been added to the collection")
 
     try:
-      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now()) 
+      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
       db.session.add(new_book_collection)
       db.session.commit()
 
@@ -425,4 +423,34 @@ def completeReading():
       })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
- 
+
+
+
+#add rating and review
+@app.route("/book/check_completed", methods=["GET"])
+def checkCompleted():
+    '''
+    Add rating and review
+    Args (GET):
+        book_id (integer): bookId of book being dded
+        email (integer): email of user who's adding
+        token
+    Returns:
+        none
+    '''
+    #extract information
+    token = request.args.get('token')
+    email = request.args.get('email')
+    book_id = request.args.get('bookId')
+    user = User.query.filter_by(email=email).first()
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection != None:
+        return dumps({"success": True})
+    else:
+        return dumps({"success": False})

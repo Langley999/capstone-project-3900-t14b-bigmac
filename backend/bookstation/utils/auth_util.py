@@ -1,27 +1,27 @@
 import time
 import hashlib
 import jwt
-
+SECRET = "BIGMAC"
 from bookstation import error
 from flask import session
 
-SECRET = "BIGMAC"
 def login_status_check(email, token):
     '''
     It check wheter this user has logined or not
-
     Args:
         email (string): user email
         token (string): user token
-
     Return:
         no returns
-
     Raises:
         AccessError:
             1. incorrect token
             2. cannot get token
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> origin/frontend-combine-Lan
     TODO:
         make this function into decorator
     '''
@@ -35,10 +35,8 @@ def login_status_check(email, token):
 def pw_encode(password):
     '''
     It will encode raw password by sha256 from hashlib.
-
     Args:
         password (string): raw password
-
     Return:
         (string) encoded password
     '''
@@ -47,10 +45,8 @@ def pw_encode(password):
 def generate_token(username):
     '''
     It will generate a new token by username and current time with SECRET.
-
     Args:
         username (string): username
-
     Return:
         (string) encoded token
     '''

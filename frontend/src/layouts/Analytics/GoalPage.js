@@ -9,6 +9,7 @@ import ErrorPopup from '../../components/ErrorPopup';
 import SuccessPopup from '../../components/SuccessPopup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import {url} from '../../components/Helper'
 
 const GoalPage = ({ display, userInfo }) => {
   const [goal, setGoal] = React.useState(0);
@@ -21,43 +22,43 @@ const GoalPage = ({ display, userInfo }) => {
   React.useEffect(() => {
     getGoal();
   }, []);
-  
   if (display !== 'goals') return null;
 
   const date = new Date();
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
-  if (daysUntilEndOfMonth !== 1) daySuffix = 's';
+  if (daysUntilEndOfMonth > 1) daySuffix = 's';
 
   // get goal that user set
   const getGoal = () => {
-    axios.get('http://localhost:8080/user/checkgoal', {
-      email: userInfo.email,
+    axios.get(`${url}/user/checkgoal`, {params: {
+      operator: userInfo.email,
       token: localStorage.getItem('token')
-    }).then(function (response) {
+    }}).then(function (response) {
       setErrorMsg('');
-      if (response['goal'] === -1) {
+      if (response['data']['goal'] === -1) {
         setGoal(0);
       } else {
-        setGoal(response['goal']);
+        setGoal(response['data']['goal']);
       }
-      setCompleted(response['completed']);
+      setCompleted(response['data']['finished']);
     }).catch(function (error) {
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
       setTimeout(() => {setErrorMsg('')}, 5000);
     });
   }
-  
+
   // set new reading goal
   const submitGoal = () => {
-    axios.post('http://localhost:8080/user/setgoal', {
+    axios.post(`${url}/user/setgoal`, {
       email: userInfo.email,
       token: localStorage.getItem('token'),
       goal: goal
     }).then(function (response) {
       setGoalLast(goal);
+      setGoal(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');
@@ -65,7 +66,8 @@ const GoalPage = ({ display, userInfo }) => {
 
     }).catch(function (error) {
       // show server error message for 5 secs
-      setErrorMsg(JSON.stringify(error.message));
+      console.log(error)
+      setErrorMsg(JSON.stringify(error.response.data.message));
       setTimeout(() => {setErrorMsg('')}, 5000);
     });
   }
