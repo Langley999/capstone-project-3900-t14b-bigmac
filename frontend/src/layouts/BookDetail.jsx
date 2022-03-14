@@ -26,10 +26,33 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { makeStyles } from '@mui/styles';
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+const useStyles = makeStyles({
+  root: {
+    background: '#2f7c31',
+    border: 0,
+    borderRadius: 3,
+    color: 'white',
+    padding: '0 30px',
+  },
+  warning: {
+    background: '#d32f2f',
+    border: 0,
+    borderRadius: 3,
+    color: 'white',
+    padding: '0 30px',
+  }
+});
 
 const BookDetail = ({userInfo}) => {
   //console.log(userInfo)
-
+  const classes = useStyles();
   const [rating, setRating] = React.useState(0);
 
   const [reviewFormOn, setReviewFormOn] = React.useState(false);
@@ -55,7 +78,11 @@ const BookDetail = ({userInfo}) => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [snackbaropen,setsnackbaropen] = useState(false);
+  const [snackbarcontent, setsnackbarcontent] = useState("");
+  const [warningopen,setwarningopen] = useState(false);
+  const [warningcontent, setwarningcontent] = useState("");
+  
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -107,7 +134,9 @@ const BookDetail = ({userInfo}) => {
       
     })
     .catch(function (error) {
-      alert(error);
+
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
       console.log(error);
     });
   }
@@ -151,7 +180,9 @@ const BookDetail = ({userInfo}) => {
     
     })
     .catch(function (error) {
-      alert(error);
+
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
       console.log(error);
     });
   }
@@ -176,7 +207,8 @@ const BookDetail = ({userInfo}) => {
         }
       })
       .catch(function (error) {
-        alert(error);
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
         console.log(error);
       });
   }
@@ -208,22 +240,30 @@ const BookDetail = ({userInfo}) => {
             .then(function (response) {
               console.log(response);
               if (response['status'] === 200) {
-                alert('success');
+               
+                setsnackbarcontent('success');
+                setsnackbaropen(true);
                 setCreateForm(false);
                 settextFieldValue("");
                 setAnchorEl(null);
               }
             })
             .catch(function (error) {
-              alert(error);
+              setwarningcontent(error.response.data.message);
+              setwarningopen(true);
               console.log(error);
             });
 
         }
       })
       .catch(function (error) {
-        alert(error);
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
         console.log(error);
+        /*
+        setwarningcontent(error);
+        setwarningopen(true);*/
+        
       });
   }
   const handleAddToCollection = (key) => {
@@ -241,10 +281,15 @@ const BookDetail = ({userInfo}) => {
       collection_id: key,
       book_id: book_id
     }).then(res => {
-      alert("add book success!");
+
+      setsnackbarcontent("add book success!");
+      setsnackbaropen(true);
       setAnchorEl(null);
     }).catch(error => {
-      alert(error.response.data.message);
+      console.log(error.response);
+ 
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
     })
 
 
@@ -288,7 +333,8 @@ const BookDetail = ({userInfo}) => {
 
       })
       .catch(function (error) {
-        console.log(error);
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
       });
 
     axios.get('http://127.0.0.1:8080/book/reviews', {
@@ -332,7 +378,8 @@ const BookDetail = ({userInfo}) => {
 
     })
     .catch(function (error) {
-      console.log(error);
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
     });
 
     axios.get('http://127.0.0.1:8080/book/details', {
@@ -360,7 +407,8 @@ const BookDetail = ({userInfo}) => {
         setReviews(response['data']['reviews'].reverse())
       })
       .catch(function (error) {
-        console.log(error);
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
       });
 
 
@@ -676,7 +724,18 @@ const BookDetail = ({userInfo}) => {
         <DialogActions>
           <Button onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
         </DialogActions>
+
       </Dialog>  
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackbaropen}  onClose = {() =>setsnackbaropen(false)} autoHideDuration={2000} >
+        <Alert severity="success" className={classes.root}  sx={{ width: '100%' }} >
+          {snackbarcontent}
+        </Alert>
+      </Snackbar>
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={warningopen}  onClose = {() =>setwarningopen(false)} autoHideDuration={2000} >
+        <Alert severity="warning" className={classes.warning}  sx={{ width: '100%' }} >
+          {warningcontent}
+        </Alert>
+      </Snackbar>
     </Box>}
     </div>
 
