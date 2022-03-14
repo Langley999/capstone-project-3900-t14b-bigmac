@@ -247,9 +247,6 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
           </Slogan>
           <Box component="form">
             <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
                 value={searchValue}

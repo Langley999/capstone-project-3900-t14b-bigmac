@@ -24,6 +24,8 @@ import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import theme from "./components/Theme";
+import { ThemeProvider } from '@mui/material/styles';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -53,7 +55,7 @@ function App() {
   }
 
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <Router>
         <Routes>
           <Route path='/' element={
@@ -107,7 +109,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </div>
+    </ThemeProvider>
   );
 }
 
