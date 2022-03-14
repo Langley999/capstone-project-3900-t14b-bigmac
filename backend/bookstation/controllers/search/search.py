@@ -60,7 +60,7 @@ def search_book_author(author_name):
         allauthors.append(author.name+"==="+str(author.author_id))
 
     return dumps({
-      "books": allbooks
+      "books": allbooks[0:20]
     })
 
 def search_book_title(book_title):

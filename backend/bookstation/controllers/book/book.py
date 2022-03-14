@@ -240,17 +240,19 @@ def addRating():
 
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
     book = Book.query.get(book_id)
-    book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
-    book.num_rating = book.num_rating + 1
-    db.session.add(book)
-    db.session.commit()
+
     if review == None:
         #create record
         review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now())
         #post to databse
+        book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
+        book.num_rating = book.num_rating + 1
+        db.session.add(book)
         db.session.add(review)
         db.session.commit()
     else:
+        book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)
+        db.session.add(book)
         review.rating = new_rating
         review.created_time = datetime.now()
         db.session.add(review)
@@ -396,6 +398,15 @@ def removeRating():
 #complete reading
 @app.route("/book/completereading", methods=["POST"])
 def completeReading():
+    '''
+    Delete review
+    Args (DELETE):
+        review_id (integer): review being deleted
+    Returns:
+        None
+    Raises:
+        BadReqError: Review cannot be deleted
+    '''
     try:
         data = request.get_json()
         email, book_id = data['email'], data['book_id']

@@ -32,9 +32,9 @@ const GoalPage = ({ display, userInfo }) => {
   // get goal that user set
   const getGoal = () => {
     axios.get(`${url}/user/checkgoal`, {params: {
-      operator: userInfo.email,
-      token: localStorage.getItem('token')
-    }}).then(function (response) {
+        operator: userInfo.email,
+        token: localStorage.getItem('token')
+      }}).then(function (response) {
       setErrorMsg('');
       if (response['data']['goal'] === -1) {
         setGoal(0);
@@ -57,6 +57,7 @@ const GoalPage = ({ display, userInfo }) => {
       goal: goal
     }).then(function (response) {
       setGoalLast(goal);
+      setGoal(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');
@@ -98,7 +99,7 @@ const GoalPage = ({ display, userInfo }) => {
         </IconButton>
       </span>
       <br/>
-      <span>You have completed {completed} books so far and there are {goalLast-completed} books to go</span>
+      <span>You have completed {completed} books so far and there are {goal-completed} books to go</span>
       <br/>
       <br/>
       <span>You have {daysUntilEndOfMonth} day{daySuffix} left</span>
