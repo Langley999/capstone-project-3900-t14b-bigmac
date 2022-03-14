@@ -203,7 +203,7 @@ def remove_book():
         raise error.BadReqError(description="post body error")
 
     user = User.query.filter_by(email = email).first()
-    collection = Collection.query.filter_by(collection_id = id).first()
+    collection = Collection.query.filter_by(collection_id = c_id).first()
     if collection.user_id != user.user_id:
       raise error.AccessError(description="You don't have permission to remove this book")
 
@@ -211,7 +211,7 @@ def remove_book():
     if book_collection == None:
       raise error.NotFoundError(description="This book doesn't exist in the collection")
     try:
-      db.session.delete(book_collection)
+      Collection_book.query.filter_by(collection_id = c_id, book_id = b_id).delete()
       db.session.commit()
 
       return dumps({

@@ -83,7 +83,7 @@ def loadbookgenre():
         for genrename in genres:
             genre = Genre.query.filter_by(name=genrename).first()
             tgenre_id = genre.genre_id
-            db.session.add(Book_genre(book_id=tbook_id, genre_id=tgenre_id))
+            db.session.add(book_genre(book_id=tbook_id, genre_id=tgenre_id))
     db.session.commit()
     return dumps({"successfully loaded joins" : True})
 
@@ -98,7 +98,7 @@ def loadbookauthor():
         for authorname in authors:
             author = Author.query.filter_by(name=authorname).first()
             tauthor_id = author.author_id
-            db.session.add(Book_author(book_id=tbook_id, author_id=tauthor_id))
+            db.session.add(book_author(book_id=tbook_id, author_id=tauthor_id))
     db.session.commit()
     return dumps({"successfully loaded joins author" : True})
 
@@ -161,17 +161,18 @@ def getReview():
     book_id = request.args.get('bookId')
     user = User.query.filter_by(email = email).first()
     #target_user_id = session.get(token)
-    review_rows = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
+    review = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
 
     #modify review dict to get rid of uncessary fields and serialize timestamp
-    for review in review_rows:
+    if review != None:
         review_dict = review.__dict__
         review_dict.pop('_sa_instance_state', None)
         review_dict['created_time'] = str(review.created_time)
         reviews.append(review_dict)
-
-    return dumps({"reviews": reviews})
+        return dumps({"reviews": reviews})
+    else:
+        return dumps({"reviews": []})
 
 
 #add comment and rating  -------
@@ -238,6 +239,11 @@ def addRating():
     new_rating = body['rating']
 
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
+    book = Book.query.get(book_id)
+    book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
+    book.num_rating = book.num_rating + 1
+    db.session.add(book)
+    db.session.commit()
     if review == None:
         #create record
         review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now())
@@ -292,6 +298,8 @@ def addRatingReview():
         db.session.commit()
 
     return dumps({"success": True})
+
+
 
 #add or update comment to review --------
 @app.route("/book/reviews", methods=["PUT"])
@@ -416,3 +424,34 @@ def completeReading():
       })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
+
+
+
+#add rating and review
+@app.route("/book/check_completed", methods=["GET"])
+def checkCompleted():
+    '''
+    Add rating and review
+    Args (GET):
+        book_id (integer): bookId of book being dded
+        email (integer): email of user who's adding
+        token
+    Returns:
+        none
+    '''
+    #extract information
+    token = request.args.get('token')
+    email = request.args.get('email')
+    book_id = request.args.get('bookId')
+    user = User.query.filter_by(email=email).first()
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection != None:
+        return dumps({"success": True})
+    else:
+        return dumps({"success": False})

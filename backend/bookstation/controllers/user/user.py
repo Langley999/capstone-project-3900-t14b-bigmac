@@ -4,6 +4,7 @@ from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode
 from datetime import datetime,date
+import datetime
 
 url_prefix = '/user'
 
@@ -79,7 +80,7 @@ def set_goal():
         raise error.NotFoundError(description="cannot find user")
 
 
-    today = date.today()
+    today = datetime.date.today()
     new_goal = Goal(user.user_id, today, goal, 0)
     db.session.add(new_goal)
     db.session.commit()
@@ -94,17 +95,17 @@ def set_goal():
     for goal in goals:
         if goal.created_date.year == year and goal.created_date.month == month:
             prev_goal = goal
-
-    collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
-    book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
-    book_done = 0
-    for book_collection in book_collections:
-        date = book_collection.created_time
-        if date.month == month and date.year == year:
-            book_done += 1
-    prev_goal.books_completed = book_done
-    db.session.add(prev_goal)
-    db.session.commit()
+    if prev_goal != None:
+      collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
+      book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
+      book_done = 0
+      for book_collection in book_collections:
+          date = book_collection.created_time
+          if date.month == month and date.year == year:
+              book_done += 1
+      prev_goal.books_completed = book_done
+      db.session.add(prev_goal)
+      db.session.commit()
 
     return dumps({
         "succuss":[]

@@ -55,7 +55,7 @@ class Collection(db.Model):
         self.user_id = user_id
 
 class Goal(db.Model):
-    __tablename__ = 'goals'
+    __tablename__ = 'goal'
     goal_id = db.Column(db.Integer, primary_key=True)
     created_date = db.Column(db.Date)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
@@ -63,6 +63,6 @@ class Goal(db.Model):
     books_completed = db.Column(db.Integer)
     def __init__(self, user_id, created_date, books_set,books_completed):
         self.user_id = user_id
-        self.created_time = created_date
+        self.created_date = created_date
         self.books_set = books_set
         self.books_completed = books_completed

@@ -40,6 +40,7 @@ const Collections = ({userInfo}) => {
       }})
       .then(res => {
         setCollections([...res['data']['collections']]);
+        console.log(res['data']['collections']);
         initialCollections = [...res['data']['collections']]
         // default show Favourite Collection
         getCollection(getFavouriteCollectionIdByFlag());
@@ -62,20 +63,23 @@ const Collections = ({userInfo}) => {
 
   // show books when click a specific collection
   const getCollection = (collection_id) => {
-    axios.get(`${url}/collection/getcollection`, {params: {
-        collection_id: collection_id
-      }})
-      .then(res => {
-        setCurrentCollection({
-          collection_id: collection_id,
-          name: res.data.name,
-          books: res.data.books
+    if (collection_id) {
+      axios.get(`${url}/collection/getcollection`, {params: {
+          collection_id: collection_id
+        }})
+        .then(res => {
+          setCurrentCollection({
+            collection_id: collection_id,
+            name: res.data.name,
+            books: res.data.books
+          })
         })
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-  }
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
+    }      
+    }
+
 
 
   const Sidebar = () => {
@@ -201,7 +205,7 @@ const Collections = ({userInfo}) => {
   const Book = ({id, title, author, cover}) => {
 
     const removeBook = () => {
-
+      console.log(id)
       axios.delete(`${url}/collection/removebook`, {data: {
           email: userInfo.email,
           collection_id: currentCollection.collection_id,
@@ -209,6 +213,7 @@ const Collections = ({userInfo}) => {
         }
       }).then(res => {
         const newBooks = currentCollection.books.filter((book) => book.title !== title);
+        console.log(newBooks)
         const newCollection = {
           collection_id: currentCollection.collection_id,
           name: currentCollection.name,

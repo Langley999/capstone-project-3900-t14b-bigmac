@@ -28,9 +28,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
 const BookDetail = ({userInfo}) => {
-  console.log(userInfo)
+  //console.log(userInfo)
 
-  const [rating, setRating] = React.useState(2);
+  const [rating, setRating] = React.useState(0);
 
   const [reviewFormOn, setReviewFormOn] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -49,6 +49,9 @@ const BookDetail = ({userInfo}) => {
   const [genres, setGenres] = React.useState("");
   const [ave_rating, setaveRating] = React.useState(0);
   const [n_rating, setN_rating] = React.useState(0);
+  const [reviewValue, setreviewValue] = React.useState(null);
+  const [reviewButtonshow, setreviewButtonshow] = React.useState(true);
+  const [reviews, setReviews] =  React.useState([]);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,6 +73,52 @@ const BookDetail = ({userInfo}) => {
   const handleCreateCollection = () => {
     setCreateForm(true);
   }
+  const handleSubmitReview = () => {
+    const body = JSON.stringify( {
+      book_id: book_id,
+      review: reviewValue,
+      rating: rating,
+      email: userInfo.email,
+      token: localStorage.getItem('token')
+    });
+    axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      alert('success');
+      setReviewFormOn(false);
+      setreviewButtonshow(false);
+      
+    })
+    .catch(function (error) {
+      alert(error);
+      console.log(error);
+    });
+  }
+
+  const handleSubmitRating = (newValue) => {
+    const body = JSON.stringify( {
+      book_id: book_id,
+      rating: newValue,
+      email: userInfo.email,
+      token: localStorage.getItem('token')
+    });
+    axios.post('http://127.0.0.1:8080/book/ratings', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      console.log('success');  
+    })
+    .catch(function (error) {
+      alert(error);
+      console.log(error);
+    });
+  }
+
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
@@ -155,7 +204,7 @@ const BookDetail = ({userInfo}) => {
       collection_id: key,
       book_id: book_id
     }).then(res => {
-      alert("Complete book success!");
+      alert("add book success!");
       setAnchorEl(null);
     }).catch(error => {
       alert(error.response.data.message);
@@ -183,7 +232,7 @@ const BookDetail = ({userInfo}) => {
     // Update the document title using the browser API
     axios.get('http://127.0.0.1:8080/collection/getall', {
       params: {
-        user: 'jane'
+        user: userInfo.username
       }
     })
       .then(function (response) {
@@ -209,19 +258,45 @@ const BookDetail = ({userInfo}) => {
       params: {
         email: userInfo.email,
         token: localStorage.getItem('token'),
-        book_id: book_id
+        bookId: book_id
 
       }
     })
-      .then(function (response) {
-        console.log(response);
-        let review = response['data']['reviews'];
-        console.log(review);
+    .then(function (response) {
+      console.log(response);
+      let review = response['data']['reviews'];
+      
+      if (review.length > 0) {
+        setRating(review[0]['rating']);
+        if (review[0]['content'] != null) {
+          setreviewButtonshow(false);
+        }
+        
+      }
 
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+    axios.get('http://127.0.0.1:8080/book/check_completed', {
+      params: {
+        email: userInfo.email,
+        token: localStorage.getItem('token'),
+        bookId: book_id
+
+      }
+    })
+    .then(function (response) {
+      if (response['data']['success'] == true) {
+        setbtnDisabled(true);
+        setreadingButtonText('completed');        
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
@@ -245,6 +320,7 @@ const BookDetail = ({userInfo}) => {
           genres = genres+", ";
         }
         setGenres(genres);
+        setReviews(response['data']['reviews'])
       })
       .catch(function (error) {
         console.log(error);
@@ -256,7 +332,9 @@ const BookDetail = ({userInfo}) => {
   }, []);
 
   return (
+    
     <Box sx={{ flexGrow: 1, mt: 12,ml: 0 }} >
+     
       <Grid container direction="row" spacing={3}>
         <Grid item xs={3}>
 
@@ -286,6 +364,7 @@ const BookDetail = ({userInfo}) => {
                 value={rating}
                 onChange={(event, newValue) => {
                   setRating(newValue);
+                  handleSubmitRating(newValue);
                 }}
               />
             </Grid>
@@ -357,12 +436,14 @@ const BookDetail = ({userInfo}) => {
                       value={rating}
                       onChange={(event, newValue) => {
                         setRating(newValue);
+                        handleSubmitRating(newValue);
                       }}
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={5}>
-                  <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>
+                  {reviewButtonshow &&
+                  <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
                 </Grid>
               </Grid>
             </Grid>
@@ -370,8 +451,10 @@ const BookDetail = ({userInfo}) => {
 
 
             <Grid item xs={12}>
-
+            {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
+              {reviews.length > 0 &&  reviews.map((item, i) => 
               <Grid container direction="row" spacing={2}>
+
                 <Grid item xs={1}>
                   <Box
                     component="img"
@@ -386,28 +469,34 @@ const BookDetail = ({userInfo}) => {
                 <Grid item xs={11}>
                   <Grid container direction="row" spacing={0}>
                     <Grid item xs={1}>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> Emily </Typography>
+                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
                     </Grid>
-                    <Grid item xs={7}>
+                    <Grid item xs={4}>
+                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
                       <Rating
                         size="small"
-                        value={4}
+                        value={item['rating']}
                       />
                     </Grid>
                     <Grid item xs={11}>
-                      <Typography variant="body2" display="block" gutterBottom>Some parents may find the book "violent" but it is definitely violence with a purpose. A parent or teacher should always look at the message behind the violence. If it is taught correctly, then your child will come out of the book actually advocating for less violence in current and to stop the glorifying of violence.
-                        Personally, I teach this to my 7th graders, who every year, read it maturely and analyze the purpose of the violent nature of the book. Sure, if you just read it for face value and don't teach your child or your student the purpose then of course they will read it as just entertainment. Trust your kid's and trust your student's intelligence to be able to understand the deeper meaning behind the novel, which is actually advocating for less violence in the media, not more violence.
+                      <Typography variant="body2" display="block" gutterBottom>
+                        {item['content']}
                       </Typography>
                     </Grid>
                   </Grid>
                 </Grid>
 
-              </Grid>
+              </Grid>)
+              }
+              {/*
               <Grid item xs={12}>
                 <Box sx={{ flexGrow: 1, mt: 3,ml: 50,mb: 5}} >
                   <Pagination count={10} size="small" />
                 </Box>
               </Grid>
+            */}
             </Grid>
 
           </Grid>
@@ -486,6 +575,7 @@ const BookDetail = ({userInfo}) => {
               value={rating}
               onChange={(event, newValue) => {
                 setRating(newValue);
+                handleSubmitRating(newValue);
               }}
             />
             <Box
@@ -495,9 +585,10 @@ const BookDetail = ({userInfo}) => {
                 maxWidth: '100%',
               }}
             >
-              <TextField fullWidth label="" id="fullWidth" multiline={true} rows={12} />
+              <TextField fullWidth label="" id="fullWidth" multiline={true} value={reviewValue}
+            onChange={(e) => setreviewValue(e.target.value)} rows={12} />
             </Box>
-            <Button>Submit</Button>
+            <Button onClick={handleSubmitReview}>Submit</Button>
           </Grid>
 
         </Box>

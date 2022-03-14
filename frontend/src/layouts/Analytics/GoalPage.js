@@ -32,7 +32,7 @@ const GoalPage = ({ display, userInfo }) => {
   // get goal that user set
   const getGoal = () => {
     axios.get(`${url}/user/checkgoal`, {params: {
-      email: userInfo.email,
+      operator: userInfo.email,
       token: localStorage.getItem('token')
     }}).then(function (response) {
       setErrorMsg('');
@@ -41,7 +41,7 @@ const GoalPage = ({ display, userInfo }) => {
       } else {
         setGoal(response['data']['goal']);
       }
-      setCompleted(response['data']['completed']);
+      setCompleted(response['data']['finished']);
     }).catch(function (error) {
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
@@ -64,6 +64,7 @@ const GoalPage = ({ display, userInfo }) => {
 
     }).catch(function (error) {
       // show server error message for 5 secs
+      console.log(error)
       setErrorMsg(JSON.stringify(error.response.data.message));
       setTimeout(() => {setErrorMsg('')}, 5000);
     });
