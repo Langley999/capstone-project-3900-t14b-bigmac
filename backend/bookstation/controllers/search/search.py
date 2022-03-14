@@ -10,9 +10,11 @@ url_prefix = '/search'
 def search():
     """
     Function for users to to get results of the search. 
+
     Args:
         type (string): author or title
         value (string): the search text
+
     Returns:
         books (list): list of all books from the search
            - id (int): book id
@@ -34,19 +36,16 @@ def search():
         search_result = search_book_author(search_value)
     if (search_type == 'title'):
         search_result = search_book_title(search_value)
-
+        
     return search_result
 
 def search_book_author(author_name):
-    #authors = Author.query.filter(func.lower(name)==author_name.lower()).all()
-    #authors = Author.query.filter_by(name=author_name).all()
-    authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
+    authors = Author.query.filter(func.lower(author_name)==author_name.lower()).all()
     allbooks = []
-    allauthors = []
     for author in authors:
         # print(author.books)
-        #book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
-        books = author.books
+        book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
+        books = book_authors.book
         for book in books:
             book_info = {}
             book_info['id'] = book.book_id
@@ -57,14 +56,13 @@ def search_book_author(author_name):
             book_info['average_rating'] = book.average_rating
             book_info['publish_date'] = book.publish_date
             allbooks.append(book_info)
-        allauthors.append(author.name+"==="+str(author.author_id))
 
     return dumps({
-      "books": allbooks
+      "books": allbooks[0:20]
     })
 
 def search_book_title(book_title):
-    book_exact = Book.query.filter(Book.title.like(book_title)).all()
+    book_exact = Book.query.filter(func.lower(title)==book_title.lower()).all()
     books = Book.query.filter(Book.title.like('%'+book_title+'%')).all()
     allbooks = []
     for book in book_exact:

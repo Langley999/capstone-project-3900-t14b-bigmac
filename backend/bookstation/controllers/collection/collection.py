@@ -15,13 +15,16 @@ url_prefix = "/collection"
 def get_all_collections():
     """
     Function for users to to get one user's all collection details. 
+
     Args:
         user (string): username of the requester.
+
     Returns:
         collections (list): list of all collections
            - id (int): collection id
            - name (string): name of the collection
            - flag (int): flag indicator of the type of collection: 1 = default favourate, 2 = default history, 3 = customised collection
+
     Raises:
         NotFoundError: when the collection with the name does not exist
     """
@@ -30,7 +33,7 @@ def get_all_collections():
     collections = Collection.query.filter_by(user_id = user.user_id).all()
     #collections = user.collections
     if len(collections) == 0:
-      new_default_collection = Collection(1, "Favourite", datetime.now(), user.user_id)
+      new_default_collection = Collection(1, "Favourite", datetime.now(), user.user_id) 
       new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
       db.session.add(new_default_collection)
       db.session.add(new_history_collection)
@@ -53,7 +56,8 @@ def get_all_collections():
 @app.route(url_prefix + '/create', methods=["POST"])
 def create_collection():
     """
-    Function for users to to create a new collection.
+    Function for users to to create a new collection. 
+
     Args:
         email (string): email of the requester.
         name (string): name of the new collection
@@ -62,7 +66,7 @@ def create_collection():
         collection id of the new collection
     Raises:
         BadReqError: when the collection creation fails
-        AccessError:
+        AccessError: 
           - when the user does not have permission to create collection
           - when the user does not exist
     """
@@ -78,13 +82,13 @@ def create_collection():
         if stored_token != token:
           raise error.AccessError(description="You don't have permission to create collection")
     except:
-        raise error.AccessError(description="user doesn't exist")
+        raise error.AccessError(description="user doesn't exist")    
     '''
 
     user = User.query.filter_by(email = email).first()
 
     try:
-      new_default_collection = Collection(0, collection_name, datetime.now(), user.user_id)
+      new_default_collection = Collection(0, collection_name, datetime.now(), user.user_id) 
       db.session.add(new_default_collection)
       db.session.commit()
       db.session.flush()
@@ -97,27 +101,30 @@ def create_collection():
 @app.route(url_prefix + '/getcollection', methods=["GET"])
 def get_collection():
     """
-    Function for users to to get details of a collection.
+    Function for users to to get details of a collection. 
+
     Args:
-        collection_id (string): id of the collection
+        collection_id (string): id of the collection 
+
     Returns:
         books (list): list of all books within the collection
            - id (int): book id
            - title (string): title of the book
            - cover (string): url of the cover image
+
     Raises:
         NotFoundError: when the collection creation fails
-        AccessError:
+        AccessError: 
           - when the user does not have permission to create collection
           - when the user does not exist
     """
     # user_name = request.args.get('user')
     collection_id = request.args.get('collection_id')
-    try:
+    try: 
       collection = Collection.query.get(collection_id)
-#       collection_books = Collection_book.query.filter_by(collection_id=collection_id)
+      collection_books = Collection_book.query.filter_by(collection_id=collection_id)
       booklist = []
-      for book in collection.books:
+      for book in collection_books.book:
         #book = Book.query.filter_by(book_id=collection_book.book_id)
         new = {}
         new['id'] = book.book_id
@@ -136,15 +143,18 @@ def get_collection():
 def add_book():
     """
     Function for users to to add a book to a collection
+
     Args:
         email (string): email of the user
         collection_id (int): id of the collection
         book_id (int): id of the book
+
     Returns:
         success message
+
     Raises:
         NotFoundError: when the collection does not exist
-        AccessError:
+        AccessError: 
           - when the user does not have permission to add book to this collection
         BadReqError:
           - when adding book fails
@@ -158,6 +168,7 @@ def add_book():
 
     user = User.query.filter_by(email = email).first()
     collection = Collection.query.get(c_id)
+  
     if collection == None:
       raise error.NotFoundError(description="Collection does not exist")
 
@@ -167,7 +178,7 @@ def add_book():
     if book_collection != None:
       raise error.BadReqError(description="This book has already been added to the collection")
     try:
-      new_book_collection = Collection_book(c_id, b_id, datetime.now())
+      new_book_collection = Collection_book(c_id, b_id, datetime.now()) 
       db.session.add(new_book_collection)
       db.session.commit()
 
@@ -176,21 +187,25 @@ def add_book():
       })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
+ 
 
 @app.route(url_prefix + '/removebook', methods=["DELETE"])
 def remove_book():
     """
     Function for users to to remove a book in a collection
+
     Args:
         email (string): email of the user
         collection_id (int): id of the collection
         book_id (int): id of the book
+
     Returns:
         success message
+
     Raises:
         NotFoundError: when the book does not exist in the collection
-        AccessError:
-          - when the user does not have permission to remove book
+        AccessError: 
+          - when the user does not have permission to remove book 
         BadReqError:
           - when removing book fails
     """
@@ -201,7 +216,7 @@ def remove_book():
         raise error.BadReqError(description="post body error")
 
     user = User.query.filter_by(email = email).first()
-    collection = Collection.query.filter_by(collection_id = c_id).first()
+    collection = Collection.query.filter_by(collection_id = id).first()
     if collection.user_id != user.user_id:
       raise error.AccessError(description="You don't have permission to remove this book")
 
@@ -209,7 +224,7 @@ def remove_book():
     if book_collection == None:
       raise error.NotFoundError(description="This book doesn't exist in the collection")
     try:
-      Collection_book.query.filter_by(collection_id = c_id, book_id = b_id).delete()
+      db.session.delete(book_collection)
       db.session.commit()
 
       return dumps({
@@ -222,11 +237,14 @@ def remove_book():
 def remove_collection():
     """
     Function for users to to remove a collection
+
     Args:
         email (string): email of the user
         collection_id (int): id of the collection
+
     Returns:
         success message
+
     Raises:
         NotFoundError: when the collection does not exist
         AccessError: 

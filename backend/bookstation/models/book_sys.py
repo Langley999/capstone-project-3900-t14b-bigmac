@@ -1,7 +1,6 @@
-# from redis import AuthenticationWrongNumberOfArgsError
+from redis import AuthenticationWrongNumberOfArgsError
 from bookstation import db
 #from bookstation.models.user_sys import User
-
 
 class Book_author(db.Model):
     book_id = db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True)
@@ -21,25 +20,6 @@ class Author(db.Model):
 
     author_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-
-# class Book_author(db.Model):
-#     book_id = db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True)
-#     author_id = db.Column('author_id', db.Integer, db.ForeignKey('author.author_id'), primary_key=True)
-#     book = db.relationship('Book')
-#
-# class Book_genre(db.Model):
-#     book_id = db.Column('book_id', db.Integer, db.ForeignKey('book.book_id'), primary_key=True)
-#     genre_id = db.Column('genre_id', db.Integer, db.ForeignKey('genre.genre_id'), primary_key=True)
-#     book = db.relationship('Book')
-#
-#     #genre = db.relationship('Genre') #comment this out
-#
-# class Author(db.Model):
-#
-#     __tablename__ = 'author'
-#
-#     author_id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(64))
 
 class Genre(db.Model):
 

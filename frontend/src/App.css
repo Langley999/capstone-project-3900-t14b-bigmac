@@ -8,6 +8,10 @@
 }
 
 .centre {
+  /*margin: 0;*/
+  /*position: absolute;*/
+  /*left: 50%;*/
+  /*transform: translate(-50%, 0%);*/
   margin-left: 10%;
   margin-right: 10%;
   padding-top: 85px;
