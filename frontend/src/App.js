@@ -59,6 +59,7 @@ function App() {
             <>
               <Header
                 ifLogin={ifLogin}
+                updateLogin={updateLogin}
                 userInfo={userInfo}
                 updateSearchValue={updateSearchValue}
                 searchValue={searchValue}

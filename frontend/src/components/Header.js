@@ -80,7 +80,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -155,6 +155,16 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
   }
 
   const Dropdown = () => {
+    const submitLogout = () => {
+      axios.post(`${url}/auth/logout`, {
+        email: userInfo.email,
+        token: localStorage.getItem('token')
+      }).then(res => {
+        updateLogin(false);
+        navigate('/');
+      })
+    }
+
     return (
       <Menu
         anchorEl={anchorEl}
@@ -216,7 +226,7 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
           Analytics
         </MenuItem>
         <Divider/>
-        <MenuItem>
+        <MenuItem onClick={submitLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
