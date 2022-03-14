@@ -87,9 +87,23 @@ const BookDetail = ({userInfo}) => {
       }
     })
     .then(function (response) {
-      alert('success');
+
       setReviewFormOn(false);
       setreviewButtonshow(false);
+      var currentdate = new Date(); 
+      var datetime = currentdate.getDate() + "/"
+                      + (currentdate.getMonth()+1)  + "/" 
+                      + currentdate.getFullYear() + " "  
+                      + currentdate.getHours() + ":"  
+                      + currentdate.getMinutes() + ":" 
+                      + currentdate.getSeconds();
+      let rev = {};
+      rev['time'] = datetime;
+      rev['content'] = reviewValue;
+      rev['username'] = userInfo.username;
+      rev['rating'] = rating;
+      setReviews(review => [rev,...review] );
+
       
     })
     .catch(function (error) {
@@ -99,6 +113,7 @@ const BookDetail = ({userInfo}) => {
   }
 
   const handleSubmitRating = (newValue) => {
+    
     const body = JSON.stringify( {
       book_id: book_id,
       rating: newValue,
@@ -111,7 +126,29 @@ const BookDetail = ({userInfo}) => {
       }
     })
     .then(function (response) {
-      console.log('success');  
+      let newone = [];
+      for (let i = 0; i < reviews.length; i++) {
+        if (reviews[i]['username'] == userInfo['username']) {
+          reviews[i]['rating'] = newValue;
+
+        }
+        newone.push(reviews[i]);
+      }
+      setReviews(newone);
+      if (rating == 0) {
+        
+        let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
+        setN_rating(n_rating+1);
+        setaveRating(newrating.toFixed(2));
+        setRating(newValue);
+        console.log('success');          
+      } else {
+        let newrating = (newValue+n_rating*ave_rating-rating)/n_rating; 
+
+        setaveRating(newrating.toFixed(2));
+        setRating(newValue);
+      }
+    
     })
     .catch(function (error) {
       alert(error);
@@ -311,7 +348,7 @@ const BookDetail = ({userInfo}) => {
         setCover(response['data']['cover_image']);
         setAuther(response['data']['author_string']);
         setPublisher(response['data']['publisher']);
-        setaveRating(response['data']['average_rating']);
+        setaveRating(response['data']['average_rating'].toFixed(2));
         setN_rating(response['data']['num_rating'])
         console.log(response['data']['author_string']);
         let genres = "";
@@ -320,7 +357,7 @@ const BookDetail = ({userInfo}) => {
           genres = genres+", ";
         }
         setGenres(genres);
-        setReviews(response['data']['reviews'])
+        setReviews(response['data']['reviews'].reverse())
       })
       .catch(function (error) {
         console.log(error);
@@ -332,9 +369,10 @@ const BookDetail = ({userInfo}) => {
   }, []);
 
   return (
-    
-    <Box sx={{ flexGrow: 1, mt: 12,ml: 0 }} >
-     
+  <div>
+  {genres &&
+    <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
+      
       <Grid container direction="row" spacing={3}>
         <Grid item xs={3}>
 
@@ -363,7 +401,7 @@ const BookDetail = ({userInfo}) => {
                 name="simple-controlled"
                 value={rating}
                 onChange={(event, newValue) => {
-                  setRating(newValue);
+             
                   handleSubmitRating(newValue);
                 }}
               />
@@ -402,7 +440,7 @@ const BookDetail = ({userInfo}) => {
                       value={ave_rating}
                       precision={0.01}
                       size="small"
-                      disabled
+                      readOnly
                     />
                   </Box>
                 </Grid>
@@ -435,7 +473,7 @@ const BookDetail = ({userInfo}) => {
                       name="simple-controlled"
                       value={rating}
                       onChange={(event, newValue) => {
-                        setRating(newValue);
+                        
                         handleSubmitRating(newValue);
                       }}
                     />
@@ -468,16 +506,17 @@ const BookDetail = ({userInfo}) => {
                 </Grid>
                 <Grid item xs={11}>
                   <Grid container direction="row" spacing={0}>
-                    <Grid item xs={1}>
+                    <Grid item xs={4}>
                       <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                       <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
                     </Grid>
                     <Grid item xs={4}>
                       <Rating
                         size="small"
                         value={item['rating']}
+                        readOnly
                       />
                     </Grid>
                     <Grid item xs={11}>
@@ -519,7 +558,7 @@ const BookDetail = ({userInfo}) => {
                 src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
               />
               <Typography variant="body2" display="block" gutterBottom>
-                Harry potter
+                Hunger Games
               </Typography>
 
             </Grid>
@@ -534,7 +573,7 @@ const BookDetail = ({userInfo}) => {
                 src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
               />
               <Typography variant="body2" display="block" gutterBottom>
-                Harry potter
+                Hunger Games
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -548,7 +587,7 @@ const BookDetail = ({userInfo}) => {
                 src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
               />
               <Typography variant="body2" display="block" gutterBottom>
-                Harry potter
+                Hunger Games
               </Typography>
             </Grid>
 
@@ -574,7 +613,7 @@ const BookDetail = ({userInfo}) => {
               name="simple-controlled"
               value={rating}
               onChange={(event, newValue) => {
-                setRating(newValue);
+         
                 handleSubmitRating(newValue);
               }}
             />
@@ -637,9 +676,9 @@ const BookDetail = ({userInfo}) => {
         <DialogActions>
           <Button onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
         </DialogActions>
-      </Dialog>
-    </Box>
-
+      </Dialog>  
+    </Box>}
+    </div>
 
   );
 };
