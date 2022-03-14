@@ -126,6 +126,7 @@ const Collections = ({userInfo}) => {
 
     return (
       <Paper sx={{ width: 200, maxWidth: '100%', height: 500, overflow: 'auto'}}>
+
         <MenuList>
           <MenuItem>
             <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
@@ -150,6 +151,13 @@ const Collections = ({userInfo}) => {
             </DialogActions>
           </Dialog>
           <Divider />
+          <Box
+            display="flex"
+            alignItems="flex-start"
+            flexDirection="column" 
+            p={1}
+            m={1}
+            >
           {collections.map((collection) => {
             return (
               <MenuItem
@@ -160,7 +168,9 @@ const Collections = ({userInfo}) => {
               </MenuItem>
             )
           })}
+          </Box>
         </MenuList>
+        
       </Paper>
     )
   }
@@ -195,7 +205,7 @@ const Collections = ({userInfo}) => {
           null :
           <div>
             <button>Edit Name</button>
-            <button onClick={removeCollection}>Remove</button>
+            <Button variant="outlined" onClick={removeCollection}>Remove</Button>
           </div>
         }
       </Box>
