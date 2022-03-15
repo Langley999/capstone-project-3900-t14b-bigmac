@@ -7,7 +7,9 @@ import Input from '@mui/material/Input';
 import axios from 'axios';
 import ErrorPopup from '../../components/ErrorPopup';
 import SuccessPopup from '../../components/SuccessPopup';
-import {url} from '../../components/Helper'
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import {url} from '../../components/Helper';
 
 const GoalPage = ({ display, userInfo }) => {
   const [goal, setGoal] = React.useState(0);
@@ -27,7 +29,7 @@ const GoalPage = ({ display, userInfo }) => {
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
-  if (daysUntilEndOfMonth > 1) daySuffix = 's';
+  if (daysUntilEndOfMonth !== 1) daySuffix = 's';
 
   // get goal that user set
   const getGoal = () => {
@@ -35,11 +37,11 @@ const GoalPage = ({ display, userInfo }) => {
         operator: userInfo.email,
         token: localStorage.getItem('token')
       }}).then(function (response) {
-      setErrorMsg('');
       if (response['data']['goal'] === -1) {
         setGoal(0);
       } else {
         setGoal(response['data']['goal']);
+        setGoalLast(response['data']['goal']);
       }
       setCompleted(response['data']['finished']);
     }).catch(function (error) {
@@ -51,13 +53,19 @@ const GoalPage = ({ display, userInfo }) => {
 
   // set new reading goal
   const submitGoal = () => {
-    axios.post(`${url}/user/setgoal`, {
+    if (goal < 0) {
+      setSuccessMsg('');
+      setErrorMsg('Goal cannot be set to a negative number');
+      setTimeout(() => {setErrorMsg('')}, 2000);
+      getGoal();
+      return;
+    }
+    axios.post('http://localhost:8080/user/setgoal', {
       email: userInfo.email,
       token: localStorage.getItem('token'),
       goal: goal
     }).then(function (response) {
       setGoalLast(goal);
-      setGoal(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');
@@ -65,8 +73,7 @@ const GoalPage = ({ display, userInfo }) => {
 
     }).catch(function (error) {
       // show server error message for 5 secs
-      console.log(error)
-      setErrorMsg(JSON.stringify(error.response.data.message));
+      setErrorMsg(JSON.stringify(error.message));
       setTimeout(() => {setErrorMsg('')}, 5000);
     });
   }
@@ -75,34 +82,68 @@ const GoalPage = ({ display, userInfo }) => {
     setEnableEditGoal(!enableEditGoal)
   }
 
+  const goalStyle = {
+    display: "flex",
+    flexDirection: "row",
+    gap: "40px"
+  }
+
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg}/>
       <SuccessPopup successMsg={successMsg}/>
       <h2 style={{fontWeight: "normal"}}>Reading Goal</h2>
-      <span>
-        I want to read
-          <FormControl disabled={!enableEditGoal} sx={{ m: 1, width: '4ch' }} variant="standard" style={{marginTop: '5px'}}>
-            <Input
-              type="number"
-              size="small"
-              value={goal}
-              onChange={e => setGoal(e.target.value)}
-            />
-          </FormControl>
-        books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
-        <IconButton
-          aria-label="toggle password visibility"
-          onClick={toggleEditGoal}
-        >
-          {enableEditGoal ? <CheckCircleIcon onClick={submitGoal}/> : <EditIcon />}
-        </IconButton>
-      </span>
-      <br/>
-      <span>You have completed {completed} books so far and there are {goal-completed} books to go</span>
-      <br/>
-      <br/>
-      <span>You have {daysUntilEndOfMonth} day{daySuffix} left</span>
+      <div style={goalStyle}>
+        <div>
+          <span>
+            I want to read
+              <FormControl disabled={!enableEditGoal} sx={{ m: 1, width: '4ch' }} variant="standard" style={{marginTop: '5px'}}>
+                <Input
+                  type="number"
+                  size="small"
+                  value={goal}
+                  onChange={e => setGoal(e.target.value)}
+                />
+              </FormControl>
+            books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={toggleEditGoal}
+            >
+              {enableEditGoal ? <CheckCircleIcon onClick={submitGoal}/> : <EditIcon />}
+            </IconButton>
+          </span>
+        </div>
+        <Card sx={{ minWidth: 200 }} style={{backgroundColor: "#b5943f", marginTop: "-30px"}} >
+          <CardContent style={{color: "white"}}>
+            <div style={{display: "flex", flexDirection:"row", justifyContent:"space-between"}}>
+              <div>
+                <span>Completed</span>
+                <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
+                  <CardContent style={{padding: "10px", textAlign: "center"}}>{completed}</CardContent>
+                </Card>
+              </div>
+              <div>
+                <span>Remaining</span>
+                <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
+                  <CardContent style={{padding: "10px", textAlign: "center"}}>{(goalLast-completed) < 0 ? 0 : (goalLast-completed)}</CardContent>
+                </Card>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card sx={{ minWidth: 200 }} style={{backgroundColor: "#b5593f", marginTop: "-30px"}} >
+          <CardContent style={{color: "white", textAlign: "center"}}>
+            <span>Time Left</span>
+            <div style={{display: "flex", flexDirection:"row", justifyContent:"space-evenly", paddingTop: "10px"}}>
+              <Card sx={{ minWidth: 75 }} style={{backgroundColor: "white"}} >
+                <CardContent style={{padding: "10px"}}>{daysUntilEndOfMonth}</CardContent>
+              </Card>
+              <span style={{paddingTop: "10px"}}>day{daySuffix}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
