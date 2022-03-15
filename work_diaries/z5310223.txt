@@ -23,8 +23,10 @@ Week 4
 - Finished Login and Register and Goals for Sprint 1 frontend
 - Updated issues on Jira board
 - Finalised backend decisions with team
+- Recorded meeting minutes
 
 Week 5
 - Refactored snackbar popups for frontend error and success messages
 - Organised user stories and allocations for Sprint 2 and started Sprint 2
 - Discussed Retrospective A with team
+- Recorded meeting minutes
