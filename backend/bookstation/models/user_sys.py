@@ -18,10 +18,11 @@ class User(db.Model):
     password = db.Column(db.String(256))
     token = db.Column(db.String(512))
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, token):
         self.username   = username
         self.email      = email
         self.password   = password
+        self.token      = token
 
 class Post(db.Model):
 
