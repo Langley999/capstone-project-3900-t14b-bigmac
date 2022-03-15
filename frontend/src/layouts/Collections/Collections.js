@@ -204,7 +204,7 @@ const Collections = ({userInfo}) => {
         {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' ?
           null :
           <div>
-            <button>Edit Name</button>
+            <Button variant="outlined">Edit Name</Button>
             <Button variant="outlined" onClick={removeCollection}>Remove</Button>
           </div>
         }

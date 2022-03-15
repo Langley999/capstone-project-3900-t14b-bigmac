@@ -124,6 +124,7 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
   function NavBarV2 () {
     return (
       <>
+
         <Tooltip title="Quiz">
           <IconButton sx={{ ml: 1 }} component={Link} to='quiz'>
             <HelpIcon fontSize="large"/>
@@ -144,6 +145,7 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
+      
       </>
     )
   }
