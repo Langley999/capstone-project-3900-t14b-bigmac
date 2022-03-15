@@ -16,90 +16,90 @@ import jwt
 
 
 
-@app.route("/test/daoting", methods=["GET"])
-def getTestOldway():
-    book_id = request.args.get('bookId')
-    book = Book.query.get(book_id)
-    book_dict = book.__dict__.copy()
-    book_dict.pop('_sa_instance_state', None)
-    book_dict.pop("genre_string", None)
-    genres = []
-    for genre in book.book_genre:
-        genres.append(genre.genre.name)
-    book_dict['genres'] = genres
-    reviews = []
-    for review in book.reviews:
-        reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
-        'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
+# @app.route("/test/daoting", methods=["GET"])
+# def getTestOldway():
+#     book_id = request.args.get('bookId')
+#     book = Book.query.get(book_id)
+#     book_dict = book.__dict__.copy()
+#     book_dict.pop('_sa_instance_state', None)
+#     book_dict.pop("genre_string", None)
+#     genres = []
+#     for genre in book.book_genre:
+#         genres.append(genre.genre.name)
+#     book_dict['genres'] = genres
+#     reviews = []
+#     for review in book.reviews:
+#         reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username,
+#         'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
 
-    book_dict['reviews'] = reviews
-    return dumps(book_dict)
-
-
+#     book_dict['reviews'] = reviews
+#     return dumps(book_dict)
 
 
-@app.route("/initialise", methods=["GET"])
-def loadbooks():
-    f = open('bookstation/controllers/book/bookcsv.csv')
-    csv_reader = csv.reader(f, delimiter=',')
-    genre_set = set()
-    author_set = set()
-    first_line = True
-    #title 1 , isbn 7, pubdate 14, publiser 13, blurb 5, avg rating - , num rating -, coverimg 21, genrestring 8, authorstring 3
-    for row in csv_reader:
 
-        if first_line:
-            first_line = False
-            continue
 
-        book = Book(title=row[1], isbn=row[7], publish_date=row[14], publisher=row[13], blurb=row[5], average_rating=0, num_rating=0, cover_image=row[21], genre_string=row[8], author_string=row[3])
-        db.session.add(book)
-        #create book object
+# @app.route("/initialise", methods=["GET"])
+# def loadbooks():
+#     f = open('bookstation/controllers/book/bookcsv.csv')
+#     csv_reader = csv.reader(f, delimiter=',')
+#     genre_set = set()
+#     author_set = set()
+#     first_line = True
+#     #title 1 , isbn 7, pubdate 14, publiser 13, blurb 5, avg rating - , num rating -, coverimg 21, genrestring 8, authorstring 3
+#     for row in csv_reader:
 
-        genres = ast.literal_eval(row[8])
-        for genre in genres:
-            if genre not in genre_set:
-                genre_set.add(genre)
-                db.session.add(Genre(name=genre)) #create genre object
+#         if first_line:
+#             first_line = False
+#             continue
 
-        #break
-        authors = row[3].split(", ")
-        for author in authors:
-            if author not in author_set:
-                author_set.add(author)
-                db.session.add(Author(name=author))#create author object
+#         book = Book(title=row[1], isbn=row[7], publish_date=row[14], publisher=row[13], blurb=row[5], average_rating=0, num_rating=0, cover_image=row[21], genre_string=row[8], author_string=row[3])
+#         db.session.add(book)
+#         #create book object
 
-    db.session.commit()
-    return dumps({"successfully loaded" : True})
+#         genres = ast.literal_eval(row[8])
+#         for genre in genres:
+#             if genre not in genre_set:
+#                 genre_set.add(genre)
+#                 db.session.add(Genre(name=genre)) #create genre object
 
-@app.route("/loadbookgenre", methods=["GET"])
-def loadbookgenre():
+#         #break
+#         authors = row[3].split(", ")
+#         for author in authors:
+#             if author not in author_set:
+#                 author_set.add(author)
+#                 db.session.add(Author(name=author))#create author object
 
-    books = Book.query.all()
-    for book in books:
-        tbook_id = book.book_id
-        genres = ast.literal_eval(book.genre_string)
-        for genrename in genres:
-            genre = Genre.query.filter_by(name=genrename).first()
-            tgenre_id = genre.genre_id
-            db.session.add(book_genre(book_id=tbook_id, genre_id=tgenre_id))
-    db.session.commit()
-    return dumps({"successfully loaded joins" : True})
+#     db.session.commit()
+#     return dumps({"successfully loaded" : True})
 
-@app.route("/loadbookauthor", methods=["GET"])
-def loadbookauthor():
+# @app.route("/loadbookgenre", methods=["GET"])
+# def loadbookgenre():
 
-    books = Book.query.all()
-    for book in books:
-        tbook_id = book.book_id
-        authorslist = book.author_string.split(", ")
-        authors = set(authorslist)
-        for authorname in authors:
-            author = Author.query.filter_by(name=authorname).first()
-            tauthor_id = author.author_id
-            db.session.add(book_author(book_id=tbook_id, author_id=tauthor_id))
-    db.session.commit()
-    return dumps({"successfully loaded joins author" : True})
+#     books = Book.query.all()
+#     for book in books:
+#         tbook_id = book.book_id
+#         genres = ast.literal_eval(book.genre_string)
+#         for genrename in genres:
+#             genre = Genre.query.filter_by(name=genrename).first()
+#             tgenre_id = genre.genre_id
+#             db.session.add(book_genre(book_id=tbook_id, genre_id=tgenre_id))
+#     db.session.commit()
+#     return dumps({"successfully loaded joins" : True})
+
+# @app.route("/loadbookauthor", methods=["GET"])
+# def loadbookauthor():
+
+#     books = Book.query.all()
+#     for book in books:
+#         tbook_id = book.book_id
+#         authorslist = book.author_string.split(", ")
+#         authors = set(authorslist)
+#         for authorname in authors:
+#             author = Author.query.filter_by(name=authorname).first()
+#             tauthor_id = author.author_id
+#             db.session.add(book_author(book_id=tbook_id, author_id=tauthor_id))
+#     db.session.commit()
+#     return dumps({"successfully loaded joins author" : True})
 
 
 
@@ -310,66 +310,66 @@ def addRatingReview():
 
 
 #add or update comment to review --------
-@app.route("/book/reviews", methods=["PUT"])
-def editReview():
-    '''
-    Add or update comment to review
-    Args (PUT):
-        review_id (integer): review being updated
-    Returns:
-        None
-    Raises:
-        BadReqError: Review cannot be updated
-    '''
-    #get body
-    body = request.get_json()
+# @app.route("/book/reviews", methods=["PUT"])
+# def editReview():
+#     '''
+#     Add or update comment to review
+#     Args (PUT):
+#         review_id (integer): review being updated
+#     Returns:
+#         None
+#     Raises:
+#         BadReqError: Review cannot be updated
+#     '''
+#     #get body
+#     body = request.get_json()
 
-    #extract new comment
-    target_review_id = body['review_id']
-    new_content = body['content']
+#     #extract new comment
+#     target_review_id = body['review_id']
+#     new_content = body['content']
 
-    #post to database
-    updated = Review.query.filter_by(review_id=target_review_id).update({Review.content: new_content})
+#     #post to database
+#     updated = Review.query.filter_by(review_id=target_review_id).update({Review.content: new_content})
 
-    #error check
-    if updated == None:
-        raise(error.BadReqError("Bad request cannot update"))
+#     #error check
+#     if updated == None:
+#         raise(error.BadReqError("Bad request cannot update"))
 
-    db.session.commit()
-    return dumps({"success": True})
+#     db.session.commit()
+#     return dumps({"success": True})
 
 
 
 #change rating ------
-@app.route("/book/ratings", methods=["PUT"])
-def editRating():
-    '''
-    Change rating
-    Args (PUT):
-        book_id (integer): Review being updated
-        email (string): email
-        new rating
-    Returns:
-        None
-    Raises:
-        BadReqError: Review cannot be updated to change rating value
-    '''
-    #get body
-    body = request.get_json()
+# @app.route("/book/ratings", methods=["PUT"])
+# def editRating():
+#     '''
+#     Change rating
+#     Args (PUT):
+#         book_id (integer): Review being updated
+#         email (string): email
+#         new rating
+#     Returns:
+#         None
+#     Raises:
+#         BadReqError: Review cannot be updated to change rating value
+#     '''
+#     #get body
+#     body = request.get_json()
 
-    #extract new rating
-    email = body['email']
-    book_id = body['book_id']
+#     #extract new rating
+#     email = body['email']
+#     book_id = body['book_id']
 
-    #post to database
-    updated = Review.query.filter_by(review_id=target_review_id).update({Review.rating: new_rating})
+#     #post to database
+#     updated = Review.query.filter_by(review_id=target_review_id).update({Review.rating: new_rating})
 
-    #error check
-    if updated == None:
-        raise(error.BadReqError("Bad request cannot update"))
+#     #error check
+#     if updated == None:
+#         raise(error.BadReqError("Bad request cannot update"))
 
-    db.session.commit()
-    return dumps({"success": True})
+#     db.session.commit()
+#     return dumps({"success": True})
 
 
 
