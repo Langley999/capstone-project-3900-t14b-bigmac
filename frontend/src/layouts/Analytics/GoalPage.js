@@ -34,7 +34,6 @@ const GoalPage = ({ display, userInfo }) => {
   // get goal that user set
   const getGoal = () => {
     axios.get(`${url}/user/checkgoal`, {params: {
-        operator: userInfo.email,
         token: localStorage.getItem('token')
       }}).then(function (response) {
       if (response['data']['goal'] === -1) {
@@ -61,12 +60,10 @@ const GoalPage = ({ display, userInfo }) => {
       return;
     }
     axios.post('http://localhost:8080/user/setgoal', {
-      email: userInfo.email,
       token: localStorage.getItem('token'),
       goal: goal
     }).then(function (response) {
       setGoalLast(goal);
-      setGoal(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');

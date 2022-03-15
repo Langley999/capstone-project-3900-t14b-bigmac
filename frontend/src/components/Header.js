@@ -157,7 +157,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const Dropdown = () => {
     const submitLogout = () => {
       axios.post(`${url}/auth/logout`, {
-        email: userInfo.email,
         token: localStorage.getItem('token')
       }).then(res => {
         updateLogin(false);

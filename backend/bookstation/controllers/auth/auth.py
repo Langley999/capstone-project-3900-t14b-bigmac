@@ -79,7 +79,8 @@ def login():
     session[token] = user.user_id
 
     return dumps({
-        'token': token
+        'token': token,
+        'username': user.username
     })
 
 @app.route(url_prefix + "/register", methods=["POST"])

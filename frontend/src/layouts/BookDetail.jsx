@@ -74,11 +74,7 @@ const BookDetail = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState("");
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> sprint1-yasin-final
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -101,7 +97,6 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id,
       review: reviewValue,
       rating: rating,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
@@ -109,7 +104,6 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-<<<<<<< HEAD
       .then(function (response) {
 
         setReviewFormOn(false);
@@ -140,42 +134,9 @@ const BookDetail = ({userInfo}) => {
 
   const handleSubmitRating = (newValue) => {
 
-=======
-    .then(function (response) {
-
-      setReviewFormOn(false);
-      setreviewButtonshow(false);
-      var currentdate = new Date(); 
-      var datetime = currentdate.getDate() + "/"
-                      + (currentdate.getMonth()+1)  + "/" 
-                      + currentdate.getFullYear() + " "  
-                      + currentdate.getHours() + ":"  
-                      + currentdate.getMinutes() + ":" 
-                      + currentdate.getSeconds();
-      let rev = {};
-      rev['time'] = datetime;
-      rev['content'] = reviewValue;
-      rev['username'] = userInfo.username;
-      rev['rating'] = rating;
-      setReviews(review => [rev,...review] );
-
-      
-    })
-    .catch(function (error) {
-
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-    });
-  }
-
-  const handleSubmitRating = (newValue) => {
-    
->>>>>>> sprint1-yasin-final
     const body = JSON.stringify( {
       book_id: book_id,
       rating: newValue,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings', body,{
@@ -183,7 +144,6 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-<<<<<<< HEAD
       .then(function (response) {
         let newone = [];
         for (let i = 0; i < reviews.length; i++) {
@@ -215,45 +175,12 @@ const BookDetail = ({userInfo}) => {
         setwarningopen(true);
         console.log(error);
       });
-=======
-    .then(function (response) {
-      let newone = [];
-      for (let i = 0; i < reviews.length; i++) {
-        if (reviews[i]['username'] == userInfo['username']) {
-          reviews[i]['rating'] = newValue;
-
-        }
-        newone.push(reviews[i]);
-      }
-      setReviews(newone);
-      if (rating == 0) {
-        
-        let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
-        setN_rating(n_rating+1);
-        setaveRating(newrating.toFixed(2));
-        setRating(newValue);
-        console.log('success');          
-      } else {
-        let newrating = (newValue+n_rating*ave_rating-rating)/n_rating; 
-
-        setaveRating(newrating.toFixed(2));
-        setRating(newValue);
-      }
-    
-    })
-    .catch(function (error) {
-
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-    });
->>>>>>> sprint1-yasin-final
   }
 
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       book_id: book_id
     });
 
@@ -292,7 +219,7 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           let json = JSON.stringify( {
             collection_id: c_id,
-            email: userInfo.email,
+            token: localStorage.getItem('token'),
             book_id: book_id
           });
           axios.post('http://127.0.0.1:8080/collection/addbook', json,{
@@ -303,11 +230,7 @@ const BookDetail = ({userInfo}) => {
             .then(function (response) {
               console.log(response);
               if (response['status'] === 200) {
-<<<<<<< HEAD
 
-=======
-               
->>>>>>> sprint1-yasin-final
                 setsnackbarcontent('success');
                 setsnackbaropen(true);
                 setCreateForm(false);
@@ -330,11 +253,7 @@ const BookDetail = ({userInfo}) => {
         /*
         setwarningcontent(error);
         setwarningopen(true);*/
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> sprint1-yasin-final
       });
   }
   const handleAddToCollection = (key) => {
@@ -348,7 +267,7 @@ const BookDetail = ({userInfo}) => {
     console.log(key)
 
     axios.post('http://127.0.0.1:8080/collection/addbook', {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       collection_id: key,
       book_id: book_id
     }).then(res => {
@@ -358,11 +277,7 @@ const BookDetail = ({userInfo}) => {
       setAnchorEl(null);
     }).catch(error => {
       console.log(error);
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> sprint1-yasin-final
       setwarningcontent(error.response.data.message);
       setwarningopen(true);
     })
@@ -439,10 +354,8 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
-        email: userInfo.email,
         token: localStorage.getItem('token'),
         bookId: book_id
-
       }
     })
       .then(function (response) {
@@ -451,19 +364,11 @@ const BookDetail = ({userInfo}) => {
           setreadingButtonText('completed');
         }
 
-<<<<<<< HEAD
       })
       .catch(function (error) {
         setwarningcontent(error.response.data.message);
         setwarningopen(true);
       });
-=======
-    })
-    .catch(function (error) {
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-    });
->>>>>>> sprint1-yasin-final
 
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
@@ -500,36 +405,13 @@ const BookDetail = ({userInfo}) => {
   }, []);
 
   return (
-<<<<<<< HEAD
     <div>
       {genres &&
       <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
-=======
-  <div>
-  {genres &&
-    <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
-      
-      <Grid container direction="row" spacing={3}>
-        <Grid item xs={3}>
-
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
-            <Grid item xs={12}>
-              <Box
-                component="img"
-                sx={{
-                  height: 350,
-                  my:2
-                }}
-                alt="book cover"
-                src={cover}
-              />
-            </Grid>
->>>>>>> sprint1-yasin-final
 
         <Grid container direction="row" spacing={3}>
           <Grid item xs={3}>
 
-<<<<<<< HEAD
             <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
               <Grid item xs={12}>
                 <Box
@@ -568,28 +450,6 @@ const BookDetail = ({userInfo}) => {
                     <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
                     <Typography variant="caption" gutterBottom component="div" style={{marginTop: '1rem'}}>{genres}</Typography>
                   </Box>
-=======
-            <Grid item xs={6}>
-              <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<LibraryAddIcon />} onClick={handleAddCollection}>Collection</Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Rating
-                name="simple-controlled"
-                value={rating}
-                onChange={(event, newValue) => {
-             
-                  handleSubmitRating(newValue);
-                }}
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <Box display="flex" flexDirection="column" alignItems='center' >
-                <Typography variant="caption" gutterBottom component="div">Publisher: {publisher}</Typography>
-                <Typography variant="caption" gutterBottom component="div">Publish Date: {publishdate}</Typography>
-                <Box display="flex" flexDirection="row" alignItems='center' style={{width: '15rem'}}>
-                  <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
-                  <Typography variant="caption" gutterBottom component="div" style={{marginTop: '1rem'}}>{genres}</Typography>
->>>>>>> sprint1-yasin-final
                 </Box>
 
               </Grid>
@@ -597,7 +457,6 @@ const BookDetail = ({userInfo}) => {
             </Grid>
           </Grid>
 
-<<<<<<< HEAD
           <Grid item xs={6}>
             <Grid container direction="row" spacing={1}>
               <Grid item xs={12}>
@@ -621,31 +480,6 @@ const BookDetail = ({userInfo}) => {
                       />
                     </Box>
                   </Grid>
-=======
-        <Grid item xs={6}>
-          <Grid container direction="row" spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant="h4" style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component="div">{title}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container direction="row" spacing={0}>
-                <Grid item xs={8}>
-                  <Box sx={{ flexGrow: 1, mb: 3}} >
-                    <Typography variant="subtitle1" style={{ fontWeight: 800 }} gutterBottom component="div">by {authur}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={2}>
-                  <Box sx={{ flexGrow: 1, ml: 7}} >
-                    <Rating
-                      name="simple-controlled"
-                      value={ave_rating}
-                      precision={0.01}
-                      size="small"
-                      readOnly
-                    />
-                  </Box>
-                </Grid>
->>>>>>> sprint1-yasin-final
 
                   <Grid item xs={2}>
                     <Box sx={{ flexGrow: 1, ml: 6}} >
@@ -661,7 +495,6 @@ const BookDetail = ({userInfo}) => {
 
 
 
-<<<<<<< HEAD
               <Grid item xs={12}>
                 <Grid container direction="row" spacing={2}>
                   <Grid item xs={12}>
@@ -686,31 +519,6 @@ const BookDetail = ({userInfo}) => {
                     {reviewButtonshow &&
                     <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
                   </Grid>
-=======
-            <Grid item xs={12}>
-              <Grid container direction="row" spacing={2}>
-                <Grid item xs={12}>
-                  <Box sx={{ flexGrow: 1, mt: 8,ml: 0 }} >
-                    <Typography variant="h6" gutterBottom component="div">Community Reviews</Typography>
-                  </Box>
-                  <Divider/>
-                </Grid>
-                <Grid item xs={2}>
-                  <Box sx={{ flexGrow: 1, mt: 1}}>
-                    <Rating
-                      name="simple-controlled"
-                      value={rating}
-                      onChange={(event, newValue) => {
-                        
-                        handleSubmitRating(newValue);
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={5}>
-                  {reviewButtonshow &&
-                  <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
->>>>>>> sprint1-yasin-final
                 </Grid>
               </Grid>
 
@@ -721,7 +529,6 @@ const BookDetail = ({userInfo}) => {
                 {reviews.length > 0 &&  reviews.map((item, i) =>
                   <Grid container direction="row" spacing={2}>
 
-<<<<<<< HEAD
                     <Grid item xs={1}>
                       <Box
                         component="img"
@@ -731,32 +538,6 @@ const BookDetail = ({userInfo}) => {
                         }}
                         alt="avatar"
                         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-=======
-                <Grid item xs={1}>
-                  <Box
-                    component="img"
-                    sx={{
-                      height: 50,
-                      my:1
-                    }}
-                    alt="avatar"
-                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  />
-                </Grid>
-                <Grid item xs={11}>
-                  <Grid container direction="row" spacing={0}>
-                    <Grid item xs={4}>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Rating
-                        size="small"
-                        value={item['rating']}
-                        readOnly
->>>>>>> sprint1-yasin-final
                       />
                     </Grid>
                     <Grid item xs={11}>
@@ -850,29 +631,6 @@ const BookDetail = ({userInfo}) => {
           </Grid>
 
         </Grid>
-<<<<<<< HEAD
-=======
-        <Grid item xs={3}>
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6" display="block" gutterBottom>
-                You may also like ...
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                component="img"
-                sx={{
-                  width: 100,
-                  ml: 0
-                }}
-                alt="book cover"
-                src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-              />
-              <Typography variant="body2" display="block" gutterBottom>
-                Hunger Games
-              </Typography>
->>>>>>> sprint1-yasin-final
 
 
 

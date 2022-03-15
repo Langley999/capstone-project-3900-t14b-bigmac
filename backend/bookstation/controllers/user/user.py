@@ -215,7 +215,6 @@ def update_user_profile():
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
     # sql select origin user
-    token = request.args.get('token')
     target_user_id = session.get(token)
     user = User.query.get(target_user_id)
     if (user == None):

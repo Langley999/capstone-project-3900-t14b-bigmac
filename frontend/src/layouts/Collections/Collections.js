@@ -37,7 +37,7 @@ const Collections = ({userInfo}) => {
 
   useEffect(async () => {
     axios.get(`${url}/collection/getall`, {params: {
-        user: userInfo.username
+        token: localStorage.getItem('token')
       }})
       .then(res => {
         setCollections([...res['data']['collections']]);
@@ -107,7 +107,6 @@ const Collections = ({userInfo}) => {
       // }
 
       axios.post(`${url}/collection/create`, {
-        email: userInfo.email,
         name: newCollection,
         token: localStorage.getItem('token')
       }).then(res => {
@@ -180,7 +179,7 @@ const Collections = ({userInfo}) => {
     const removeCollection = () => {
 
       axios.delete(`${url}/collection/removecollection`, {data: {
-          email: userInfo.email,
+          token: localStorage.getItem('token'),
           collection_id: currentCollection.collection_id
         }
       })
@@ -217,7 +216,7 @@ const Collections = ({userInfo}) => {
     const removeBook = () => {
       console.log(id)
       axios.delete(`${url}/collection/removebook`, {data: {
-          email: userInfo.email,
+          token: localStorage.getItem('token'),
           collection_id: currentCollection.collection_id,
           book_id: id
         }
