@@ -22,10 +22,10 @@ const SuccessPopup = ({ successMsg, snackBarOpen, setSnackBarOpen }) => {
 
   return (
     <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackBarOpen}  onClose = {() =>setSnackBarOpen(false)} autoHideDuration={2000} >
-        <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
-          {successMsg}
-        </Alert>
-      </Snackbar>
+      <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
+        {successMsg}
+      </Alert>
+    </Snackbar>
   )
 }
 

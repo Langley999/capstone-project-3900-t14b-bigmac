@@ -19,6 +19,8 @@ import axios from "axios";
 import ErrorPopup from '../../../components/ErrorPopup';
 import SuccessPopup from '../../../components/ErrorPopup';
 import {url, checkProfileInput} from '../../../components/Helper';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
@@ -70,7 +72,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       password: values.password
     }).then(function (response) {
       console.log('har');
-      setSuccessMsg('Profile details updated!');
+      setSuccessMsg('Profile details updated');
       setShowSuccess(true);
       updateUserInfo(values);
     }).catch(function (error) {
@@ -79,10 +81,22 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     });
   }
 
+  const successStyle = {
+    background: '#2f7c31',
+    border: 0,
+    borderRadius: 3,
+    color: 'white',
+    padding: '0 30px'
+  }
+
   return (
     <div>
-      <SuccessPopup successMsg={successMsg} showError={showSuccess} setShowError={setShowSuccess}/>
-      <ErrorPopup errorMsg={errorMsg} showError={showError} setShowError={setShowError}/>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
+        <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
+          {successMsg}
+        </Alert>
+      </Snackbar>
       <form
         autoComplete="off"
         noValidate
