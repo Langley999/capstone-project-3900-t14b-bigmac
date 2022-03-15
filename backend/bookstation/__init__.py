@@ -24,6 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookstation.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'BIGMAC'
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
 CORS(app)
 Session(app)
 app.register_error_handler(Exception, defaultHandler)

@@ -66,6 +66,7 @@ const GoalPage = ({ display, userInfo }) => {
       goal: goal
     }).then(function (response) {
       setGoalLast(goal);
+      setGoal(goal);
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');

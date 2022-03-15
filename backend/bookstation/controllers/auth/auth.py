@@ -42,6 +42,8 @@ def test():
 
 @app.route(url_prefix + "/login", methods=["POST"])
 def login():
+    for item in session:
+        print(item)
     """
     Function for users to login. It will store new valid token to
     redis and session.
@@ -74,12 +76,10 @@ def login():
     # generate token and store
     token = generate_token(user.username)
     #session[token] = user.user_id
-    session[email] = token
+    session[token] = user.user_id
 
     return dumps({
-        'token': token,
-        'username': user.username
-
+        'token': token
     })
 
 @app.route(url_prefix + "/register", methods=["POST"])
@@ -148,9 +148,10 @@ def logout():
     except:
         raise error.BadReqError(description="post body error")
     try:
-        stored_token = session.get(token)
+        session.get(token)
     except:
         raise error.AccessError(description="user doesn't exist or invalid token")
+
 
     session.pop(token, None)
     return dumps({})
