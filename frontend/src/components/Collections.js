@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import '../App.css';
 
 
+=======
+>>>>>>> update profile
 
 
 const Collections = () => {
 
 
   return (
-    <div className='centre'>
-      <h1>collections</h1>
-    </div>
+    <h1>collections</h1>
   );
 };
 export default Collections;

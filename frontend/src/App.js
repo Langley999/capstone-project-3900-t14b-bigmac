@@ -30,6 +30,7 @@ import {AvatarBanner} from './components/AvatarBanner';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
+<<<<<<< HEAD
 =======
 import Login from './layouts/Login';
 import Register from './layouts/Register';
@@ -54,6 +55,9 @@ function App() {
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
 >>>>>>> ready to demo
+=======
+  const [userInfo, setUserInfo] = useState({});
+>>>>>>> update profile
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
@@ -70,6 +74,7 @@ function App() {
     setRadioValue(radioValue);
   }
 
+<<<<<<< HEAD
   const updateSearchValue = (searchValue) => {
     setSearchValue(searchValue);
   }
@@ -79,6 +84,12 @@ function App() {
   }
 
 >>>>>>> ready to demo
+=======
+  const updateUserInfo = (info) => {
+    setUserInfo(info);
+  }
+
+>>>>>>> update profile
   return (
     <div>
       <Router>
@@ -88,9 +99,16 @@ function App() {
           <Route path='/' element={
             <>
               <Header ifLogin={ifLogin}/>
+<<<<<<< HEAD
               
 
               <Outlet />
+=======
+              <div className='centre'>
+                <Outlet />
+              </div>
+
+>>>>>>> update profile
             </>
           }>
             <Route path='/' element={<Home ifLogin={ifLogin}/>} />
@@ -103,12 +121,12 @@ function App() {
             
             <Route path='user' element={
               <>
+                <AvatarBanner userInfo={userInfo}/>
                 <NavTabs/>
-                <AvatarBanner/>
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile />}/>
+              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections />}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics />}/>
@@ -165,6 +183,7 @@ function App() {
             </>
           }>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Route path="login" element={<Login updateLogin={updateLogin}/>} />
             
             <Route path="register" element={<Register updateLogin={updateLogin}/>} />
@@ -172,6 +191,10 @@ function App() {
             <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
             <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
 >>>>>>> ready to demo
+=======
+            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+>>>>>>> update profile
           </Route>
         </Routes>
       </Router>

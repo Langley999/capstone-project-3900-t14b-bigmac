@@ -1,16 +1,11 @@
 import React, { useState, useRef } from 'react';
-import '../App.css'
-
-
 
 
 const Notifications = () => {
 
 
   return (
-    <div className='centre'>
-      <h1>notifications</h1>
-    </div>
+    <h1>notifications</h1>
   );
 };
 export default Notifications;

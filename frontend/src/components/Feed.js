@@ -1,16 +1,11 @@
 import React, { useState, useRef } from 'react';
-import '../App.css'
-
-
 
 
 const Feed = () => {
 
 
   return (
-    <div className='centre'>
-      <h1>feed</h1>
-    </div>
+    <h1>feed</h1>
   );
 };
 export default Feed;

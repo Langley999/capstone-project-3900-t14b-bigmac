@@ -25,6 +25,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 <<<<<<< HEAD
 
+<<<<<<< HEAD
 
 // const StyledLink = styled(Link)`
 //     text-decoration: none;
@@ -40,6 +41,8 @@ import { useNavigate } from 'react-router-dom';
 import '../App.css';
 >>>>>>> ready to demo
 
+=======
+>>>>>>> update profile
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: theme.shadows[3],

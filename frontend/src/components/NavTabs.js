@@ -6,7 +6,10 @@ import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import '../App.css'
+=======
+>>>>>>> update profile
 import { Link } from "react-router-dom";
 =======
 import { Link } from "react-router-dom";
@@ -81,6 +84,7 @@ const TabsList = styled(TabsListUnstyled)`
 
 const NavTabs = () => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   const routes = ['/user/profile', '/user/collections']
   return (
     <div className='centre'>
@@ -128,6 +132,10 @@ const NavTabs = () => {
 =======
 
   return (
+=======
+
+  return (
+>>>>>>> update profile
     <TabsUnstyled>
       <TabsList defaultValue='0'>
         <Tab
@@ -168,7 +176,10 @@ const NavTabs = () => {
         </Tab>
       </TabsList>
     </TabsUnstyled>
+<<<<<<< HEAD
 >>>>>>> ready to demo
+=======
+>>>>>>> update profile
   );
 }
 
