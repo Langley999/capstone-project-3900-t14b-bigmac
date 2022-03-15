@@ -1,6 +1,6 @@
 from bookstation import db
 #from bookstation.models.book_sys import Collection_book
-from bookstation.models.book_sys import Collection_book, Review
+#from bookstation.models.book_sys import Collection_book, Review
 
 class Follow_relationship(db.Model):
     follower_user_id = db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
@@ -35,7 +35,7 @@ class Post(db.Model):
     def __init__(self, content):
         self.content = content
 
-class Collection(db.Model):
+class Collection(db.Model): #fix table
 
     __tablename__ = 'collection'
 
@@ -44,7 +44,6 @@ class Collection(db.Model):
     is_default = db.Column(db.Integer)
     created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-    books = db.relationship('Book', secondary=Collection_book.__tablename__, backref='collection')
     user = db.relationship('User')
 
 
