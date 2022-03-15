@@ -43,11 +43,13 @@ def search_book_author(author_name):
     authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
     allbooks = []
     allauthors = []
+    
     for author in authors:
         # print(author.books)
-        #book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
-        books = author.books
-        for book in books:
+        book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
+        
+        for book_author in book_authors:
+            book = book_author.book
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title

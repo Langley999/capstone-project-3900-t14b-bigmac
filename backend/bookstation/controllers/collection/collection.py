@@ -112,13 +112,14 @@ def get_collection():
           - when the user does not exist
     """
     # user_name = request.args.get('user')
-    collection_id = request.args.get('collection_id')
+    target_collection_id = request.args.get('collection_id')
     try:
-      collection = Collection.query.get(collection_id)
-#       collection_books = Collection_book.query.filter_by(collection_id=collection_id)
+      collection = Collection.query.get(target_collection_id)
+      collection_books = Collection_book.query.filter_by(collection_id=target_collection_id)
       booklist = []
-      for book in collection.books:
+      for collection_book in collection_books:
         #book = Book.query.filter_by(book_id=collection_book.book_id)
+        book = collection_book.book
         new = {}
         new['id'] = book.book_id
         new['title'] = book.title
