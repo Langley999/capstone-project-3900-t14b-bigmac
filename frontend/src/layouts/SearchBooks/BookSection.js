@@ -1,11 +1,8 @@
 import React, { useState, useRef } from 'react';
 import Card from "@material-ui/core/Card";
 import {CardActionArea} from "@mui/material";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import {Link} from "react-router-dom";
-import {height} from "@mui/system";
 import Box from "@mui/material/Box";
 import Rating from '@mui/material/Rating';
 
