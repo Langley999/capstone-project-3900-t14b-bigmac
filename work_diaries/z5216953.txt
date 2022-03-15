@@ -7,3 +7,9 @@ Week 2:
 - I wrote user stories and acceptance criteria on login/profile, visualization,
 friends/feeds and collections.
 - I drew interface flow diagram.
+
+Week 3:
+- I made initial page, header, navbar for frontend
+
+Week 4:
+- I made profile page, collection page, search books result page for frontend
