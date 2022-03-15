@@ -30,6 +30,11 @@ def get_goal():
     # sql select user
     user = User.query.filter_by(email=operator_email).first()
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
+    if collection == None:
+        return dumps({
+            "goal": -1,
+            "finished": 0,
+        })
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
 
     month = datetime.date.today().month

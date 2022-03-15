@@ -47,7 +47,7 @@ const GoalPage = ({ display, userInfo }) => {
     }).catch(function (error) {
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setTimeout(() => {setErrorMsg('')}, 1000);
     });
   }
 
@@ -56,7 +56,7 @@ const GoalPage = ({ display, userInfo }) => {
     if (goal < 0) {
       setSuccessMsg('');
       setErrorMsg('Goal cannot be set to a negative number');
-      setTimeout(() => {setErrorMsg('')}, 2000);
+      setTimeout(() => {setErrorMsg('')}, 1000);
       getGoal();
       return;
     }
@@ -69,12 +69,12 @@ const GoalPage = ({ display, userInfo }) => {
       setErrorMsg('');
       setSuccessMsg('Reading goal has been updated');
       console.log('success');
-      setTimeout(() => {setSuccessMsg('')}, 5000);
+      setTimeout(() => {setSuccessMsg('')}, 1000);
 
     }).catch(function (error) {
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.message));
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setTimeout(() => {setErrorMsg('')}, 1000);
     });
   }
 
