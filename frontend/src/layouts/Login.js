@@ -22,11 +22,11 @@ import {checkProfileInput} from '../components/Helper';
 //   const navigate = useNavigate();
 //   const email = 'demo4@gmail.com';
 //   const password = 'ilovecat';
-
-
+//
+//
 //   const submitLogin = () => {
 //     updateLogin(true);
-
+//
 //     axios.post(`${url}/auth/login`, {
 //       email: email,
 //       password: password
@@ -50,7 +50,7 @@ import {checkProfileInput} from '../components/Helper';
 //       alert(error.response.data.message);
 //     });
 //   }
-
+//
 //     return (
 //       <button onClick={submitLogin}>Login</button>
 //     );

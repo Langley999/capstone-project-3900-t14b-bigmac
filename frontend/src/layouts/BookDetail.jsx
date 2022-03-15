@@ -2,23 +2,15 @@ import axios from "axios";
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
-import Pagination from '@mui/material/Pagination';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import Popover from '@mui/material/Popover';
 import TextField from '@mui/material/TextField';
@@ -85,7 +77,6 @@ const BookDetail = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState("");
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
-  
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -116,36 +107,36 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-    .then(function (response) {
+      .then(function (response) {
 
-      setReviewFormOn(false);
-      setreviewButtonshow(false);
-      var currentdate = new Date(); 
-      var datetime = currentdate.getDate() + "/"
-                      + (currentdate.getMonth()+1)  + "/" 
-                      + currentdate.getFullYear() + " "  
-                      + currentdate.getHours() + ":"  
-                      + currentdate.getMinutes() + ":" 
-                      + currentdate.getSeconds();
-      let rev = {};
-      rev['time'] = datetime;
-      rev['content'] = reviewValue;
-      rev['username'] = userInfo.username;
-      rev['rating'] = rating;
-      setReviews(review => [rev,...review] );
+        setReviewFormOn(false);
+        setreviewButtonshow(false);
+        var currentdate = new Date();
+        var datetime = currentdate.getDate() + "/"
+          + (currentdate.getMonth()+1)  + "/"
+          + currentdate.getFullYear() + " "
+          + currentdate.getHours() + ":"
+          + currentdate.getMinutes() + ":"
+          + currentdate.getSeconds();
+        let rev = {};
+        rev['time'] = datetime;
+        rev['content'] = reviewValue;
+        rev['username'] = userInfo.username;
+        rev['rating'] = rating;
+        setReviews(review => [rev,...review] );
 
-      
-    })
-    .catch(function (error) {
 
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-    });
+      })
+      .catch(function (error) {
+
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
   }
 
   const handleSubmitRating = (newValue) => {
-    
+
     const body = JSON.stringify( {
       book_id: book_id,
       rating: newValue,
@@ -157,37 +148,37 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-    .then(function (response) {
-      let newone = [];
-      for (let i = 0; i < reviews.length; i++) {
-        if (reviews[i]['username'] == userInfo['username']) {
-          reviews[i]['rating'] = newValue;
+      .then(function (response) {
+        let newone = [];
+        for (let i = 0; i < reviews.length; i++) {
+          if (reviews[i]['username'] == userInfo['username']) {
+            reviews[i]['rating'] = newValue;
 
+          }
+          newone.push(reviews[i]);
         }
-        newone.push(reviews[i]);
-      }
-      setReviews(newone);
-      if (rating == 0) {
-        
-        let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
-        setN_rating(n_rating+1);
-        setaveRating(newrating.toFixed(2));
-        setRating(newValue);
-        console.log('success');          
-      } else {
-        let newrating = (newValue+n_rating*ave_rating-rating)/n_rating; 
+        setReviews(newone);
+        if (rating == 0) {
 
-        setaveRating(newrating.toFixed(2));
-        setRating(newValue);
-      }
-    
-    })
-    .catch(function (error) {
+          let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
+          setN_rating(n_rating+1);
+          setaveRating(newrating.toFixed(2));
+          setRating(newValue);
+          console.log('success');
+        } else {
+          let newrating = (newValue+n_rating*ave_rating-rating)/n_rating;
 
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-    });
+          setaveRating(newrating.toFixed(2));
+          setRating(newValue);
+        }
+
+      })
+      .catch(function (error) {
+
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
   }
 
 
@@ -266,7 +257,6 @@ const BookDetail = ({userInfo}) => {
         /*
         setwarningcontent(error);
         setwarningopen(true);*/
-        
       });
   }
   const handleAddToCollection = (key) => {
@@ -348,22 +338,22 @@ const BookDetail = ({userInfo}) => {
 
       }
     })
-    .then(function (response) {
-      console.log(response);
-      let review = response['data']['reviews'];
-      
-      if (review.length > 0) {
-        setRating(review[0]['rating']);
-        if (review[0]['content'] != null) {
-          setreviewButtonshow(false);
-        }
-        
-      }
+      .then(function (response) {
+        console.log(response);
+        let review = response['data']['reviews'];
 
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+        if (review.length > 0) {
+          setRating(review[0]['rating']);
+          if (review[0]['content'] != null) {
+            setreviewButtonshow(false);
+          }
+
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
@@ -373,17 +363,17 @@ const BookDetail = ({userInfo}) => {
 
       }
     })
-    .then(function (response) {
-      if (response['data']['success'] == true) {
-        setbtnDisabled(true);
-        setreadingButtonText('completed');        
-      }
+      .then(function (response) {
+        if (response['data']['success'] == true) {
+          setbtnDisabled(true);
+          setreadingButtonText('completed');
+        }
 
-    })
-    .catch(function (error) {
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-    });
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+      });
 
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
@@ -420,318 +410,318 @@ const BookDetail = ({userInfo}) => {
   }, []);
 
   return (
-  <div>
-  {genres &&
-    <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
-      
-      <Grid container direction="row" spacing={3}>
-        <Grid item xs={3}>
+    <div>
+      {genres &&
+      <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
 
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
-            <Grid item xs={12}>
-              <Box
-                component="img"
-                sx={{
-                  height: 350,
-                  my:2
-                }}
-                alt="book cover"
-                src={cover}
-              />
-            </Grid>
+        <Grid container direction="row" spacing={3}>
+          <Grid item xs={3}>
 
-            <Grid item xs={6}>
-              <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<CheckCircleOutlineIcon />} disabled={btnDisabled} onClick={handleCompleteReading}>{readingButtonText}</Button>
-            </Grid>
+            <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
+              <Grid item xs={12}>
+                <Box
+                  component="img"
+                  sx={{
+                    height: 350,
+                    my:2
+                  }}
+                  alt="book cover"
+                  src={cover}
+                />
+              </Grid>
 
-            <Grid item xs={6}>
-              <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<LibraryAddIcon />} onClick={handleAddCollection}>Collection</Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Rating
-                name="simple-controlled"
-                value={rating}
-                onChange={(event, newValue) => {
-             
-                  handleSubmitRating(newValue);
-                }}
-              />
-            </Grid>
-            <Grid item xs={7}>
-              <Box display="flex" flexDirection="column" alignItems='center' >
-                <Typography variant="caption" gutterBottom component="div">Publisher: {publisher}</Typography>
-                <Typography variant="caption" gutterBottom component="div">Publish Date: {publishdate}</Typography>
-                <Box display="flex" flexDirection="row" alignItems='center' style={{width: '15rem'}}>
-                  <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
-                  <Typography variant="caption" gutterBottom component="div" style={{marginTop: '1rem'}}>{genres}</Typography>
+              <Grid item xs={6}>
+                <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<CheckCircleOutlineIcon />} disabled={btnDisabled} onClick={handleCompleteReading}>{readingButtonText}</Button>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<LibraryAddIcon />} onClick={handleAddCollection}>Collection</Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Rating
+                  name="simple-controlled"
+                  value={rating}
+                  onChange={(event, newValue) => {
+
+                    handleSubmitRating(newValue);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={7}>
+                <Box display="flex" flexDirection="column" alignItems='center' >
+                  <Typography variant="caption" gutterBottom component="div">Publisher: {publisher}</Typography>
+                  <Typography variant="caption" gutterBottom component="div">Publish Date: {publishdate}</Typography>
+                  <Box display="flex" flexDirection="row" alignItems='center' style={{width: '15rem'}}>
+                    <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
+                    <Typography variant="caption" gutterBottom component="div" style={{marginTop: '1rem'}}>{genres}</Typography>
+                  </Box>
                 </Box>
-              </Box>
+
+              </Grid>
 
             </Grid>
-
           </Grid>
-        </Grid>
 
-        <Grid item xs={6}>
-          <Grid container direction="row" spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant="h4" style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component="div">{title}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container direction="row" spacing={0}>
-                <Grid item xs={8}>
-                  <Box sx={{ flexGrow: 1, mb: 3}} >
-                    <Typography variant="subtitle1" style={{ fontWeight: 800 }} gutterBottom component="div">by {authur}</Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={2}>
-                  <Box sx={{ flexGrow: 1, ml: 7}} >
-                    <Rating
-                      name="simple-controlled"
-                      value={ave_rating}
-                      precision={0.01}
-                      size="small"
-                      readOnly
-                    />
-                  </Box>
-                </Grid>
-
-                <Grid item xs={2}>
-                  <Box sx={{ flexGrow: 1, ml: 6}} >
-                    <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating})</Typography>
-                  </Box>
-                </Grid>
+          <Grid item xs={6}>
+            <Grid container direction="row" spacing={1}>
+              <Grid item xs={12}>
+                <Typography variant="h4" style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component="div">{title}</Typography>
               </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Typography variant="body1" gutterBottom>{blurb}</Typography>
-            </Grid>
-
-
-
-            <Grid item xs={12}>
-              <Grid container direction="row" spacing={2}>
-                <Grid item xs={12}>
-                  <Box sx={{ flexGrow: 1, mt: 8,ml: 0 }} >
-                    <Typography variant="h6" gutterBottom component="div">Community Reviews</Typography>
-                  </Box>
-                  <Divider/>
-                </Grid>
-                <Grid item xs={2}>
-                  <Box sx={{ flexGrow: 1, mt: 1}}>
-                    <Rating
-                      name="simple-controlled"
-                      value={rating}
-                      onChange={(event, newValue) => {
-                        
-                        handleSubmitRating(newValue);
-                      }}
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={5}>
-                  {reviewButtonshow &&
-                  <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
-                </Grid>
-              </Grid>
-            </Grid>
-
-
-
-            <Grid item xs={12}>
-            {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
-              {reviews.length > 0 &&  reviews.map((item, i) => 
-              <Grid container direction="row" spacing={2}>
-
-                <Grid item xs={1}>
-                  <Box
-                    component="img"
-                    sx={{
-                      height: 50,
-                      my:1
-                    }}
-                    alt="avatar"
-                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                  />
-                </Grid>
-                <Grid item xs={11}>
-                  <Grid container direction="row" spacing={0}>
-                    <Grid item xs={4}>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
+              <Grid item xs={12}>
+                <Grid container direction="row" spacing={0}>
+                  <Grid item xs={8}>
+                    <Box sx={{ flexGrow: 1, mb: 3}} >
+                      <Typography variant="subtitle1" style={{ fontWeight: 800 }} gutterBottom component="div">by {authur}</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Box sx={{ flexGrow: 1, ml: 7}} >
                       <Rating
+                        name="simple-controlled"
+                        value={ave_rating}
+                        precision={0.01}
                         size="small"
-                        value={item['rating']}
                         readOnly
+                      />
+                    </Box>
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    <Box sx={{ flexGrow: 1, ml: 6}} >
+                      <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating})</Typography>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="body1" gutterBottom>{blurb}</Typography>
+              </Grid>
+
+
+
+              <Grid item xs={12}>
+                <Grid container direction="row" spacing={2}>
+                  <Grid item xs={12}>
+                    <Box sx={{ flexGrow: 1, mt: 8,ml: 0 }} >
+                      <Typography variant="h6" gutterBottom component="div">Community Reviews</Typography>
+                    </Box>
+                    <Divider/>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Box sx={{ flexGrow: 1, mt: 1}}>
+                      <Rating
+                        name="simple-controlled"
+                        value={rating}
+                        onChange={(event, newValue) => {
+
+                          handleSubmitRating(newValue);
+                        }}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={5}>
+                    {reviewButtonshow &&
+                    <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
+                  </Grid>
+                </Grid>
+              </Grid>
+
+
+
+              <Grid item xs={12}>
+                {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
+                {reviews.length > 0 &&  reviews.map((item, i) =>
+                  <Grid container direction="row" spacing={2}>
+
+                    <Grid item xs={1}>
+                      <Box
+                        component="img"
+                        sx={{
+                          height: 50,
+                          my:1
+                        }}
+                        alt="avatar"
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                       />
                     </Grid>
                     <Grid item xs={11}>
-                      <Typography variant="body2" display="block" gutterBottom>
-                        {item['content']}
-                      </Typography>
+                      <Grid container direction="row" spacing={0}>
+                        <Grid item xs={4}>
+                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Rating
+                            size="small"
+                            value={item['rating']}
+                            readOnly
+                          />
+                        </Grid>
+                        <Grid item xs={11}>
+                          <Typography variant="body2" display="block" gutterBottom>
+                            {item['content']}
+                          </Typography>
+                        </Grid>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </Grid>
 
-              </Grid>)
-              }
-              {/*
+                  </Grid>)
+                }
+                {/*
               <Grid item xs={12}>
                 <Box sx={{ flexGrow: 1, mt: 3,ml: 50,mb: 5}} >
                   <Pagination count={10} size="small" />
                 </Box>
               </Grid>
             */}
-            </Grid>
+              </Grid>
 
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={3}>
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6" display="block" gutterBottom>
-                You may also like ...
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                component="img"
-                sx={{
-                  width: 100,
-                  ml: 0
-                }}
-                alt="book cover"
-                src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-              />
-              <Typography variant="body2" display="block" gutterBottom>
-                Hunger Games
-              </Typography>
+          <Grid item xs={3}>
+            <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h6" display="block" gutterBottom>
+                  You may also like ...
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                  component="img"
+                  sx={{
+                    width: 100,
+                    ml: 0
+                  }}
+                  alt="book cover"
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
+                />
+                <Typography variant="body2" display="block" gutterBottom>
+                  Hunger Games
+                </Typography>
+
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                  component="img"
+                  sx={{
+                    width: 100,
+                    my:0
+                  }}
+                  alt="book cover"
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
+                />
+                <Typography variant="body2" display="block" gutterBottom>
+                  Hunger Games
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Box
+                  component="img"
+                  sx={{
+                    width: 100,
+                    my:0
+                  }}
+                  alt="book cover"
+                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
+                />
+                <Typography variant="body2" display="block" gutterBottom>
+                  Hunger Games
+                </Typography>
+              </Grid>
 
             </Grid>
-            <Grid item xs={3}>
-              <Box
-                component="img"
-                sx={{
-                  width: 100,
-                  my:0
-                }}
-                alt="book cover"
-                src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-              />
-              <Typography variant="body2" display="block" gutterBottom>
-                Hunger Games
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                component="img"
-                sx={{
-                  width: 100,
-                  my:0
-                }}
-                alt="book cover"
-                src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-              />
-              <Typography variant="body2" display="block" gutterBottom>
-                Hunger Games
-              </Typography>
-            </Grid>
-
           </Grid>
+
         </Grid>
 
-      </Grid>
 
 
 
+        <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
+          <Box
+            sx={{
+              width: 1000,
+              height: 500,
+              maxWidth: '100%',
+            }}
+          >
+            <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
+              <DialogTitle>Write a review</DialogTitle>
+              <Rating
+                name="simple-controlled"
+                value={rating}
+                onChange={(event, newValue) => {
 
-      <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
-        <Box
-          sx={{
-            width: 1000,
-            height: 500,
-            maxWidth: '100%',
+                  handleSubmitRating(newValue);
+                }}
+              />
+              <Box
+                sx={{
+                  paddingTop:3,
+                  width: 500,
+                  maxWidth: '100%',
+                }}
+              >
+                <TextField fullWidth label="" id="fullWidth" multiline={true} value={reviewValue}
+                           onChange={(e) => setreviewValue(e.target.value)} rows={12} />
+              </Box>
+              <Button onClick={handleSubmitReview}>Submit</Button>
+            </Grid>
+
+          </Box>
+        </Dialog>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleAddCollectionClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
           }}
         >
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
-            <DialogTitle>Write a review</DialogTitle>
-            <Rating
-              name="simple-controlled"
-              value={rating}
-              onChange={(event, newValue) => {
-         
-                handleSubmitRating(newValue);
-              }}
-            />
-            <Box
-              sx={{
-                paddingTop:3,
-                width: 500,
-                maxWidth: '100%',
-              }}
-            >
-              <TextField fullWidth label="" id="fullWidth" multiline={true} value={reviewValue}
-            onChange={(e) => setreviewValue(e.target.value)} rows={12} />
-            </Box>
-            <Button onClick={handleSubmitReview}>Submit</Button>
+          <Typography sx={{ p: 2 }}>Add to collection</Typography>
+          <Grid container direction="column" spacing={0}>
+            <Button startIcon={<AddIcon />} onClick={() => handleCreateCollection()}>Create</Button>
+            {collection_names && collection_names.length >0 &&
+            collection_names.map((item, i) =>
+              <Button key={collection_ids[i]} onClick={() => handleAddToCollection(collection_ids[i])} >{item}</Button>
+            )
+            }
           </Grid>
 
-        </Box>
-      </Dialog>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleAddCollectionClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <Typography sx={{ p: 2 }}>Add to collection</Typography>
-        <Grid container direction="column" spacing={0}>
-          <Button startIcon={<AddIcon />} onClick={() => handleCreateCollection()}>Create</Button>
-          {collection_names && collection_names.length >0 &&
-          collection_names.map((item, i) =>
-            <Button key={collection_ids[i]} onClick={() => handleAddToCollection(collection_ids[i])} >{item}</Button>
-          )
-          }
-        </Grid>
-
-      </Popover>
+        </Popover>
 
 
-      <Dialog open={create_form} >
-        <DialogTitle>Create a new collection to add this book</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please enter your new collection name
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="collection name"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={textFieldValue}
-            onChange={(e) => settextFieldValue(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
-        </DialogActions>
+        <Dialog open={create_form} >
+          <DialogTitle>Create a new collection to add this book</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please enter your new collection name
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="collection name"
+              type="text"
+              fullWidth
+              variant="standard"
+              value={textFieldValue}
+              onChange={(e) => settextFieldValue(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
+          </DialogActions>
 
-      </Dialog>  
-      <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
-      <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
-    </Box>}
+        </Dialog>
+        <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
+        <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
+      </Box>}
     </div>
 
   );

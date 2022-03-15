@@ -50,12 +50,14 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
         color='warning'
         fullWidth
         variant="text"
+        sx={{textTransform: "none"}}
       >
         3 followings
       </Button>
       <Button
         fullWidth
         variant="text"
+        sx={{textTransform: "none"}}
       >
         4 followers
       </Button>

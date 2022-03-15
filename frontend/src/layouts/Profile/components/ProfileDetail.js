@@ -33,24 +33,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     setValues(userInfo);
   }, [])
 
-  const handleIfShow = () => {
-    setIfShow(true);
-  }
-
-  const getButtonStatus = () => {
-    if (ifShow)
-      return 'none';
-    else
-      return 'block';
-  }
-
-  const getPasswordFieldStatus = () => {
-    if (ifShow)
-      return 'block';
-    else
-      return 'none';
-  }
-
 
   const handleChange = (event) => {
     setValues({
@@ -138,7 +120,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 name="username"
                 onChange={handleChange}
                 required
-                value={values.username}
+                value={values.username ?? ''}
                 variant="outlined"
               />
               <TextField
@@ -147,18 +129,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 name="email"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={values.email ?? ''}
                 variant="outlined"
               />
-              <Button sx={{
-                display: getButtonStatus
-              }}
-                onClick={handleIfShow}
-              >
-                Change Password
-              </Button>
               <FormControl
-                sx={{ m: 1, width: '100%', display: getPasswordFieldStatus}}
+                sx={{ m: 1, width: '100%'}}
                 variant="outlined"
               >
                 <InputLabel htmlFor="input-password">Password</InputLabel>
@@ -166,7 +141,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   fullWidth
                   id="input-password"
                   type={ifVisible ? 'text' : 'password'}
-                  value={values.password}
+                  value={values.password ?? ''}
                   onChange={handleChangePwd('password')}
                   endAdornment={
                     <InputAdornment position="end">

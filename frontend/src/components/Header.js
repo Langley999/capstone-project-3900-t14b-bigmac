@@ -26,6 +26,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import axios from "axios";
 import {url} from './Helper';
 import { useNavigate } from 'react-router-dom';
+import '../App.css';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -79,7 +80,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -144,11 +145,26 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
+        <Tooltip title='Home'>
+          <IconButton sx={{ ml: 1 }} component={Link} to='/'>
+            <HomeIcon fontSize="large"/>
+          </IconButton>
+        </Tooltip>
       </>
     )
   }
 
   const Dropdown = () => {
+    const submitLogout = () => {
+      axios.post(`${url}/auth/logout`, {
+        email: userInfo.email,
+        token: localStorage.getItem('token')
+      }).then(res => {
+        updateLogin(false);
+        navigate('/');
+      })
+    }
+
     return (
       <Menu
         anchorEl={anchorEl}
@@ -185,12 +201,6 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to='/'>
-          <ListItemIcon>
-            <HomeIcon fontSize="small" />
-          </ListItemIcon>
-          Home
-        </MenuItem>
         <MenuItem component={Link} to='/user/profile'>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -216,7 +226,7 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
           Analytics
         </MenuItem>
         <Divider/>
-        <MenuItem>
+        <MenuItem onClick={submitLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
@@ -242,11 +252,16 @@ function Header ({ ifLogin, userInfo, searchValue, updateSearchValue, radioValue
             px: 2
           }}
         >
-          <Slogan>
-              BookStation
-          </Slogan>
+          <Box component={Link} to='/' className='remove-underline' sx={{color: '#6985c4'}} >
+            <Slogan >
+                BookStation
+            </Slogan>
+          </Box>
           <Box component="form">
             <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
               <StyledInputBase
                 placeholder="Search…"
                 value={searchValue}

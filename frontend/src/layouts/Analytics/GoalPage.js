@@ -34,9 +34,9 @@ const GoalPage = ({ display, userInfo }) => {
   // get goal that user set
   const getGoal = () => {
     axios.get(`${url}/user/checkgoal`, {params: {
-      operator: userInfo.email,
-      token: localStorage.getItem('token')
-    }}).then(function (response) {
+        operator: userInfo.email,
+        token: localStorage.getItem('token')
+      }}).then(function (response) {
       if (response['data']['goal'] === -1) {
         setGoal(0);
       } else {
@@ -126,7 +126,7 @@ const GoalPage = ({ display, userInfo }) => {
               <div>
                 <span>Remaining</span>
                 <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
-                  <CardContent style={{padding: "10px", textAlign: "center"}}>{goalSubmit-completed}</CardContent>
+                  <CardContent style={{padding: "10px", textAlign: "center"}}>{(goalSubmit-completed) < 0 ? 0 : (goalSubmit-completed)}</CardContent>
                 </Card>
               </div>
             </div>
