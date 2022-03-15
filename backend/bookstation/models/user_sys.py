@@ -1,4 +1,5 @@
 from bookstation import db
+<<<<<<< HEAD
 from bookstation.models.book_sys import Collection_book, Review
 '''
 follow_relationship = db.Table('follow_relationship',
@@ -6,6 +7,10 @@ follow_relationship = db.Table('follow_relationship',
     db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
 )
 '''
+=======
+#from bookstation.models.book_sys import Collection_book
+from bookstation.models.book_sys import Collection_book, Review
+>>>>>>> ready to demo
 
 class Follow_relationship(db.Model):
     follower_user_id = db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
@@ -21,10 +26,13 @@ class User(db.Model):
     username = db.Column(db.String(32), unique=True, nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256))
+<<<<<<< HEAD
     #posts = db.relationship('Post')
     collections = db.relationship('Collection')
     #reviews = db.relationship('Review')
     #followers = db.relationship('Follow_relationship')
+=======
+>>>>>>> ready to demo
 
     def __init__(self, username, email, password):
         self.username   = username
@@ -53,8 +61,12 @@ class Collection(db.Model):
     is_default = db.Column(db.Integer)
     created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+<<<<<<< HEAD
 
     books = db.relationship('Collection_book')
+=======
+    books = db.relationship('Book', secondary=Collection_book.__tablename__, backref='collection')
+>>>>>>> ready to demo
     user = db.relationship('User')
 
 
@@ -63,3 +75,19 @@ class Collection(db.Model):
         self.name = name
         self.created_time = time
         self.user_id = user_id
+<<<<<<< HEAD
+=======
+
+class Goal(db.Model):
+    __tablename__ = 'goal'
+    goal_id = db.Column(db.Integer, primary_key=True)
+    created_date = db.Column(db.Date)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    books_set = db.Column(db.Integer)
+    books_completed = db.Column(db.Integer)
+    def __init__(self, user_id, created_date, books_set,books_completed):
+        self.user_id = user_id
+        self.created_date = created_date
+        self.books_set = books_set
+        self.books_completed = books_completed
+>>>>>>> ready to demo

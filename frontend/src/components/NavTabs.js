@@ -5,8 +5,13 @@ import TabsListUnstyled from '@mui/base/TabsListUnstyled';
 import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
+<<<<<<< HEAD
 import '../App.css'
 import { Link } from "react-router-dom";
+=======
+import { Link } from "react-router-dom";
+import '../App.css';
+>>>>>>> ready to demo
 
 const indigo = {
   50: '#e8eaf6',
@@ -75,6 +80,7 @@ const TabsList = styled(TabsListUnstyled)`
 `;
 
 const NavTabs = () => {
+<<<<<<< HEAD
   const routes = ['/user/profile', '/user/collections']
   return (
     <div className='centre'>
@@ -119,6 +125,50 @@ const NavTabs = () => {
         </TabsList>
       </TabsUnstyled>
     </div>
+=======
+
+  return (
+    <TabsUnstyled>
+      <TabsList defaultValue='0'>
+        <Tab
+          value='0'
+          label='Profile'
+          component={Link}
+          to='/user/profile'
+          className='remove-underline'
+        >
+          Profile
+        </Tab>
+        <Tab
+          value='1'
+          label='Collections'
+          component={Link}
+          to='/user/collections'
+          className='remove-underline'
+        >
+          Collections
+        </Tab>
+        <Tab
+          value='2'
+          label='Posts'
+          component={Link}
+          to='/user/posts'
+          className='remove-underline'
+        >
+          Posts
+        </Tab>
+        <Tab
+          value='3'
+          label='Analytics'
+          component={Link}
+          to='/user/analytics'
+          className='remove-underline'
+        >
+          Analytics
+        </Tab>
+      </TabsList>
+    </TabsUnstyled>
+>>>>>>> ready to demo
   );
 }
 

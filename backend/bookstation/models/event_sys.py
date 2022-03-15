@@ -1,4 +1,5 @@
 from bookstation import db
+<<<<<<< HEAD
 '''
 quiz_user = db.Table('quiz_user',
     db.Column('quiz_id', db.Integer, db.ForeignKey('quiz.quiz_id'), primary_key=True),
@@ -10,6 +11,9 @@ user_badge = db.Table('user_badge',
     db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
 )
 '''
+=======
+
+>>>>>>> ready to demo
 class Quiz_user(db.Model):
     quiz_id = db.Column('quiz_id', db.Integer, db.ForeignKey('quiz.quiz_id'), primary_key=True)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
@@ -28,7 +32,10 @@ class Admin(db.Model):
 
     admin_id = db.Column(db.Integer, primary_key=True)
     password = db.Column(db.String(32))
+<<<<<<< HEAD
     #quizzes = db.relationship('Quiz')
+=======
+>>>>>>> ready to demo
 
 class Badge(db.Model):
 
@@ -36,7 +43,10 @@ class Badge(db.Model):
 
     badge_id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String(1024))
+<<<<<<< HEAD
     #users = db.relationship('User_badge', lazy='subquery')
+=======
+>>>>>>> ready to demo
 
 
 class Quiz(db.Model):
@@ -47,8 +57,11 @@ class Quiz(db.Model):
     publish_status = db.Column(db.SmallInteger)
 
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.admin_id'), nullable=False)
+<<<<<<< HEAD
     #questions = db.relationship('Question')
     #users = db.relationship('Quiz_user')
+=======
+>>>>>>> ready to demo
 
     
 class Question(db.Model):
