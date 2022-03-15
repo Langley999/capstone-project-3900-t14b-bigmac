@@ -4,6 +4,7 @@ from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode
 from datetime import datetime,date
+from flask import session
 import datetime
 
 url_prefix = '/user'
@@ -23,13 +24,17 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    operator_email = request.args.get('operator')
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
-
-    # sql select user
-    user = User.query.filter_by(email=operator_email).first()
+    target_user_id = session.get(token)
+    user = User.query.get(target_user_id)
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
+    if collection == None:
+        return dumps({
+            "goal": -1,
+            "finished": 0,
+
+    })
+
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
 
     month = datetime.date.today().month
@@ -70,12 +75,13 @@ def set_goal():
     '''
     try:
         data = request.get_json()
-        email, goal, token = data['email'], data['goal'], data['token']
+        goal, token = data['goal'], data['token']
     except:
         raise error.BadReqError(description="post body error")
-#     login_status_check(email, token)
+    # login_status_check(email, token)
     # sql select user
-    user = User.query.filter_by(email=email).first()
+    target_user_id = session.get(token)
+    user = User.query.get(target_user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
 
@@ -129,12 +135,9 @@ def get_all_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    operator_email = request.args.get('operator')
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
-
-    # sql select user
-    user = User.query.filter_by(email=operator_email).first()
+    target_user_id = session.get(token)
+    user = User.query.get(target_user_id)
     all_history = []
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
@@ -157,7 +160,6 @@ def get_user_profile():
     '''
     It returns profile data of target user.
     Args (GET):
-        operator (string): the requester's email
         username (string): target user's username
         token (string): valid token
     Returns:
@@ -172,16 +174,14 @@ def get_user_profile():
         1. add returns
         2. find a way to prevent potential security issues
     '''
-    operator_email = request.args.get('operator')
-    username = request.args.get('username')
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
-    # sql select user
-    user = User.query.filter_by(username=username).first()
+    target_user_id = session.get(token)
+    selected_username = request.args.get('username')
+    user = User.query.get(target_user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
-        "is_self": True if (user.username == username) else False,
+        "is_self": True if (user.username == selected_username) else False,
         "username": user.username,
         "email": user.email
     })
@@ -191,7 +191,6 @@ def update_user_profile():
     '''
     It will update user's details like username, email.
     Args (POST):
-        origin (string): the origin email
         token (string): valid token
         email (string): new email
         username (string): new username
@@ -210,13 +209,14 @@ def update_user_profile():
     '''
     try:
         data = request.get_json()
-        origin_email, new_email, new_username, token, new_password = \
-            data['origin'], data['email'], data['username'], data['token'], data['password']
+        new_email, new_username, token, new_password = \
+            data['new_email'], data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
     # sql select origin user
-    user = User.query.filter_by(email=origin_email).first()
+    target_user_id = session.get(token)
+    user = User.query.get(target_user_id)
     if (user == None):
         raise error.BadReqError(description="post body error")
     # check if new_username is valid
@@ -225,7 +225,7 @@ def update_user_profile():
             raise error.InputError(description="invalid username")
         user.username = new_username
     # check if new_email is valid
-    if (origin_email != new_email):
+    if (user.email != new_email):
         if (User.query.filter_by(email=new_email).first() != None):
             raise error.InputError(description="invalid email")
         user.email = new_email

@@ -97,7 +97,6 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id,
       review: reviewValue,
       rating: rating,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
@@ -138,7 +137,6 @@ const BookDetail = ({userInfo}) => {
     const body = JSON.stringify( {
       book_id: book_id,
       rating: newValue,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings', body,{
@@ -182,7 +180,7 @@ const BookDetail = ({userInfo}) => {
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       book_id: book_id
     });
 
@@ -221,7 +219,7 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           let json = JSON.stringify( {
             collection_id: c_id,
-            email: userInfo.email,
+            token: localStorage.getItem('token'),
             book_id: book_id
           });
           axios.post('http://127.0.0.1:8080/collection/addbook', json,{
@@ -269,7 +267,7 @@ const BookDetail = ({userInfo}) => {
     console.log(key)
 
     axios.post('http://127.0.0.1:8080/collection/addbook', {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       collection_id: key,
       book_id: book_id
     }).then(res => {
@@ -356,10 +354,8 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
-        email: userInfo.email,
         token: localStorage.getItem('token'),
         bookId: book_id
-
       }
     })
       .then(function (response) {

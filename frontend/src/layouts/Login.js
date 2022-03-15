@@ -33,7 +33,6 @@ import {checkProfileInput} from '../components/Helper';
 //     }).then(function (response) {
 //       localStorage.setItem('token', response['data']['token']);
 //       axios.get(`${url}/user/profile`, {params: {
-//           operator: email,
 //           username: response.data.username,
 //           token: response.data.token
 //         }})
@@ -51,10 +50,10 @@ import {checkProfileInput} from '../components/Helper';
 //     });
 //   }
 //
-//     return (
-//       <button onClick={submitLogin}>Login</button>
-//     );
-//   };
+//   return (
+//     <button onClick={submitLogin}>Login</button>
+//   );
+// };
 // export default Login;
 
 
@@ -104,7 +103,6 @@ const Login = ({ updateLogin, updateUserInfo }) => {
       localStorage.setItem('token', response['data']['token']);
 
       axios.get(`${url}/user/profile`, {params: {
-          operator: email,
           username: response.data.username,
           token: response.data.token
         }})

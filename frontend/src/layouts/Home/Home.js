@@ -191,9 +191,9 @@ const Home = ({ifLogin}) => {
   return (
     <>
       {ifLogin ?
-      <div className='space'>
-        <Recommendations/>
-      </div> : null
+        <div className='space'>
+          <Recommendations/>
+        </div> : null
       }
       <div className='space'>
         <Subjects/>
