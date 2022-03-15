@@ -156,7 +156,6 @@ def logout():
     try:
         user = User.query.filter_by(token=token).first()
         user.token = None
-        db.session.add(user)
         db.session.commit()
     except:
         raise error.AccessError(description="user doesn't exist or invalid token")
