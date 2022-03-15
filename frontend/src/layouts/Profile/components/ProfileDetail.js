@@ -16,9 +16,9 @@ import IconButton from '@mui/material/IconButton';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
-import {checkProfileInput} from '../../../components/CheckProfileInput';
 import ErrorPopup from '../../../components/ErrorPopup';
 import SuccessPopup from '../../../components/ErrorPopup';
+import {url, checkProfileInput} from '../../../components/Helper';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [values, setValues] = useState({});
@@ -26,6 +26,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [ifShow, setIfShow] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   useEffect(async () => {
     setValues(userInfo);
@@ -75,32 +76,33 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     if (checkInputs !== '') {
       setSuccessMsg('');
       setErrorMsg(checkInputs);
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
       return;
     }
-      
-    axios.post('http://localhost:8080/user/update', {
+
+    axios.post(`${url}/user/update`, {
       origin: userInfo.email,
       token: localStorage.getItem('token'),
       email: values.email,
       username: values.username,
       password: values.password
     }).then(function (response) {
-      updateUserInfo(values);
+      console.log('har');
       setErrorMsg('');
       setSuccessMsg('Profile details updated!');
-      setTimeout(() => {setSuccessMsg('')}, 5000);
+      setSnackBarOpen(true);
+      updateUserInfo(values);
     }).catch(function (error) {
       setSuccessMsg('');
       setErrorMsg(JSON.stringify(error.message));
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
     });
   }
 
   return (
     <div>
-      <ErrorPopup errorMsg={errorMsg}/>
-      <SuccessPopup successMsg={successMsg}/>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
+      <SuccessPopup successMsg={successMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <form
         autoComplete="off"
         noValidate

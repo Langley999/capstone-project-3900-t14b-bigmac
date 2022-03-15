@@ -14,7 +14,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
 
   useEffect(async () => {
     setValues(userInfo);
-    console.log(values)
   }, [])
 
   return (

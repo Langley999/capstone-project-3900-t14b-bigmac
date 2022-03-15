@@ -1,29 +1,30 @@
 import React from 'react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
 
 // Shows an error message in a popup at the top of the screen
-const ErrorPopup = ({ errorMsg }) => {
+const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
+
   // do nothing if message is empty
   if (errorMsg === '' || typeof errorMsg === 'undefined') {
     return null;
   }
 
   const errorStyle = {
-    position: "fixed",
-    paddingTop: "15px",
-    paddingLeft: "20px",
-    width: "97%",
+    background: '#d32f2f',
+    border: 0,
+    borderRadius: 3,
+    color: 'white',
+    padding: '0 30px',
   }
 
   return (
-    <Stack sx={{ width: '100%' }} spacing={2} style={errorStyle}>
-      <Alert severity="error" style={{backgroundColor: "#fceded" }}>
-        <AlertTitle>Error</AlertTitle>
-        {errorMsg}
-      </Alert>
-    </Stack>
+    <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackBarOpen}  onClose = {() =>setSnackBarOpen(false)} autoHideDuration={2000} >
+        <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} >
+          {errorMsg }
+        </Alert>
+      </Snackbar>
   )
 }
 

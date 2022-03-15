@@ -9,64 +9,72 @@ import ErrorPopup from '../../components/ErrorPopup';
 import SuccessPopup from '../../components/SuccessPopup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import {url} from '../../components/Helper'
 
 const GoalPage = ({ display, userInfo }) => {
   const [goal, setGoal] = React.useState(0);
-  const [goalLast, setGoalLast] = React.useState(0);
+  const [goalSubmit, setGoalSubmit] = React.useState(0);
   const [completed, setCompleted] = React.useState(0);
   const [errorMsg, setErrorMsg] = React.useState('');
   const [successMsg, setSuccessMsg] = React.useState('');
   const [enableEditGoal, setEnableEditGoal] = React.useState(false);
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false);
 
   React.useEffect(() => {
     getGoal();
   }, []);
-  
   if (display !== 'goals') return null;
 
   const date = new Date();
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
-  if (daysUntilEndOfMonth !== 1) daySuffix = 's';
+  if (daysUntilEndOfMonth > 1) daySuffix = 's';
 
   // get goal that user set
   const getGoal = () => {
-    axios.get('http://localhost:8080/user/checkgoal', {
-      email: userInfo.email,
+    axios.get(`${url}/user/checkgoal`, {params: {
+      operator: userInfo.email,
       token: localStorage.getItem('token')
-    }).then(function (response) {
-      setErrorMsg('');
-      if (response['goal'] === -1) {
+    }}).then(function (response) {
+      if (response['data']['goal'] === -1) {
         setGoal(0);
       } else {
-        setGoal(response['goal']);
+        setGoal(response['data']['goal']);
       }
-      setCompleted(response['completed']);
+      setCompleted(response['data']['finished']);
     }).catch(function (error) {
-      // show server error message for 5 secs
+      // show error message if goal cannot be retrieved
+      setSuccessMsg('');
       setErrorMsg(JSON.stringify(error.message));
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setSnackBarOpen(true);
     });
   }
-  
+
   // set new reading goal
   const submitGoal = () => {
-    axios.post('http://localhost:8080/user/setgoal', {
+    if (goal < 0) {
+      setSuccessMsg('');
+      setErrorMsg('Goal cannot be set to a negative number');
+      setSnackBarOpen(true);
+      getGoal();
+      return;
+    }
+    axios.post(`${url}/user/setgoal`, {
       email: userInfo.email,
       token: localStorage.getItem('token'),
       goal: goal
     }).then(function (response) {
-      setGoalLast(goal);
+      setGoalSubmit(goal);
+      setGoal(goal);
       setErrorMsg('');
-      setSuccessMsg('Reading goal has been updated');
-      console.log('success');
-      setTimeout(() => {setSuccessMsg('')}, 5000);
-
+      setSuccessMsg('Reading goal is updated');
+      setSnackBarOpen(true);
     }).catch(function (error) {
-      // show server error message for 5 secs
-      setErrorMsg(JSON.stringify(error.message));
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      // show error if goal cannot be updated
+      setSuccessMsg('');
+      setErrorMsg(JSON.stringify(error.response.data.message));
+      setSnackBarOpen(true);
     });
   }
 
@@ -82,8 +90,8 @@ const GoalPage = ({ display, userInfo }) => {
 
   return (
     <div>
-      <ErrorPopup errorMsg={errorMsg}/>
-      <SuccessPopup successMsg={successMsg}/>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
+      <SuccessPopup successMsg={successMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: "normal"}}>Reading Goal</h2>
       <div style={goalStyle}>
         <div>
@@ -118,7 +126,7 @@ const GoalPage = ({ display, userInfo }) => {
               <div>
                 <span>Remaining</span>
                 <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
-                  <CardContent style={{padding: "10px", textAlign: "center"}}>{goalLast-completed}</CardContent>
+                  <CardContent style={{padding: "10px", textAlign: "center"}}>{goalSubmit-completed}</CardContent>
                 </Card>
               </div>
             </div>
