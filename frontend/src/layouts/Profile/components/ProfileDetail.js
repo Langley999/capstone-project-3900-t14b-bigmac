@@ -26,7 +26,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [ifShow, setIfShow] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(async () => {
     setValues(userInfo);
@@ -74,9 +75,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const handleSubmit = () => {
     const checkInputs = checkProfileInput(values.username, values.email,values.password)
     if (checkInputs !== '') {
-      setSuccessMsg('');
       setErrorMsg(checkInputs);
-      setSnackBarOpen(true);
+      setShowError(true);
       return;
     }
 
@@ -88,21 +88,19 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       password: values.password
     }).then(function (response) {
       console.log('har');
-      setErrorMsg('');
       setSuccessMsg('Profile details updated!');
-      setSnackBarOpen(true);
+      setShowSuccess(true);
       updateUserInfo(values);
     }).catch(function (error) {
-      setSuccessMsg('');
       setErrorMsg(JSON.stringify(error.message));
-      setSnackBarOpen(true);
+      setShowError(true);
     });
   }
 
   return (
     <div>
-      <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
-      <SuccessPopup successMsg={successMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
+      <SuccessPopup successMsg={successMsg} showError={showSuccess} setShowError={setShowSuccess}/>
+      <ErrorPopup errorMsg={errorMsg} showError={showError} setShowError={setShowError}/>
       <form
         autoComplete="off"
         noValidate
