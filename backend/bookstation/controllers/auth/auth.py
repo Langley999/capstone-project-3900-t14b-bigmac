@@ -73,8 +73,13 @@ def login():
         raise error.InputError(description="wrong password")
     # generate token and store
     token = generate_token(user.username)
+    user.token = token
+    print('user is', user.user_id)
+    print('token is', user.token)
+    #db.session.add(user)
+    db.session.commit()
     #session[token] = user.user_id
-    session[email] = token
+    #session[email] = token
 
     return dumps({
         'token': token,
@@ -116,12 +121,13 @@ def register():
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
     # store new user
-    new_user = User(username, email, pw_encode(password))
+    token = generate_token(username)
+    new_user = User(username, email, pw_encode(password), token)
 
     db.session.add(new_user)
     db.session.commit()
     return dumps({
-        'token': generate_token(username)
+        'token': token
     })
 
 @app.route(url_prefix + "/logout", methods=["POST"])
@@ -148,11 +154,14 @@ def logout():
     except:
         raise error.BadReqError(description="post body error")
     try:
-        stored_token = session.get(token)
+        user = User.query.filter_by(token=token).first()
+        user.token = None
+        db.session.add(user)
+        db.session.commit()
     except:
         raise error.AccessError(description="user doesn't exist or invalid token")
 
-    session.pop(token, None)
+    #session.pop(token, None)
     return dumps({})
 
 def pw_encode(password):

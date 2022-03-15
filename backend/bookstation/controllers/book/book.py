@@ -156,9 +156,8 @@ def getReview():
     '''
     #get input
     token = request.args.get('token')
-    email = request.args.get('email')
     book_id = request.args.get('bookId')
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token = token).first()
     #target_user_id = session.get(token)
     review = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
@@ -193,11 +192,10 @@ def addReview():
         body = request.get_json()
         token = body['token']
         new_book_id = body['book_id']
-        email = body['email']
         new_rating = body['rating']
         new_content = body['content']
         new_created_time = body['created_time']
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(token=token).first()
 
     except:
         raise error.BadReqError(description="post body error")
@@ -233,8 +231,7 @@ def addRating():
     #extract information
     book_id = body['book_id']
     token = body['token']
-    email = body['email']
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(token=token).first()
     new_rating = body['rating']
 
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
@@ -280,8 +277,7 @@ def addRatingReview():
     #extract information
     book_id = body['book_id']
     token = body['token']
-    email = body['email']
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(token=token).first()
     new_rating = body['rating']
     content = body['review']
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
@@ -415,11 +411,11 @@ def completeReading():
     '''
     try:
         data = request.get_json()
-        email, book_id = data['email'], data['book_id']
+        token, book_id = data['token'], data['book_id']
     except:
         raise error.BadReqError(description="post body error")
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token=token).first()
 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
@@ -458,9 +454,8 @@ def checkCompleted():
     '''
     #extract information
     token = request.args.get('token')
-    email = request.args.get('email')
     book_id = request.args.get('bookId')
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(token).first()
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)

@@ -25,8 +25,8 @@ def get_all_collections():
     Raises:
         NotFoundError: when the collection with the name does not exist
     """
-    user_name = request.args.get('user')
-    user = User.query.filter_by(username = user_name).first()
+    token = request.args.get('token')
+    user = User.query.filter_by(token=token).first()
     collections = Collection.query.filter_by(user_id = user.user_id).all()
     #collections = user.collections
     if len(collections) == 0:
@@ -68,7 +68,7 @@ def create_collection():
     """
     try:
         data = request.get_json()
-        email, collection_name, token = data['email'], data['name'], data['token']
+        collection_name, token = data['name'], data['token']
     except:
         raise error.BadReqError(description="post body error")
 
@@ -81,7 +81,7 @@ def create_collection():
         raise error.AccessError(description="user doesn't exist")
     '''
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token=token).first()
 
     try:
       new_default_collection = Collection(0, collection_name, datetime.now(), user.user_id)
@@ -153,11 +153,11 @@ def add_book():
     """
     try:
         data = request.get_json()
-        email, c_id, b_id = data['email'], data['collection_id'], data['book_id']
+        token, c_id, b_id = data['token'], data['collection_id'], data['book_id']
     except:
         raise error.BadReqError(description="post body error")
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token=token).first()
     collection = Collection.query.get(c_id)
 
     if collection == None:
@@ -199,11 +199,11 @@ def remove_book():
     """
     try:
         data = request.get_json()
-        email, c_id, b_id = data['email'], data['collection_id'], data['book_id']
+        token, c_id, b_id = data['token'], data['collection_id'], data['book_id']
     except:
         raise error.BadReqError(description="post body error")
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token=token).first()
     collection = Collection.query.filter_by(collection_id = c_id).first()
     if collection.user_id != user.user_id:
       raise error.AccessError(description="You don't have permission to remove this book")
@@ -239,11 +239,11 @@ def remove_collection():
     """
     try:
         data = request.get_json()
-        email, c_id = data['email'], data['collection_id']
+        token, c_id = data['token'], data['collection_id']
     except:
         raise error.BadReqError(description="post body error")
 
-    user = User.query.filter_by(email = email).first()
+    user = User.query.filter_by(token=token).first()
     collection = Collection.query.filter_by(collection_id = c_id).first()
     if collection == None:
       raise error.NotFoundError(description="Collection does not exist")
