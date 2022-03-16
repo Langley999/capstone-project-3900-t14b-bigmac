@@ -97,7 +97,6 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id,
       review: reviewValue,
       rating: rating,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
@@ -138,7 +137,6 @@ const BookDetail = ({userInfo}) => {
     const body = JSON.stringify( {
       book_id: book_id,
       rating: newValue,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/book/ratings', body,{
@@ -182,7 +180,7 @@ const BookDetail = ({userInfo}) => {
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       book_id: book_id
     });
 
@@ -207,7 +205,6 @@ const BookDetail = ({userInfo}) => {
   const handleCreateCollectionForm = () => {
     const body = JSON.stringify( {
       name: textFieldValue,
-      email: userInfo.email,
       token: localStorage.getItem('token')
     });
     axios.post('http://127.0.0.1:8080/collection/create', body,{
@@ -221,7 +218,7 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           let json = JSON.stringify( {
             collection_id: c_id,
-            email: userInfo.email,
+            token: localStorage.getItem('token'),
             book_id: book_id
           });
           axios.post('http://127.0.0.1:8080/collection/addbook', json,{
@@ -259,17 +256,9 @@ const BookDetail = ({userInfo}) => {
       });
   }
   const handleAddToCollection = (key) => {
-    console.log(key)
-    const body = JSON.stringify( {
-      collection_id: key,
-      email: userInfo.email,
-      book_id: book_id
-    });
-
-    console.log(key)
 
     axios.post('http://127.0.0.1:8080/collection/addbook', {
-      email: userInfo.email,
+      token: localStorage.getItem('token'),
       collection_id: key,
       book_id: book_id
     }).then(res => {
@@ -284,29 +273,12 @@ const BookDetail = ({userInfo}) => {
       setwarningopen(true);
     })
 
-
-    // axios.post('http://127.0.0.1:8080/collection/addbook', body,{
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then(function (response) {
-    //     console.log(response)
-    //     if (response['status'] === 200) {
-    //       alert('success');
-    //       setAnchorEl(null);
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     alert(error);
-    //     console.log(error);
-    //   });
   }
   useEffect(() => {
     // Update the document title using the browser API
     axios.get('http://127.0.0.1:8080/collection/getall', {
       params: {
-        user: userInfo.username
+        token: localStorage.getItem('token'),
       }
     })
       .then(function (response) {
@@ -331,7 +303,6 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/reviews', {
       params: {
-        email: userInfo.email,
         token: localStorage.getItem('token'),
         bookId: book_id
 
@@ -356,7 +327,6 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
-        email: userInfo.email,
         token: localStorage.getItem('token'),
         bookId: book_id
 

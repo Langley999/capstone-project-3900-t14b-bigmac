@@ -213,7 +213,7 @@ def update_user_profile():
     try:
         data = request.get_json()
         new_email, new_username, token, new_password = \
-            data['username'], data['token'], data['password']
+            data['email'], data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
