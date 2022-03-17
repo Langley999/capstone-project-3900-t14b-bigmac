@@ -104,32 +104,33 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then(function (response) {
+    .then(function (response) {
 
-        setReviewFormOn(false);
-        setreviewButtonshow(false);
-        var currentdate = new Date();
-        var datetime = currentdate.getDate() + "/"
-          + (currentdate.getMonth()+1)  + "/"
-          + currentdate.getFullYear() + " "
-          + currentdate.getHours() + ":"
-          + currentdate.getMinutes() + ":"
-          + currentdate.getSeconds();
-        let rev = {};
-        rev['time'] = datetime;
-        rev['content'] = reviewValue;
-        rev['username'] = userInfo.username;
-        rev['rating'] = rating;
-        setReviews(review => [rev,...review] );
+      setReviewFormOn(false);
+      setreviewButtonshow(false);
+      var currentdate = new Date();
+      var datetime = currentdate.getFullYear() + "-"
+        + (currentdate.getMonth()+1)  + "-"
+        + currentdate.getDate() + " "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+
+      let rev = {};
+      rev['time'] = datetime;
+      rev['content'] = reviewValue;
+      rev['username'] = userInfo.username;
+      rev['rating'] = rating;
+      setReviews(review => [rev,...review] );
 
 
-      })
-      .catch(function (error) {
+    })
+    .catch(function (error) {
 
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-        console.log(error);
-      });
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+      console.log(error);
+    });
   }
 
   const handleSubmitRating = (newValue) => {
@@ -144,37 +145,37 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then(function (response) {
-        let newone = [];
-        for (let i = 0; i < reviews.length; i++) {
-          if (reviews[i]['username'] == userInfo['username']) {
-            reviews[i]['rating'] = newValue;
+    .then(function (response) {
+      let newone = [];
+      for (let i = 0; i < reviews.length; i++) {
+        if (reviews[i]['username'] == userInfo['username']) {
+          reviews[i]['rating'] = newValue;
 
-          }
-          newone.push(reviews[i]);
         }
-        setReviews(newone);
-        if (rating == 0) {
+        newone.push(reviews[i]);
+      }
+      setReviews(newone);
+      if (rating == 0) {
 
-          let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
-          setN_rating(n_rating+1);
-          setaveRating(newrating.toFixed(2));
-          setRating(newValue);
-          console.log('success');
-        } else {
-          let newrating = (newValue+n_rating*ave_rating-rating)/n_rating;
+        let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
+        setN_rating(n_rating+1);
+        setaveRating(newrating.toFixed(2));
+        setRating(newValue);
+        console.log('success');
+      } else {
+        let newrating = (newValue+n_rating*ave_rating-rating)/n_rating;
 
-          setaveRating(newrating.toFixed(2));
-          setRating(newValue);
-        }
+        setaveRating(newrating.toFixed(2));
+        setRating(newValue);
+      }
 
-      })
-      .catch(function (error) {
+    })
+    .catch(function (error) {
 
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-        console.log(error);
-      });
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+      console.log(error);
+    });
   }
 
 
@@ -189,18 +190,18 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then(function (response) {
-        console.log(response)
-        if (response['status'] === 200) {
-          setbtnDisabled(true);
-          setreadingButtonText('completed');
-        }
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-        console.log(error);
-      });
+    .then(function (response) {
+      console.log(response)
+      if (response['status'] === 200) {
+        setbtnDisabled(true);
+        setreadingButtonText('completed');
+      }
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+      console.log(error);
+    });
   }
   const handleCreateCollectionForm = () => {
     const body = JSON.stringify( {
@@ -212,48 +213,48 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then(function (response) {
-        console.log(response);
-        let c_id = response['data']['id'];
-        if (response['status'] === 200) {
-          let json = JSON.stringify( {
-            collection_id: c_id,
-            token: localStorage.getItem('token'),
-            book_id: book_id
-          });
-          axios.post('http://127.0.0.1:8080/collection/addbook', json,{
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-            .then(function (response) {
-              console.log(response);
-              if (response['status'] === 200) {
+    .then(function (response) {
+      console.log(response);
+      let c_id = response['data']['id'];
+      if (response['status'] === 200) {
+        let json = JSON.stringify( {
+          collection_id: c_id,
+          token: localStorage.getItem('token'),
+          book_id: book_id
+        });
+        axios.post('http://127.0.0.1:8080/collection/addbook', json,{
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+          if (response['status'] === 200) {
 
-                setsnackbarcontent('success');
-                setsnackbaropen(true);
-                setCreateForm(false);
-                settextFieldValue("");
-                setAnchorEl(null);
-              }
-            })
-            .catch(function (error) {
-              setwarningcontent(error.response.data.message);
-              setwarningopen(true);
-              console.log(error);
-            });
+            setsnackbarcontent('success');
+            setsnackbaropen(true);
+            setCreateForm(false);
+            settextFieldValue("");
+            setAnchorEl(null);
+          }
+        })
+        .catch(function (error) {
+          setwarningcontent(error.response.data.message);
+          setwarningopen(true);
+          console.log(error);
+        });
 
-        }
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-        console.log(error);
-        /*
-        setwarningcontent(error);
-        setwarningopen(true);*/
+      }
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+      console.log(error);
+      /*
+      setwarningcontent(error);
+      setwarningopen(true);*/
 
-      });
+    });
   }
   const handleAddToCollection = (key) => {
 
@@ -278,28 +279,28 @@ const BookDetail = ({userInfo}) => {
     // Update the document title using the browser API
     axios.get('http://127.0.0.1:8080/collection/getall', {
       params: {
-        token: localStorage.getItem('token'),
+        user_id: userInfo.user_id
       }
     })
-      .then(function (response) {
-        console.log(response);
-        let collections = response['data']['collections'];
-        let clist = [];
-        let nlist = [];
-        for (let i = 0; i < collections.length; i++) {
-          // Runs 5 times, with values of step 0 through 4.
-          console.log(collections[i]);
-          clist.push(collections[i]['name']);
-          nlist.push(collections[i]['id']);
-          setCollection_names(clist);
-          setCollection_ids(nlist);
-        }
+    .then(function (response) {
+      console.log(response);
+      let collections = response['data']['collections'];
+      let clist = [];
+      let nlist = [];
+      for (let i = 0; i < collections.length; i++) {
+        // Runs 5 times, with values of step 0 through 4.
+        console.log(collections[i]);
+        clist.push(collections[i]['name']);
+        nlist.push(collections[i]['id']);
+        setCollection_names(clist);
+        setCollection_ids(nlist);
+      }
 
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-      });
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
 
     axios.get('http://127.0.0.1:8080/book/reviews', {
       params: {
@@ -308,22 +309,22 @@ const BookDetail = ({userInfo}) => {
 
       }
     })
-      .then(function (response) {
-        console.log(response);
-        let review = response['data']['reviews'];
+    .then(function (response) {
+      console.log(response);
+      let review = response['data']['reviews'];
 
-        if (review.length > 0) {
-          setRating(review[0]['rating']);
-          if (review[0]['content'] != null) {
-            setreviewButtonshow(false);
-          }
-
+      if (review.length > 0) {
+        setRating(review[0]['rating']);
+        if (review[0]['content'] != null) {
+          setreviewButtonshow(false);
         }
 
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
@@ -332,46 +333,46 @@ const BookDetail = ({userInfo}) => {
 
       }
     })
-      .then(function (response) {
-        if (response['data']['success'] == true) {
-          setbtnDisabled(true);
-          setreadingButtonText('completed');
-        }
+    .then(function (response) {
+      if (response['data']['success'] == true) {
+        setbtnDisabled(true);
+        setreadingButtonText('completed');
+      }
 
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-      });
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
 
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
         bookId: book_id
       }
     })
-      .then(function (response) {
-        console.log(response);
-        setTitle(response['data']['title']);
-        setBlurb(response['data']['blurb']);
-        setPublishdate(response['data']['publish_date']);
-        setCover(response['data']['cover_image']);
-        setAuther(response['data']['author_string']);
-        setPublisher(response['data']['publisher']);
-        setaveRating(response['data']['average_rating'].toFixed(2));
-        setN_rating(response['data']['num_rating'])
-        console.log(response['data']['author_string']);
-        let genres = "";
-        for (let i = 0; i < response['data']['genres'].length; i++) {
-          genres = genres+response['data']['genres'][i];
-          genres = genres+", ";
-        }
-        setGenres(genres);
-        setReviews(response['data']['reviews'].reverse())
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-      });
+    .then(function (response) {
+      console.log(response);
+      setTitle(response['data']['title']);
+      setBlurb(response['data']['blurb']);
+      setPublishdate(response['data']['publish_date']);
+      setCover(response['data']['cover_image']);
+      setAuther(response['data']['author_string']);
+      setPublisher(response['data']['publisher']);
+      setaveRating(response['data']['average_rating'].toFixed(2));
+      setN_rating(response['data']['num_rating'])
+      console.log(response['data']['author_string']);
+      let genres = "";
+      for (let i = 0; i < response['data']['genres'].length; i++) {
+        genres = genres+response['data']['genres'][i];
+        genres = genres+", ";
+      }
+      setGenres(genres);
+      setReviews(response['data']['reviews'].reverse())
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
 
 
 
