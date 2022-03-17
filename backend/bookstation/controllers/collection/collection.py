@@ -31,12 +31,12 @@ def get_all_collections():
     collections = Collection.query.filter_by(user_id = user_id).all()
     #collections = user.collections
     if len(collections) == 0:
-      new_default_collection = Collection(1, "Favourite", datetime.now(), user.user_id)
-      new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+      new_default_collection = Collection(1, "Favourite", datetime.now(), user_id)
+      new_history_collection = Collection(2, "Reading History", datetime.now(), user_id)
       db.session.add(new_default_collection)
       db.session.add(new_history_collection)
       db.session.commit()
-    collections = Collection.query.filter_by(user_id = user.user_id).all()
+    collections = Collection.query.filter_by(user_id = user_id).all()
     collection_info = []
     for collection in collections:
       new = {}
