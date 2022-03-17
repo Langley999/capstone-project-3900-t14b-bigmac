@@ -16,7 +16,7 @@ def get_all_collections():
     """
     Function for users to to get one user's all collection details. 
     Args:
-        user (string): username of the requester.
+        user_id (string): user_id of the user.
     Returns:
         collections (list): list of all collections
            - id (int): collection id
@@ -25,9 +25,10 @@ def get_all_collections():
     Raises:
         NotFoundError: when the collection with the name does not exist
     """
-    token = request.args.get('token')
-    user = User.query.filter_by(token=token).first()
-    collections = Collection.query.filter_by(user_id = user.user_id).all()
+    #token = request.args.get('token')
+    user_id = request.args.get('user_id')
+    #user = User.query.filter_by(user_id=user_id).first()
+    collections = Collection.query.filter_by(user_id = user_id).all()
     #collections = user.collections
     if len(collections) == 0:
       new_default_collection = Collection(1, "Favourite", datetime.now(), user.user_id)
