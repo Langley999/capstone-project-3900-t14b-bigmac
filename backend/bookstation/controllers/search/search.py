@@ -79,7 +79,7 @@ def search_book_title(book_title):
         book_info['average_rating'] = book.average_rating
         book_info['publish_date'] = book.publish_date
         allbooks.append(book_info)
-    for book in books:
+    for book in books[:20]:
         book_info = {}
         book_info['id'] = book.book_id
         book_info['title'] = book.title
@@ -92,3 +92,64 @@ def search_book_title(book_title):
     return dumps({
       "books": allbooks[0:20]
     })
+
+@app.route(url_prefix + "/genre", methods=["GET"])
+def genre():
+    """
+    Function for users to search by genre 
+    Args:
+        genres (string): list of genres separated by '&' e.g. 'Fiction&Young Adult&Magic'
+    Returns:
+        books (list): list of all books from the search
+           - id (int): book id
+           - title (string): title of the book
+           - cover (string): url of the cover image
+           - author (string): author of the book
+           - num_rating (int): number of people who rated this book
+           - average_rating (float): the rating of the book
+           - publish_date (string): the publish date of the book
+    """
+
+    search_result = None
+    try:
+        genre_names = request.args.get('genres')
+    except:
+        raise error.BadReqError(description="invalid params")
+
+    genres = genre_names.split('&')
+    genre_ids = []
+    for genre in genres:
+        gen = Genre.query.filter_by(name=genre).first()
+        genre_ids.append(gen.genre_id)
+    all_books = []
+    for genre_id in genre_ids:
+        booklist = []
+        gen_books = Book_genre.query.filter_by(genre_id=genre_id).all()
+        for gen_book in gen_books:
+            bookid = gen_book.book_id
+            booklist.append(bookid)
+        all_books.append(booklist)
+    books = set.intersection(*[set(x) for x in all_books])  
+
+    results = []
+    i = 0
+    for id in books:
+        book = Book.query.get(id)
+        book_info = {}
+        book_info['id'] = book.book_id
+        book_info['title'] = book.title
+        book_info['author'] = book.author_string
+        book_info['num_rating'] = book.num_rating
+        book_info['cover'] = book.cover_image
+        book_info['average_rating'] = book.average_rating
+        book_info['publish_date'] = book.publish_date
+        #book_info['genre'] = book.genre_string
+        results.append(book_info)
+        i+=1
+        if i > 100:
+            break
+    return dumps({
+      "books": results
+    })
+
+
