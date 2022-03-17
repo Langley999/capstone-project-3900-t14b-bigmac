@@ -6,3 +6,4 @@ from bookstation.controllers import collection
 from bookstation.controllers import user
 
 from bookstation.controllers import search
+from bookstation.controllers import recommendation

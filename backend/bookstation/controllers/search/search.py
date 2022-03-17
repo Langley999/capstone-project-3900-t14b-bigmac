@@ -13,6 +13,7 @@ def search():
     Args:
         type (string): author or title
         value (string): the search text
+        rating (int): rating threshold
     Returns:
         books (list): list of all books from the search
            - id (int): book id
@@ -27,29 +28,51 @@ def search():
     try:
         search_type = request.args.get('type')
         search_value = request.args.get('value')
+        rating_filter = request.args.get('rating')
     except:
         raise error.BadReqError(description="invalid params")
     if (search_type == 'author'):
         # print(type(search_book_author(search_value)))
-        search_result = search_book_author(search_value)
+        search_result = search_book_author(search_value, rating_filter, start_year, end_year)
     if (search_type == 'title'):
-        search_result = search_book_title(search_value)
+        search_result = search_book_title(search_value, rating_filter, start_year, end_year)
 
     return search_result
 
-def search_book_author(author_name):
-    #authors = Author.query.filter(func.lower(name)==author_name.lower()).all()
-    #authors = Author.query.filter_by(name=author_name).all()
+def search_book_author(author_name, rating_filter):
     authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
     allbooks = []
-    allauthors = []
-    
+    i = 0
     for author in authors:
-        # print(author.books)
         book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
         
         for book_author in book_authors:
             book = book_author.book
+            if book.average_rating > rating_filter: 
+                book_info = {}
+                book_info['id'] = book.book_id
+                book_info['title'] = book.title
+                book_info['author'] = book.author_string
+                book_info['num_rating'] = book.num_rating
+                book_info['cover'] = book.cover_image
+                book_info['average_rating'] = book.average_rating
+                book_info['publish_date'] = book.publish_date
+                allbooks.append(book_info)
+                i+=1
+                if i > 50:
+                    break
+
+    return dumps({
+      "books": allbooks
+    })
+
+def search_book_title(book_title, rating_filter):
+    book_exact = Book.query.filter(Book.title.like(book_title)).all()
+    books = Book.query.filter(Book.title.like('%'+book_title+'%')).all()
+    allbooks = []
+    i = 0
+    for book in book_exact:
+        if book.average_rating > rating_filter: 
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title
@@ -59,38 +82,25 @@ def search_book_author(author_name):
             book_info['average_rating'] = book.average_rating
             book_info['publish_date'] = book.publish_date
             allbooks.append(book_info)
-        allauthors.append(author.name+"==="+str(author.author_id))
-
-    return dumps({
-      "books": allbooks[0:20]
-    })
-
-def search_book_title(book_title):
-    book_exact = Book.query.filter(Book.title.like(book_title)).all()
-    books = Book.query.filter(Book.title.like('%'+book_title+'%')).all()
-    allbooks = []
-    for book in book_exact:
-        book_info = {}
-        book_info['id'] = book.book_id
-        book_info['title'] = book.title
-        book_info['author'] = book.author_string
-        book_info['num_rating'] = book.num_rating
-        book_info['cover'] = book.cover_image
-        book_info['average_rating'] = book.average_rating
-        book_info['publish_date'] = book.publish_date
-        allbooks.append(book_info)
+            i+=1
+            if i > 50:
+                break
     for book in books[:20]:
-        book_info = {}
-        book_info['id'] = book.book_id
-        book_info['title'] = book.title
-        book_info['author'] = book.author_string
-        book_info['num_rating'] = book.num_rating
-        book_info['cover'] = book.cover_image
-        book_info['average_rating'] = book.average_rating
-        book_info['publish_date'] = book.publish_date
-        allbooks.append(book_info)
+        if book.average_rating > rating_filter: 
+            book_info = {}
+            book_info['id'] = book.book_id
+            book_info['title'] = book.title
+            book_info['author'] = book.author_string
+            book_info['num_rating'] = book.num_rating
+            book_info['cover'] = book.cover_image
+            book_info['average_rating'] = book.average_rating
+            book_info['publish_date'] = book.publish_date
+            allbooks.append(book_info)
+            i+=1
+            if i > 50:
+                break
     return dumps({
-      "books": allbooks[0:20]
+      "books": allbooks
     })
 
 @app.route(url_prefix + "/genre", methods=["GET"])
@@ -99,6 +109,7 @@ def genre():
     Function for users to search by genre 
     Args:
         genres (string): list of genres separated by '&' e.g. 'Fiction&Young Adult&Magic'
+        rating (int): rating threshold
     Returns:
         books (list): list of all books from the search
            - id (int): book id
@@ -110,9 +121,9 @@ def genre():
            - publish_date (string): the publish date of the book
     """
 
-    search_result = None
     try:
         genre_names = request.args.get('genres')
+        rating_filter = request.args.get('rating')
     except:
         raise error.BadReqError(description="invalid params")
 
@@ -135,19 +146,20 @@ def genre():
     i = 0
     for id in books:
         book = Book.query.get(id)
-        book_info = {}
-        book_info['id'] = book.book_id
-        book_info['title'] = book.title
-        book_info['author'] = book.author_string
-        book_info['num_rating'] = book.num_rating
-        book_info['cover'] = book.cover_image
-        book_info['average_rating'] = book.average_rating
-        book_info['publish_date'] = book.publish_date
-        #book_info['genre'] = book.genre_string
-        results.append(book_info)
-        i+=1
-        if i > 100:
-            break
+        if book.average_rating > rating_filter: 
+            book_info = {}
+            book_info['id'] = book.book_id
+            book_info['title'] = book.title
+            book_info['author'] = book.author_string
+            book_info['num_rating'] = book.num_rating
+            book_info['cover'] = book.cover_image
+            book_info['average_rating'] = book.average_rating
+            book_info['publish_date'] = book.publish_date
+            #book_info['genre'] = book.genre_string
+            results.append(book_info)
+            i+=1
+            if i > 50:
+                break
     return dumps({
       "books": results
     })
