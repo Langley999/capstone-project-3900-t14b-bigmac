@@ -79,7 +79,7 @@ function App() {
             </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
-            <Route path='users' element={<SearchUsers />} />
+            <Route path='users' element={<SearchUsers searchResult={searchResult}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />

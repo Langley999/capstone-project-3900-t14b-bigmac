@@ -40,7 +40,7 @@ const GoalPage = ({ display, userInfo }) => {
         setGoal(0);
       } else {
         setGoal(response['data']['goal']);
-        setGoalLast(response['data']['goal']);
+        setGoalSubmit(response['data']['goal']);
       }
       setCompleted(response['data']['finished']);
     }).catch(function (error) {
