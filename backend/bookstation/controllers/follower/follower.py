@@ -105,7 +105,7 @@ def getFeed():
     for followed_user in followed_users:
         posts = Post.query.filter_by(user_id = followed_user.user_id).all()
         for post in posts:
-            post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
+            post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'avatar' : post.user.avatar, 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
             posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
