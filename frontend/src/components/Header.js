@@ -129,14 +129,20 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     
   }
 
+  const PublicFeedIcon = () => {
+    return (
+      <Tooltip title="Public Feed">
+        <IconButton sx={{ ml: 1 }} component={Link} to='publicfeed'>
+          <DynamicFeedIcon fontSize="large"/>
+        </IconButton>
+      </Tooltip>
+    )
+  }
+
   function NavBarV1 () {
     return (
       <>
-        <Tooltip title="Public Feed">
-          <IconButton sx={{ ml: 1 }} component={Link} to='publicfeed'>
-            <DynamicFeedIcon fontSize="large"/>
-          </IconButton>
-        </Tooltip>
+        <PublicFeedIcon/>
         <Button color="inherit" component={Link} to='/bookstation/login'>Login</Button>
         <Button color="inherit" component={Link} to='/bookstation/register'>Register</Button>
       </>
@@ -146,6 +152,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   function NavBarV2 () {
     return (
       <>
+        <PublicFeedIcon/>
         <Tooltip title="Quiz">
           <IconButton sx={{ ml: 1 }} component={Link} to='quiz'>
             <HelpIcon fontSize="large"/>
