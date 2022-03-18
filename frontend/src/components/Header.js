@@ -114,6 +114,16 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       });
     } else {
       // show user search results
+      axios.get(`${url}/user/search`, {params: {
+        token: localStorage.getItem('token'),
+        search_phrase: searchValue
+      }})
+      .then(res => {
+        updateSearchResult(res.data.users);
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
     }
     
   }

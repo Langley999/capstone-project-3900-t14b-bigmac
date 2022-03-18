@@ -13,7 +13,7 @@ import Register from './layouts/Register';
 import Home from './layouts/Home/Home';
 import Quiz from './layouts/Quiz';
 import Feed from './layouts/Feed';
-import SearchUsers from './layouts/SearchUsers';
+import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
@@ -79,7 +79,7 @@ function App() {
             </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
-            <Route path='users' element={<SearchUsers searchResult={searchResult}/>} />
+            <Route path='users' element={<SearchUsers searchResult={searchResult} userInfo={userInfo}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
@@ -90,7 +90,7 @@ function App() {
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
+              <Route path='profile' element={<Profile userInfo={userInfo}/>}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
