@@ -15,13 +15,13 @@ const SearchBooks = ({searchResult}) => {
         spacing={3}
         justifyContent="center"
       >
-        {searchResult.map((bookInfo) => {
+        {searchResult.length > 0 ? searchResult.map((bookInfo) => {
           return (
             <Grid item xs={12} sm={6} md={4}>
               <BookSection bookInfo={bookInfo}/>
             </Grid>
           )
-        })}
+        }) : <div style={{paddingTop: "50px"}}>There were no books that match that phrase</div>}
       </Grid>
     </Box>
   );

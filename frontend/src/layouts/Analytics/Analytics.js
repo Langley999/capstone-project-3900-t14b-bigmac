@@ -46,20 +46,20 @@ const Analytics = ({ userInfo }) => {
 
   const Data = () => {
     return (
-      <Paper sx={{
-        width: '100%',
-        height: '500px',
-        marginLeft: '40px',
-        padding: '20px',
-        overflow: 'auto'
-      }}>
-        <h1>Analytics</h1>
-        <p>View your monthly progress!</p>
-        <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-        <GoalPage display={analyticView} userInfo={userInfo}/>
-        <FriendPage display={analyticView}/>
-        <GenrePage display={analyticView}/>
-      </Paper>
+    <Paper sx={{
+      width: '100%',
+      height: '500px',
+      marginLeft: '40px',
+      padding: '20px',
+      overflow: 'auto'
+    }}>
+      <h1>Analytics</h1>
+      <p>View your monthly progress!</p>
+      <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
+      <GoalPage display={analyticView} userInfo={userInfo}/>
+      <FriendPage display={analyticView}/>
+      <GenrePage display={analyticView}/>
+    </Paper>
     )
   }
 

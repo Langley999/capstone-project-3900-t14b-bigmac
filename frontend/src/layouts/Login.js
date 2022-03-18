@@ -64,6 +64,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
   const [pass, setPass] = React.useState({password: '', showPassword: false});
   const [email, setEmail] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -80,19 +81,18 @@ const Login = ({ updateLogin, updateUserInfo }) => {
     event.preventDefault();
   };
 
-
   const submitLogin = () => {
     // shows error message for 5 secs if any input is blank
     if (email === '' || pass.password === '') {
       setErrorMsg('All input fields must be filled');
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setSnackBarOpen(true);
       return;
     }
     // shows error message for 5 secs if any input is invalid
     const checkInputs = checkProfileInput('username', email, pass.password);
     if (checkInputs !== '') {
       setErrorMsg(checkInputs);
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
       return;
     }
 
@@ -119,8 +119,9 @@ const Login = ({ updateLogin, updateUserInfo }) => {
 
     }).catch(function (error) {
       // show server error message for 5 secs
+      console.log(JSON.stringify(error.response.data.message));
       setErrorMsg(JSON.stringify(error.response.data.message));
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
     });
   }
 
@@ -150,55 +151,55 @@ const Login = ({ updateLogin, updateUserInfo }) => {
     marginLeft: "-10px"
   }
 
-  return (
-    <div>
-      <ErrorPopup errorMsg={errorMsg}/>
-      <Box
-        component="form"
-        noValidate
-        autoComplete="off"
-        style={formStyle}
-      >
-        <Stack direction="row" style={headingStyle}>
-          <HomeButton/>
-          <h1 style={{textAlign: "center"}}>Login</h1>
-          <div style={{width: "30px"}}/>
-        </Stack>
-
-        <TextField
-          required
-          id="outlined-email"
-          label="Email"
-          type="email"
-          onChange={e => setEmail(e.target.value)}
-        />
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={pass.showPassword ? 'text' : 'password'}
-            value={pass.password}
-            onChange={handlePassChange('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {pass.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
+    return (
+      <div>
+        <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          style={formStyle}
+        >
+          <Stack direction="row" style={headingStyle}>
+            <HomeButton/>
+            <h1 style={{textAlign: "center"}}>Login</h1>
+            <div style={{width: "30px"}}></div>
+          </Stack>
+          
+          <TextField
+            required
+            id="outlined-email"
+            label="Email"
+            type="email"
+            onChange={e => setEmail(e.target.value)}
           />
-        </FormControl>
+          <FormControl variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={pass.showPassword ? 'text' : 'password'}
+              value={pass.password}
+              onChange={handlePassChange('password')}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {pass.showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
+            />
+          </FormControl>
 
-        <Button variant="contained" onClick={submitLogin}>Login</Button>
-        <span style={{height: "20px", textAlign: "center"}}>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
-      </Box>
-    </div>
-  );
-};
+          <Button variant="contained" onClick={submitLogin}>Login</Button>
+          <span style={{height: "20px", textAlign: "center"}}>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
+        </Box>
+      </div>
+    );
+  };
 export default Login;

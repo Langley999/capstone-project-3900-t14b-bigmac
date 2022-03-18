@@ -335,7 +335,6 @@ def addRatingReview():
 #     return dumps({"success": True})
 
 
-
 #change rating ------
 # @app.route("/book/ratings", methods=["PUT"])
 # def editRating():

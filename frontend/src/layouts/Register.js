@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import {message} from "antd";
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -60,6 +61,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
   const [username, setUsername] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const [passErr, setPassErr] = React.useState('');
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false);
 
   // handle password changes
   const handlePassChange = (prop) => (event) => {
@@ -85,20 +87,20 @@ const Register = ({ updateLogin, updateUserInfo }) => {
     // show error message for 5 secs if any inputs are blank
     if (email === '' || username === '' || pass.password === '' || passConfirm.password === '') {
       setErrorMsg('All input fields must be filled');
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setSnackBarOpen(true);
       return;
     }
     // set error message and return if passwords are not empty and don't match
     if (pass.password !== '' && passConfirm.password !== '' && pass.password !== passConfirm.password) {
       setErrorMsg('Password and confirm password must match');
-      setTimeout(() => {setErrorMsg('')}, 5000);
+      setSnackBarOpen(true);
       return;
     }
     // set error message for any invalid inputs
     const checkInputs = checkProfileInput(username, email, pass.password);
     if (checkInputs !== '') {
       setErrorMsg(checkInputs);
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
       return;
     }
 
@@ -119,7 +121,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
     }).catch(function (error) {
       // show server error message for 5 secs
       setErrorMsg(JSON.stringify(error.response.data.message));
-      setTimeout(() => {setErrorMsg('')}, 3000);
+      setSnackBarOpen(true);
     });
   }
 
@@ -151,7 +153,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
 
   return (
     <div>
-      <ErrorPopup errorMsg={errorMsg}/>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <Box
         component="form"
         noValidate

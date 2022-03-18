@@ -21,6 +21,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { makeStyles } from '@mui/styles';
+import ErrorPopup from '../components/ErrorPopup';
+import SuccessPopup from '../components/SuccessPopup';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -74,7 +77,6 @@ const BookDetail = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState("");
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
-
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -194,6 +196,8 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           setbtnDisabled(true);
           setreadingButtonText('completed');
+          setsnackbarcontent('Book has been added to Reading History');
+          setsnackbaropen(true);
         }
       })
       .catch(function (error) {
@@ -229,8 +233,8 @@ const BookDetail = ({userInfo}) => {
             .then(function (response) {
               console.log(response);
               if (response['status'] === 200) {
-
-                setsnackbarcontent('success');
+               
+                setsnackbarcontent('Book has been added to new collection');
                 setsnackbaropen(true);
                 setCreateForm(false);
                 settextFieldValue("");
@@ -252,7 +256,6 @@ const BookDetail = ({userInfo}) => {
         /*
         setwarningcontent(error);
         setwarningopen(true);*/
-
       });
   }
   const handleAddToCollection = (key) => {
@@ -263,12 +266,12 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id
     }).then(res => {
 
-      setsnackbarcontent("add book success!");
+      setsnackbarcontent("Book has been added to collection");
       setsnackbaropen(true);
       setAnchorEl(null);
     }).catch(error => {
-      console.log(error);
-
+      console.log(error.response);
+ 
       setwarningcontent(error.response.data.message);
       setwarningopen(true);
     })
@@ -688,16 +691,8 @@ const BookDetail = ({userInfo}) => {
           </DialogActions>
 
         </Dialog>
-        <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackbaropen}  onClose = {() =>setsnackbaropen(false)} autoHideDuration={2000} >
-          <Alert severity="success" className={classes.root}  sx={{ width: '100%' }} >
-            {snackbarcontent}
-          </Alert>
-        </Snackbar>
-        <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={warningopen}  onClose = {() =>setwarningopen(false)} autoHideDuration={2000} >
-          <Alert severity="warning" className={classes.warning}  sx={{ width: '100%' }} >
-            {warningcontent}
-          </Alert>
-        </Snackbar>
+        <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
+        <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
       </Box>}
     </div>
 
