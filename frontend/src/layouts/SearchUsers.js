@@ -22,7 +22,7 @@ const SearchUsers = ({searchResult}) => {
     justifyContent: "space-between"
   }
 
-  const User = ({ username, user_id, avatar, isFollowing, url }) => {
+  const User = ({ username, id, avatar, isFollowing, url }) => {
     const followUser = () => {
 
     }
@@ -36,7 +36,7 @@ const SearchUsers = ({searchResult}) => {
         <CardContent style={listingStyle}>
           <div style={{display: "flex",flexDirection: "row"}}>
             <Avatar fontSize="large"/>
-            <Button href="#text-buttons" style={{textTransform: "none"}}>{username}</Button>
+            <Button href={`?id=${id}`} style={{textTransform: "none"}}>{username}</Button>
           </div>
           {isFollowing ?
           <Button onClick={unfollowUser} variant="contained">Unfollow</Button>
@@ -52,7 +52,7 @@ const SearchUsers = ({searchResult}) => {
         return (
           <User />
         )
-      }) : <div style={{paddingTop: "50px"}}>There were no books that match that phrase</div>}
+      }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>There were no usernames that matched the phrase</div>}
     </div>
   );
 };

@@ -21,7 +21,7 @@ const SearchBooks = ({searchResult}) => {
               <BookSection bookInfo={bookInfo}/>
             </Grid>
           )
-        }) : <div style={{paddingTop: "50px"}}>There were no books that match that phrase</div>}
+        }) : <div style={{paddingTop: "50px"}}>There were no books that matched the phrase</div>}
       </Grid>
     </Box>
   );
