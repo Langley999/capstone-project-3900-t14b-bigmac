@@ -12,7 +12,8 @@ import Login from './layouts/Login';
 import Register from './layouts/Register';
 import Home from './layouts/Home/Home';
 import Quiz from './layouts/Quiz';
-import Feed from './layouts/Feed';
+import Feed from './layouts/Feed/Feed';
+import PublicFeed from './layouts/Feed/PublicFeed';
 import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
@@ -79,6 +80,7 @@ function App() {
             </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
+            <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers searchResult={searchResult} userInfo={userInfo}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />

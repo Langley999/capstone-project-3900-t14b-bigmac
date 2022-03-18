@@ -23,6 +23,7 @@ import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import axios from "axios";
 import {url} from './Helper';
 import '../App.css';
@@ -131,6 +132,11 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   function NavBarV1 () {
     return (
       <>
+        <Tooltip title="Public Feed">
+          <IconButton sx={{ ml: 1 }} component={Link} to='publicfeed'>
+            <DynamicFeedIcon fontSize="large"/>
+          </IconButton>
+        </Tooltip>
         <Button color="inherit" component={Link} to='/bookstation/login'>Login</Button>
         <Button color="inherit" component={Link} to='/bookstation/register'>Register</Button>
       </>

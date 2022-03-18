@@ -65,13 +65,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     }
 
     axios.post(`${url}/user/update`, {
-      origin: userInfo.email,
       token: localStorage.getItem('token'),
       email: values.email,
       username: values.username,
       password: values.password
     }).then(function (response) {
-      console.log('har');
       setSuccessMsg('Profile details updated');
       setShowSuccess(true);
       updateUserInfo(values);
