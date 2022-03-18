@@ -1,0 +1,98 @@
+
+
+### search users as user 8
+
+
+GET http://127.0.0.1:8080/user/search?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk&search_phrase=test
+
+### user 8 follow user 9
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": "9"
+}
+
+
+### user 8 unfollow user 9
+POST http://127.0.0.1:8080/user/unfollow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": "9"
+}
+
+
+
+### user 8 follow user 10
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": "10"
+}
+
+### user 8 follow user 9
+
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": "9"
+}
+
+
+### user 10 adds post
+
+POST http://127.0.0.1:8080/post/addpost 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMyIsInRpbWUiOjE2NDc0NDQ0NTcuMjU2MTg4fQ.AkMeBUj0XfJ_hGQgOrRApWNM1IHMvqEKjlwmE8nlias",
+    "content": "this is my first post as user 10"
+}
+
+
+### view feed as user 8
+
+GET http://127.0.0.1:8080/post/getfeed?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk
+
+### user 9 adds post
+
+POST http://127.0.0.1:8080/post/addpost 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0",
+    "content": "yallo is my first post as user 9"
+}
+
+
+### view feed as user 8
+
+GET http://127.0.0.1:8080/post/getfeed?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk
+
+
+### user 10 adds another post
+
+
+POST http://127.0.0.1:8080/post/addpost 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMyIsInRpbWUiOjE2NDc0NDQ0NTcuMjU2MTg4fQ.AkMeBUj0XfJ_hGQgOrRApWNM1IHMvqEKjlwmE8nlias",
+    "content": "again we go is my second post as user 10"
+}
+
+
+### view posts as user 10
+
+GET http://127.0.0.1:8080/post/getposts?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMyIsInRpbWUiOjE2NDc0NDQ0NTcuMjU2MTg4fQ.AkMeBUj0XfJ_hGQgOrRApWNM1IHMvqEKjlwmE8nlias
+

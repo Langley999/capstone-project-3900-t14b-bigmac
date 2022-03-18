@@ -17,12 +17,14 @@ class User(db.Model):
     email = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256))
     token = db.Column(db.String(512))
+    avatar = db.Column(db.String(4096))
 
-    def __init__(self, username, email, password, token):
+    def __init__(self, username, email, password, token, avatar):
         self.username   = username
         self.email      = email
         self.password   = password
         self.token      = token
+        self.avatar     = avatar
 
 class Post(db.Model):
 
@@ -31,11 +33,9 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     content = db.Column(db.String(1024))
-    created_time = db.Column(db.Time)
+    created_time = db.Column(db.DateTime)
     user = db.relationship('User')
 
-    def __init__(self, content):
-        self.content = content
 
 class Collection(db.Model):
 
