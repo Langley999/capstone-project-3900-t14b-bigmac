@@ -198,6 +198,8 @@ const BookDetail = ({userInfo}) => {
         if (response['status'] === 200) {
           setbtnDisabled(true);
           setreadingButtonText('completed');
+          setsnackbarcontent('Book has been added to Reading History');
+          setsnackbaropen(true);
         }
       })
       .catch(function (error) {

@@ -93,7 +93,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
-        <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
+        <Alert severity="success" style={{successStyle, backgroundColor: '#edf7ec'}} sx={{ width: '100%' }} >
           {successMsg}
         </Alert>
       </Snackbar>

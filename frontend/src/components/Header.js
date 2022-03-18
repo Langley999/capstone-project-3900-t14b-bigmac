@@ -286,27 +286,30 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?
-            <Tooltip title="profile">
-              <IconButton
-                sx={{ml: 1}}
-                onClick={handleClick}
-                aria-controls={open ? 'account-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-              >
-                {userInfo.avatar === undefined ?
-                  <Avatar fontSize="large"/> :
-                  <Avatar
-                    src={userInfo.avatar}
-                    sx={{
-                      height: 45,
-                      mb: 0,
-                      width: 45
-                    }}
-                  />
-                }
-              </IconButton>
-            </Tooltip> : null
+            <div>
+              <Tooltip title="profile">
+                <IconButton
+                  sx={{ml: 1}}
+                  onClick={handleClick}
+                  aria-controls={open ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                >
+                  {userInfo.avatar === undefined ?
+                    <Avatar fontSize="large"/> :
+                    <Avatar
+                      src={userInfo.avatar}
+                      sx={{
+                        height: 45,
+                        mb: 0,
+                        width: 45
+                      }}
+                    />
+                  }
+                </IconButton>
+              </Tooltip>
+              <span style={{fontSize: "20px"}}>&nbsp;&nbsp;{userInfo.username}</span>
+            </div>  : null
           }
           <Dropdown/>
         </Toolbar>
