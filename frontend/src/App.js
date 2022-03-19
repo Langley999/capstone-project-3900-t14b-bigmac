@@ -92,7 +92,7 @@ function App() {
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile userInfo={userInfo}/>}/>
+              <Route path='profile' element={<Profile updateUserInfo={updateUserInfo} userInfo={userInfo}/>}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>

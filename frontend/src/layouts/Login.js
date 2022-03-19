@@ -104,7 +104,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
       localStorage.setItem('token', response['data']['token']);
 
       axios.get(`${url}/user/profile`, {params: {
-          username: response.data.username,
+          user_id: response.data.user_id,
           token: response.data.token
         }})
         .then(function (res) {

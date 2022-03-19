@@ -5,7 +5,7 @@ import FeedListing from './FeedListing';
 import axios from "axios";
 import {url} from '../../components/Helper';
 
-const Feed = () => {
+const PublicFeed = () => {
   const [successMsg, setSuccessMsg] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showSuccess, setShowSuccess] = React.useState(false);
@@ -44,4 +44,4 @@ const Feed = () => {
     </div>
   );
 };
-export default Feed;
+export default PublicFeed;

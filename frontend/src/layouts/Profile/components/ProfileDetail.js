@@ -70,10 +70,12 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       username: values.username,
       password: values.password
     }).then(function (response) {
+      updateUserInfo(values);
       setSuccessMsg('Profile details updated');
       setShowSuccess(true);
-      updateUserInfo(values);
+      
     }).catch(function (error) {
+      console.log(error.message)
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
     });
