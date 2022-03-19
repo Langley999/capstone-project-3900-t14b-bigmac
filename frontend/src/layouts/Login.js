@@ -188,7 +188,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {pass.showPassword ? <VisibilityOff /> : <Visibility />}
+                    {pass.showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               }
