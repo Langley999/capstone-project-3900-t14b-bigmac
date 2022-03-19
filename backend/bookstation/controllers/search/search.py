@@ -28,14 +28,14 @@ def search():
     try:
         search_type = request.args.get('type')
         search_value = request.args.get('value')
-        rating_filter = request.args.get('rating')
+        rating_filter = int(request.args.get('rating'))
     except:
         raise error.BadReqError(description="invalid params")
     if (search_type == 'author'):
         # print(type(search_book_author(search_value)))
-        search_result = search_book_author(search_value, rating_filter, start_year, end_year)
+        search_result = search_book_author(search_value, rating_filter)
     if (search_type == 'title'):
-        search_result = search_book_title(search_value, rating_filter, start_year, end_year)
+        search_result = search_book_title(search_value, rating_filter)
 
     return search_result
 
@@ -48,7 +48,7 @@ def search_book_author(author_name, rating_filter):
         
         for book_author in book_authors:
             book = book_author.book
-            if book.average_rating > rating_filter: 
+            if book.average_rating >= rating_filter:
                 book_info = {}
                 book_info['id'] = book.book_id
                 book_info['title'] = book.title
@@ -72,7 +72,7 @@ def search_book_title(book_title, rating_filter):
     allbooks = []
     i = 0
     for book in book_exact:
-        if book.average_rating > rating_filter: 
+        if book.average_rating >= rating_filter:
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title

@@ -9,6 +9,9 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CardActions } from '@mui/material';
+import axios from "axios";
+import {url} from "../../components/Helper";
+import {useNavigate} from 'react-router-dom';
 
 const itemData = [
   {
@@ -62,6 +65,8 @@ const itemData = [
 ];
 
 const Home = ({ifLogin, updateSearchResult}) => {
+  const navigate = useNavigate();
+
   const data = {
     bookTitle: 'Harry Potter',
     bookAuthor: 'J.K.Rowling',
@@ -89,9 +94,18 @@ const Home = ({ifLogin, updateSearchResult}) => {
   }
 
   const Subjects = () => {
-    const searchGenre = (genre) => {
-      updateSearchResult();
-
+    const searchGenre = (genres) => {
+      axios.get(`${url}/search/genre`, {params: {
+          genres: genres,
+          rating: 0
+        }})
+        .then(res => {
+          updateSearchResult(res.data.books);
+          navigate('searchbooks');
+        })
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
     }
 
     return (

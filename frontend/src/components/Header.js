@@ -104,7 +104,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       console.log(searchValue)
       axios.get(`${url}/search/searchbook`, {params: {
           type: radioValue,
-          value: searchValue
+          value: searchValue,
+          rating: 0
       }})
       .then(res => {
         updateSearchResult(res.data.books);
