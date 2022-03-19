@@ -14,7 +14,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import {useState} from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -23,9 +23,9 @@ import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import axios from "axios";
 import {url} from './Helper';
-import { useNavigate } from 'react-router-dom';
 import '../App.css';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
@@ -84,6 +84,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+  const isBookSearch = (useLocation().pathname !== "/users");
 
 
   const handleClick = (event) => {
@@ -98,10 +99,13 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   const submitSearch = () => {
-    axios.get(`${url}/search/searchbook`, {params: {
-        type: radioValue,
-        value: searchValue
-    }})
+    if (isBookSearch) {
+      console.log(radioValue)
+      console.log(searchValue)
+      axios.get(`${url}/search/searchbook`, {params: {
+          type: radioValue,
+          value: searchValue
+      }})
       .then(res => {
         updateSearchResult(res.data.books);
         navigate('searchbooks');
@@ -109,11 +113,36 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       .catch(function (error) {
         alert(error.response.data.message);
       });
+    } else {
+      // show user search results
+      axios.get(`${url}/user/search`, {params: {
+        token: localStorage.getItem('token'),
+        search_phrase: searchValue
+      }})
+      .then(res => {
+        updateSearchResult(res.data.users);
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
+    }
+    
+  }
+
+  const PublicFeedIcon = () => {
+    return (
+      <Tooltip title="Public Feed">
+        <IconButton sx={{ ml: 1 }} component={Link} to='publicfeed'>
+          <DynamicFeedIcon fontSize="large"/>
+        </IconButton>
+      </Tooltip>
+    )
   }
 
   function NavBarV1 () {
     return (
       <>
+        <PublicFeedIcon/>
         <Button color="inherit" component={Link} to='/bookstation/login'>Login</Button>
         <Button color="inherit" component={Link} to='/bookstation/register'>Register</Button>
       </>
@@ -123,6 +152,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   function NavBarV2 () {
     return (
       <>
+        <PublicFeedIcon/>
         <Tooltip title="Quiz">
           <IconButton sx={{ ml: 1 }} component={Link} to='quiz'>
             <HelpIcon fontSize="large"/>
@@ -261,13 +291,14 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Search…"
+                placeholder={isBookSearch ? "Search Books" : "Search Users"}
                 value={searchValue}
                 onChange={(e) => updateSearchValue(e.target.value)}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
           </Box>
+          {isBookSearch ? 
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"
@@ -279,32 +310,36 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          <Button variant="outlined">Filter</Button>
+          : <></>}
+          {isBookSearch ? <Button variant="outlined">Filter</Button> : <></>}
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?
-            <Tooltip title="profile">
-              <IconButton
-                sx={{ml: 1}}
-                onClick={handleClick}
-                aria-controls={open ? 'account-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-              >
-                {userInfo.avatar === undefined ?
-                  <Avatar fontSize="large"/> :
-                  <Avatar
-                    src={userInfo.avatar}
-                    sx={{
-                      height: 45,
-                      mb: 0,
-                      width: 45
-                    }}
-                  />
-                }
-              </IconButton>
-            </Tooltip> : null
+            <div>
+              <Tooltip title="profile">
+                <IconButton
+                  sx={{ml: 1}}
+                  onClick={handleClick}
+                  aria-controls={open ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                >
+                  {userInfo.avatar === undefined ?
+                    <Avatar fontSize="large"/> :
+                    <Avatar
+                      src={userInfo.avatar}
+                      sx={{
+                        height: 45,
+                        mb: 0,
+                        width: 45
+                      }}
+                    />
+                  }
+                </IconButton>
+              </Tooltip>
+              <span style={{fontSize: "20px"}}>&nbsp;&nbsp;{userInfo.username}</span>
+            </div>  : null
           }
           <Dropdown/>
         </Toolbar>

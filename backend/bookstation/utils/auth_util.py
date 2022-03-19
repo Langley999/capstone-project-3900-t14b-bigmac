@@ -3,7 +3,16 @@ import hashlib
 import jwt
 SECRET = "BIGMAC"
 from bookstation import error
+from bookstation.models.user_sys import User
 from flask import session
+
+
+def get_user(token):
+    user = User.query.filter_by(token = token).first()
+    if user == None:
+        raise error.NotFoundError(description = 'Invalid or expired token, cannot find user')
+    return user
+
 
 def login_status_check(email, token):
     '''
@@ -17,7 +26,11 @@ def login_status_check(email, token):
         AccessError:
             1. incorrect token
             2. cannot get token
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> origin/frontend-combine-Lan
     TODO:
         make this function into decorator
     '''

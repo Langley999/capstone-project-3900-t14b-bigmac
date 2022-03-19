@@ -160,7 +160,6 @@ def add_book():
 
     user = User.query.filter_by(token=token).first()
     collection = Collection.query.get(c_id)
-
     if collection == None:
       raise error.NotFoundError(description="Collection does not exist")
 
@@ -179,7 +178,6 @@ def add_book():
       })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
-
 
 @app.route(url_prefix + '/removebook', methods=["DELETE"])
 def remove_book():

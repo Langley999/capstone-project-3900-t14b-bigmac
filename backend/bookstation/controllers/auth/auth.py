@@ -123,7 +123,7 @@ def register():
         raise error.InputError(description="username already exists")
     # store new user
     token = generate_token(username)
-    new_user = User(username, email, pw_encode(password), token)
+    new_user = User(username, email, pw_encode(password), token, None)
 
     db.session.add(new_user)
     db.session.commit()

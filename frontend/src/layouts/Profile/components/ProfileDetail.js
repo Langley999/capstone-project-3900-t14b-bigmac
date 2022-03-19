@@ -16,8 +16,12 @@ import IconButton from '@mui/material/IconButton';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import FormControl from "@mui/material/FormControl";
 import axios from "axios";
+import ErrorPopup from '../../../components/ErrorPopup';
+import SuccessPopup from '../../../components/ErrorPopup';
 import {url, checkProfileInput} from '../../../components/Helper';
 import {useParams, useLocation, useNavigate} from "react-router-dom";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const params = useParams();
@@ -25,6 +29,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [ifVisible, setIfVisible] = useState(false);
   const [isSelf, setIsSelf] = useState(true);
 
+  const [ifShow, setIfShow] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
@@ -74,10 +83,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   }
 
   const handleSubmit = () => {
-    const errorMsg = checkProfileInput(values.username, values.email,values.password);
-    if (errorMsg !== '') {
-      alert(errorMsg);
-      return
+    const checkInputs = checkProfileInput(values.username, values.email,values.password)
+    if (checkInputs !== '') {
+      setErrorMsg(checkInputs);
+      setShowError(true);
+      return;
     }
 
     axios.post(`${url}/user/update`, {
@@ -87,19 +97,38 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       password: values.password
     }).then(function (response) {
       updateUserInfo(values);
-      alert("Edit profile success!")
+      setSuccessMsg('Profile details updated');
+      setShowSuccess(true);
+      
     }).catch(function (error) {
-      alert(error.response.data.message);
+      console.log(error.message)
+      setErrorMsg(JSON.stringify(error.message));
+      setShowError(true);
     });
+  }
+
+  const successStyle = {
+    background: '#2f7c31',
+    border: 0,
+    borderRadius: 3,
+    color: 'white',
+    padding: '0 30px'
   }
 
   return (
     <>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
+        <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
+          {successMsg}
+        </Alert>
+      </Snackbar>
       {isSelf ?
         <form
           autoComplete="off"
           noValidate
         >
+
           <Card>
             <CardHeader
               subheader="The information can be edited"

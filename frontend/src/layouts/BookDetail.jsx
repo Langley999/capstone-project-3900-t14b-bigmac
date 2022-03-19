@@ -21,6 +21,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { makeStyles } from '@mui/styles';
+import ErrorPopup from '../components/ErrorPopup';
+import SuccessPopup from '../components/SuccessPopup';
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -74,7 +77,6 @@ const BookDetail = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState("");
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
-
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -190,18 +192,20 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-    .then(function (response) {
-      console.log(response)
-      if (response['status'] === 200) {
-        setbtnDisabled(true);
-        setreadingButtonText('completed');
-      }
-    })
-    .catch(function (error) {
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-    });
+      .then(function (response) {
+        console.log(response)
+        if (response['status'] === 200) {
+          setbtnDisabled(true);
+          setreadingButtonText('completed');
+          setsnackbarcontent('Book has been added to Reading History');
+          setsnackbaropen(true);
+        }
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
   }
   const handleCreateCollectionForm = () => {
     const body = JSON.stringify( {
@@ -213,48 +217,47 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-    .then(function (response) {
-      console.log(response);
-      let c_id = response['data']['id'];
-      if (response['status'] === 200) {
-        let json = JSON.stringify( {
-          collection_id: c_id,
-          token: localStorage.getItem('token'),
-          book_id: book_id
-        });
-        axios.post('http://127.0.0.1:8080/collection/addbook', json,{
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(function (response) {
-          console.log(response);
-          if (response['status'] === 200) {
+      .then(function (response) {
+        console.log(response);
+        let c_id = response['data']['id'];
+        if (response['status'] === 200) {
+          let json = JSON.stringify( {
+            collection_id: c_id,
+            token: localStorage.getItem('token'),
+            book_id: book_id
+          });
+          axios.post('http://127.0.0.1:8080/collection/addbook', json,{
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+            .then(function (response) {
+              console.log(response);
+              if (response['status'] === 200) {
+               
+                setsnackbarcontent('Book has been added to new collection');
+                setsnackbaropen(true);
+                setCreateForm(false);
+                settextFieldValue("");
+                setAnchorEl(null);
+              }
+            })
+            .catch(function (error) {
+              setwarningcontent(error.response.data.message);
+              setwarningopen(true);
+              console.log(error);
+            });
 
-            setsnackbarcontent('success');
-            setsnackbaropen(true);
-            setCreateForm(false);
-            settextFieldValue("");
-            setAnchorEl(null);
-          }
-        })
-        .catch(function (error) {
-          setwarningcontent(error.response.data.message);
-          setwarningopen(true);
-          console.log(error);
-        });
-
-      }
-    })
-    .catch(function (error) {
-      setwarningcontent(error.response.data.message);
-      setwarningopen(true);
-      console.log(error);
-      /*
-      setwarningcontent(error);
-      setwarningopen(true);*/
-
-    });
+        }
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+        /*
+        setwarningcontent(error);
+        setwarningopen(true);*/
+      });
   }
   const handleAddToCollection = (key) => {
 
@@ -264,12 +267,12 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id
     }).then(res => {
 
-      setsnackbarcontent("add book success!");
+      setsnackbarcontent("Book has been added to collection");
       setsnackbaropen(true);
       setAnchorEl(null);
     }).catch(error => {
-      console.log(error);
-
+      console.log(error.response);
+ 
       setwarningcontent(error.response.data.message);
       setwarningopen(true);
     })
@@ -689,16 +692,8 @@ const BookDetail = ({userInfo}) => {
           </DialogActions>
 
         </Dialog>
-        <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackbaropen}  onClose = {() =>setsnackbaropen(false)} autoHideDuration={2000} >
-          <Alert severity="success" className={classes.root}  sx={{ width: '100%' }} >
-            {snackbarcontent}
-          </Alert>
-        </Snackbar>
-        <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={warningopen}  onClose = {() =>setwarningopen(false)} autoHideDuration={2000} >
-          <Alert severity="warning" className={classes.warning}  sx={{ width: '100%' }} >
-            {warningcontent}
-          </Alert>
-        </Snackbar>
+        <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
+        <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
       </Box>}
     </div>
 

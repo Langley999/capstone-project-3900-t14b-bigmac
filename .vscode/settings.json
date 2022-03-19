@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "db",
+            "database": "${workspaceFolder:capstone-project-3900-t14b-bigmac}/backend/bookstation/bookstation.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

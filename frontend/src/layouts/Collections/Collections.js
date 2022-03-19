@@ -263,6 +263,22 @@ const Collections = ({userInfo}) => {
     )
   }
 
+  const CompletedBook = ({id, title, cover}) => {
+    return (
+      <>
+        <Box sx={{height: '300px', width: '140px'}}>
+          <Box component={Link} to={`/book/?id=${id}`} className='remove-underline' sx={{color: 'black'}} >
+            <img src={cover} alt="" style={{height: '200px', width: '140px'}}/>
+            <Box sx={{height: '55px', overflow: 'auto'}}>
+              <Typography variant="body2" color="text.secondary">
+                {title}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      </>
+    )
+  }
 
   const Books = () => {
 
@@ -283,7 +299,9 @@ const Collections = ({userInfo}) => {
             {currentCollection.books.map((book) => {
               return (
                 <Grid item xs={12} sm={6} md={2} key={book.id}>
-                  <Book id={book.id} title={book.title} cover={book.cover} canRemove={isSelf && currentCollection.name !== 'Reading History'}/>
+                  {currentCollection.name === 'Reading History' ?
+                    <CompletedBook id={book.id} title={book.title} cover={book.cover}/> 
+                    : <Book id={book.id} title={book.title} cover={book.cover}/>}
                 </Grid>
               )
             })}
