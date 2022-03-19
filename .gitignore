@@ -1,4 +1,4 @@
 .idea/
 .DS_Store
 backend/flask_session
-backend/bookstation.db
+backend/bookstation/bookstation.db
