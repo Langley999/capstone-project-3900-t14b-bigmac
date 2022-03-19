@@ -168,7 +168,7 @@ def get_user_profile():
         is_self (boolean): True if the user is requesting his own profile, else False
         username (string): target user's username
         email (string): target user's email
-        TODO: add more returns and profile image
+        avatar (string base64): user's avatar
     Raises:
         AccessError: login check
         NotFoundError: when target email is an invalid email
@@ -187,7 +187,8 @@ def get_user_profile():
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
-        "email": user.email
+        "email": user.email,
+        "avatar": user.avatar
     })
 
 @app.route(url_prefix + '/update', methods=["POST"])
@@ -238,3 +239,40 @@ def update_user_profile():
     db.session.add(user)
     db.session.commit()
     return dumps({})
+
+
+@app.route(url_prefix + '/updateavatar', methods=["POST"])
+def update_user_avatar():
+    '''
+    It will update user's avatar.
+    Args (POST):
+        token (string): valid token
+        avatar (base64 string): avatar image of base64 format
+    Returns:
+        no returns.
+    Raises:
+        AccessError: login check
+        BadReqError: when post body is invalid
+        InputError:
+            1. new username has been registered
+            2. new email has been registerd
+    TODO:
+        1. add more params
+    '''
+    try:
+        data = request.get_json()
+        avatar, token = \
+            data['avatar'], data['token']
+    except:
+        raise error.BadReqError(description="post body error")
+#     login_status_check(origin_email, token)
+    # sql select origin user
+    user = User.query.filter_by(token=token).first()
+    if (user == None):
+        raise error.BadReqError(description="post body error")
+    # change password
+    user.avatar = avatar
+    db.session.add(user)
+    db.session.commit()
+    return dumps({})
+

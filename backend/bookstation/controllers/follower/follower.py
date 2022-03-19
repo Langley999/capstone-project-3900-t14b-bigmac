@@ -113,3 +113,72 @@ def getFeed():
 
 
 #TODO implement above, add avatar for user, sort time by most recent
+@app.route("/user/getfollowing", methods=["GET"])
+def getfollowing():
+    """
+    Function for user to to get all user he's following
+    Args:
+        user_id (int): id of the user
+    Returns:
+        - followings (list):
+            - user_id (int)
+            - username (str)
+    Raises:
+        NotFoundError: when the book does not exist in the collection
+        AccessError:
+          - when the user does not have permission to remove book
+        BadReqError:
+          - when removing book fails
+    """
+    user_id = request.args.get('user_id')
+
+    if User.query.get(user_id) == None:
+        raise error.NotFoundError(description='Target user not found')
+
+    followings = Follow_relationship.query.filter_by(follower_user_id = user_id).all()
+    result = []
+    for following in followings:
+        userinfo = {}
+        user = User.query.get(following.user_id) 
+        userinfo['user_id'] = following.user_id
+        userinfo['username'] = user.username
+        result.append(userinfo)
+
+    return dumps({
+        "followings": result
+    })
+
+@app.route("/user/getfollower", methods=["GET"])
+def getfollower():
+    """
+    Function for user to to get all followers
+    Args:
+        user_id (int): id of the user
+    Returns:
+        - followers (list):
+            - user_id (int)
+            - username (str)
+    Raises:
+        NotFoundError: when the book does not exist in the collection
+        AccessError:
+          - when the user does not have permission to remove book
+        BadReqError:
+          - when removing book fails
+    """
+    user_id = request.args.get('user_id')
+
+    if User.query.get(user_id) == None:
+        raise error.NotFoundError(description='Target user not found')
+
+    followings = Follow_relationship.query.filter_by(user_id = user_id).all()
+    result = []
+    for following in followings:
+        userinfo = {}
+        user = User.query.get(following.follower_user_id) 
+        userinfo['user_id'] = following.follower_user_id
+        userinfo['username'] = user.username
+        result.append(userinfo)
+
+    return dumps({
+        "followers": result
+    })
