@@ -74,7 +74,7 @@ function App() {
 
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin}/>} />
+            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult}/>} />
             <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
               <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
             </Route>
@@ -85,14 +85,14 @@ function App() {
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
-            <Route path='user' element={
+            <Route path='user/:userid' element={
               <>
-                <AvatarBanner userInfo={userInfo}/>
+                <AvatarBanner/>
                 <NavTabs/>
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile updateUserInfo={updateUserInfo} userInfo={userInfo}/>}/>
+              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo} />}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts />}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>

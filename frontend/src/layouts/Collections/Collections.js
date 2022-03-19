@@ -21,11 +21,14 @@ import {
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 
 
 const Collections = ({userInfo}) => {
+  const urlParams = useParams();
+
   const [collections, setCollections] = useState([]);
+  const [isSelf, setIsSelf] = useState(true);
   let initialCollections = [];
   const [open, setOpen] = useState(false);
   const [currentCollection, setCurrentCollection] = useState({
@@ -36,12 +39,14 @@ const Collections = ({userInfo}) => {
   let newCollection = '';   // the name of created collection
 
   useEffect(async () => {
+    const user_id = Number(window.location.pathname.split('/')[2]);
+    setIsSelf(user_id === userInfo.user_id);
+
     axios.get(`${url}/collection/getall`, {params: {
-        token: localStorage.getItem('token')
+        user_id: user_id
       }})
       .then(res => {
         setCollections([...res['data']['collections']]);
-        console.log(res['data']['collections']);
         initialCollections = [...res['data']['collections']]
         // default show Favourite Collection
         getCollection(getFavouriteCollectionIdByFlag());
@@ -50,7 +55,7 @@ const Collections = ({userInfo}) => {
         alert("error")
         // alert(error.response.data.message);
       });
-  }, [])
+  }, [window.location.href])
 
   // get favourite collection id by flag
   const getFavouriteCollectionIdByFlag = () => {
@@ -127,9 +132,13 @@ const Collections = ({userInfo}) => {
     return (
       <Paper sx={{ width: 200, maxWidth: '100%', height: 500, overflow: 'auto'}}>
         <MenuList>
-          <MenuItem>
-            <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
-          </MenuItem>
+          {isSelf ?
+            <MenuItem>
+              <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
+            </MenuItem>
+            : null
+          }
+
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create New Collection</DialogTitle>
             <DialogContent>
@@ -200,7 +209,7 @@ const Collections = ({userInfo}) => {
     return (
       <Box sx={{display: 'flex'}}>
         <h1>{currentCollection.name}</h1>
-        {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' ?
+        {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf ?
           null :
           <>
             <Button  sx={{textTransform: 'none', marginLeft: '20px'}}>Edit Name</Button>
@@ -211,10 +220,9 @@ const Collections = ({userInfo}) => {
     )
   }
 
-  const Book = ({id, title, cover}) => {
+  const Book = ({id, title, cover, canRemove}) => {
 
     const removeBook = () => {
-      console.log(id)
       axios.delete(`${url}/collection/removebook`, {data: {
           token: localStorage.getItem('token'),
           collection_id: currentCollection.collection_id,
@@ -245,7 +253,11 @@ const Collections = ({userInfo}) => {
               </Typography>
             </Box>
           </Box>
-          <Button onClick={removeBook}>Remove</Button>
+          {canRemove ?
+            <Button onClick={removeBook}>Remove</Button>
+            : null
+          }
+
         </Box>
       </>
     )
@@ -269,6 +281,7 @@ const Collections = ({userInfo}) => {
   }
 
   const Books = () => {
+
     return (
       <Paper sx={{
         width: '100%',

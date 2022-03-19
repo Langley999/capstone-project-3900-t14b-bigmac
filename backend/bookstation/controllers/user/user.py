@@ -23,12 +23,12 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    operator_email = request.args.get('operator')
+    
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
     # sql select user
-    user = User.query.filter_by(email=operator_email).first()
+    user = User.query.filter_by(token=token).first()
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
     if collection == None:
         return dumps({
@@ -74,12 +74,12 @@ def set_goal():
     '''
     try:
         data = request.get_json()
-        email, goal, token = data['email'], data['goal'], data['token']
+        goal, token = data['goal'], data['token']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(email, token)
     # sql select user
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(token=token).first()
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
 
