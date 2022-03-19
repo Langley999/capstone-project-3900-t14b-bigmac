@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Grid } from '@material-ui/core';
+import {Box, Grid} from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
 import Card from '@material-ui/core/Card'
@@ -10,7 +10,58 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CardActions } from '@mui/material';
 
-const Home = ({ifLogin}) => {
+const itemData = [
+  {
+    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    title: 'Fiction',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    title: 'Romance',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    title: 'Fantacy',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+    title: 'Young Adult',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    title: 'Contemporary',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    title: 'Nonfiction',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+    title: 'Adult',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    title: 'Novels',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+    title: 'Mystery',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    title: 'Historical Fiction',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+    title: 'Audiobook',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    title: 'Classics',
+  },
+];
+
+const Home = ({ifLogin, updateSearchResult}) => {
   const data = {
     bookTitle: 'Harry Potter',
     bookAuthor: 'J.K.Rowling',
@@ -38,64 +89,21 @@ const Home = ({ifLogin}) => {
   }
 
   const Subjects = () => {
+    const searchGenre = (genre) => {
+      updateSearchResult();
 
-    const itemData = [
-      {
-        img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-        title: 'Science Fiction',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-        title: 'Human Alien Encounters',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-        title: 'Adventure Stories',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-        title: 'Fiction',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-        title: 'Young Adult',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-        title: 'Romance',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-        title: 'Frontier',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-        title: 'Love Stories',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-        title: 'Historical Fiction',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-        title: 'Dystopias',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-        title: 'Thrillers&Suspense',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-        title: 'Time Travel',
-      },
-    ];
+    }
 
     return (
       <>
         <h1>Popular Subjects</h1>
         <div className='subjects-container'>
           {itemData.map((item, idx) => (
-            <div className='img-container' key={idx}>
+            <Box
+              className='img-container'
+              key={idx}
+              onClick={() => searchGenre(item.title)}
+            >
               <ImageListItem>
                 <img
                   src={`${item.img}?w=248&fit=crop&auto=format`}
@@ -108,7 +116,7 @@ const Home = ({ifLogin}) => {
                   title={item.title}
                 />
               </ImageListItem>
-            </div>
+            </Box>
           ))}
         </div>
       </>

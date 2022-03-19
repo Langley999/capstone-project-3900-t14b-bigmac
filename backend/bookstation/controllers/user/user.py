@@ -183,7 +183,7 @@ def get_user_profile():
 #     login_status_check(operator_email, token)
     # sql select user
     operator = User.query.filter_by(token=token).first()
-    user = User.query.get(user_id).first()
+    user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
@@ -216,13 +216,13 @@ def update_user_profile():
     '''
     try:
         data = request.get_json()
-        origin_email, new_email, new_username, token, new_password = \
-            data['origin'], data['email'], data['username'], data['token'], data['password']
+        new_email, new_username, token, new_password = \
+            data['email'], data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
     # sql select origin user
-    user = User.query.filter_by(email=origin_email).first()
+    user = User.query.filter_by(token=token).first()
     if (user == None):
         raise error.BadReqError(description="post body error")
     # check if new_username is valid
@@ -231,7 +231,7 @@ def update_user_profile():
             raise error.InputError(description="invalid username")
         user.username = new_username
     # check if new_email is valid
-    if (origin_email != new_email):
+    if (user.email != new_email):
         if (User.query.filter_by(email=new_email).first() != None):
             raise error.InputError(description="invalid email")
         user.email = new_email

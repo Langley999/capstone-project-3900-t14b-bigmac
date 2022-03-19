@@ -110,6 +110,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
       localStorage.setItem('token', response['data']['token']);
       updateLogin(true);
       updateUserInfo({
+        user_id: response.data.user_id,
         email: email,
         username: username,
         password: pass.password,

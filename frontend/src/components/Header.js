@@ -85,6 +85,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -93,13 +94,10 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   };
 
   const onChangeRadio = (e) => {
-    console.log(e.target.value)
     updateRadioValue(e.target.value);
   }
 
   const submitSearch = () => {
-    console.log(radioValue)
-    console.log(searchValue)
     axios.get(`${url}/search/searchbook`, {params: {
         type: radioValue,
         value: searchValue
@@ -201,25 +199,25 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to='/user/profile'>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/profile`}>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem component={Link} to='/user/collections'>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/collections`}>
           <ListItemIcon>
             <CollectionsBookmarkIcon fontSize="small" />
           </ListItemIcon>
           Collections
         </MenuItem>
-        <MenuItem component={Link} to='/user/posts'>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/posts`}>
           <ListItemIcon>
             <AutoFixHighIcon fontSize="small" />
           </ListItemIcon>
           Posts
         </MenuItem>
-        <MenuItem component={Link} to='/user/analytics'>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/analytics`}>
           <ListItemIcon>
             <BarChartIcon fontSize="small" />
           </ListItemIcon>

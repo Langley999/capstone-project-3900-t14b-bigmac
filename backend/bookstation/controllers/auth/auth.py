@@ -128,7 +128,8 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     return dumps({
-        'token': token
+        'token': token,
+        'user_id': new_user.user_id
     })
 
 @app.route(url_prefix + "/logout", methods=["POST"])
