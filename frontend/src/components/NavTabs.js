@@ -5,7 +5,7 @@ import TabsListUnstyled from '@mui/base/TabsListUnstyled';
 import TabPanelUnstyled from '@mui/base/TabPanelUnstyled';
 import { buttonUnstyledClasses } from '@mui/base/ButtonUnstyled';
 import TabUnstyled, { tabUnstyledClasses } from '@mui/base/TabUnstyled';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import '../App.css';
 
 const indigo = {
@@ -75,6 +75,8 @@ const TabsList = styled(TabsListUnstyled)`
 `;
 
 const NavTabs = () => {
+  const urlParams = useParams();
+  const user_id = urlParams.userid;
 
   return (
     <TabsUnstyled>
@@ -83,7 +85,7 @@ const NavTabs = () => {
           value='0'
           label='Profile'
           component={Link}
-          to='/user/profile'
+          to={`/user/${user_id}/profile`}
           className='remove-underline'
         >
           Profile
@@ -92,7 +94,7 @@ const NavTabs = () => {
           value='1'
           label='Collections'
           component={Link}
-          to='/user/collections'
+          to={`/user/${user_id}/collections`}
           className='remove-underline'
         >
           Collections
@@ -101,7 +103,7 @@ const NavTabs = () => {
           value='2'
           label='Posts'
           component={Link}
-          to='/user/posts'
+          to={`/user/${user_id}/posts`}
           className='remove-underline'
         >
           Posts
@@ -110,7 +112,7 @@ const NavTabs = () => {
           value='3'
           label='Analytics'
           component={Link}
-          to='/user/analytics'
+          to={`/user/${user_id}/analytics`}
           className='remove-underline'
         >
           Analytics
