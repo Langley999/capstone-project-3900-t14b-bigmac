@@ -43,6 +43,7 @@ def search_book_author(author_name, rating_filter):
     authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
     allbooks = []
     i = 0
+
     for author in authors:
         book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
         
@@ -71,6 +72,7 @@ def search_book_title(book_title, rating_filter):
     books = Book.query.filter(Book.title.like('%'+book_title+'%')).all()
     allbooks = []
     i = 0
+    print(rating_filter)
     for book in book_exact:
         if book.average_rating >= rating_filter:
             book_info = {}
@@ -85,8 +87,9 @@ def search_book_title(book_title, rating_filter):
             i+=1
             if i > 50:
                 break
-    for book in books[:20]:
-        if book.average_rating > rating_filter: 
+    for book in books:
+        
+        if book.average_rating >= rating_filter: 
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title
@@ -144,9 +147,10 @@ def genre():
 
     results = []
     i = 0
+   
     for id in books:
         book = Book.query.get(id)
-        if book.average_rating > rating_filter: 
+        if book.average_rating >= rating_filter: 
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title
