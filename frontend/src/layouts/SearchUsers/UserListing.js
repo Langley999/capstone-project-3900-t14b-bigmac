@@ -5,6 +5,7 @@ import {Avatar} from '@mui/material';
 import Button from '@mui/material/Button';
 import axios from "axios";
 import {url} from '../../components/Helper';
+import {Link} from "react-router-dom";
 
 const UserListing = ({ searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg, setShowError }) => {
   const [isFollowing, setIsFollowing] = useState(searchedUser.isFollowing);
@@ -65,7 +66,7 @@ const UserListing = ({ searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg,
               width: 45
             }}
           />}
-          <Button href={`?id=${searchedUser.user_id}`} style={{textTransform: "none"}}>{searchedUser.username}</Button>
+          <Button component = {Link} to={`/user/${searchedUser.user_id}/profile`} style={{textTransform: "none"}}>{searchedUser.username}</Button>
         </div>
         {isFollowing ?
         <Button onClick={unfollowUser} variant="contained">Unfollow</Button>
