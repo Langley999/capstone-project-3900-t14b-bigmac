@@ -23,16 +23,18 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
+    operator_email = request.args.get('operator')
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
     # sql select user
-    user = User.query.filter_by(token=token).first()
+    user = User.query.filter_by(email=operator_email).first()
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
     if collection == None:
         return dumps({
             "goal": -1,
             "finished": 0,
+
         })
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
 
@@ -72,12 +74,12 @@ def set_goal():
     '''
     try:
         data = request.get_json()
-        goal, token = data['goal'], data['token']
+        email, goal, token = data['email'], data['goal'], data['token']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(email, token)
     # sql select user
-    user = User.query.filter_by(token=token).first()
+    user = User.query.filter_by(email=email).first()
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
 
@@ -131,11 +133,12 @@ def get_all_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
+    operator_email = request.args.get('operator')
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
     # sql select user
-    user = User.query.filter_by(token=token).first()
+    user = User.query.filter_by(email=operator_email).first()
     all_history = []
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
@@ -158,8 +161,8 @@ def get_user_profile():
     '''
     It returns profile data of target user.
     Args (GET):
-        operator (string): the requester's email
-        username (string): target user's username
+        
+        user_id (string): target user's id
         token (string): valid token
     Returns:
         is_self (boolean): True if the user is requesting his own profile, else False
@@ -173,15 +176,16 @@ def get_user_profile():
         1. add returns
         2. find a way to prevent potential security issues
     '''
-    username = request.args.get('username')
+    user_id = request.args.get('user_id')
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
     # sql select user
-    user = User.query.filter_by(token=token).first()
+    operator = User.query.filter_by(token=token).first()
+    user = User.query.get(user_id).first()
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
     return dumps({
-        "is_self": True if (user.username == username) else False,
+        "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
         "email": user.email
     })
@@ -210,13 +214,13 @@ def update_user_profile():
     '''
     try:
         data = request.get_json()
-        new_email, new_username, token, new_password = \
-            data['email'], data['username'], data['token'], data['password']
+        origin_email, new_email, new_username, token, new_password = \
+            data['origin'], data['email'], data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
     # sql select origin user
-    user = User.query.filter_by(token=token).first()
+    user = User.query.filter_by(email=origin_email).first()
     if (user == None):
         raise error.BadReqError(description="post body error")
     # check if new_username is valid
@@ -225,7 +229,7 @@ def update_user_profile():
             raise error.InputError(description="invalid username")
         user.username = new_username
     # check if new_email is valid
-    if (user.email != new_email):
+    if (origin_email != new_email):
         if (User.query.filter_by(email=new_email).first() != None):
             raise error.InputError(description="invalid email")
         user.email = new_email
