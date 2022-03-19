@@ -114,6 +114,7 @@ const Home = ({ifLogin, updateSearchResult}) => {
         <div className='subjects-container'>
           {itemData.map((item, idx) => (
             <Box
+              sx={{cursor: 'pointer'}}
               className='img-container'
               key={idx}
               onClick={() => searchGenre(item.title)}

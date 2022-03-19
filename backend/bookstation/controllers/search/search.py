@@ -126,7 +126,7 @@ def genre():
 
     try:
         genre_names = request.args.get('genres')
-        rating_filter = request.args.get('rating')
+        rating_filter = int(request.args.get('rating'))
     except:
         raise error.BadReqError(description="invalid params")
 
