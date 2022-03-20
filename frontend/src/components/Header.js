@@ -23,15 +23,10 @@ import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
-
-
-// const StyledLink = styled(Link)`
-//     text-decoration: none;
-//
-//     &:focus, &:hover, &:visited, &:link, &:active {
-//       text-decoration: none;
-//     }
-// `;
+import axios from "axios";
+import {url} from './Helper';
+import { useNavigate } from 'react-router-dom';
+import '../App.css';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -85,11 +80,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Header ({ ifLogin }) {
-  const [radioValue, setRadioValue] = useState('by title');
-  const [searchValue, setSearchValue] = useState('');
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -99,7 +93,24 @@ function Header ({ ifLogin }) {
   };
 
   const onChangeRadio = (e) => {
-    setRadioValue(e.target.value);
+    console.log(e.target.value)
+    updateRadioValue(e.target.value);
+  }
+
+  const submitSearch = () => {
+    console.log(radioValue)
+    console.log(searchValue)
+    axios.get(`${url}/search/searchbook`, {params: {
+        type: radioValue,
+        value: searchValue
+      }})
+      .then(res => {
+        updateSearchResult(res.data.books);
+        navigate('searchbooks');
+      })
+      .catch(function (error) {
+        alert(error.response.data.message);
+      });
   }
 
   function NavBarV1 () {
@@ -134,11 +145,25 @@ function Header ({ ifLogin }) {
             <NotificationsIcon fontSize="large"/>
           </IconButton>
         </Tooltip>
+        <Tooltip title='Home'>
+          <IconButton sx={{ ml: 1 }} component={Link} to='/'>
+            <HomeIcon fontSize="large"/>
+          </IconButton>
+        </Tooltip>
       </>
     )
   }
 
   const Dropdown = () => {
+    const submitLogout = () => {
+      axios.post(`${url}/auth/logout`, {
+        token: localStorage.getItem('token')
+      }).then(res => {
+        updateLogin(false);
+        navigate('/');
+      })
+    }
+
     return (
       <Menu
         anchorEl={anchorEl}
@@ -175,12 +200,6 @@ function Header ({ ifLogin }) {
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to='/'>
-          <ListItemIcon>
-            <HomeIcon fontSize="small" />
-          </ListItemIcon>
-          Home
-        </MenuItem>
         <MenuItem component={Link} to='/user/profile'>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -206,7 +225,7 @@ function Header ({ ifLogin }) {
           Analytics
         </MenuItem>
         <Divider/>
-        <MenuItem>
+        <MenuItem onClick={submitLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
@@ -217,79 +236,80 @@ function Header ({ ifLogin }) {
   }
 
   return (
-      <HeaderContainer position="fixed" className='header'
+    <HeaderContainer position="fixed" className='header'
+                     sx={{
+                       width: {
+                         lg: '100%'
+                       }
+                     }}
+    >
+      <Toolbar
+        disableGutters
         sx={{
-          width: {
-            lg: '100%'
-          }
+          minHeight: 64,
+          left: 0,
+          px: 2
         }}
       >
-        <Toolbar
-          disableGutters
-          sx={{
-            minHeight: 64,
-            left: 0,
-            px: 2
-          }}
-        >
-          <Slogan>
-              BookStation
+        <Box component={Link} to='/' className='remove-underline' sx={{color: '#6985c4'}} >
+          <Slogan >
+            BookStation
           </Slogan>
-          <Box component="form" onSubmit={()=>console.log(searchValue)}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                onChange={(e) => setSearchValue(e.target.value)}
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
-          </Box>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="radio-buttons"
-              name="radio-buttons"
-              value={radioValue}
-              onChange={onChangeRadio}
+        </Box>
+        <Box component="form">
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              value={searchValue}
+              onChange={(e) => updateSearchValue(e.target.value)}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+        </Box>
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="radio-buttons"
+            name="radio-buttons"
+            value={radioValue}
+            onChange={onChangeRadio}
+          >
+            <FormControlLabel value="title" control={<Radio />} label="by title" />
+            <FormControlLabel value="author" control={<Radio />} label="by author" />
+          </RadioGroup>
+        </FormControl>
+        <Button variant="outlined">Filter</Button>
+        <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
+        <Box sx={{ flexGrow: 1 }} />
+        {ifLogin ? <NavBarV2/> : <NavBarV1/>}
+        {ifLogin ?
+          <Tooltip title="profile">
+            <IconButton
+              sx={{ml: 1}}
+              onClick={handleClick}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
             >
-              <FormControlLabel value="female" control={<Radio />} label="by title" />
-              <FormControlLabel value="male" control={<Radio />} label="by author" />
-            </RadioGroup>
-          </FormControl>
-          <Button
-            variant="contained"
-
-          >Filter</Button>
-          <Box sx={{ flexGrow: 1 }} />
-          {ifLogin ? <NavBarV2/> : <NavBarV1/>}
-          {ifLogin ?
-            <Tooltip title="profile">
-              <IconButton
-                sx={{ml: 1}}
-                onClick={handleClick}
-                aria-controls={open ? 'account-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-              >
-                {localStorage.getItem('userAvatar') === undefined ?
-                  <Avatar fontSize="large"/> :
-                  <Avatar
-                    src={localStorage.getItem('userAvatar')}
-                    sx={{
-                      height: 45,
-                      mb: 0,
-                      width: 45
-                    }}
-                  />
-                }
-              </IconButton>
-            </Tooltip> : null
-          }
-          <Dropdown/>
-        </Toolbar>
-      </HeaderContainer>
+              {userInfo.avatar === undefined ?
+                <Avatar fontSize="large"/> :
+                <Avatar
+                  src={userInfo.avatar}
+                  sx={{
+                    height: 45,
+                    mb: 0,
+                    width: 45
+                  }}
+                />
+              }
+            </IconButton>
+          </Tooltip> : null
+        }
+        <Dropdown/>
+      </Toolbar>
+    </HeaderContainer>
   );
 }
 

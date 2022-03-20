@@ -15,3 +15,8 @@ Week 3:
 - Added documentation for justification of backend technologies
 - Coded skeleton functionality for book details and reviews/ratings
 - added documenation for how our system will achieve all 8 objectives through our user stories.
+
+Week 4:
+- recreated database schema with all tables
+- intitialisation algorithm to parse book csv file into databse and establish joins
+- finished functions for get book details, reviews/ratings

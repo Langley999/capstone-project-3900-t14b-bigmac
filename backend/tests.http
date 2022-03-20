@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 GET http://127.0.0.1:8080/ HTTP/1.1
 
 ### 
+=======
+
+### create user
+>>>>>>> ready to demo
 POST http://127.0.0.1:8080/auth/register 
 content-type: application/json
 
 {
+<<<<<<< HEAD
     "username": "jwerrdgdfgtyjef",
     "email": "oioobefdfgji@gmail.com",
     "password": "yologevbnnbntsgpff"
@@ -15,14 +21,119 @@ GET http://127.0.0.1:8080/book/details?bookId=1 HTTP/1.1
 
 
 ###
+=======
+    "username": "yasin",
+    "email": "yasinemail@gmail.com",
+    "password": "yasinpass"
+}
+
+### get details of harry potter, should have no reivews
+GET http://127.0.0.1:8080/book/details?bookId=2 HTTP/1.1
+
+
+### post rating&review
+
+POST http://127.0.0.1:8080/book/reviews 
+content-type: application/json
+
+{
+    "book_id": "2",
+    "user_id": "14",
+    "rating": "4",
+    "content": "I love harry potter! Yasin",
+    "created_time": "2020-01-01 00:00:01"
+}
+
+
+### post rating&review
+>>>>>>> ready to demo
 
 POST http://127.0.0.1:8080/book/reviews 
 content-type: application/json
 
 {
     "book_id": "1",
+<<<<<<< HEAD
     "user_id": "2",
     "rating": "1",
     "content": "here is my review text",
     "created_time": "2008-01-01 00:00:01"
 }
+=======
+    "user_id": "14",
+    "rating": "4",
+    "content": "I lhate hunger games! Yasin",
+    "created_time": "2019-01-01 00:00:01"
+}
+### post review with no content
+
+POST http://127.0.0.1:8080/book/ratings 
+content-type: application/json
+
+{
+    "book_id": "2",
+    "user_id": "14",
+    "rating": "4",
+    "content": "",
+    "created_time": "2020-01-01 00:00:01"
+}
+
+
+### get reviews for user 
+
+GET http://127.0.0.1:8080/book/reviews?userId=14 HTTP/1.1
+
+### add review comment
+PUT http://127.0.0.1:8080/book/reviews 
+content-type: application/json
+
+{
+    "review_id": "7",
+    "content": "really good book I love harry potter!"
+}
+
+### get details of harry potter, show reivew
+GET http://127.0.0.1:8080/book/details?bookId=2 HTTP/1.1
+
+### change rating
+PUT http://127.0.0.1:8080/book/ratings 
+content-type: application/json
+
+{
+    "review_id": "7",
+    "rating": "5"
+}
+
+
+### delete review :(
+
+DELETE http://127.0.0.1:8080/book/ratings 
+content-type: application/json
+
+{
+    "review_id": "10"
+}
+
+### get details of harrpy potter, should have no reivews
+GET http://127.0.0.1:8080/book/details?bookId=2131 HTTP/1.1
+
+###
+GET http://127.0.0.1:8080/book/reviews?review_id=5 HTTP/1.1
+
+
+
+
+
+
+
+
+### round trip time
+GET http://127.0.0.1:8080/test/ HTTP/1.1
+
+
+### Daoting
+GET http://127.0.0.1:8080/test/daoting?bookId=1375 HTTP/1.1
+
+### Mine 
+GET http://127.0.0.1:8080/book/details?bookId=28283 HTTP/1.1
+>>>>>>> ready to demo

@@ -15,3 +15,10 @@ class InputError(HTTPException):
 class PermissionError(HTTPException):
     code = 400
     message = "unknown perssion error"
+<<<<<<< HEAD
+=======
+
+class NotFoundError(HTTPException):
+    code = 404
+    message = "unknown not found error"
+>>>>>>> ready to demo
