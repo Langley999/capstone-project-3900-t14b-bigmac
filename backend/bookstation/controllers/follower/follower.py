@@ -3,6 +3,7 @@ from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Post
 from bookstation.utils.auth_util import get_user
 from datetime import datetime
+from sqlalchemy import desc
 
 @app.route("/user/search", methods=["GET"])
 def findUsers():
@@ -182,3 +183,17 @@ def getfollower():
     return dumps({
         "followers": result
     })
+
+
+@app.route("/post/getpublicfeed", methods=["GET"])
+def getPublicFeed():
+
+    posts_list = []
+
+    posts = Post.query.order_by(desc(Post.created_time)).all()
+    for post in posts:
+        post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'avatar' : post.user.avatar, 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
+        posts_list.append(post_dict)
+
+    return dumps({'posts' : posts_list[:20]})
+

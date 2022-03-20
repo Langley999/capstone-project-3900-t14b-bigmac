@@ -1,5 +1,6 @@
 from json import dumps
 import time
+from bookstation.models.book_sys import Book
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
 
@@ -220,6 +221,7 @@ def remove_book():
     except:
       raise error.BadReqError(description="Cannot remove book ")
 
+
 @app.route(url_prefix + '/removecollection', methods=["DELETE"])
 def remove_collection():
     """
@@ -257,6 +259,60 @@ def remove_collection():
       })
     except:
       raise error.BadReqError(description="Cannot remove collection")
+
+
+@app.route(url_prefix + '/recentbooks', methods=["GET"])
+def recent_books():
+    """
+    Function for users to get most recent 10 books added to collection
+    Args:
+        user_id (string): id of the user
+    Returns:
+        "recentbooks": []
+           - id (int): book id
+           - title (string): title of the book
+           - cover (string): url of the cover image
+    Raises:
+        NotFoundError: when the collection does not exist
+        AccessError: 
+          - when the user does not have permission to remove this collection
+        BadReqError:
+          - when removing collection fails
+    """
+    try:
+        u_id = request.args.get('user_id')
+    except:
+        raise error.BadReqError(description="post body error")
+
+   
+    collections = Collection.query.filter_by(user_id = u_id).all()
+    all_books = []
+    for collection in collections:
+      c_id = collection.collection_id
+      c_books = Collection_book.query.filter_by(collection_id = c_id).all()
+      for cbook in c_books:
+        dic = {}
+        dic['time'] = cbook.created_time
+        dic['book'] = cbook.book
+        all_books.append(dic)
+  
+    newlist = sorted(all_books, key=lambda d: d['time'],reverse=True) 
+    res = []
+    for n in newlist[:10]:
+      #book = Book.query.filter_by(book_id=n['book_id'])
+      bookinfo ={}
+      bookinfo['id'] = n['book'].book_id
+      bookinfo['title'] = n['book'].title
+      bookinfo['cover'] = n['book'].cover_image
+      bookinfo['added_time'] = str(n['time'])
+      res.append(bookinfo)
+    return dumps({
+        "success": res
+    })
+
+
+
+
 
 
 
