@@ -18,3 +18,9 @@ week 4
 - I finished and improved frontend for book details page
 - I did backend api for search, and collections
 - I debugged for connections to backend
+
+week 5
+- I finished backend api for search using genres and added search filter for rating
+- I added get following and get follower api
+- I added top rating recommendation api
+- I fixed frontend issue for book details page
