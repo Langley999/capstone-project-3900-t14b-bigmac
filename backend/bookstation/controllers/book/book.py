@@ -6,9 +6,10 @@ import csv
 import time
 from bookstation.models.user_sys import Post
 # from typing import Collection
-from bookstation.models.book_sys import Collection_book, Book, Book_author, Book_genre, Genre, Review, Author
+from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
 from bookstation.models.user_sys import User, Collection
 from bookstation import app, request, db, error
+from bookstation.utils.auth_util import get_user
 
 from flask import session
 
@@ -30,6 +31,8 @@ def getDetails():
         InputError: no book has been found for book_id
     '''
     #get input
+    token = request.args.get('token')
+    user = get_user('token')
     book_id = request.args.get('bookId')
     book = Book.query.get(book_id)
 
@@ -48,12 +51,100 @@ def getDetails():
     reviews = []
     for review in book.reviews:
         if review.content != None:
-            reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time)})
+            is_liked = False
+            if User.likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
+                is_liked = True
+            reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
 
     reviews.sort(key = lambda x: x['time'], reverse=True)
     book_dict['reviews'] = reviews
 
     return dumps(book_dict)
+
+
+@app.route("/book/likereview", methods=["POST"])
+def likeReview():
+
+    """
+    Arg: review_id to like
+    
+    """
+    body = request.get_json()
+    user = get_user(body['token'])
+    review_id = body['review_id']
+    if User_likes.query.filter_by(user_id = user.user_id, review_id = review_id).first() != None:
+        raise error.BadReqError(description="User already liked this cannot like twice")
+    
+    user_like = User_likes(user_id = user.user_id, review_id = review_id)
+    db.session.add(user_like)
+    db.session.commit()
+
+    return dumps({})
+
+
+
+@app.route("/book/unlikereview", methods=["POST"])
+def unlikeReview():
+    """
+    Arg: review_id to unlike
+    
+    """
+    body = request.get_json()
+    user = get_user(body['token'])
+    review_id = body['review_id']
+    user_like = User_likes.query.filter_by(user_id = user.user_id, review_id = review_id).first()
+    if user_like == None:
+        raise error.BadReqError(description="user never liked this review")
+
+    db.session.delete(user_like)
+    db.session.commit()
+
+    return dumps({})
+
+
+
+
+@app.route("/book/similarbooks", methods=["GET"])
+def similarBooks():
+
+    """
+    Arg: book_id of book to get simialr books from
+
+    Returns: list of book objects that are similar to target book
+    
+    """
+    token = request.args.get('token')
+    book_id = request.args.get('book_id')
+    user = get_user(token)
+    target_tags = set()
+    similarity_set = set()
+    genres = Book_genre.query.filter_by(book_id = book_id).all()
+
+    for genre in genres:
+        target_tags.add(genre.genre_id)
+
+
+    authors = Book_author.query.filter_by(book_id = book_id).all()
+    for author in authors:
+        author_books = Book_author.query.filter_by(author_id = author.author_id).all()
+        for book in author_books:
+            comptags = set()
+            compgenres = Book_genre.query.filter_by(book_id = book.book_id).all()
+            for compgenre in compgenres:
+                comptags.add(compgenre.genre_id)
+            similarity = len(target_tags.intersection(comptags))
+            similarity_set.add((book.book_id, similarity))
+            
+    book_list = sorted(similarity_set, key = lambda x: x[1])
+    return_list = []
+    for book_tup in book_list:
+        book = Book.query.get(book_tup[0])
+        return_dict = {'title' : book.title, 'cover_image' : book.cover_image}
+        return_list.append(return_dict)
+    
+
+    return dumps({'books' : return_list})
+
 
 
 #get reviews for a user_id doesnt seem to be used
@@ -115,7 +206,7 @@ def addRating():
 
     if review == None:
         #create record
-        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now())
+        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now(), likes=0)
         #post to databse
         book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
         book.num_rating = book.num_rating + 1
@@ -161,7 +252,7 @@ def addRatingReview():
 
     if review == None:
         #create record
-        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = content, created_time = datetime.now())
+        review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = content, created_time = datetime.now(), likes=0)
         #post to databse
         book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
         book.num_rating = book.num_rating + 1

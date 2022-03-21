@@ -39,7 +39,7 @@ def follow():
 
     if Follow_relationship.query.filter_by(user_id = target_user_id ,follower_user_id = user.user_id).first() != None:
         raise error.BadReqError(description= 'User is already following target user')
-    following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id)
+    following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id, created_time = datetime.now())
     db.session.add(following_entry)
     db.session.commit()
 
@@ -64,6 +64,17 @@ def unfollow():
     db.session.commit()
 
     return dumps({})
+
+
+@app.route("/user/followstats", methods=["POST"]) 
+def followStats():
+    """
+    Returns: followers and followings gained each month over past 6 months
+    
+    """
+
+
+    return
 
 @app.route("/post/addpost", methods=["POST"])
 def addPost():
@@ -113,7 +124,15 @@ def getFeed():
     return dumps({'posts' : posts_list})
 
 
-#TODO implement above, add avatar for user, sort time by most recent
+
+# please fix this function so that it only requests token as we dicussed in meeting 
+# lines 136-140 should simply be replaced with user = get_user(token) (from auth.utils)
+# only token should be given NOT user_id
+# I won't change it because I'm not sure if frontend is using this, so I dont want to break it
+# so when you change it please make sure frontend also updates to give token
+# remmeber for all future functions to never ask for user_id, or anything related to user
+# you should ONLY be asking for token and then get what you need from the user object obtained 
+# after calling get_user(token)
 @app.route("/user/getfollowing", methods=["GET"])
 def getfollowing():
     """
@@ -149,6 +168,8 @@ def getfollowing():
         "followings": result
     })
 
+
+#SAME THING HERE!
 @app.route("/user/getfollower", methods=["GET"])
 def getfollower():
     """
