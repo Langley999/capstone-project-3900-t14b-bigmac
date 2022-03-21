@@ -4,6 +4,7 @@ from json import dumps
 import ast
 import csv
 import time
+from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, Book, Book_author, Book_genre, Genre, Review, Author
 from bookstation.models.user_sys import User, Collection
@@ -175,6 +176,10 @@ def addRatingReview():
         review.created_time = datetime.now()
         db.session.add(review)
         db.session.commit()
+    new_content = "Added a review for: " + "< " + book.title + " > " + ": " + content
+    newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
+    db.session.add(newPost)
+    db.session.commit()
 
     return dumps({"success": True})
 
