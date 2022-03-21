@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import {Link} from "react-router-dom";
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogActions,
@@ -7,8 +6,7 @@ import {
   DialogTitle,
   FormControlLabel,
   FormGroup,
-  FormLabel,
-  Typography
+  FormLabel, InputLabel, Select,
 } from "@material-ui/core";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
@@ -16,6 +14,7 @@ import Checkbox from "antd/es/checkbox/Checkbox";
 import axios from "axios";
 import {url} from "./Helper";
 import {useNavigate} from 'react-router-dom';
+import MenuItem from "@mui/material/MenuItem";
 
 
 const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 'Nonfiction', 'Adult',
@@ -25,8 +24,9 @@ const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 
 
 const Genres = ({updateSearchResult}) => {
   const navigate = useNavigate();
+  const [genreRating, setGenreRating] = useState(0);
   const genreSet = [];
-  const [selectGenres, setSelectGenres] = useState({
+  const genreList = {
     'Fiction': false,
     'Romance': false,
     'Fantasy': false,
@@ -48,9 +48,14 @@ const Genres = ({updateSearchResult}) => {
     'Thriller': false,
     'Magic': false,
     'Humor': false
-  })
+  }
+  const [selectGenres, setSelectGenres] = useState(genreList);
   const [anchorElGenre, setAnchorELGenre] = useState(null);
   const openGenre = Boolean(anchorElGenre);
+
+  const handleChangeGenreRating = (event) => {
+    setGenreRating(event.target.value);
+  }
 
   const handleChangeGenre = (event) => {
     setSelectGenres({
@@ -65,6 +70,8 @@ const Genres = ({updateSearchResult}) => {
 
   const handleCloseGenre = () => {
     setAnchorELGenre(null);
+    setGenreRating(0);
+    setSelectGenres(genreList);
   };
 
   const getGenres = () => {
@@ -79,7 +86,7 @@ const Genres = ({updateSearchResult}) => {
   const searchGenre = () => {
     axios.get(`${url}/search/genre`, {params: {
         genres: getGenres(),
-        rating: 0
+        rating: genreRating
       }})
       .then(res => {
         updateSearchResult(res.data.books);
@@ -101,6 +108,23 @@ const Genres = ({updateSearchResult}) => {
       <Dialog open={openGenre} onClose={handleCloseGenre}>
         <DialogTitle>Genres</DialogTitle>
         <DialogContent sx={{height: '200px', overflow: 'auto'}}>
+          <FormControl fullWidth>
+            <InputLabel id="select-rating">Rating greater or equal than...</InputLabel>
+            <Select
+              labelId="select-rating"
+              id="select-rating"
+              value={genreRating}
+              label="rating"
+              onChange={handleChangeGenreRating}
+            >
+              <MenuItem value={0}>0</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
           <FormControl sx={{m:3}} component="fieldset" variant="standard">
             <FormLabel component="legend">Pick Genres</FormLabel>
             <FormGroup>

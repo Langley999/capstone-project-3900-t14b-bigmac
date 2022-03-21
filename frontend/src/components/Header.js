@@ -13,7 +13,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -25,19 +25,10 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import Genres from "./Genres";
+import Filter from "./Filter";
 import axios from "axios";
 import {url} from './Helper';
 import '../App.css';
-import {
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormGroup,
-  FormLabel,
-  TextField
-} from "@material-ui/core";
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -92,50 +83,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
+  const [searchRating, setSearchRating] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
-  // const [anchorElGenre, setAnchorELGenre] = useState(null);
-  // const openGenre = Boolean(anchorElGenre);
 
   const navigate = useNavigate();
   const isBookSearch = (useLocation().pathname !== "/users");
 
-  // const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 'Nonfiction', 'Adult',
-  //   'Novels', 'Mystery', 'Historical Fiction', 'Audiobook', 'Classics', 'Adventure', 'Historical',
-  //   'Paranormal', 'Literature', 'Science Fiction', 'Childrens', 'Thriller', 'Magic', 'Humor'];
-
-  // const [selectGenres, setSelectGenres] = useState({
-  //   'Fiction': false,
-  //   'Romance': false,
-  //   'Fantasy': false,
-  //   'Young Adult': false,
-  //   'Contemporary': false,
-  //   'Nonfiction': false,
-  //   'Adult': false,
-  //   'Novels': false,
-  //   'Mystery': false,
-  //   'Historical Fiction': false,
-  //   'Audiobook': false,
-  //   'Classics': false,
-  //   'Adventure': false,
-  //   'Historical': false,
-  //   'Paranormal': false,
-  //   'Literature': false,
-  //   'Science Fiction': false,
-  //   'Childrens': false,
-  //   'Thriller': false,
-  //   'Magic': false,
-  //   'Humor': false
-  // })
-
-  // const handleChangeGenre = (event) => {
-  //   setSelectGenres({
-  //     ...selectGenres,
-  //     [event.target.name]: event.target.checked,
-  //   });
-  // };
-
+  const updateSearchRating = (rating) => {
+    setSearchRating(rating);
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -144,12 +101,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     setAnchorEl(null);
   };
 
-  // const handleClickGenre = (event) => {
-  //   setAnchorELGenre(event.currentTarget);
-  // };
-  // const handleCloseGenre = () => {
-  //   setAnchorELGenre(null);
-  // };
 
   const onChangeRadio = (e) => {
     updateRadioValue(e.target.value);
@@ -159,13 +110,15 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     if (isBookSearch) {
       console.log(radioValue)
       console.log(searchValue)
+      console.log(searchRating)
       axios.get(`${url}/search/searchbook`, {params: {
           type: radioValue,
           value: searchValue,
-          rating: 0
+          rating: searchRating
       }})
       .then(res => {
         updateSearchResult(res.data.books);
+        updateSearchRating(0);
         navigate('searchbooks');
       })
       .catch(function (error) {
@@ -247,6 +200,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         token: localStorage.getItem('token')
       }).then(res => {
         updateLogin(false);
+        localStorage.clear();
         navigate('/');
       })
     }
@@ -322,100 +276,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     )
   }
 
-  // const GenreList = () => {
-  //   return (
-  //     <>
-  //       {/*<Dialog open={openGenre} onClose={handleCloseGenre}>*/}
-  //       {/*  <DialogTitle>Genres</DialogTitle>*/}
-  //       {/*  <DialogContent sx={{height: '200px', overflow: 'auto'}}>*/}
-  //       {/*    <FormControl sx={{m:3}} component="fieldset" variant="standard">*/}
-  //       {/*      <FormLabel component="legend">Pick Genres</FormLabel>*/}
-  //       {/*      <FormGroup>*/}
-  //       {/*        {genres.map((genre) => {*/}
-  //       {/*          return (*/}
-  //       {/*            <FormControlLabel*/}
-  //       {/*              control={*/}
-  //       {/*                <Checkbox checked={selectGenres[genre]} onChange={handleChangeGenre} name={genre} />*/}
-  //       {/*              }*/}
-  //       {/*              label={genre}*/}
-  //       {/*            />*/}
-  //       {/*          )*/}
-  //       {/*        })}*/}
-  //       {/*      </FormGroup>*/}
-  //       {/*    </FormControl>*/}
-  //       {/*  </DialogContent>*/}
-  //       {/*  <DialogActions>*/}
-  //       {/*    <Button*/}
-  //       {/*      variant='outlined'*/}
-  //       {/*      onClick={handleCloseGenre}*/}
-  //       {/*    >*/}
-  //       {/*      Cancel*/}
-  //       {/*    </Button>*/}
-  //       {/*    /!*<Button*!/*/}
-  //       {/*    /!*  variant='contained'*!/*/}
-  //       {/*    /!*  onClick={createCollection}*!/*/}
-  //       {/*    /!*  sx={{textTransform: 'none'}}*!/*/}
-  //       {/*    /!*>*!/*/}
-  //       {/*    /!*  Create Collection*!/*/}
-  //       {/*    /!*</Button>*!/*/}
-  //       {/*  </DialogActions>*/}
-  //       {/*</Dialog>*/}
-  //
-  //       <Menu
-  //         sx={{height: '200px', overflow: 'auto'}}
-  //         anchorEl={anchorElGenre}
-  //         id="genre-menu"
-  //         open={openGenre}
-  //         onClose={handleCloseGenre}
-  //         onClick={handleCloseGenre}
-  //         PaperProps={{
-  //           elevation: 0,
-  //           sx: {
-  //             overflow: 'visible',
-  //             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-  //             mt: 1.5,
-  //             '& .MuiAvatar-root': {
-  //               width: 32,
-  //               height: 32,
-  //               ml: -0.5,
-  //               mr: 1,
-  //             },
-  //             '&:before': {
-  //               content: '""',
-  //               display: 'block',
-  //               position: 'absolute',
-  //               top: 0,
-  //               right: 70,
-  //               width: 10,
-  //               height: 10,
-  //               bgcolor: 'background.paper',
-  //               transform: 'translateY(-50%) rotate(45deg)',
-  //               zIndex: 0,
-  //             },
-  //           },
-  //         }}
-  //         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-  //         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-  //       >
-  //        <FormControl sx={{m:3}} component="fieldset" variant="standard">
-  //          <FormLabel component="legend">Pick Genres</FormLabel>
-  //          <FormGroup>
-  //            {genres.map((genre) => {
-  //              return (
-  //                <FormControlLabel
-  //                  control={
-  //                    <Checkbox checked={selectGenres[genre]} onChange={handleChangeGenre} name={genre} />
-  //                  }
-  //                  label={genre}
-  //                />
-  //              )
-  //            })}
-  //          </FormGroup>
-  //        </FormControl>
-  //       </Menu>
-  //     </>
-  //   )
-  // }
 
   return (
       <HeaderContainer position="fixed" className='header'
@@ -464,7 +324,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
             </RadioGroup>
           </FormControl>
           : <></>}
-          {isBookSearch ? <Button variant="outlined">Filter</Button> : <></>}
+          {isBookSearch ? <Filter updateSearchRating={updateSearchRating}/> : <></>}
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           {isBookSearch ?
             <Genres updateSearchResult={updateSearchResult}/>

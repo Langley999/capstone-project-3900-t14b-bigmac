@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -24,6 +24,8 @@ import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import axios from "axios";
+import {url} from "./components/Helper";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -31,6 +33,13 @@ function App() {
   const [radioValue, setRadioValue] = useState('title');
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      updateUserInfo(JSON.parse(localStorage.getItem('user')));
+      updateLogin(true);
+    }
+  }, []);
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
