@@ -76,6 +76,8 @@ def likeReview():
         raise error.BadReqError(description="User already liked this cannot like twice")
     
     user_like = User_likes(user_id = user.user_id, review_id = review_id)
+    review = Review.query.get(review_id)
+    review.likes = review.likes + 1
     db.session.add(user_like)
     db.session.commit()
 
@@ -96,6 +98,8 @@ def unlikeReview():
     if user_like == None:
         raise error.BadReqError(description="user never liked this review")
 
+    review = Review.query.get(review_id)
+    review.likes = review.likes - 1
     db.session.delete(user_like)
     db.session.commit()
 
