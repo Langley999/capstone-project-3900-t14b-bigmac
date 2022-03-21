@@ -8,3 +8,4 @@ from bookstation.controllers import user
 from bookstation.controllers import search
 from bookstation.controllers import follower
 from bookstation.controllers import recommendation
+from bookstation.controllers import analytics
