@@ -13,7 +13,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -86,6 +86,11 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const navigate = useNavigate();
   const isBookSearch = (useLocation().pathname !== "/users");
 
+  useEffect(() => {
+    if (!isBookSearch) {
+      updateSearchResult([]);
+    }
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -99,6 +104,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   const submitSearch = () => {
+    console.log(isBookSearch);
     if (isBookSearch) {
       console.log(radioValue)
       console.log(searchValue)

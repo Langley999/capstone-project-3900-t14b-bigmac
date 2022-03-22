@@ -195,7 +195,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {pass.showPassword ? <VisibilityOff /> : <Visibility />}
+                  {pass.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -217,7 +217,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
+                  {passConfirm.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }

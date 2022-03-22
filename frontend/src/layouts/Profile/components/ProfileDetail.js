@@ -193,7 +193,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                           onMouseDown={mouseDownPassword}
                           edge="end"
                         >
-                          {ifVisible ? <VisibilityOff /> : <Visibility />}
+                          {ifVisible ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     }
