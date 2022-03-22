@@ -55,6 +55,7 @@ class Saved_collection(db.Model):
 
     collection_id = db.Column('collection_id', db.Integer, db.ForeignKey('collection.collection_id'), primary_key=True)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    collection = db.relationship('Collection')
 
 
 

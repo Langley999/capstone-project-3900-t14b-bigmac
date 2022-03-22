@@ -1,9 +1,9 @@
 from json import dumps
 import time
-from bookstation.models.book_sys import Book
+from bookstation.models.book_sys import Book, Saved_collection
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
-
+from bookstation.utils.auth_util import get_user
 from bookstation.models.book_sys import Collection_book
 from flask import session
 
@@ -270,8 +270,40 @@ def save_collections():
 	Returns: confirmation
 	"""
 
+	body = request.get_json()
+	user = get_user(body['token'])
+	collection_id = body['collection_id']
 
-	return
+	if Saved_collection.query.filter_by(user_id = user.user_id, collection_id = collection_id).first() != None:
+		raise error.BadReqError(description="User already saved collection")
+	save = Saved_collection(user_id = user.user_id, collection_id = collection_id)
+	db.session.add(save)
+	db.session.commit()
+
+	return dumps({})
+
+
+@app.route(url_prefix + '/unsavecollection', methods=["POST"])
+def unsave_collections():
+	"""
+	Args: collection_id : collection id to be unsaved 
+		  token			: identifies and authenticates user
+
+	Returns: confirmation
+	"""
+
+	body = request.get_json()
+	user = get_user(body['token'])
+	collection_id = body['collection_id']
+	save = Saved_collection.query.filter_by(user_id = user.user_id, collection_id = collection_id).first()
+	if save == None:
+		raise error.BadReqError(description="User never saved this collection")
+
+	db.session.delete(save)
+	db.session.commit()
+
+	return dumps({})
+
 
 @app.route(url_prefix + '/savedcollections', methods=["GET"])
 def get_savedCollections():
@@ -282,14 +314,21 @@ def get_savedCollections():
 	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection) 
 	
 	"""
+	token = request.args.get('token')
+	user = get_user(token)
+
+	collections = Saved_collection.query.filter_by(user_id = user.user_id).all()
+	collection_list = []
+	for collection in collections:
+		collection_dict = {'collection_id' : collection.collection_id, 'name' : collection.collection.name, 'is_default' : collection.collection.is_default, 'created_time' : str(collection.collection.created_time), 'user_id' : collection.collection.user.user_id, 'username' : collection.collection.user.username}
+		collection_list.append(collection_dict)
 
 
-
-	return
+	return dumps({'collections' : collection_list})
 
 
 @app.route(url_prefix + '/saves', methods=["GET"])
-def get_savedCollections():
+def get_saves():
 
 	"""
 	Args: collection_id: collection to find number of saves
@@ -297,9 +336,12 @@ def get_savedCollections():
 	Returns: number of people who saved this collection
 	
 	"""
+	token = request.args.get('token')
+	user = get_user(token)
+	collection_id = request.args.get('collection_id')
+	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
 
-
-	return
+	return dumps({'saves' : saves})
 
 
 @app.route(url_prefix + '/rename', methods=["POST"])
@@ -312,9 +354,20 @@ def rename_collection():
 	Returns: confirmation
 	
 	"""
-	
+	body = request.get_json()
+	user = get_user(body['token'])
+	collection_id = body['collection_id']
+	new_name = body['name']
 
-	return
+	collection = Collection.query.get(collection_id)
+	if collection == None:
+		raise error.BadReqError(description="Collection does not exist")
+	if collection.user_id != user.user_id:
+		raise error.BadReqError(description="user does not own collection")
+
+	collection.name = new_name
+	db.session.commit()
+	return dumps({})
 
 
 @app.route(url_prefix + '/recentbooks', methods=["GET"])
