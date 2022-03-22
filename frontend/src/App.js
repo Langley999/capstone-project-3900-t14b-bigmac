@@ -81,7 +81,7 @@ function App() {
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
-            <Route path='users' element={<SearchUsers searchResult={searchResult} userInfo={userInfo}/>} />
+            <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />

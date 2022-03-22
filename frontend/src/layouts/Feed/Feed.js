@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import SuccessPopup from '../../components/SuccessPopup';
 import ErrorPopup from '../../components/ErrorPopup';
 import FeedListing from './FeedListing';
 import axios from "axios";

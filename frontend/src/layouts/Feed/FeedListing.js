@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import UsernameLink from '../../components/UsernameLink';
+import SuccessPopup from '../../components/SuccessPopup';
+import ErrorPopup from '../../components/SuccessPopup';
 
 const FeedListing = ({ post }) => {
   const createDate = (str) => {

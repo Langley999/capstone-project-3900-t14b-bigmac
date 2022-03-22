@@ -84,13 +84,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const isBookSearch = (useLocation().pathname !== "/users");
-
-  useEffect(() => {
-    if (!isBookSearch) {
-      updateSearchResult([]);
-    }
-  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -104,35 +97,19 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   const submitSearch = () => {
-    console.log(isBookSearch);
-    if (isBookSearch) {
-      console.log(radioValue)
-      console.log(searchValue)
-      axios.get(`${url}/search/searchbook`, {params: {
-          type: radioValue,
-          value: searchValue
-      }})
-      .then(res => {
-        updateSearchResult(res.data.books);
-        navigate('searchbooks');
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    } else {
-      // show user search results
-      axios.get(`${url}/user/search`, {params: {
-        token: localStorage.getItem('token'),
-        search_phrase: searchValue
-      }})
-      .then(res => {
-        updateSearchResult(res.data.users);
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    }
-    
+    console.log(radioValue)
+    console.log(searchValue)
+    axios.get(`${url}/search/searchbook`, {params: {
+        type: radioValue,
+        value: searchValue
+    }})
+    .then(res => {
+      updateSearchResult(res.data.books);
+      navigate('searchbooks');
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
   }
 
   const PublicFeedIcon = () => {
@@ -297,14 +274,13 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder={isBookSearch ? "Search Books" : "Search Users"}
+                placeholder="Search Books"
                 value={searchValue}
                 onChange={(e) => updateSearchValue(e.target.value)}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
           </Box>
-          {isBookSearch ? 
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"
@@ -316,8 +292,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          : <></>}
-          {isBookSearch ? <Button variant="outlined">Filter</Button> : <></>}
+          <Button variant="outlined">Filter</Button>
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
