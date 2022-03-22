@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Box, Grid} from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
@@ -12,6 +12,7 @@ import { CardActionArea, CardActions } from '@mui/material';
 import axios from "axios";
 import {url} from "../../components/Helper";
 import {useNavigate} from 'react-router-dom';
+import BookSection from "../SearchBooks/BookSection";
 
 const itemData = [
   {
@@ -64,16 +65,27 @@ const itemData = [
   },
 ];
 
+const data = {
+  bookTitle: 'Harry Potter',
+  bookAuthor: 'J.K.Rowling',
+  bookRating: '4.5',
+  likeAuthor: 'J.K.Rowling',
+  likeSubject: 'Science Fiction'
+}
+
 const Home = ({ifLogin, updateSearchResult}) => {
   const navigate = useNavigate();
+  const [topBooks, setTopBooks] = useState([]);
 
-  const data = {
-    bookTitle: 'Harry Potter',
-    bookAuthor: 'J.K.Rowling',
-    bookRating: '4.5',
-    likeAuthor: 'J.K.Rowling',
-    likeSubject: 'Science Fiction'
-  }
+  useEffect(async () => {
+    axios.get(`${url}/recommendation/toprating`)
+      .then(res => {
+        setTopBooks(res.data.books);
+      })
+      .catch(error => {
+        alert(error.message);
+      })
+  }, [])
 
   const Recommendations = () => {
 
@@ -169,42 +181,19 @@ const Home = ({ifLogin, updateSearchResult}) => {
 
     return (
       <>
-        <h1>Top 10 Books</h1>
+        <h1>Top 20 Books</h1>
         <Grid
           container
           spacing={3}
           justifyContent="center"
         >
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <BookCard />
-          </Grid>
+          {topBooks.map((bookInfo) => {
+            return (
+              <Grid item xs={12} sm={6} md={4} key={bookInfo.id}>
+                <BookSection bookInfo={bookInfo}/>
+              </Grid>
+            )
+          })}
         </Grid>
       </>
     )
