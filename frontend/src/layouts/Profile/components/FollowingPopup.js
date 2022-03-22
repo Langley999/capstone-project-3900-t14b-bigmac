@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
-const FollowerPopup = ({followers, setShowFollowers}) => {
+const FollowingPopup = ({followings, setShowFollowings}) => {
 
   const popupStyle = {
     position: "fixed",
@@ -22,8 +22,8 @@ const FollowerPopup = ({followers, setShowFollowers}) => {
     zIndex: 5
   }
 
-  const hideFollowers = () => {
-    setShowFollowers(false)
+  const hideFollowings = () => {
+    setShowFollowings(false)
   }
 
   const listingStyle = {
@@ -35,24 +35,24 @@ const FollowerPopup = ({followers, setShowFollowers}) => {
     <div>
       <div style={{position: "fixed", width: "100%", height: "100%", backgroundColor: "black", opacity: 0.3,  zIndex: 4, top: 0, left: 0}}></div>
       <div style={popupStyle}>
-        <IconButton style={{position: "fixed", marginLeft: "790px", marginTop: "-30px"}} onClick={hideFollowers}>
+        <IconButton style={{position: "fixed", marginLeft: "790px", marginTop: "-30px"}} onClick={hideFollowings}>
           <CloseIcon/>
         </IconButton>
-        <h1>Followers</h1>
+        <h1>Followings</h1>
         <div style={{overflowY: "scroll", width: "840px", height: "525px", borderTop: "1px solid lightgrey", borderBottom: "1px solid lightgrey"}}>
-          {followers.length > 0 ? followers.map((follower, idx) => {
+          {followings.length > 0 ? followings.map((user, idx) => {
             return (
             <Card key={idx} style={{width: "800px", margin: "auto"}}>
               <CardContent style={listingStyle}>
-              <UsernameLink username={follower.username} id={follower.user_id} avatar={follower.avatar} />
+              <UsernameLink username={user.username} id={user.user_id} avatar={user.avatar} />
               </CardContent>
             </Card>
             )
-          }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>This account has no followers</div>}
+          }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>This account has no followings</div>}
         </div>
       </div>
     </div>
   )
 }
 
-export default FollowerPopup;
+export default FollowingPopup;

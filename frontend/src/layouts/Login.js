@@ -81,7 +81,8 @@ const Login = ({ updateLogin, updateUserInfo }) => {
     event.preventDefault();
   };
 
-  const submitLogin = () => {
+  const submitLogin = (e) => {
+    e.preventDefault();
     // shows error message for 5 secs if any input is blank
     if (email === '' || pass.password === '') {
       setErrorMsg('All input fields must be filled');
@@ -160,6 +161,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
           noValidate
           autoComplete="off"
           style={formStyle}
+          onSubmit={(e) => submitLogin(e)}
         >
           <Stack direction="row" style={headingStyle}>
             <HomeButton/>
@@ -197,7 +199,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
             />
           </FormControl>
 
-          <Button variant="contained" onClick={submitLogin}>Login</Button>
+          <Button variant="contained" type="submit">Login</Button>
           <span style={{height: "20px", textAlign: "center"}}>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
         </Box>
       </div>
