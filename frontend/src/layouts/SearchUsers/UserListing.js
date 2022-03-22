@@ -6,8 +6,8 @@ import UsernameLink from '../../components/UsernameLink';
 import FollowButton from '../../components/FollowButton';
 import UnfollowButton from '../../components/UnfollowButton';
 
-const UserListing = ({ searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg, setShowError }) => {
-  const [isFollowing, setIsFollowing] = useState(searchedUser.isFollowing);
+const UserListing = ({ searchedUser, isFollowing, setSuccessMsg, setShowSuccess, setErrorMsg, setShowError }) => {
+  const [isFollowingState, setIsFollowingState] = useState(isFollowing);
 
   const listingStyle = {
     display: "flex",
@@ -21,8 +21,8 @@ const UserListing = ({ searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg,
       <CardContent style={listingStyle}>
         <UsernameLink username={searchedUser.username} id={searchedUser.user_id} avatar={searchedUser.avatar} />
         {isFollowing ?
-        <UnfollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
-        : <FollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
+        <UnfollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowingState} setIsFollowing={setIsFollowingState} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
+        : <FollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowingState} setIsFollowing={setIsFollowingState} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
       </CardContent>
     </Card>
   )

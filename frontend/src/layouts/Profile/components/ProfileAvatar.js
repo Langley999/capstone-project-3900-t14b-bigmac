@@ -11,14 +11,19 @@ import {
 import {useParams} from "react-router-dom";
 import axios from "axios";
 import {url} from "../../../components/Helper";
+import FollowerPopup from './FollowerPopup';
+import ErrorPopup from '../../../components/ErrorPopup';
 
 export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   const urlParams = useParams();
   const user_id = Number(urlParams.userid);
   const [isSelf, setIsSelf] = useState(user_id === userInfo.user_id);
-
   const [values, setValues] = useState({});
-
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(false);
+  
   useEffect(async () => {
     axios.get(`${url}/user/profile`, {params: {
         user_id: user_id,
@@ -38,51 +43,69 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       });
   }, [])
 
+  const getFollowers = () => {
+    axios.get(`${url}/user/getfollower`, {params: {
+      user_id: user_id
+    }}).then(function (response) {
+      setFollowers(response.data.followers);
+      setShowFollowers(true);
+      console.log(showFollowers);
+    }).catch(function (error) {
+      // show error message if goal cannot be retrieved
+      setErrorMsg(JSON.stringify(error.message));
+      setShowError(true);
+    });
+  }
+
   return (
-    <Card>
-      <CardContent
-      >
-        <Box
-          sx={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Avatar
-            src={values.avatar}
+    <div>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
+      <Card>
+        <CardContent>
+          <Box
             sx={{
-              height: 150,
-              mb: 2,
-              width: 150
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'column',
             }}
-          />
-        </Box>
+          >
+            <Avatar
+              src={values.avatar}
+              sx={{
+                height: 150,
+                mb: 2,
+                width: 150
+              }}
+            />
+          </Box>
+          <Button
+            color="primary"
+            variant='contained'
+          >
+            Upload Avatar
+          </Button>
+        </CardContent>
+        <CardActions>
+        </CardActions>
+        <Divider />
         <Button
-          color="primary"
-          variant='contained'
+          color='warning'
+          fullWidth
+          variant="text"
+          sx={{textTransform: "none"}}
         >
-          Upload Avatar
+          3 followings
         </Button>
-      </CardContent>
-      <CardActions>
-      </CardActions>
-      <Divider />
-      <Button
-        color='warning'
-        fullWidth
-        variant="text"
-        sx={{textTransform: "none"}}
-      >
-        3 followings
-      </Button>
-      <Button
-        fullWidth
-        variant="text"
-        sx={{textTransform: "none"}}
-      >
-        4 followers
-      </Button>
-    </Card>
+        <Button
+          fullWidth
+          variant="text"
+          sx={{textTransform: "none"}}
+          onClick={getFollowers}
+        >
+          4 followers
+        </Button>
+      </Card>
+      {showFollowers ? <FollowerPopup followers={followers} setShowFollowers={setShowFollowers} setErrorMsg={setErrorMsg} setShowError={setShowError}/> : <></>}
+    </div>
   )
 }

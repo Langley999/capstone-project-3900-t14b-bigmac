@@ -101,7 +101,7 @@ const SearchUsers = () => {
       </div>
       {users.length > 0 ? users.map((searchedUser) => {
         return (
-          <UserListing searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
+          <UserListing searchedUser={searchedUser} isFollowing={searchedUser.isFollowing} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>There were no usernames that matched the phrase "{searchValue}"</div>}
     </div>
