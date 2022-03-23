@@ -18,12 +18,12 @@ import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
-import Posts from './layouts/Posts';
 import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import Posts from './layouts/Posts/Posts';
 import axios from "axios";
 import {url} from "./components/Helper";
 
@@ -103,7 +103,7 @@ function App() {
             }>
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo} />}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
-              <Route path='posts' element={<Posts />}/>
+              <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
             </Route>
           </Route>

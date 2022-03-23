@@ -10,6 +10,7 @@ def findUsers():
     print("reach search")
     token = request.args.get('token')
     search_prhase = request.args.get('search_phrase')
+    print('search_phrase is ', request.args.get('search_phrase'))
     user = get_user(token)
     users = User.query.filter(User.username.ilike('%'+ search_prhase +'%'))
     userf_list = []
@@ -116,7 +117,9 @@ def addPost():
     db.session.add(newPost)
     db.session.commit()
 
-    return dumps({})
+    return dumps({
+        "post_id": newPost.post_id
+    })
 
 
 @app.route("/post/getposts", methods=["GET"])
