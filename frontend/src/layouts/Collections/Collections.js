@@ -38,9 +38,10 @@ const Collections = ({userInfo}) => {
     books: []
   });
   let newCollection = '';   // the name of created collection
+  const user_id = Number(window.location.pathname.split('/')[2]);
 
   useEffect(async () => {
-    const user_id = Number(window.location.pathname.split('/')[2]);
+    // const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
 
     axios.get(`${url}/collection/getall`, {params: {
@@ -80,9 +81,13 @@ const Collections = ({userInfo}) => {
             name: res.data.name,
             books: res.data.books
           })
-          if (isSelf && res.data.name !== 'Reading History') {
+          if ((user_id === userInfo.user_id) && res.data.name !== 'Reading History') {
             setCanRemove(true);
             // canRemove = true;
+            console.log(isSelf)
+            console.log(canRemove)
+          } else {
+            setCanRemove(false);
             console.log(canRemove)
           }
         })
