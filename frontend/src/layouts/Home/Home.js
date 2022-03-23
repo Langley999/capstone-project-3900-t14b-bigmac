@@ -25,7 +25,7 @@ const itemData = [
   },
   {
     img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-    title: 'Fantacy',
+    title: 'Fantasy',
   },
   {
     img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
