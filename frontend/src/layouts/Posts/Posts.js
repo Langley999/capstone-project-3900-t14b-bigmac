@@ -73,24 +73,24 @@ const Posts = ({userInfo}) => {
   }
 
   const handleSubmitPost = () => {
-    axios.post(`${url}/post/addpost`, {
-      token: localStorage.getItem('token'),
-      content: postValue
-    }).then(res => {
-      var datetime = currentdate.getFullYear() + "-"
-        + (currentdate.getMonth()+1)  + "-"
-        + currentdate.getDate() + " "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
+    // axios.post(`${url}/post/addpost`, {
+    //   token: localStorage.getItem('token'),
+    //   content: postValue
+    // }).then(res => {
+      // var datetime = currentdate.getFullYear() + "-"
+      //   + (currentdate.getMonth()+1)  + "-"
+      //   + currentdate.getDate() + " "
+      //   + currentdate.getHours() + ":"
+      //   + currentdate.getMinutes() + ":"
+      //   + currentdate.getSeconds();
 
-      const newPost = {
-        post_id: res.data.post_id,
-        content: postValue,
-        time_created: datetime
-      }
-      setPosts([...posts, newPost])
-    })
+    //   const newPost = {
+    //     post_id: res.data.post_id,
+    //     content: postValue,
+    //     time_created: datetime
+    //   }
+    //   setPosts([...posts, newPost])
+    // })
   }
 
 
@@ -132,7 +132,8 @@ const Posts = ({userInfo}) => {
 
       {data.map(postInfo => {
         return (
-          <PostSection postInfo={postInfo}/>
+          // <PostSection postInfo={postInfo}/>
+          <></>
         )
       })}
     </>

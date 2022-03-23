@@ -17,15 +17,15 @@ const PublicFeed = () => {
 
   const getPublicFeed = () => {
     axios.get(`${url}/post/getpublicfeed`, {params: {}})
-      .then(res => {
-        updateFeed(res.data.posts);
-      })
-      .catch(function (error) {
-        setErrorMsg(error.response.data.message);
-        setShowError(true);
-      });
+    .then(res => {
+      updateFeed(res.data.posts);
+    })
+    .catch(function (error) {
+      setErrorMsg(error.response.data.message);
+      setShowError(true);
+    });
   }
-
+  
   return (
     <div>
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />

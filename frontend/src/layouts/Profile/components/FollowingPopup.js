@@ -42,11 +42,11 @@ const FollowingPopup = ({followings, setShowFollowings}) => {
         <div style={{overflowY: "scroll", width: "840px", height: "525px", borderTop: "1px solid lightgrey", borderBottom: "1px solid lightgrey"}}>
           {followings.length > 0 ? followings.map((user, idx) => {
             return (
-              <Card key={idx} style={{width: "800px", margin: "auto"}}>
-                <CardContent style={listingStyle}>
-                  <UsernameLink username={user.username} id={user.user_id} avatar={user.avatar} />
-                </CardContent>
-              </Card>
+            <Card key={idx} style={{width: "800px", margin: "auto"}}>
+              <CardContent style={listingStyle}>
+              <UsernameLink username={user.username} id={user.user_id} avatar={user.avatar} />
+              </CardContent>
+            </Card>
             )
           }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>This account has no followings</div>}
         </div>

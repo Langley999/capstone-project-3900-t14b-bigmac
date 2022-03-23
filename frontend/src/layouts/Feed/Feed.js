@@ -16,15 +16,15 @@ const Feed = () => {
 
   const getFeed = () => {
     axios.get(`${url}/post/getfeed`, {params: {
-        token: localStorage.getItem('token'),
-      }})
-      .then(res => {
-        updateFeed(res.data.posts);
-      })
-      .catch(function (error) {
-        setErrorMsg(error.response.data.message);
-        setShowError(true);
-      });
+      token: localStorage.getItem('token'),
+    }})
+    .then(res => {
+      updateFeed(res.data.posts);
+    })
+    .catch(function (error) {
+      setErrorMsg(error.response.data.message);
+      setShowError(true);
+    });
   }
 
   return (

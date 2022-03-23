@@ -20,8 +20,7 @@ const UserListing = ({ searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg,
     <Card style={{width: "1000px", margin: "auto"}}>
       <CardContent style={listingStyle}>
         <UsernameLink username={searchedUser.username} id={searchedUser.user_id} avatar={searchedUser.avatar} />
-        {isFollowing ?
-          <UnfollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
+        {isFollowing ? <UnfollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
           : <FollowButton id={searchedUser.user_id} username={searchedUser.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
       </CardContent>
     </Card>

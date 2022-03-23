@@ -42,11 +42,11 @@ const FollowerPopup = ({followers, setShowFollowers}) => {
         <div style={{overflowY: "scroll", width: "840px", height: "525px", borderTop: "1px solid lightgrey", borderBottom: "1px solid lightgrey"}}>
           {followers.length > 0 ? followers.map((follower, idx) => {
             return (
-              <Card key={idx} style={{width: "800px", margin: "auto"}}>
-                <CardContent style={listingStyle}>
-                  <UsernameLink username={follower.username} id={follower.user_id} avatar={follower.avatar} />
-                </CardContent>
-              </Card>
+            <Card key={idx} style={{width: "800px", margin: "auto"}}>
+              <CardContent style={listingStyle}>
+              <UsernameLink username={follower.username} id={follower.user_id} avatar={follower.avatar} />
+              </CardContent>
+            </Card>
             )
           }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>This account has no followers</div>}
         </div>

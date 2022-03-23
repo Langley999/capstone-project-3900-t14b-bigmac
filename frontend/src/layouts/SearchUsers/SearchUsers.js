@@ -6,6 +6,9 @@ import axios from "axios";
 import {url} from '../../components/Helper';
 import {Box, TextField} from '@mui/material';
 import Button from '@mui/material/Button';
+import SearchIcon from '@mui/icons-material/Search';
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
 
 const SearchUsers = () => {
   const [successMsg, setSuccessMsg] = React.useState('');

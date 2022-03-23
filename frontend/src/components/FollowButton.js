@@ -8,17 +8,17 @@ const FollowButton = ({id, username, isFollowing, setIsFollowing, setShowError, 
       token: localStorage.getItem('token'),
       user_id: id
     })
-      .then(res => {
-        if (res['status'] === 200) {
-          setSuccessMsg(`Followed ${username}!`);
-          setShowSuccess(true);
-          setIsFollowing(!isFollowing);
-        }
-      })
-      .catch(function (error) {
-        setErrorMsg(error.response.data.message);
-        setShowError(true);
-      });
+    .then(res => {
+      if (res['status'] === 200) {
+        setSuccessMsg(`Followed ${username}!`);
+        setShowSuccess(true);
+        setIsFollowing(!isFollowing);
+      }
+    })
+    .catch(function (error) {
+      setErrorMsg(error.response.data.message);
+      setShowError(true);
+    });
   }
 
   return (

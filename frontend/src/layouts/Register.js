@@ -83,7 +83,8 @@ const Register = ({ updateLogin, updateUserInfo }) => {
     event.preventDefault();
   };
 
-  const submitRegister = () => {
+  const submitRegister = (e) => {
+    e.preventDefault();
     // show error message for 5 secs if any inputs are blank
     if (email === '' || username === '' || pass.password === '' || passConfirm.password === '') {
       setErrorMsg('All input fields must be filled');
@@ -204,7 +205,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {pass.showPassword ? <VisibilityOff /> : <Visibility />}
+                  {pass.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -226,7 +227,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
                 >
-                  {passConfirm.showPassword ? <VisibilityOff /> : <Visibility />}
+                  {passConfirm.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
@@ -234,7 +235,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
           />
         </FormControl>
 
-        <Button variant="contained" onClick={submitRegister}>Register</Button>
+        <Button variant="contained" type="submit">Register</Button>
         <span style={{height: "20px", textAlign: "center"}}>Already have an account? <a href="http://localhost:3000/bookstation/login">Login</a></span>
       </Box>
     </div>
