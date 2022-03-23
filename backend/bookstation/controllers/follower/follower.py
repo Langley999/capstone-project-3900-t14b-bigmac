@@ -22,6 +22,8 @@ def findUsers():
         else:
             userf_dict['isFollowing'] = False
         userf_list.append(userf_dict)
+    
+    userf_list.sort(key = lambda x: x['username'])
 
     return dumps({ 'users' : userf_list})
 
@@ -144,7 +146,8 @@ def getfollowing():
         userinfo['user_id'] = following.user_id
         userinfo['username'] = user.username
         result.append(userinfo)
-
+        
+    result.sort(key = lambda x: x['username'])
     return dumps({
         "followings": result
     })
@@ -180,6 +183,7 @@ def getfollower():
         userinfo['username'] = user.username
         result.append(userinfo)
 
+    result.sort(key = lambda x: x['username'])
     return dumps({
         "followers": result
     })

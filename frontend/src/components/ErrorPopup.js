@@ -20,7 +20,7 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
   }
 
   return (
-    <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={snackBarOpen}  onClose = {() =>setSnackBarOpen(false)} autoHideDuration={2000} >
+    <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={snackBarOpen}  onClose = {() =>setSnackBarOpen(false)} autoHideDuration={2000} >
       <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} >
         {errorMsg }
       </Alert>

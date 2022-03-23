@@ -1,7 +1,7 @@
 from json import dumps
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import User, Collection, Goal
+from bookstation.models.user_sys import Follow_relationship, User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode
 from datetime import datetime,date
 import datetime
@@ -184,11 +184,15 @@ def get_user_profile():
     user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
+    isFollowing = False
+    if Follow_relationship.query.filter_by(follower_user_id = operator.user_id, user_id = user_id).first() != None:
+        isFollowing = True
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
         "email": user.email,
-        "avatar": user.avatar
+        "avatar": user.avatar,
+        "isFollowing" : isFollowing
     })
 
 @app.route(url_prefix + '/update', methods=["POST"])

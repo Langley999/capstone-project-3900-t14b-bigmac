@@ -17,7 +17,7 @@ const SearchBooks = ({searchResult}) => {
       >
         {searchResult.length > 0 ? searchResult.map((bookInfo) => {
           return (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} key={bookInfo.id}>
               <BookSection bookInfo={bookInfo}/>
             </Grid>
           )

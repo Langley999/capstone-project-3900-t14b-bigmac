@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -18,12 +18,14 @@ import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
-import Posts from './layouts/Posts';
 import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail'
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import Posts from './layouts/Posts/Posts';
+import axios from "axios";
+import {url} from "./components/Helper";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -31,6 +33,13 @@ function App() {
   const [radioValue, setRadioValue] = useState('title');
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      updateUserInfo(JSON.parse(localStorage.getItem('user')));
+      updateLogin(true);
+    }
+  }, []);
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
@@ -81,7 +90,7 @@ function App() {
             <Route path='quiz' element={<Quiz />} />
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
-            <Route path='users' element={<SearchUsers searchResult={searchResult} userInfo={userInfo}/>} />
+            <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
@@ -94,7 +103,7 @@ function App() {
             }>
               <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo} />}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
-              <Route path='posts' element={<Posts />}/>
+              <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
             </Route>
           </Route>
