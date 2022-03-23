@@ -84,6 +84,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
   const [searchRating, setSearchRating] = useState(0);
+  const [rating, setRating] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -91,6 +92,10 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
 
   const updateSearchRating = (rating) => {
     setSearchRating(rating);
+  }
+
+  const updateRating = (rating) => {
+    setRating(rating);
   }
 
   const handleClick = (event) => {
@@ -117,6 +122,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     .then(res => {
       updateSearchResult(res.data.books);
       updateSearchRating(0);
+      setRating(0);
       navigate('searchbooks');
     })
     .catch(function (error) {
@@ -306,7 +312,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-         <Filter updateSearchRating={updateSearchRating}/>
+         <Filter updateSearchRating={updateSearchRating} updateRating={updateRating} rating={rating}/>
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
           <Genres updateSearchResult={updateSearchResult}/>
           <Box sx={{ flexGrow: 1 }} />
