@@ -1,0 +1,1 @@
+from bookstation.controllers.analytics import analytics

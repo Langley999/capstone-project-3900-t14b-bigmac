@@ -13,3 +13,8 @@ Week 3:
 
 Week 4:
 - I made profile page, collection page, search books result page for frontend
+<<<<<<< HEAD
+=======
+- I wrote justification for frontend including framework and UI library.
+- I updated the router and made the header, initial page, navigation tabs.
+>>>>>>> sprint2-jane

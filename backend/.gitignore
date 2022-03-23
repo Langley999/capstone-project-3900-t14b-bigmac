@@ -1,0 +1,6 @@
+/dev/
+/.idea/
+.DS_Store
+**/__pycache__
+flask_session
+bookstation.db

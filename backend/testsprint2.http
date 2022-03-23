@@ -1,0 +1,183 @@
+
+### write 2 reviews for book 2
+POST http://127.0.0.1:8080/book/ratings_reviews
+content-type: application/json
+
+{
+    "book_id": 2,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "rating": 4,
+    "review": "I love harry potter! Yasin",
+    "created_time": "2020-01-01 00:00:01"
+}
+
+###
+
+POST http://127.0.0.1:8080/book/ratings_reviews
+content-type: application/json
+
+{
+    "book_id": 2,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0",
+    "rating": 1,
+    "review": "I hate harry potter! not Yasin :)",
+    "created_time": "2020-02-01 00:00:01"
+}
+
+
+
+### like review book 2
+
+
+
+POST http://127.0.0.1:8080/book/likereview
+content-type: application/json
+
+{
+    "review_id": 2,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+
+
+
+
+### unlike review book 2
+
+
+POST http://127.0.0.1:8080/book/unlikereview
+content-type: application/json
+
+{
+    "review_id": 2,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+
+
+### like review again
+
+POST http://127.0.0.1:8080/book/likereview
+content-type: application/json
+
+{
+    "review_id": 1,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+
+### get details for book 2
+
+
+GET http://127.0.0.1:8080/book/details?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk&bookId=2
+
+
+### save 2 collections from other people
+
+
+POST http://127.0.0.1:8080/collection/savecollection
+content-type: application/json
+
+{
+    "collection_id": 18,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+
+
+###
+
+POST http://127.0.0.1:8080/collection/unsavecollection
+content-type: application/json
+
+{
+    "collection_id": 18,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+### check those other people how many saved those collections
+
+GET http://127.0.0.1:8080/collection/saves?collection_id=18&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0
+
+
+### save collection again
+
+POST http://127.0.0.1:8080/collection/savecollection
+content-type: application/json
+
+{
+    "collection_id": 19,
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk"
+
+}
+
+
+### get saved collections
+
+GET http://127.0.0.1:8080/collection/savedcollections?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk
+
+
+
+### check those other people how many saved those collections
+
+GET http://127.0.0.1:8080/collection/saves?collection_id=19&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0
+
+
+
+### get similar books to book 2
+
+
+
+GET http://127.0.0.1:8080/book/similarbooks?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk&book_id=2
+
+### follower user 9
+
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": 9
+}
+
+### follow user 10
+
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": 10
+}
+
+
+### follower user 11
+
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk",
+    "user_id": 11
+}
+
+
+###gain follower
+
+
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0",
+    "user_id": 8
+}
+
+
+
+
+###check follower gained over past 6 months
+GET http://127.0.0.1:8080/user/followstats?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk
