@@ -26,7 +26,8 @@ import {Link, useParams} from "react-router-dom";
 
 const Collections = ({userInfo}) => {
   const urlParams = useParams();
-
+  const [canRemove, setCanRemove] = useState(false);
+  // let canRemove = false;
   const [collections, setCollections] = useState([]);
   const [isSelf, setIsSelf] = useState(true);
   let initialCollections = [];
@@ -79,6 +80,11 @@ const Collections = ({userInfo}) => {
             name: res.data.name,
             books: res.data.books
           })
+          if (isSelf && res.data.name !== 'Reading History') {
+            setCanRemove(true);
+            // canRemove = true;
+            console.log(canRemove)
+          }
         })
         .catch(function (error) {
           alert(error.response.data.message);
@@ -220,7 +226,7 @@ const Collections = ({userInfo}) => {
     )
   }
 
-  const Book = ({id, title, cover, canRemove}) => {
+  const Book = ({id, title, cover}) => {
 
     const removeBook = () => {
       axios.delete(`${url}/collection/removebook`, {data: {
@@ -263,7 +269,7 @@ const Collections = ({userInfo}) => {
     )
   }
 
-  const CompletedBook = ({id, title, cover}) => {
+  const Book2 = ({id, title, cover}) => {
     return (
       <>
         <Box sx={{height: '300px', width: '140px'}}>
@@ -299,9 +305,7 @@ const Collections = ({userInfo}) => {
             {currentCollection.books.map((book) => {
               return (
                 <Grid item xs={12} sm={6} md={2} key={book.id}>
-                  {currentCollection.name === 'Reading History' ?
-                    <CompletedBook id={book.id} title={book.title} cover={book.cover}/> 
-                    : <Book id={book.id} title={book.title} cover={book.cover}/>}
+                  <Book id={book.id} title={book.title} cover={book.cover}/>
                 </Grid>
               )
             })}
