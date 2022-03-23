@@ -1,7 +1,7 @@
 from json import dumps
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import User, Collection, Goal
+from bookstation.models.user_sys import Follow_relationship, User, Collection, Goal
 from bookstation.utils.auth_util import login_status_check, pw_encode
 from datetime import datetime,date
 import datetime
@@ -23,7 +23,7 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    
+
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
@@ -161,14 +161,14 @@ def get_user_profile():
     '''
     It returns profile data of target user.
     Args (GET):
-        
+
         user_id (string): target user's id
         token (string): valid token
     Returns:
         is_self (boolean): True if the user is requesting his own profile, else False
         username (string): target user's username
         email (string): target user's email
-        TODO: add more returns and profile image
+        avatar (string base64): user's avatar
     Raises:
         AccessError: login check
         NotFoundError: when target email is an invalid email
@@ -184,10 +184,15 @@ def get_user_profile():
     user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
+    isFollowing = False
+    if Follow_relationship.query.filter_by(follower_user_id = operator.user_id, user_id = user_id).first() != None:
+        isFollowing = True
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
-        "email": user.email
+        "email": user.email,
+        "avatar": user.avatar,
+        "isFollowing" : isFollowing
     })
 
 @app.route(url_prefix + '/update', methods=["POST"])
@@ -235,6 +240,42 @@ def update_user_profile():
         user.email = new_email
     # change password
     user.password = pw_encode(new_password)
+    db.session.add(user)
+    db.session.commit()
+    return dumps({})
+
+
+@app.route(url_prefix + '/updateavatar', methods=["POST"])
+def update_user_avatar():
+    '''
+    It will update user's avatar.
+    Args (POST):
+        token (string): valid token
+        avatar (base64 string): avatar image of base64 format
+    Returns:
+        no returns.
+    Raises:
+        AccessError: login check
+        BadReqError: when post body is invalid
+        InputError:
+            1. new username has been registered
+            2. new email has been registerd
+    TODO:
+        1. add more params
+    '''
+    try:
+        data = request.get_json()
+        avatar, token = \
+            data['avatar'], data['token']
+    except:
+        raise error.BadReqError(description="post body error")
+#     login_status_check(origin_email, token)
+    # sql select origin user
+    user = User.query.filter_by(token=token).first()
+    if (user == None):
+        raise error.BadReqError(description="post body error")
+    # change password
+    user.avatar = avatar
     db.session.add(user)
     db.session.commit()
     return dumps({})

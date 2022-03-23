@@ -50,6 +50,15 @@ class Collection_book(db.Model):
         self.finish_time = created_time
 
 
+class Saved_collection(db.Model):
+    __tablename__ = 'saved_collection'
+
+    collection_id = db.Column('collection_id', db.Integer, db.ForeignKey('collection.collection_id'), primary_key=True)
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    collection = db.relationship('Collection')
+
+
+
 class Review(db.Model):
 
     __tablename__ = 'review'
@@ -61,6 +70,15 @@ class Review(db.Model):
     rating = db.Column(db.SmallInteger)
     content = db.Column(db.String(2048))
     created_time = db.Column(db.DateTime)
+    likes = db.Column(db.Integer)
+
+
+class User_likes(db.Model):
+
+    __tablename__ = 'user_likes'
+
+    review_id = db.Column('review_id', db.Integer, db.ForeignKey('review.review_id'), primary_key=True)
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
 
 
 
@@ -82,4 +100,3 @@ class Book(db.Model):
     reviews = db.relationship('Review')
 
     #book_genre = db.relationship('Book_genre') #comment this out
-
