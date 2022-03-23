@@ -59,7 +59,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         alert(error.response.data.message)
       });
 
-  }, [window.location.href])
+  }, [window.location.href, userInfo])
 
 
   const handleChange = (event) => {
@@ -118,7 +118,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   return (
     <>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
-      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "center", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
         <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
           {successMsg}
         </Alert>
@@ -193,7 +193,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                           onMouseDown={mouseDownPassword}
                           edge="end"
                         >
-                          {ifVisible ? <VisibilityOff /> : <Visibility />}
+                          {ifVisible ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     }

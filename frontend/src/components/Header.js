@@ -13,7 +13,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,6 +24,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeIcon from '@mui/icons-material/Home';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
+import Genres from "./Genres";
+import Filter from "./Filter";
 import axios from "axios";
 import {url} from './Helper';
 import '../App.css';
@@ -81,11 +83,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
+  const [searchRating, setSearchRating] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const navigate = useNavigate();
-  const isBookSearch = (useLocation().pathname !== "/users");
 
+  const navigate = useNavigate();
+
+  const updateSearchRating = (rating) => {
+    setSearchRating(rating);
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -94,39 +100,28 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     setAnchorEl(null);
   };
 
+
   const onChangeRadio = (e) => {
     updateRadioValue(e.target.value);
   }
 
   const submitSearch = () => {
-    if (isBookSearch) {
-      console.log(radioValue)
-      console.log(searchValue)
-      axios.get(`${url}/search/searchbook`, {params: {
-          type: radioValue,
-          value: searchValue
-      }})
-      .then(res => {
-        updateSearchResult(res.data.books);
-        navigate('searchbooks');
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    } else {
-      // show user search results
-      axios.get(`${url}/user/search`, {params: {
-        token: localStorage.getItem('token'),
-        search_phrase: searchValue
-      }})
-      .then(res => {
-        updateSearchResult(res.data.users);
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    }
-    
+    console.log(radioValue)
+    console.log(searchValue)
+    console.log(searchRating)
+    axios.get(`${url}/search/searchbook`, {params: {
+        type: radioValue,
+        value: searchValue,
+        rating: searchRating
+    }})
+    .then(res => {
+      updateSearchResult(res.data.books);
+      updateSearchRating(0);
+      navigate('searchbooks');
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
   }
 
   const PublicFeedIcon = () => {
@@ -189,6 +184,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         token: localStorage.getItem('token')
       }).then(res => {
         updateLogin(false);
+        localStorage.clear();
         navigate('/');
       })
     }
@@ -217,7 +213,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 20,
+              right: 90,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -264,6 +260,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     )
   }
 
+
   return (
       <HeaderContainer position="fixed" className='header'
         sx={{
@@ -291,14 +288,13 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder={isBookSearch ? "Search Books" : "Search Users"}
+                placeholder="Search Books"
                 value={searchValue}
                 onChange={(e) => updateSearchValue(e.target.value)}
                 inputProps={{ 'aria-label': 'search' }}
               />
             </Search>
           </Box>
-          {isBookSearch ? 
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"
@@ -310,9 +306,9 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          : <></>}
-          {isBookSearch ? <Button variant="outlined">Filter</Button> : <></>}
+         <Filter updateSearchRating={updateSearchRating}/>
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
+          <Genres updateSearchResult={updateSearchResult}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?
