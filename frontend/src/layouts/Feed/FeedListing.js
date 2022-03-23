@@ -25,7 +25,7 @@ const FeedListing = ({ post }) => {
       <CardContent>
         <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}} >
           <UsernameLink username={post.username} id={post.user_id} avatar={post.avatar} />
-          <div>{formatAMPM(createDate(post.time_created))} {createDate(post.time_created).toLocaleDateString()}</div>
+          <div>{formatAMPM(createDate(post.time_created))} {post.time_created}{createDate(post.time_created).toLocaleDateString()}</div>
         </div>
         {post.content}
       </CardContent>
