@@ -32,7 +32,6 @@ def getDetails():
     '''
     #get input
     token = request.args.get('token') 
-    user_id = request.args.get('user_id') 
     if token:
         user = get_user(token)
         book_id = request.args.get('bookId')
@@ -80,7 +79,7 @@ def getDetails():
         reviews = []
         for review in book.reviews:
             if review.content != None:
-                reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes})
+                reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes,  'is_liked' : False})
 
         reviews.sort(key = lambda x: x['likes'], reverse=True)
         book_dict['reviews'] = reviews 

@@ -1,7 +1,8 @@
 from json import dumps
 from bookstation import app, request, db, error
 from bookstation.models.book_sys import *
-from sqlalchemy import func
+from sqlalchemy import func, desc
+import time
 #from bookstation.utlis.auth_util import login_status_check
 
 url_prefix = '/search'
@@ -131,23 +132,54 @@ def genre():
         raise error.BadReqError(description="invalid params")
 
     genres = genre_names.split('&')
+    all_books = []
+    for genre in genres:
+        books = Book.query.filter(Book.genre_string.like('%'+genre+'%')).filter(Book.average_rating >= rating_filter).all()
+        booklist = []
+        for book in books:
+            booklist.append(book.book_id)
+        all_books.append(booklist)
+    books = set.intersection(*[set(x) for x in all_books])  
+    results = []
+    i = 0
+
+    for id in books:
+        book = Book.query.get(id)
+        book_info = {}
+        book_info['id'] = book.book_id
+        book_info['title'] = book.title
+        book_info['author'] = book.author_string
+        book_info['num_rating'] = book.num_rating
+        book_info['cover'] = book.cover_image
+        book_info['average_rating'] = book.average_rating
+        book_info['publish_date'] = book.publish_date
+        results.append(book_info)
+        i+=1
+        if i > 50:
+            break   
+    '''
     genre_ids = []
+
     for genre in genres:
         gen = Genre.query.filter_by(name=genre).first()
         genre_ids.append(gen.genre_id)
     all_books = []
+    start = time.process_time()
     for genre_id in genre_ids:
         booklist = []
         gen_books = Book_genre.query.filter_by(genre_id=genre_id).all()
         for gen_book in gen_books:
+            #if gen_book.book.average_rating >= rating_filter:
             bookid = gen_book.book_id
             booklist.append(bookid)
         all_books.append(booklist)
+    print(time.process_time() - start)
+    start = time.process_time()
     books = set.intersection(*[set(x) for x in all_books])  
-
+    print(time.process_time() - start)
     results = []
     i = 0
-   
+    start = time.process_time()
     for id in books:
         book = Book.query.get(id)
         if book.average_rating >= rating_filter: 
@@ -163,8 +195,14 @@ def genre():
             results.append(book_info)
             i+=1
             if i > 50:
-                break
+                break   
+   
+    print(time.process_time() - start)    
     results.sort(key = lambda x: x['average_rating'], reverse=True)
+    '''
+ 
+
+    
     return dumps({
       "books": results
     })
