@@ -168,6 +168,7 @@ const Register = ({ updateLogin, updateUserInfo }) => {
         noValidate
         autoComplete="off"
         style={formStyle}
+        onSubmit={(e) => submitRegister(e)}
       >
         <Stack direction="row" style={headingStyle}>
           <HomeButton/>

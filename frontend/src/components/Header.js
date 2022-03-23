@@ -88,7 +88,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
-  const isBookSearch = (useLocation().pathname !== "/users");
 
   const updateSearchRating = (rating) => {
     setSearchRating(rating);
@@ -107,37 +106,22 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   const submitSearch = () => {
-    if (isBookSearch) {
-      console.log(radioValue)
-      console.log(searchValue)
-      console.log(searchRating)
-      axios.get(`${url}/search/searchbook`, {params: {
-          type: radioValue,
-          value: searchValue,
-          rating: searchRating
-      }})
-      .then(res => {
-        updateSearchResult(res.data.books);
-        updateSearchRating(0);
-        navigate('searchbooks');
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    } else {
-      // show user search results
-      axios.get(`${url}/user/search`, {params: {
-        token: localStorage.getItem('token'),
-        search_phrase: searchValue
-      }})
-      .then(res => {
-        updateSearchResult(res.data.users);
-      })
-      .catch(function (error) {
-        alert(error.response.data.message);
-      });
-    }
-    
+    console.log(radioValue)
+    console.log(searchValue)
+    console.log(searchRating)
+    axios.get(`${url}/search/searchbook`, {params: {
+        type: radioValue,
+        value: searchValue,
+        rating: searchRating
+    }})
+    .then(res => {
+      updateSearchResult(res.data.books);
+      updateSearchRating(0);
+      navigate('searchbooks');
+    })
+    .catch(function (error) {
+      alert(error.response.data.message);
+    });
   }
 
   const PublicFeedIcon = () => {
@@ -311,7 +295,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               />
             </Search>
           </Box>
-          {isBookSearch ? 
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"
@@ -323,13 +306,9 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-          : <></>}
-          {isBookSearch ? <Filter updateSearchRating={updateSearchRating}/> : <></>}
+         <Filter updateSearchRating={updateSearchRating}/>
           <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
-          {isBookSearch ?
-            <Genres updateSearchResult={updateSearchResult}/>
-            : null
-          }
+          <Genres updateSearchResult={updateSearchResult}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?

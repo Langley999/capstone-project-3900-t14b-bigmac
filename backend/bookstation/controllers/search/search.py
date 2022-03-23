@@ -9,7 +9,7 @@ url_prefix = '/search'
 @app.route(url_prefix + "/searchbook", methods=["GET"])
 def search():
     """
-    Function for users to to get results of the search.
+    Function for users to to get results of the search. 
     Args:
         type (string): author or title
         value (string): the search text
@@ -46,7 +46,7 @@ def search_book_author(author_name, rating_filter):
 
     for author in authors:
         book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
-
+        
         for book_author in book_authors:
             book = book_author.book
             if book.average_rating >= rating_filter:
@@ -88,8 +88,8 @@ def search_book_title(book_title, rating_filter):
             if i > 50:
                 break
     for book in books:
-
-        if book.average_rating >= rating_filter:
+        
+        if book.average_rating >= rating_filter: 
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title
@@ -109,7 +109,7 @@ def search_book_title(book_title, rating_filter):
 @app.route(url_prefix + "/genre", methods=["GET"])
 def genre():
     """
-    Function for users to search by genre
+    Function for users to search by genre 
     Args:
         genres (string): list of genres separated by '&' e.g. 'Fiction&Young Adult&Magic'
         rating (int): rating threshold
@@ -143,14 +143,14 @@ def genre():
             bookid = gen_book.book_id
             booklist.append(bookid)
         all_books.append(booklist)
-    books = set.intersection(*[set(x) for x in all_books])
+    books = set.intersection(*[set(x) for x in all_books])  
 
     results = []
     i = 0
-
+   
     for id in books:
         book = Book.query.get(id)
-        if book.average_rating >= rating_filter:
+        if book.average_rating >= rating_filter: 
             book_info = {}
             book_info['id'] = book.book_id
             book_info['title'] = book.title
@@ -164,7 +164,8 @@ def genre():
             i+=1
             if i > 50:
                 break
-    results.sort(key = lambda x: x['average_rating'], reverse=True)
     return dumps({
       "books": results
     })
+
+

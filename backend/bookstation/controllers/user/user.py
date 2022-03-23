@@ -23,7 +23,7 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-
+    
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
@@ -161,7 +161,7 @@ def get_user_profile():
     '''
     It returns profile data of target user.
     Args (GET):
-
+        
         user_id (string): target user's id
         token (string): valid token
     Returns:
@@ -279,3 +279,4 @@ def update_user_avatar():
     db.session.add(user)
     db.session.commit()
     return dumps({})
+

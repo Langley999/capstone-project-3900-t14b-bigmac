@@ -55,6 +55,7 @@ def login():
         InputError:
             1. when user enters a unregistered email
             2. incorrect password
+
     TODO:
         modify error msg
     """
@@ -103,6 +104,7 @@ def register():
         InputError:
             1. when user enters a registerd email
             2. when user enters a registerd username
+
     TODO:
         modify error msg
     """
@@ -144,6 +146,7 @@ def logout():
         InputError:
             1. when user enters an unregistered email
             2. incorrect password
+
     TODO:
         modify error msg
     """

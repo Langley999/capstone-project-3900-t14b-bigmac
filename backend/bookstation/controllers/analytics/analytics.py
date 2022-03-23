@@ -13,18 +13,18 @@ url_prefix = "/analytics"
 @app.route(url_prefix + '/getfavgenres', methods=["GET"])
 def get_fav_genres():
     """
-    Function for users to one user's fav genres
+    Function for users to one user's fav genres 
     Args:
         user_id (string): user_id of the user.
     Returns:
         genres (list): list of genres and their percentages
            - genre (string): name of the genre
            - percentage (float): percentage of the genre
-
+           
     Raises:
         NotFoundError: when the collection with the name does not exist
     """
-
+  
     user_id = request.args.get('user_id')
 
     collections = Collection.query.filter_by(user_id = user_id).all()
@@ -77,11 +77,11 @@ def get_fav_authors():
         authors (list): list of authors and their percentages
            - author (string): name of the author
            - percentage (float): percentage of the author
-
+           
     Raises:
         NotFoundError: when the collection with the name does not exist
     """
-
+  
     user_id = request.args.get('user_id')
 
     collections = Collection.query.filter_by(user_id = user_id).all()

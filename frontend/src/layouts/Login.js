@@ -167,6 +167,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
           noValidate
           autoComplete="off"
           style={formStyle}
+          onSubmit={(e) => submitLogin(e)}
         >
           <Stack direction="row" style={headingStyle}>
             <HomeButton/>

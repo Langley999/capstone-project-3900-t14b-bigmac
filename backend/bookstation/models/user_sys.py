@@ -5,7 +5,6 @@ from bookstation import db
 class Follow_relationship(db.Model):
     follower_user_id = db.Column('follower_user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     user_id = db.Column('user_id', db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-    created_time = db.Column(db.DateTime)
     follower_user = db.relationship("User", foreign_keys=[follower_user_id])
     followed_user = db.relationship("User", foreign_keys=[user_id])
 
