@@ -164,6 +164,7 @@ def genre():
             i+=1
             if i > 50:
                 break
+    results.sort(key = lambda x: x['average_rating'], reverse=True)
     return dumps({
       "books": results
     })
