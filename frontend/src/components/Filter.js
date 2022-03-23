@@ -12,12 +12,12 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 
 
-const Filter = ({updateSearchRating}) => {
+const Filter = ({updateSearchRating, updateRating, rating}) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [rating, setRating] = useState(0);
+
 
   const handleChangeSearchRating = (event) => {
-    setRating(event.target.value);
+    updateRating(event.target.value);
   }
 
   const handleUpdateSearchRating = () => {
@@ -32,7 +32,7 @@ const Filter = ({updateSearchRating}) => {
 
   const handleCancel = () => {
     setOpenDialog(false);
-    setRating(0);
+    updateRating(0);
     updateSearchRating(0);
   };
 
