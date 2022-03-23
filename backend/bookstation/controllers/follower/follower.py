@@ -22,6 +22,8 @@ def findUsers():
         else:
             userf_dict['isFollowing'] = False
         userf_list.append(userf_dict)
+        
+    userf_list.sort(key = lambda x: x['username'])
 
     return dumps({ 'users' : userf_list})
 
