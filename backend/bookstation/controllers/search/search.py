@@ -41,10 +41,10 @@ def search():
     return search_result
 
 def search_book_author(author_name, rating_filter):
-    authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
+    #authors = Author.query.filter(Author.name.ilike('%'+author_name+'%'))
     allbooks = []
     i = 0
-
+    '''
     for author in authors:
         book_authors = Book_author.query.filter_by(author_id=author.author_id).all()
         
@@ -62,10 +62,31 @@ def search_book_author(author_name, rating_filter):
                 allbooks.append(book_info)
                 i+=1
                 if i > 50:
-                    break
+                    break    
+    '''
+
+    books = Book.query.filter(Book.author_string.like('%'+author_name+'%')).filter(Book.average_rating >= rating_filter).all()
+
+    results = []
+    i = 0
+
+    for book in books:
+        book_info = {}
+        book_info['id'] = book.book_id
+        book_info['title'] = book.title
+        book_info['author'] = book.author_string
+        book_info['num_rating'] = book.num_rating
+        book_info['cover'] = book.cover_image
+        book_info['average_rating'] = book.average_rating
+        book_info['publish_date'] = book.publish_date
+        results.append(book_info)
+        i+=1
+        if i > 50:
+            break   
+
 
     return dumps({
-      "books": allbooks
+      "books": results
     })
 
 def search_book_title(book_title, rating_filter):
