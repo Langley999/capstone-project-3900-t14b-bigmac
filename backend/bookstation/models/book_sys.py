@@ -14,8 +14,6 @@ class Book_genre(db.Model):
     genre_id = db.Column('genre_id', db.Integer, db.ForeignKey('genre.genre_id'), primary_key=True)
     book = db.relationship('Book')
 
-
-
 class Author(db.Model):
 
     __tablename__ = 'author'
@@ -29,7 +27,6 @@ class Genre(db.Model):
 
     genre_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
-
 
 class Collection_book(db.Model):
 

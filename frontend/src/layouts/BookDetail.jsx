@@ -23,6 +23,9 @@ import MuiAlert from '@mui/material/Alert';
 import { makeStyles } from '@mui/styles';
 import ErrorPopup from '../components/ErrorPopup';
 import SuccessPopup from '../components/SuccessPopup';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import IconButton from '@mui/material/IconButton';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -93,6 +96,69 @@ const BookDetail = ({userInfo}) => {
   }
   const handleCreateCollection = () => {
     setCreateForm(true);
+  }
+
+  const  handleLikeReview = (review_id) => {
+    const body = JSON.stringify( {
+      token: localStorage.getItem('token'),
+      review_id: review_id
+    });
+
+    axios.post('http://127.0.0.1:8080/book/likereview', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(function (response) {
+        console.log(response)
+        if (response['status'] === 200) {
+          for (var i = 0; i < reviews.length; i++) {
+            let reviewsCopy = [...reviews];
+            if (reviewsCopy[i]['review_id'] === review_id) {
+              reviewsCopy[i]['likes'] ++;
+              reviewsCopy[i]['is_liked'] = true;
+              setReviews(reviewsCopy);
+            }
+        }
+        }
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
+
+  }
+  const  handleUnlikeReview = (review_id) => {
+
+    const body = JSON.stringify( {
+      token: localStorage.getItem('token'),
+      review_id: review_id
+    });
+
+    axios.post('http://127.0.0.1:8080/book/unlikereview', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(function (response) {
+        console.log(response)
+        if (response['status'] === 200) {
+          for (var i = 0; i < reviews.length; i++) {
+            let reviewsCopy = [...reviews];
+            if (reviewsCopy[i]['review_id'] === review_id) {
+              reviewsCopy[i]['likes'] --;
+              reviewsCopy[i]['is_liked'] = false;
+              setReviews(reviewsCopy);
+            }
+        }
+        }
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
   }
   const handleSubmitReview = () => {
     const body = JSON.stringify( {
@@ -350,7 +416,8 @@ const BookDetail = ({userInfo}) => {
 
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
-        bookId: book_id
+        bookId: book_id,
+        token: localStorage.getItem('token')
       }
     })
     .then(function (response) {
@@ -363,7 +430,7 @@ const BookDetail = ({userInfo}) => {
       setPublisher(response['data']['publisher']);
       setaveRating(response['data']['average_rating'].toFixed(2));
       setN_rating(response['data']['num_rating'])
-      console.log(response['data']['author_string']);
+      console.log(response['data']);
       let genres = "";
       for (let i = 0; i < response['data']['genres'].length; i++) {
         genres = genres+response['data']['genres'][i];
@@ -402,14 +469,15 @@ const BookDetail = ({userInfo}) => {
                   src={cover}
                 />
               </Grid>
-
+              {localStorage.getItem('token') &&
               <Grid item xs={6}>
                 <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<CheckCircleOutlineIcon />} disabled={btnDisabled} onClick={handleCompleteReading}>{readingButtonText}</Button>
-              </Grid>
-
+              </Grid>}
+              {localStorage.getItem('token') &&
               <Grid item xs={6}>
                 <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<LibraryAddIcon />} onClick={handleAddCollection}>Collection</Button>
-              </Grid>
+              </Grid>}
+              {localStorage.getItem('token') &&
               <Grid item xs={6}>
                 <Rating
                   name="simple-controlled"
@@ -419,7 +487,8 @@ const BookDetail = ({userInfo}) => {
                     handleSubmitRating(newValue);
                   }}
                 />
-              </Grid>
+              </Grid>}
+
               <Grid item xs={7}>
                 <Box display="flex" flexDirection="column" alignItems='center' >
                   <Typography variant="caption" gutterBottom component="div">Publisher: {publisher}</Typography>
@@ -481,6 +550,7 @@ const BookDetail = ({userInfo}) => {
                     </Box>
                     <Divider/>
                   </Grid>
+                  {localStorage.getItem('token') &&
                   <Grid item xs={2}>
                     <Box sx={{ flexGrow: 1, mt: 1}}>
                       <Rating
@@ -492,11 +562,12 @@ const BookDetail = ({userInfo}) => {
                         }}
                       />
                     </Box>
-                  </Grid>
+                  </Grid>}
+                  {localStorage.getItem('token') &&
                   <Grid item xs={5}>
                     {reviewButtonshow &&
                     <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
-                  </Grid>
+                  </Grid>}
                 </Grid>
               </Grid>
 
@@ -518,7 +589,7 @@ const BookDetail = ({userInfo}) => {
                         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                       />
                     </Grid>
-                    <Grid item xs={11}>
+                    <Grid item xs={10}>
                       <Grid container direction="row" spacing={0}>
                         <Grid item xs={4}>
                           <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
@@ -533,14 +604,37 @@ const BookDetail = ({userInfo}) => {
                             readOnly
                           />
                         </Grid>
-                        <Grid item xs={11}>
+                        <Grid item xs={12}>
                           <Typography variant="body2" display="block" gutterBottom>
                             {item['content']}
                           </Typography>
                         </Grid>
-                      </Grid>
-                    </Grid>
+                       
 
+                      </Grid>
+                     
+                     
+                    </Grid>
+                    { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
+                      <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
+                        <ThumbUpOffAltIcon fontSize="inherit" /> 
+                      </IconButton>
+                        {item['likes']}
+                    </Grid>}
+                    { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
+                      <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
+                        <ThumbUpIcon fontSize="inherit" /> 
+                      </IconButton>
+                        {item['likes']}
+                    </Grid>}
+
+                    { localStorage.getItem('token') === null && <Grid item xs={1}>
+                      <IconButton aria-label="delete" size="small" disabled>
+                        <ThumbUpOffAltIcon fontSize="inherit" /> 
+                      </IconButton>
+                        {item['likes']}
+                    </Grid>}
+                   
                   </Grid>)
                 }
                 {/*
@@ -627,7 +721,6 @@ const BookDetail = ({userInfo}) => {
                 name="simple-controlled"
                 value={rating}
                 onChange={(event, newValue) => {
-
                   handleSubmitRating(newValue);
                 }}
               />
