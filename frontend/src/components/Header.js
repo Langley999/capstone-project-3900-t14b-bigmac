@@ -304,7 +304,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder={isBookSearch ? "Search Books" : "Search Users"}
+                placeholder={"Search Books"}
                 value={searchValue}
                 onChange={(e) => updateSearchValue(e.target.value)}
                 inputProps={{ 'aria-label': 'search' }}
