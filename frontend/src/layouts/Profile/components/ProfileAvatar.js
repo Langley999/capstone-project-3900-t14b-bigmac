@@ -64,6 +64,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
     });
     // get following list
     axios.get(`${url}/user/getfollowing`, {params: {
+      token: localStorage.getItem('token'),
       user_id: user_id
     }}).then(function (response) {
       setFollowings(response.data.followings);
@@ -76,7 +77,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
 
   const getFollowers = () => {
     axios.get(`${url}/user/getfollower`, {params: {
-      user_id: user_id
+      user_id: user_id,
+      token: localStorage.getItem('token')
     }}).then(function (response) {
       setFollowers(response.data.followers);
       setShowFollowers(true);
@@ -89,7 +91,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
 
   const getFollowings = () => {
     axios.get(`${url}/user/getfollowing`, {params: {
-      user_id: user_id
+      user_id: user_id,
+      token: localStorage.getItem('token')
     }}).then(function (response) {
       setFollowings(response.data.followings);
       setShowFollowings(true);

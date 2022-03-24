@@ -153,14 +153,6 @@ def getFeed():
 
 
 
-# please fix this function so that it only requests token as we dicussed in meeting 
-# lines 136-140 should simply be replaced with user = get_user(token) (from auth.utils)
-# only token should be given NOT user_id
-# I won't change it because I'm not sure if frontend is using this, so I dont want to break it
-# so when you change it please make sure frontend also updates to give token
-# remmeber for all future functions to never ask for user_id, or anything related to user
-# you should ONLY be asking for token and then get what you need from the user object obtained 
-# after calling get_user(token)
 @app.route("/user/getfollowing", methods=["GET"])
 def getfollowing():
     """
@@ -179,7 +171,8 @@ def getfollowing():
           - when removing book fails
     """
     user_id = request.args.get('user_id')
-
+    token = request.args.get('token')
+    user = get_user(token)
     if User.query.get(user_id) == None:
         raise error.NotFoundError(description='Target user not found')
 
@@ -217,7 +210,8 @@ def getfollower():
           - when removing book fails
     """
     user_id = request.args.get('user_id')
-
+    token = request.args.get('token')
+    user = get_user(token)
     if User.query.get(user_id) == None:
         raise error.NotFoundError(description='Target user not found')
 
