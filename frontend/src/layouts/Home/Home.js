@@ -122,7 +122,7 @@ const Home = ({ifLogin, updateSearchResult}) => {
 
     return (
       <>
-        <h1>Popular Subjects</h1>
+        <h1>Popular Genres</h1>
         <div className='subjects-container'>
           {itemData.map((item, idx) => (
             <Box

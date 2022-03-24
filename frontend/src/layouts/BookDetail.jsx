@@ -26,6 +26,7 @@ import SuccessPopup from '../components/SuccessPopup';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
+import {Link, useParams} from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -49,6 +50,7 @@ const useStyles = makeStyles({
 });
 
 const BookDetail = ({userInfo}) => {
+  const u_id =  JSON.parse(localStorage.getItem('user'))['user_id'];
   //console.log(userInfo)
   const classes = useStyles();
   const [rating, setRating] = React.useState(0);
@@ -80,6 +82,7 @@ const BookDetail = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState("");
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
+  const [similarbooks, setSimilarbooks] = useState([]);
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -345,10 +348,26 @@ const BookDetail = ({userInfo}) => {
 
   }
   useEffect(() => {
-    // Update the document title using the browser API
+    
+    axios.get('http://127.0.0.1:8080//book/similarbooks', {
+      params: {
+        book_id: book_id
+
+      }
+    })
+    .then(function (response) {
+      console.log(response['data']['books']);
+      
+      setSimilarbooks(response['data']['books']);
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
+
     axios.get('http://127.0.0.1:8080/collection/getall', {
       params: {
-        user_id: userInfo.user_id
+        user_id: u_id
       }
     })
     .then(function (response) {
@@ -357,15 +376,15 @@ const BookDetail = ({userInfo}) => {
       let clist = [];
       let nlist = [];
       for (let i = 0; i < collections.length; i++) {
-        // Runs 5 times, with values of step 0 through 4.
         console.log(collections[i]);
-        clist.push(collections[i]['name']);
-        nlist.push(collections[i]['id']);
-        setCollection_names(clist);
-        setCollection_ids(nlist);
+        if (collections[i]['flag'] !== 2){
+          clist.push(collections[i]['name']);
+          nlist.push(collections[i]['id']);
+        }
       }
-
-    })
+      setCollection_names(clist);
+      setCollection_ids(nlist);   
+  })
     .catch(function (error) {
       setwarningcontent(error.response.data.message);
       setwarningopen(true);
@@ -447,7 +466,7 @@ const BookDetail = ({userInfo}) => {
 
 
 
-  }, []);
+  }, [window.location.href, userInfo]);
 
   return (
     <div>
@@ -521,7 +540,7 @@ const BookDetail = ({userInfo}) => {
                       <Rating
                         name="simple-controlled"
                         value={ave_rating}
-                        precision={0.01}
+                        precision={0.1}
                         size="small"
                         readOnly
                       />
@@ -576,7 +595,7 @@ const BookDetail = ({userInfo}) => {
               <Grid item xs={12}>
                 {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
                 {reviews.length > 0 &&  reviews.map((item, i) =>
-                  <Grid container direction="row" spacing={2}>
+                  <Grid container direction="row" spacing={2} key={i}>
 
                     <Grid item xs={1}>
                       <Box
@@ -655,57 +674,44 @@ const BookDetail = ({userInfo}) => {
                   You may also like ...
                 </Typography>
               </Grid>
-              <Grid item xs={3}>
-                <Box
-                  component="img"
-                  sx={{
-                    width: 100,
-                    ml: 0
-                  }}
-                  alt="book cover"
-                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-                />
-                <Typography variant="body2" display="block" gutterBottom>
-                  Hunger Games
-                </Typography>
+              {similarbooks.length > 0 &&  similarbooks.map((item, i) =>
+                  
+              <Grid item xs={12} style={{textAlign: "center"}} key={i}>
+                <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
+                  <Grid item xs={12} style={{textAlign: "center"}}>
+                    <Box
+                      component="img"
+                      sx={{
+                        width: 100,
+                        ml: 0
+                      }}
+                      alt="book cover"
+                      src={item['cover_image']}
+                    />
+                                        
+                  </Grid>
+                  <Grid item xs={12} style={{textAlign: "center"}}> 
+                    <Box component={Link} to={`/book/?id=${item['id']}`} style={{width: "600px"}} >
+                      <Button color="primary" style={{width: "150px"}}>
+                        {item['title']}
+                      </Button>               
+                    </Box>
+                  </Grid>
+
+                </Grid>
+
+
 
               </Grid>
-              <Grid item xs={3}>
-                <Box
-                  component="img"
-                  sx={{
-                    width: 100,
-                    my:0
-                  }}
-                  alt="book cover"
-                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-                />
-                <Typography variant="body2" display="block" gutterBottom>
-                  Hunger Games
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Box
-                  component="img"
-                  sx={{
-                    width: 100,
-                    my:0
-                  }}
-                  alt="book cover"
-                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1586722975l/2767052.jpg"
-                />
-                <Typography variant="body2" display="block" gutterBottom>
-                  Hunger Games
-                </Typography>
-              </Grid>
+              
+              )}
+
+    
 
             </Grid>
           </Grid>
 
         </Grid>
-
-
-
 
         <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
           <Box
@@ -754,6 +760,7 @@ const BookDetail = ({userInfo}) => {
             <Button startIcon={<AddIcon />} onClick={() => handleCreateCollection()}>Create</Button>
             {collection_names && collection_names.length >0 &&
             collection_names.map((item, i) =>
+              
               <Button key={collection_ids[i]} onClick={() => handleAddToCollection(collection_ids[i])} >{item}</Button>
             )
             }

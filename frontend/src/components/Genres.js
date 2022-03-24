@@ -154,7 +154,7 @@ const Genres = ({updateSearchResult}) => {
           onClick={searchGenre}
           sx={{textTransform: 'none'}}
         >
-          Apply
+          Search
         </Button>
         </DialogActions>
       </Dialog>

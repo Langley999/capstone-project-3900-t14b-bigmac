@@ -142,9 +142,7 @@ def similarBooks():
     Returns: list of book objects that are similar to target book
     
     """
-    token = request.args.get('token')
     book_id = request.args.get('book_id')
-    user = get_user(token)
     target_tags = set()
     similarity_set = set()
     genres = Book_genre.query.filter_by(book_id = book_id).all()
@@ -166,10 +164,15 @@ def similarBooks():
             
     book_list = sorted(similarity_set, key = lambda x: x[1])
     return_list = []
+    i = 0
     for book_tup in book_list:
         book = Book.query.get(book_tup[0])
-        return_dict = {'title' : book.title, 'cover_image' : book.cover_image}
-        return_list.append(return_dict)
+        if book.cover_image != "":
+            return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
+            return_list.append(return_dict)
+            i += 1
+            if i > 3:
+                break
     
 
     return dumps({'books' : return_list})
@@ -296,7 +299,7 @@ def addRatingReview():
         review.created_time = datetime.now()
         db.session.add(review)
         db.session.commit()
-    new_content = "Added a review for: " + "< " + book.title + " > " + ": " + content
+    new_content = "Added a review for " + "< " + book.title + " > " + ": " + content
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     db.session.add(newPost)
     db.session.commit()
@@ -365,7 +368,7 @@ def checkCompleted():
     #extract information
     token = request.args.get('token')
     book_id = request.args.get('bookId')
-    user = User.query.filter_by(token).first()
+    user = get_user(token)
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)

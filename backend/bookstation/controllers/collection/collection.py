@@ -28,6 +28,8 @@ def get_all_collections():
 	"""
 	#token = request.args.get('token')
 	user_id = request.args.get('user_id')
+	print('----')
+	print(user_id)
 	#user = User.query.filter_by(user_id=user_id).first()
 	collections = Collection.query.filter_by(user_id = user_id).all()
 	#collections = user.collections
