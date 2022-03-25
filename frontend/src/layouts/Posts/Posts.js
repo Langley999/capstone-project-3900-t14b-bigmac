@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-// import PostSection from "./PostSection";
 import { url } from '../../components/Helper';
 import '../../App.css';
 
