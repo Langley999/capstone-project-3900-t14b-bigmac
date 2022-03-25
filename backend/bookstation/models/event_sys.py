@@ -44,7 +44,6 @@ class Question(db.Model):
     question_id = db.Column(db.Integer, primary_key=True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.quiz_id'), nullable=False)
     description = db.Column(db.String(512))
-    answer = db.Column(db.Integer)
     quiz = db.relationship('Quiz')
 
 class Answer(db.Model):
