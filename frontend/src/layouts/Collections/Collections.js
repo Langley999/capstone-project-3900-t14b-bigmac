@@ -255,7 +255,7 @@ const Collections = ({userInfo}) => {
           <Box component={Link} to={`/book/?id=${id}`} className='remove-underline' sx={{color: 'black'}} >
             <img src={cover} alt="" style={{height: '200px', width: '140px'}}/>
             <Box sx={{height: '55px', overflow: 'auto'}}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="secondary">
                 {title}
               </Typography>
             </Box>

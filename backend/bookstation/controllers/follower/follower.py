@@ -116,16 +116,42 @@ def addPost():
     db.session.add(newPost)
     db.session.commit()
 
-    return dumps({})
+    return dumps({
+        "post_id": newPost.post_id
+    })
+
+
+@app.route("/post/removepost", methods=["POST"])
+def removePost():
+
+    body = request.get_json()
+    token, post_id = body['token'], body['post_id']
+    user = get_user(token)
+
+    post = Post.query.filter_by(post_id = post_id).first()
+
+    if post == None:
+        raise error.NotFoundError(description="Post does not exist")
+    if post.user_id != user.user_id:
+        raise error.AccessError(description="You don't have permission to remove this post")
+
+    try:
+        db.session.delete(post)
+        db.session.commit()
+
+        return dumps({
+            "success": []
+        })
+    except:
+        raise error.BadReqError(description="Cannot remove post")
 
 
 @app.route("/post/getposts", methods=["GET"])
 def getPosts():
 
-    token = request.args.get('token')
-    user = get_user(token)
+    user_id = request.args.get('user_id')
 
-    posts = Post.query.filter_by(user_id = user.user_id).all()
+    posts = Post.query.filter_by(user_id = user_id).all()
     posts_list = []
     for post in posts:
         post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
