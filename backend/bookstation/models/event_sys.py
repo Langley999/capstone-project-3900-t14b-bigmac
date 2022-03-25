@@ -47,4 +47,11 @@ class Question(db.Model):
     answer = db.Column(db.Integer)
     quiz = db.relationship('Quiz')
 
-
+class Answer(db.Model):
+    __tablename__ = 'answer'
+    answer_id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), nullable=False)
+    description = db.Column(db.String(256))
+    tag = db.Column(db.String(32))
+    correct_flag = db.Column(db.Boolean)
+    question = db.relationship('Question')
