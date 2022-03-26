@@ -1,0 +1,1 @@
+from bookstation.controllers.quiz import quiz
