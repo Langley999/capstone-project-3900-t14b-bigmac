@@ -66,7 +66,7 @@ def get_fav_genres():
     item = {}
     item['genre'] = 'other'
     item['percentage'] = 1 - sofar
-
+    result.append(item)
     return dumps({
         "genres": result
     })
