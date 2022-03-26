@@ -6,8 +6,12 @@ import SuccessPopup from '../../components/SuccessPopup';
 import ErrorPopup from '../../components/SuccessPopup';
 
 const FeedListing = ({ post, isPublic }) => {
+
   const createDate = (str) => {
-    const date = new Date(str.replace(/-/g,"/"));
+    let li = str.split(' ');
+    let time = li[1];
+    const date = new Date(li[0].replace(/-/g,"/"));
+
     return date;
   }
   const formatAMPM = (date) => {
@@ -25,7 +29,7 @@ const FeedListing = ({ post, isPublic }) => {
       <CardContent>
         <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}} >
           <UsernameLink username={post.username} id={post.user_id} avatar={post.avatar} isPublic={isPublic} />
-          <div>{formatAMPM(createDate(post.time_created))} {createDate(post.time_created).toLocaleDateString()}</div>
+          <div>{formatAMPM(createDate(post.time_created))} {createDate(post.time_created).toLocaleDateString("en-AU")}</div>
         </div>
         {post.content}
       </CardContent>
