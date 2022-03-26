@@ -23,7 +23,7 @@ const Admin = () => {
 
   // sets password and its visibility
   const [pass, setPass] = React.useState({password: '', showPassword: false});
-  const [email, setEmail] = React.useState('');
+  const [id, setId] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
 
@@ -45,15 +45,8 @@ const Admin = () => {
   const submitLogin = (e) => {
     e.preventDefault();
     // shows error message for 5 secs if any input is blank
-    if (email === '' || pass.password === '') {
+    if (id === '' || pass.password === '') {
       setErrorMsg('All input fields must be filled');
-      setSnackBarOpen(true);
-      return;
-    }
-    // shows error message for 5 secs if any input is invalid
-    const checkInputs = checkProfileInput('username', email, pass.password);
-    if (checkInputs !== '') {
-      setErrorMsg(checkInputs);
       setSnackBarOpen(true);
       return;
     }
@@ -99,16 +92,16 @@ const Admin = () => {
         >
           <Stack direction="row" style={headingStyle}>
             <HomeButton/>
-            <h1 style={{textAlign: "center"}}>Login</h1>
+            <h1 style={{textAlign: "center"}}>Admin Login</h1>
             <div style={{width: "30px"}}></div>
           </Stack>
           
           <TextField
             required
             id="outlined-email"
-            label="Email"
-            type="email"
-            onChange={e => setEmail(e.target.value)}
+            label="Admin ID"
+            type="id"
+            onChange={e => setId(e.target.value)}
           />
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
