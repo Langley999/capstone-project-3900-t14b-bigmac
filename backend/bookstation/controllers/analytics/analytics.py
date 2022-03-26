@@ -52,15 +52,21 @@ def get_fav_genres():
     for name,value in newlist:
       total += value
     i = 0
-    result = {}
+    result = []
     sofar = 0
     for name,value in newlist:
-      result[name] = value/total
+      item = {}
+      item['genre'] = name
+      item['percentage'] = value/total
+      result.append(item)
       sofar += value/total
       i+=1
       if i > 4:
         break
-    result['other'] = 1 - sofar
+    item = {}
+    item['genre'] = 'other'
+    item['percentage'] = 1 - sofar
+
     return dumps({
         "genres": result
     })
