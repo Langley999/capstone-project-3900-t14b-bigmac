@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 
-const FollowingPopup = ({followings, setShowFollowings}) => {
+const FollowingPopup = ({followings, setShowFollowings, getProfile}) => {
 
   const popupStyle = {
     position: "fixed",
@@ -44,7 +44,7 @@ const FollowingPopup = ({followings, setShowFollowings}) => {
             return (
             <Card key={idx} style={{width: "800px", margin: "auto"}}>
               <CardContent style={listingStyle}>
-              <UsernameLink username={user.username} id={user.user_id} avatar={user.avatar} />
+              <UsernameLink username={user.username} id={user.user_id} avatar={user.avatar} getProfile={getProfile} hideFollowings={hideFollowings}/>
               </CardContent>
             </Card>
             )
