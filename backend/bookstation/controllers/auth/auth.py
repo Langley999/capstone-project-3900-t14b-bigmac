@@ -4,7 +4,7 @@ from bookstation import app, request, db, error
 
 from bookstation.models.user_sys import *
 from bookstation.models.book_sys import *
-
+from datetime import datetime
 from flask import session
 #from config import SECRET
 import hashlib
@@ -126,6 +126,12 @@ def register():
     new_user = User(username, email, pw_encode(password), token, None)
 
     db.session.add(new_user)
+    db.session.commit()
+    db.session.flush()
+    new_default_collection = Collection(1, "Favourite", datetime.now(), new_user.user_id)
+    new_history_collection = Collection(2, "Reading History", datetime.now(), new_user.user_id)
+    db.session.add(new_default_collection)
+    db.session.add(new_history_collection)
     db.session.commit()
     return dumps({
         'token': token,

@@ -32,6 +32,7 @@ class Quiz(db.Model):
     __tablename__ = 'quiz'
 
     quiz_id = db.Column(db.Integer, primary_key=True)
+    quiz_name = db.Column(db.String(256))
     publish_status = db.Column(db.SmallInteger)
 
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.admin_id'), nullable=False)
@@ -44,7 +45,13 @@ class Question(db.Model):
     question_id = db.Column(db.Integer, primary_key=True)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.quiz_id'), nullable=False)
     description = db.Column(db.String(512))
-    answer = db.Column(db.Integer)
     quiz = db.relationship('Quiz')
 
-
+class Answer(db.Model):
+    __tablename__ = 'answer'
+    answer_id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), nullable=False)
+    description = db.Column(db.String(256))
+    tag = db.Column(db.String(32))
+    #correct_flag = db.Column(db.Boolean)
+    question = db.relationship('Question')

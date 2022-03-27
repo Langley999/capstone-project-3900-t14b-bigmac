@@ -32,6 +32,7 @@ const FeedListing = ({ post, isPublic }) => {
           <UsernameLink username={post.username} id={post.user_id} avatar={post.avatar} isPublic={isPublic} />
           <div>{formatAMPM(post.time_created)} {createDate(post.time_created).toLocaleDateString("en-AU")}</div>
         </div>
+        <br/>
         {post.content}
       </CardContent>
     </Card>
