@@ -1,7 +1,6 @@
 import React from 'react';
 
-const FriendPage = ({ display }) => {
-  if (display !== 'friends') return null;
+const FriendPage = () => {
   return (
     <div>
       <h2 style={{fontWeight: "normal"}}>Follow Activity</h2>

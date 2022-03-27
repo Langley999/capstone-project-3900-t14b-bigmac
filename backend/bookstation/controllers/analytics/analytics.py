@@ -52,15 +52,21 @@ def get_fav_genres():
     for name,value in newlist:
       total += value
     i = 0
-    result = {}
+    result = []
     sofar = 0
     for name,value in newlist:
-      result[name] = value/total
+      item = {}
+      item['genre'] = name
+      item['percentage'] = value/total
+      result.append(item)
       sofar += value/total
       i+=1
       if i > 4:
         break
-    result['other'] = 1 - sofar
+    item = {}
+    item['genre'] = 'other'
+    item['percentage'] = 1 - sofar
+    result.append(item)
     return dumps({
         "genres": result
     })
@@ -105,19 +111,25 @@ def get_fav_authors():
           authorlist[author] = 1
     newlist = sorted(authorlist.items(), key=lambda x:x[1],reverse=True)
     total = 0
-    print(newlist)
+    
     for name,value in newlist:
       total += value
     i = 0
-    result = {}
+    result = []
     sofar = 0
     for name,value in newlist:
-      result[name] = value/total
+      item = {}
+      item['author'] = name
+      item['percentage'] = value/total
+      result.append(item)
       sofar += value/total
       i+=1
       if i > 4:
         break
-    result['other'] = 1 - sofar
+    item = {}
+    item['author'] = 'other'
+    item['percentage'] = 1 - sofar
+    result.append(item)
     return dumps({
         "authors": result
     })
