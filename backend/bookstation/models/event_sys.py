@@ -53,5 +53,5 @@ class Answer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), nullable=False)
     description = db.Column(db.String(256))
     tag = db.Column(db.String(32))
-    correct_flag = db.Column(db.Boolean)
+    #correct_flag = db.Column(db.Boolean)
     question = db.relationship('Question')

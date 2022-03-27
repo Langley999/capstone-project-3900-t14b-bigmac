@@ -1,6 +1,7 @@
 from json import dumps
 import time
-from bookstation.models.book_sys import Genre, Book_genre, Book, Collection_book, Book_author, Author, Follow_relationship, Saved_collection
+from bookstation.models.book_sys import Genre, Book_genre, Book, Collection_book, Book_author, Author, Saved_collection
+from bookstation.models.user_sys import Follow_relationship
 from bookstation.utils.auth_util import get_user
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
