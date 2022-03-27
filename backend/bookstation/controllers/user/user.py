@@ -121,9 +121,8 @@ def get_all_goal():
     '''
     It gets goal histories of a user
     Args (GET):
-        email (string): the requester's email
         token (string): valid token
-        goal (int): the goal of user for this month
+
     Returns:
         "goal_history" (list):
             - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
@@ -133,7 +132,6 @@ def get_all_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    operator_email = request.args.get('operator')
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
