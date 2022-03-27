@@ -16,6 +16,9 @@ import Feed from './layouts/Feed/Feed';
 import PublicFeed from './layouts/Feed/PublicFeed';
 import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
+import Admin from './layouts/Admin';
+import Addquiz from './layouts/Addquiz';
+import Allquiz from './layouts/Allquiz';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
 import Analytics from './layouts/Analytics/Analytics';
@@ -115,6 +118,10 @@ function App() {
           }>
             <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
             <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path="admin" element={<Admin />} />
+            <Route path="makequiz" element={<Addquiz />} />
+            <Route path="allquiz" element={<Allquiz />} />
+
           </Route>
         </Routes>
       </Router>
