@@ -9,3 +9,4 @@ from bookstation.controllers import search
 from bookstation.controllers import follower
 from bookstation.controllers import recommendation
 from bookstation.controllers import analytics
+from bookstation.controllers import quiz

@@ -329,21 +329,6 @@ def get_savedCollections():
 	return dumps({'collections' : collection_list})
 
 
-@app.route(url_prefix + '/saves', methods=["GET"])
-def get_saves():
-
-	"""
-	Args: collection_id: collection to find number of saves
-
-	Returns: number of people who saved this collection
-	
-	"""
-	token = request.args.get('token')
-	user = get_user(token)
-	collection_id = request.args.get('collection_id')
-	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
-
-	return dumps({'saves' : saves})
 
 
 @app.route(url_prefix + '/rename', methods=["POST"])

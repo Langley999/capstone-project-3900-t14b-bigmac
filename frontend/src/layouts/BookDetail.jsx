@@ -27,7 +27,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
 import {Link, useParams} from "react-router-dom";
-
+import UsernameLink from '../components/UsernameLink';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -605,13 +605,17 @@ const BookDetail = ({userInfo}) => {
                           my:1
                         }}
                         alt="avatar"
-                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        src={item['avatar']==null?"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png":item['avatar']} 
                       />
                     </Grid>
                     <Grid item xs={10}>
                       <Grid container direction="row" spacing={0}>
                         <Grid item xs={4}>
-                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['username']} </Typography>
+                          
+                          {localStorage.getItem('token')==null ?
+                            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"50px",justifyContent: "flex-start"}}>{item['username']}</Button>
+                            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"50px",justifyContent: "flex-start"}}>{item['username']}</Button>
+                            }
                         </Grid>
                         <Grid item xs={3}>
                           <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
@@ -699,18 +703,12 @@ const BookDetail = ({userInfo}) => {
                   </Grid>
 
                 </Grid>
-
-
-
               </Grid>
               
               )}
 
-    
-
             </Grid>
           </Grid>
-
         </Grid>
 
         <Dialog onClose={handleAddReviewClose} open={reviewFormOn}>
