@@ -28,5 +28,12 @@ Week 4
 Week 5
 - Refactored snackbar popups for frontend error and success messages
 - Organised user stories and allocations for Sprint 2 and started Sprint 2
+- Implemented Search Users and added username to header bar in frontend
 - Discussed Retrospective A with team
 - Recorded meeting minutes
+
+Week 6
+- Implemented follow/unfollow, user feeds and follower/following lists in user profile in frontend
+- Added pie charts of genre and author proportions to user profile analytics page
+- Held a meeting to confirm Retrospective A submission
+- Held brief daily standups at 8pm
