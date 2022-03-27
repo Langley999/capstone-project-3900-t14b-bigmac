@@ -138,7 +138,7 @@ def get_all_goal():
 #     login_status_check(operator_email, token)
 
     # sql select user
-    user = User.query.filter_by(email=operator_email).first()
+    user = User.query.filter_by(token=token).first()
     all_history = []
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
