@@ -32,7 +32,7 @@ class Quiz(db.Model):
     __tablename__ = 'quiz'
 
     quiz_id = db.Column(db.Integer, primary_key=True)
-    quiz_name = db.Column(db.String(64))
+    quiz_name = db.Column(db.String(256))
     publish_status = db.Column(db.SmallInteger)
 
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.admin_id'), nullable=False)
