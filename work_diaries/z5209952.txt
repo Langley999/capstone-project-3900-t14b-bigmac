@@ -24,3 +24,9 @@ week 5
 - I added get following and get follower api
 - I added top rating recommendation api
 - I fixed frontend issue for book details page
+
+week 6
+- I added likes/unlikes for book comments
+- I added book recommendation for single book
+- I added admin api
+- I added analytics api
