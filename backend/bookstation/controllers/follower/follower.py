@@ -68,41 +68,6 @@ def unfollow():
     return dumps({})
 
 
-@app.route("/user/followstats", methods=["GET"]) 
-def followStats():
-    """
-    Returns: followers and followings gained each month over past 6 months
-    
-    """
-    token = request.args.get('token')
-    user = get_user(token)
-    curr_month = datetime.now().month
-    curr_year = datetime.now().year
-    init_month = curr_month - 5
-    init_year = curr_year
-    if init_month < 1:
-        init_month = 12 + init_month
-        init_year = curr_year - 1
-    stats = []
-    for x in range(0, 6):
-        if init_month > 12:
-            init_month = 1
-            init_year += 1
-
-        month_dict = {'month' : init_month, 'followings' : 0, 'followers' : 0}
-        followings = Follow_relationship.query.filter_by(follower_user_id = user.user_id)
-        followers = Follow_relationship.query.filter_by(user_id = user.user_id)
-        for following in followings:
-            if following.created_time.month == init_month and following.created_time.year == init_year:
-                month_dict['followings'] += 1
-
-        for follower in followers:
-            if follower.created_time.month == init_month and follower.created_time.year == init_year:
-                month_dict['followers'] += 1
-        init_month += 1
-        stats.append(month_dict)
-
-    return dumps({'follow_stats' : stats})
 
 @app.route("/post/addpost", methods=["POST"])
 def addPost():
