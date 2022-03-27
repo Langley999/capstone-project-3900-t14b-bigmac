@@ -1,4 +1,5 @@
 from json import dumps
+from bookstation.models.event_sys import Quiz
 from bookstation.models.event_sys import Admin
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Post
@@ -22,26 +23,33 @@ def adminlogin():
     if password != admin.password:
         raise error.BadReqError(description= 'Wrong password')
 
-    return dumps({'success':[]})
+    return dumps({'id':admin.admin_id})
 
-@app.route("/admin/login", methods=["POST"])
+@app.route("/quiz/createquiz", methods=["POST"])
 def loginadmin():
-    print("reach search")
-    token = request.args.get('token')
-    search_prhase = request.args.get('search_phrase')
-    user = get_user(token)
-    users = User.query.filter(User.username.ilike('%'+ search_prhase +'%'))
-    userf_list = []
-    for userf in users:
-        if userf.user_id == user.user_id:
-            continue
-        userf_dict = {'user_id' : userf.user_id, 'username' : userf.username, 'avatar' : userf.avatar}
-        if Follow_relationship.query.filter_by(user_id = userf.user_id ,follower_user_id = user.user_id).first() != None:
-            userf_dict['isFollowing'] = True
-        else:
-            userf_dict['isFollowing'] = False
-        userf_list.append(userf_dict)
-        
-    userf_list.sort(key = lambda x: x['username'])
+    
+    body = request.get_json()
+    id = body.get('id')
+    print(id)
+    quizname = body.get('name')
+    new_quiz = Quiz(publish_status=0, admin_id=id)
 
-    return dumps({ 'users' : userf_list})
+    db.session.add(new_quiz)
+    db.session.commit()
+    db.session.flush()
+    print(new_quiz.quiz_id)
+    '''
+    
+
+    questions = body.get('questions')
+    for question in questions:
+      question_name = question['question']
+
+      answers = question['answers']
+      for answer in answers:
+        label = answer['label']
+        content = answer['content']
+        is_correct = answer['is_correct']
+      
+    '''
+    return dumps({ 'users' : []})

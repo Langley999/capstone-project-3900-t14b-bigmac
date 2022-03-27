@@ -50,6 +50,26 @@ const Admin = () => {
       setSnackBarOpen(true);
       return;
     }
+    console.log(pass);
+    const body = JSON.stringify( {
+      admin_id: id,
+      password: pass['password'],
+    });
+    axios.post('http://127.0.0.1:8080/admin/login', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(function (response) {
+      localStorage.setItem('admin_id', response['data']['id']);
+      navigate('/bookstation/allquiz');
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      //setErrorMsg(JSON.stringify(error));
+      setSnackBarOpen(true);
+    });
 
    
   }
@@ -127,7 +147,7 @@ const Admin = () => {
           </FormControl>
 
           <Button variant="contained" type="submit">Login</Button>
-          <span style={{height: "20px", textAlign: "center"}}>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
+          <span style={{height: "20px", textAlign: "center"}}>Login as a user? <a href="http://localhost:3000/bookstation/login">Login</a></span>
         </Box>
       </div>
     );

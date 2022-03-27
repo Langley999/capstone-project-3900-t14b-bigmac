@@ -55,7 +55,7 @@ def getDetails():
                 is_liked = False
                 if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
                     is_liked = True
-                reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+                reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
 
         reviews.sort(key = lambda x: x['likes'], reverse=True)
         book_dict['reviews'] = reviews
