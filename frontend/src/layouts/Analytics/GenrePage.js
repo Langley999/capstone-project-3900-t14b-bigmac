@@ -49,14 +49,14 @@ const GenrePage = () => {
     })
   }
 
-  const CustomPieChart = ({title, value, argument, data, errorMsg}) => {
+  const CustomPieChart = ({title, value, argument, data, errorMsg, palette}) => {
     function customizeText(arg) {
       return `${arg.argument} (${arg.percentText})`;
     }
     return (
       <>
       {data.length >= 5 ? 
-        <PieChart dataSource={data} resolveLabelOverlapping="shift" title={title}>/
+        <PieChart dataSource={data} palette={palette} resolveLabelOverlapping="shift" title={title}>/
         <Legend
           visible={false}
           orientation="horizontal"
@@ -87,12 +87,12 @@ const GenrePage = () => {
       <div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
         <Box m={0} p={0} style={{width: "425px", height: "100px"}}>
           <Paper elevation={3} style={{padding: "10px"}} >
-            <CustomPieChart title="Top 5 Genres in Your Collections" value="percentage" argument="genre" data={genres} errorMsg="Add books to your collection to see proportion of genres"/>
+            <CustomPieChart title="Top 5 Genres in Your Collections" value="percentage" argument="genre" data={genres} errorMsg="Add books to your collection to see proportion of genres" palette="Bright"/>
           </Paper>
         </Box>
         <Box m={0} p={0} style={{width: "425px", height: "100px"}}>
           <Paper elevation={3} style={{padding: "10px"}} >
-            <CustomPieChart title="Top 5 Authors in Your Collections" value="percentage" argument="author" data={authors}  errorMsg="Add books to your collection to see proportion of authors"/>
+            <CustomPieChart title="Top 5 Authors in Your Collections" value="percentage" argument="author" data={authors}  errorMsg="Add books to your collection to see proportion of authors" palette="Dark Violet"/>
           </Paper>
         </Box>
       </div>

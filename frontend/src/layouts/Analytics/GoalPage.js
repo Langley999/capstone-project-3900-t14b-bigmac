@@ -19,8 +19,10 @@ const GoalPage = () => {
   const [successMsg, setSuccessMsg] = React.useState('');
   const [enableEditGoal, setEnableEditGoal] = React.useState(false);
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
+  const [allGoal, setAllGoal] = React.useState([]);
   React.useEffect(() => {
     getGoal();
+    getAllGoal();
   }, []);
 
   const date = new Date();
@@ -28,6 +30,20 @@ const GoalPage = () => {
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
   if (daysUntilEndOfMonth !== 1) daySuffix = 's';
+
+  const getAllGoal = () => {
+    axios.get(`${url}/user/getallgoal`, {params: {
+        token: localStorage.getItem('token')
+      }}).then(function (response) {
+        setAllGoal(response['data']['goal_history']);
+        console.log(response['data']['goal_history']);
+    }).catch(function (error) {
+      // show error message if goal cannot be retrieved
+      setSuccessMsg('');
+      setErrorMsg(JSON.stringify(error.message));
+      setSnackBarOpen(true);
+    });
+  }
 
   // get goal that user set
   const getGoal = () => {
