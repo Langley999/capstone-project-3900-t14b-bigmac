@@ -1,6 +1,6 @@
 from json import dumps
 import time
-from bookstation import app, request, db, error
+from bookstation import app, request, db, error, code
 from bookstation.utils.auth_util import get_user, pw_encode, generate_token
 from flask_mail import Mail, Message
 from bookstation.models.user_sys import *
@@ -137,8 +137,8 @@ def sendCode():
     mail = Mail(app)
     try:
         msg = Message("Verification Code: ", sender= 'bigmaccomp3900@gmail.com', recipients=[email])
-        code = str(randint(10000, 99999))
-        msg.body = f"Your reset code is {code}"
+        code.append(randint(10000, 99999))
+        msg.body = f"Your reset code is {str(code)}"
         mail.send(msg)
     except:
         raise error.NotFoundError(description="Email not found")
@@ -152,7 +152,11 @@ def sendCode():
 @app.route(url_prefix + "/verified", methods=["POST"])
 def verify():
     data = request.get_json()
-    username, email, password = data['username'], data['email'], data['password']
+    username, email, password, user_code = data['username'], data['email'], data['password'], data['user_code']
+    print('stored code is: ', code)
+    if code[0] != user_code:
+        raise error.InputError(description="Verification code does not match")
+    code.pop()
     token = generate_token(username)
     new_user = User(username, email, pw_encode(password), token, None)
 
