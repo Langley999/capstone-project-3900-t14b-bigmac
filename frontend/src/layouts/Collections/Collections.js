@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
-import { url } from '../../components/Helper';
+import {url} from '../../components/Helper';
 import '../../App.css';
 
 import Button from '@mui/material/Button';
-import {
-  Box,
-  CardActionArea,
-  Dialog, DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField,
-  Typography
-} from "@material-ui/core";
-import CardContent from "@mui/material/CardContent";
-import Card from "@material-ui/core/Card";
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography} from "@material-ui/core";
 import axios from "axios";
 import {Link, useParams} from "react-router-dom";
+import ErrorPopup from "../../components/ErrorPopup";
+import SuccessPopup from "../../components/SuccessPopup";
 
 
 const Collections = ({userInfo}) => {
   const urlParams = useParams();
+
+  const [warningopen, setwarningopen] = useState(false);
+  const [warningcontent, setwarningcontent] = useState('');
+  const [snackbaropen, setsnackbaropen] = useState(false);
+  const [snackbarcontent, setsnackbarcontent] = useState('');
+
   const [canRemove, setCanRemove] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('Save');
   // let canRemove = false;
   const [collections, setCollections] = useState([]);
-  const [isSelf, setIsSelf] = useState(true);
+  const [saved, setSaved] = useState([]);
+  const [isSelf, setIsSelf] = useState(false);
   let initialCollections = [];
   const [open, setOpen] = useState(false);
   const [currentCollection, setCurrentCollection] = useState({
@@ -38,26 +38,43 @@ const Collections = ({userInfo}) => {
     books: []
   });
   let newCollection = '';   // the name of created collection
+  const [openRename, setOpenRename] = useState(false);
+  const [rendering, setRendering] = useState('');
+  let renameValue = '';
   const user_id = Number(window.location.pathname.split('/')[2]);
 
   useEffect(async () => {
     // const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
 
-    axios.get(`${url}/collection/getall`, {params: {
+    axios.get(`${url}/collection/getall`, {
+      params: {
         user_id: user_id
-      }})
+      }
+    })
       .then(res => {
-        setCollections([...res['data']['collections']]);
+        setCollections(res['data']['collections']);
         initialCollections = [...res['data']['collections']]
         // default show Favourite Collection
-        getCollection(getFavouriteCollectionIdByFlag());
+        getCollection(getFavouriteCollectionIdByFlag(), false);
       })
       .catch(function (error) {
-        alert("error")
-        // alert(error.response.data.message);
+        setwarningcontent(error.message);
+        setwarningopen(true);
       });
-  }, [window.location.href])
+
+    axios.get(`${url}/collection/savedcollections`, {params: {
+      token: localStorage.getItem('token'),
+      user_id: user_id
+    }})
+      .then(res => {
+        setSaved(res['data']['collections']);
+      })
+      .catch(function (error) {
+        setwarningcontent(error.message);
+        setwarningopen(true);
+      });
+  }, [window.location.href, rendering])
 
   // get favourite collection id by flag
   const getFavouriteCollectionIdByFlag = () => {
@@ -70,25 +87,34 @@ const Collections = ({userInfo}) => {
   }
 
   // show books when click a specific collection
-  const getCollection = (collection_id) => {
+  const getCollection = (collection_id, isSavedFlag) => {
     if (collection_id) {
       axios.get(`${url}/collection/getcollection`, {params: {
+          token: localStorage.getItem('token'),
           collection_id: collection_id
         }})
         .then(res => {
+          setIsSaved(isSavedFlag);
           setCurrentCollection({
             collection_id: collection_id,
             name: res.data.name,
-            books: res.data.books
+            books: res.data.books,
+            has_saved: res.data.has_saved
           })
-          if ((user_id === userInfo.user_id) && res.data.name !== 'Reading History') {
+          if (res.data.has_saved)
+            setSaveStatus('Unsave');
+          else
+            setSaveStatus('Save');
+
+          if ((user_id === userInfo.user_id) && res.data.name !== 'Reading History' && !isSavedFlag) {
             setCanRemove(true);
           } else {
             setCanRemove(false);
           }
         })
         .catch(function (error) {
-          alert(error.response.data.message);
+          setwarningcontent(error.message);
+          setwarningopen(true);
         });
     }
   }
@@ -132,65 +158,124 @@ const Collections = ({userInfo}) => {
         handleClose();
       })
         .catch(function (error) {
-          alert(error.response.data.message);
+          setwarningcontent(error.message);
+          setwarningopen(true);
         });
     }
 
     return (
-      <Paper sx={{ width: 200, maxWidth: '100%', height: 500, overflow: 'auto'}}>
-        <MenuList>
-          {isSelf ?
-            <MenuItem>
-              <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
-            </MenuItem>
-            : null
-          }
-
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Create New Collection</DialogTitle>
-            <DialogContent>
-              <TextField
-                fullWidth
-                label="Collection Name"
-                name="collectionName"
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                variant='outlined'
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant='contained'
-                onClick={createCollection}
-                sx={{textTransform: 'none'}}
-              >
-                Create Collection
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Divider />
-          {collections.map((collection) => {
-            return (
-              <MenuItem
-                key={collection.id}
-                onClick={() => getCollection(collection.id)}
-              >
-                <ListItemText>{collection.name}</ListItemText>
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
+          <MenuList>
+            {isSelf ?
+              <MenuItem>
+                <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
               </MenuItem>
-            )
-          })}
-        </MenuList>
-      </Paper>
+              : null
+            }
+
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Create New Collection</DialogTitle>
+              <DialogContent>
+                <TextField
+                  fullWidth
+                  label="Collection Name"
+                  name="collectionName"
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  variant='outlined'
+                  onClick={handleClose}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={createCollection}
+                  sx={{textTransform: 'none'}}
+                >
+                  Create Collection
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Divider />
+            {collections.map((collection) =>
+                <MenuItem
+                  key={collection.id}
+                  onClick={() => getCollection(collection.id,false)}
+                >
+                  <ListItemText>{collection.name}</ListItemText>
+                </MenuItem>
+
+            )}
+          </MenuList>
+        </Paper>
+
+        <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
+          <MenuList>
+            <MenuItem>
+              <ListItemText>Saved Collections</ListItemText>
+            </MenuItem>
+            <Divider />
+            {saved.map((c) =>
+                <MenuItem
+                  key={c.collection_id}
+                  onClick={() => getCollection(c.collection_id, true)}
+                >
+                  <ListItemText>{c.name} ({c.username})</ListItemText>
+                </MenuItem>
+
+            )}
+          </MenuList>
+        </Paper>
+      </div>
     )
   }
 
   const CollectionBar = () => {
+    const handleChangeRename = (event) => {
+       renameValue = event.target.value;
+    }
+
+    const handleClickOpenRename = () => {
+      setOpenRename(true);
+    };
+
+    const handleCloseRename = () => {
+      setOpenRename(false);
+    };
+
+    const renameCollection = () => {
+      axios.post(`${url}/collection/rename`, {
+        token: localStorage.getItem('token'),
+        collection_id: currentCollection.collection_id,
+        name: renameValue
+      }).then(res => {
+        setCurrentCollection({
+          collection_id: currentCollection.collection_id,
+          name: renameValue,
+          books: currentCollection.books
+        })
+        axios.get(`${url}/collection/getall`, {
+          params: {
+            user_id: user_id
+          }
+        })
+          .then(res => {
+            setCollections(res['data']['collections']);
+            // default show Favourite Collection
+          })
+          .catch(function (error) {
+            setwarningcontent(error.message);
+            setwarningopen(true);
+          });
+        handleCloseRename();
+      })
+    }
 
     const removeCollection = () => {
 
@@ -209,21 +294,113 @@ const Collections = ({userInfo}) => {
               fav = collection.id;
             }
           }
-          getCollection(fav);
+          getCollection(fav, false);
+        })
+        .catch(error => {
+          setwarningcontent(error.message);
+          setwarningopen(true);
         })
     }
 
+    const unsaveCollection = () => {
+      axios.post(`${url}/collection/unsavecollection`, {
+        token: localStorage.getItem('token'),
+        collection_id: currentCollection.collection_id
+      })
+        .then(res => {
+          const newSaved = saved.filter((collection) => collection.collection_id !== currentCollection.collection_id);
+          setSaved(newSaved);
+          setsnackbarcontent("Unsave collection successfully!");
+          setsnackbaropen(true);
+          setSaveStatus('Save');
+
+          // automatically show Favourite Collection after unsaving a collection
+          let fav = -1;
+          for (let collection of collections) {
+            if (collection['flag'] === 1) {
+              fav = collection.id;
+            }
+          }
+          getCollection(fav, false);
+        })
+        .catch(error => {
+          setwarningcontent(error.message);
+          setwarningopen(true);
+        })
+    }
+
+    const saveCollection = () => {
+      axios.post(`${url}/collection/savecollection`, {
+        token: localStorage.getItem('token'),
+        collection_id: currentCollection.collection_id
+      })
+      .then(res => {
+        setsnackbarcontent("Save collection successfully!");
+        setsnackbaropen(true);
+        setSaveStatus('Unsave');
+      })
+      .catch(error => {
+        setwarningcontent(error.message);
+        setwarningopen(true);
+      })
+    }
+
+    const changeSaveStatus = () => {
+      if (saveStatus === 'Unsave')
+        unsaveCollection();
+      else
+        saveCollection();
+    }
+
     return (
-      <Box sx={{display: 'flex'}}>
-        <h1>{currentCollection.name}</h1>
-        {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf ?
-          null :
-          <>
-            <Button  sx={{textTransform: 'none', marginLeft: '20px'}}>Edit Name</Button>
-            <Button  sx={{textTransform: 'none'}} onClick={removeCollection}>Remove</Button>
-          </>
-        }
-      </Box>
+      <>
+        <Dialog open={openRename} onClose={handleCloseRename}>
+          <DialogTitle>Rename Collection</DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              label="New Name"
+              name="collectionRename"
+              onChange={handleChangeRename}
+              required
+              variant="outlined"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant='outlined'
+              onClick={handleCloseRename}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant='contained'
+              onClick={renameCollection}
+              sx={{textTransform: 'none'}}
+            >
+              Apply
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Box sx={{display: 'flex'}}>
+          <h1>{currentCollection.name}</h1>
+          {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf ?
+            null :
+            <>
+              <Button onClick={handleClickOpenRename} sx={{textTransform: 'none', marginLeft: '20px'}}>Rename</Button>
+              <Button  sx={{textTransform: 'none'}} onClick={removeCollection}>Remove</Button>
+            </>
+          }
+          {!isSelf ?
+            <Button sx={{marginLeft: '20px'}} onClick={changeSaveStatus}>{saveStatus}</Button>
+            : null
+          }
+          {isSaved ?
+            <Button sx={{marginLeft: '20px'}} onClick={unsaveCollection}>Unsave</Button>
+            : null
+          }
+        </Box>
+      </>
     )
   }
 
@@ -300,6 +477,8 @@ const Collections = ({userInfo}) => {
 
   return (
     <>
+      <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen}/>
+      <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
       <Box
         sx={{
           display: 'flex',

@@ -5,33 +5,17 @@ import '../../App.css';
 import Button from '@mui/material/Button';
 import {
   Box,
-  CardActionArea,
-  Dialog, DialogActions,
-  DialogContent,
+  Dialog,
   DialogTitle,
   Grid,
   TextField,
-  Typography
 } from "@material-ui/core";
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
-import {Link, useParams} from "react-router-dom";
-import Rating from "@mui/material/Rating";
+import {useParams} from "react-router-dom";
 import UsernameLink from "../../components/UsernameLink";
 
-const data = [
-  {
-    post_id: 1,
-    content: 'fiset post',
-    time_created: '01/01/2022'
-  },
-  {
-    post_id: 2,
-    content: 'second post',
-    time_created: '01/01/2022'
-  }
-]
 const Posts = ({userInfo}) => {
   const urlParams = useParams();
 
