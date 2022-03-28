@@ -1,9 +1,11 @@
 from json import dumps
 import time
 from bookstation import app, request, db, error
-
+from bookstation.utils.auth_util import get_user, pw_encode, generate_token
+from flask_mail import Mail, Message
 from bookstation.models.user_sys import *
 from bookstation.models.book_sys import *
+from random import randint
 
 from flask import session
 #from config import SECRET
@@ -122,6 +124,35 @@ def register():
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
     # store new user
+
+
+    return dumps({
+        'valid_user' : True
+    })
+
+@app.route(url_prefix + "/sendCode", methods=["POST"])
+def sendCode():
+    body = request.get_json()
+    email = body['email']
+    mail = Mail(app)
+    try:
+        msg = Message("Verification Code: ", sender= 'bigmaccomp3900@gmail.com', recipients=[email])
+        code = str(randint(10000, 99999))
+        msg.body = f"Your reset code is {code}"
+        mail.send(msg)
+    except:
+        raise error.NotFoundError(description="Email not found")
+
+    return dumps({
+        'code' : code
+    })
+
+
+
+@app.route(url_prefix + "/verified", methods=["POST"])
+def verify():
+    data = request.get_json()
+    username, email, password = data['username'], data['email'], data['password']
     token = generate_token(username)
     new_user = User(username, email, pw_encode(password), token, None)
 
@@ -131,6 +162,8 @@ def register():
         'token': token,
         'user_id': new_user.user_id
     })
+
+
 
 @app.route(url_prefix + "/logout", methods=["POST"])
 def logout():
