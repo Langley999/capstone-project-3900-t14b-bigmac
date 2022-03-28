@@ -101,7 +101,9 @@ const FriendPage = () => {
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: "normal"}}>Friend Activity</h2>
       <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves != 1 ? <>s</>: <></>} ha{saves != 1 ? <>ve</>: <>s</>} saved your collections! 📚</div>
-      <FollowGraph/>
+      <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
+        <FollowGraph/>
+      </div>
     </div>
   )
 }

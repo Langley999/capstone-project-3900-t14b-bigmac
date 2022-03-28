@@ -10,6 +10,18 @@ import SuccessPopup from '../../components/SuccessPopup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import {url} from '../../components/Helper';
+import {
+  Chart,
+  Series,
+  ArgumentAxis,
+  CommonSeriesSettings,
+  Legend,
+  Margin,
+  Title,
+  Subtitle,
+  Tooltip,
+  Grid,
+} from 'devextreme-react/chart';
 
 const GoalPage = () => {
   const [goal, setGoal] = React.useState(0);
@@ -97,7 +109,8 @@ const GoalPage = () => {
   const goalStyle = {
     display: "flex",
     flexDirection: "row",
-    gap: "40px"
+    gap: "40px",
+    marginBottom: "50px"
   }
 
   const GoalLine = () => {
@@ -162,6 +175,43 @@ const GoalPage = () => {
     )
   }
 
+  const GoalGraph = () => {
+    const statSources = [{value:'goal', name: 'Goal'}, {value:'books_completed', name: 'Books Completed'}];
+    return (
+      <Chart
+        dataSource={allGoal}
+        palette="Harmony Light"
+      >
+        <CommonSeriesSettings
+          argumentField="created_time"
+          type="line"
+        />
+        {
+          statSources.map((item) => <Series
+            key={item.value}
+            valueField={item.value}
+            name={item.name} />)
+        }
+        <Margin bottom={20} />
+        <ArgumentAxis
+          valueMarginsEnabled={false}
+          discreteAxisDivisionMode="crossLabels"
+        >
+          <Grid visible={true} />
+        </ArgumentAxis>
+        <Legend
+          verticalAlignment="bottom"
+          horizontalAlignment="center"
+          itemTextPosition="bottom"
+        />
+        <Title text="Goals and reading progress">
+          {/* <Subtitle text="(within the last year)" /> */}
+        </Title>
+        <Tooltip enabled={true} />
+      </Chart>
+    )
+  }
+
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
@@ -171,6 +221,9 @@ const GoalPage = () => {
         <GoalLine/>
         <ProgressCard/>
         <TimeCard/>
+      </div>
+      <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
+        <GoalGraph/>
       </div>
     </div>
   )
