@@ -20,3 +20,14 @@ Week 4:
 - recreated database schema with all tables
 - intitialisation algorithm to parse book csv file into databse and establish joins
 - finished functions for get book details, reviews/ratings
+
+Week 5
+  - added follow, unfollow, search users functions
+  - added post, and getfeed from followers functions
+  - added like and unlike option to reviews which now are sorted based off that
+  - added get follow statistics and get saves functions for analytics 
+  
+
+Week 6:
+  - remodeled quiz-answer table
+  - added email verification functionality to registration system
