@@ -18,7 +18,7 @@ def defaultHandler(err):
     response.content_type = 'application/json'
     return response
 
-code = []
+code = {}
 app = Flask(__name__)
 #app.secret_key = 'BIGMAC'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookstation.db'

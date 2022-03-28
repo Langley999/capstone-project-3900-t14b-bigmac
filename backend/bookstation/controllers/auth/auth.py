@@ -137,14 +137,14 @@ def sendCode():
     mail = Mail(app)
     try:
         msg = Message("Verification Code: ", sender= 'bigmaccomp3900@gmail.com', recipients=[email])
-        code.append(randint(10000, 99999))
+        code[email] = randint(10000, 99999)
         msg.body = f"Your reset code is {str(code)}"
         mail.send(msg)
     except:
         raise error.NotFoundError(description="Email not found")
 
     return dumps({
-        'code' : code
+        'sent_email' : True
     })
 
 
@@ -154,9 +154,9 @@ def verify():
     data = request.get_json()
     username, email, password, user_code = data['username'], data['email'], data['password'], data['user_code']
     print('stored code is: ', code)
-    if code[0] != user_code:
+    if code[email] != user_code:
         raise error.InputError(description="Verification code does not match")
-    code.pop()
+    code.pop(email, None)
     token = generate_token(username)
     new_user = User(username, email, pw_encode(password), token, None)
 
