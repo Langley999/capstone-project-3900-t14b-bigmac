@@ -60,7 +60,7 @@ def createquiz():
 
 @app.route("/quiz/getallquiz", methods=["GET"])
 def getallquiz():
-    quizzes = Quiz.query.order_by(Quiz.publish_status).all()
+    quizzes = Quiz.query.order_by(desc(Quiz.publish_status)).all()
     result = []
     for quiz in quizzes:
       quiz_id = quiz.quiz_id
