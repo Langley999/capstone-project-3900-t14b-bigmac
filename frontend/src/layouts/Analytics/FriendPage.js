@@ -28,7 +28,7 @@ const FriendPage = () => {
   React.useEffect(() =>{
     getFollowStats();
     getSaves();
-  }, []);
+  });
 
   const getFollowStats = () => {
     axios.get(`${url}/analytics/followstats`, {params: {
@@ -100,7 +100,7 @@ const FriendPage = () => {
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: "normal"}}>Friend Activity</h2>
-      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves != 1 ? <>s</>: <></>} ha{saves != 1 ? <>ve</>: <>s</>} saved your collections! 📚</div>
+      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves !== 1 ? <>s</>: <></>} ha{saves !== 1 ? <>ve</>: <>s</>} saved your collections! 📚</div>
       <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
         <FollowGraph/>
       </div>

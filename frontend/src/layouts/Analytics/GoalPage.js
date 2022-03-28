@@ -43,11 +43,32 @@ const GoalPage = () => {
   let daySuffix = '';
   if (daysUntilEndOfMonth !== 1) daySuffix = 's';
 
+  function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+  }
+
   const getAllGoal = () => {
     axios.get(`${url}/user/getallgoal`, {params: {
         token: localStorage.getItem('token')
       }}).then(function (response) {
-        setAllGoal(response['data']['goal_history']);
+        const temp = response['data']['goal_history'];
+        const now = new Date()
+        for (let i = 0; i < temp.length; i++) {
+          const historyDate = new Date(temp[i]['created_time']);
+          // remove current month's data
+          if (historyDate.getFullYear() === now.getFullYear() && historyDate.getMonth() === now.getMonth()){
+            temp.splice(i, 1);
+          }
+          // remove anything over 12 months
+          if (monthDiff(historyDate, now) > 12) {
+            temp.splice(i, 1);
+          }
+        }
+        setAllGoal(temp);
         console.log(response['data']['goal_history']);
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
@@ -204,8 +225,8 @@ const GoalPage = () => {
           horizontalAlignment="center"
           itemTextPosition="bottom"
         />
-        <Title text="Goals and reading progress">
-          {/* <Subtitle text="(within the last year)" /> */}
+        <Title text="Goals and Reading History">
+          <Subtitle text="(within the last year)" />
         </Title>
         <Tooltip enabled={true} />
       </Chart>
