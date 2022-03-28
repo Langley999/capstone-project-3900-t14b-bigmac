@@ -24,7 +24,7 @@ const Profile = ({userInfo, updateUserInfo}) => {
             md={6}
             xs={12}
           >
-            <ProfileAvatar updateUserInfo={updateUserInfo} userInfo={userInfo}/>
+            <ProfileAvatar userInfo={userInfo}/>
           </Grid>
           <Grid
             item

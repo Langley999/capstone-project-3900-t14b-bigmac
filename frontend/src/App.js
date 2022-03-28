@@ -104,7 +104,7 @@ function App() {
                 <Outlet />
               </>
             }>
-              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo} />}/>
+              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
               <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
               <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
               <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>

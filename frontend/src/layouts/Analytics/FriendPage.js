@@ -28,7 +28,7 @@ const FriendPage = () => {
   React.useEffect(() =>{
     getFollowStats();
     getSaves();
-  });
+  }, []);
 
   const getFollowStats = () => {
     axios.get(`${url}/analytics/followstats`, {params: {
@@ -65,6 +65,7 @@ const FriendPage = () => {
       <Chart
         dataSource={stats}
         palette="Harmony Light"
+        resolveLabelOverlapping="stack"
       >
         <CommonSeriesSettings
           argumentField="month"

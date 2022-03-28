@@ -54,8 +54,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
     });
+  }, []);
 
-  }, [])
 
   const getProfile = () => {
     axios.get(`${url}/user/profile`, {params: {
@@ -74,7 +74,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       }
     })
     .catch(function (error) {
-      alert(error.response.data.message)
+      setErrorMsg(JSON.stringify(error.message));
+      setShowError(true);
     });
   }
 

@@ -202,6 +202,7 @@ const GoalPage = () => {
       <Chart
         dataSource={allGoal}
         palette="Harmony Light"
+        resolveLabelOverlapping="stack"
       >
         <CommonSeriesSettings
           argumentField="created_time"
