@@ -141,7 +141,7 @@ def get_all_goal():
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
         history = {}
-        history['created_time'] = goal.created_time
+        history['created_time'] = str(goal.created_date)
         history['goal'] = goal.books_set
         history['books_completed'] = goal.books_completed
         all_history.append(history)
