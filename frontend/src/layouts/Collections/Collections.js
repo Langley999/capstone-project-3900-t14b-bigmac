@@ -215,7 +215,7 @@ const Collections = ({userInfo}) => {
           </MenuList>
         </Paper>
 
-        <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
+        <Paper sx={{ width: 200, marginTop: '20px',maxWidth: '100%', height: 300, overflow: 'auto'}}>
           <MenuList>
             <MenuItem>
               <ListItemText>Saved Collections</ListItemText>
