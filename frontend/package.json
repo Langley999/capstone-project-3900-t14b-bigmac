@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@devexpress/dx-react-chart-material-ui": "^3.0.2",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.5.0",
+    "@mui/icons-material": "^5.5.1",
     "@mui/styles": "^5.5.0",
     "@mui/system": "^5.4.4",
     "@testing-library/jest-dom": "^5.16.2",
@@ -14,6 +15,8 @@
     "antd": "^4.19.1",
     "assets": "^3.0.1",
     "axios": "^0.26.1",
+    "devextreme": "21.2.6",
+    "devextreme-react": "21.2.6",
     "material-ui-search-bar": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -48,7 +51,7 @@
   "devDependencies": {
     "@material-ui/core": "^4.12.3",
     "@mui/base": "^5.0.0-alpha.70",
-    "@mui/material": "^5.5.0",
+    "@mui/material": "^5.5.2",
     "components": "^0.1.0",
     "prop-types": "^15.8.1"
   }

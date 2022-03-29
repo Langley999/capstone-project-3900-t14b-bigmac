@@ -11,6 +11,15 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
     return null;
   }
 
+  if (typeof errorMsg === 'string') {
+    if (errorMsg.startsWith("\"") && errorMsg.endsWith("\"")) {
+      errorMsg = errorMsg.substring(1, errorMsg.length - 1);
+    }
+    if (errorMsg.startsWith("<p>") && errorMsg.endsWith("</p>")) {
+      errorMsg = errorMsg.substring(3, errorMsg.length - 4);
+    }
+  }
+  
   const errorStyle = {
     background: '#d32f2f',
     border: 0,
