@@ -77,6 +77,7 @@ def createquiz():
 @app.route("/quiz/getallquiz", methods=["GET"])
 def getallquiz():
     token = request.args.get('token')
+ 
     if token not in admintoken:
         raise error.NotFoundError(description='Target admin not found')
     quizzes = Quiz.query.order_by(desc(Quiz.publish_status)).all()

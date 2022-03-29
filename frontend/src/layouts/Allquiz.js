@@ -49,7 +49,7 @@ const Allquiz = () => {
       quiz_id: id,
       token: admintoken
     }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
+      axios.get(`${url}/quiz/getallquiz`, {params: {token:admintoken
       }})
       .then(function (res) {
         console.log(res['data']['quizzes'])
@@ -70,7 +70,7 @@ const Allquiz = () => {
       quiz_id: id,
       token: admintoken
     }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
+      axios.get(`${url}/quiz/getallquiz`, {params: {token:admintoken
       }})
       .then(function (res) {
         console.log(res['data']['quizzes'])
