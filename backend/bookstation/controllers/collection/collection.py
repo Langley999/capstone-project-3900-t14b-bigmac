@@ -1,5 +1,7 @@
 from json import dumps
 import time
+
+from pymysql import NULL
 from bookstation.models.book_sys import Book, Saved_collection
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import User, Collection
@@ -117,6 +119,9 @@ def get_collection():
 	"""
 	# user_name = request.args.get('user')
 	target_collection_id = request.args.get('collection_id')
+	token = request.args.get('token')
+	user = get_user(token)
+	find = Saved_collection.query.filter_by(user_id = user.user_id,collection_id=target_collection_id).all()
 	try:
 		collection = Collection.query.get(target_collection_id)
 		collection_books = Collection_book.query.filter_by(collection_id=target_collection_id)
@@ -132,7 +137,9 @@ def get_collection():
 
 		return dumps({
 				"books": booklist,
-				"name": collection.name
+				"name": collection.name,
+				"has_saved": find!=[]
+
 		})
 	except:
 		raise error.NotFoundError(description="Cannot get the collection")

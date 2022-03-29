@@ -35,126 +35,152 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 import ToggleOffIcon from '@mui/icons-material/ToggleOff';
 import WysiwygIcon from '@mui/icons-material/Wysiwyg';
-
+import { QuizComponent } from './QuizComponent.js'; 
+import { TryRounded } from '@mui/icons-material';
 
 const Addquiz = () => {
 
-  const [allquiz,setAllquiz] = React.useState([]);
+  const [quizname,setquizname] = React.useState('');
+  const [components, setComponents] = useState([{
+    question:"",
+    ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+  }]); 
+  
+
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const navigate = useNavigate();
-  const openQuiz = (id) => {
-    console.log('open')
-    console.log(id)
-    axios.post(`${url}/quiz/openquiz`, {
-      quiz_id: id
-    }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
-      }})
-      .then(function (res) {
-        console.log(res['data']['quizzes'])
-        setAllquiz(res['data']['quizzes'])
-      })
-     
-    }).catch(function (error) {
-      setErrorMsg(JSON.stringify(error.response.data.message));
-      setSnackBarOpen(true);
-    });
+ 
 
-  }
-
-  const closeQuiz = (id) => {
-    console.log('close')
-    console.log(id)
-    axios.post(`${url}/quiz/closequiz`, {
-      quiz_id: id
-    }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
-      }})
-      .then(function (res) {
-        console.log(res['data']['quizzes'])
-        setAllquiz(res['data']['quizzes'])
-      })
-     
-    }).catch(function (error) {
-      setErrorMsg(JSON.stringify(error.response.data.message));
-      setSnackBarOpen(true);
-    });
-  }
-  const deleteQuiz = (id) => {
-    let payload = {
-      quiz_id: id
-    }
-    axios.delete(`${url}/quiz/deletequiz`, { data: payload }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
-      }})
-      .then(function (res) {
-        console.log(res['data']['quizzes'])
-        setAllquiz(res['data']['quizzes'])
-      })
-     
-    }).catch(function (error) {
-      setErrorMsg(JSON.stringify(error.response.data.message));
-      setSnackBarOpen(true);
-    });
-  }
-
-  const handleCreateQuiz = () => {
-    navigate('/booksation/createquiz');
-  }
   useEffect(() => {
     axios.get(`${url}/quiz/getallquiz`, {params: {
     }})
     .then(function (res) {
-      console.log(res['data']['quizzes'])
-      setAllquiz(res['data']['quizzes'])
+
     })
   }, []);
+  const handleSubmitQuiz = () => {
+    let canSubmit = true;
+    if (quizname === "") {
+      setErrorMsg("Please enter quiz name");
+      setSnackBarOpen(true);
+      canSubmit = false;
+    } else {
+      for(let i = 0; i < components.length; i++){
+        if (components[i]['question'] === "") {
+          setErrorMsg("Please complete your input for question");
+          setSnackBarOpen(true);
+          canSubmit = false;
+          break;
+        } else {
+          let flag = 0;
+          let answernull = 0;
+          for(let j = 0; j < 4; j++){
+            if (components[i]['ans'][j]['content'] === "") {
+              answernull ++;
+            }
+            if (components[i]['ans'][j]['is_correct'] === true) {
+              flag++;
+            }
+          
+          }
+          if (answernull > 0) {
+            setErrorMsg("Please complete your input for answer");
+            setSnackBarOpen(true);
+            canSubmit = false;
+            break;
+          }
+          if (flag !== 1) {
+            setErrorMsg("Please choose one correct answer per question");
+            setSnackBarOpen(true);
+            canSubmit = false;
+            break;
+          }
+        }
+      }
+    }
 
 
+    if (canSubmit) {
+
+      let id = localStorage.getItem('admin_id');
+      console.log(id);
+      let body = {
+        id: id,
+        name: quizname,
+        questions: components
+      }
+      axios.post(`${url}/quiz/createquiz`, 
+        body
+      ).then(function (res) {
+        setquizname("");
+        setComponents([{
+          question:"",
+          ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+        }]);
+        
+      }).catch(function (error) {
+        setErrorMsg(JSON.stringify(error.response.data.message));
+        setSnackBarOpen(true);
+      });
+    }
+
+  }
+
+  function addComponent() {  
+    setComponents([...components, {
+      question:"",
+      ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+    }])  
+  } 
+
+  const handleBack = () => {
+    navigate('/bookstation/allquiz');
+  }
+
+  const handleRemoveComponent = (event,key) => {
+    let componentscopy = [];
+    for (let i = 0; i < components.length;i++) {
+      if (i !== key) {
+        componentscopy.push(components[i]);
+      }
+    }
+    setComponents(componentscopy);
+  }
     return (
-      <Box m={2} pt={2}>
-
+      <Box mx={30} pt={0} >
+            <Button onClick={handleBack} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
+              Back
+            </Button>  
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-        <Grid container direction="row" spacing={10} justifyContent="center" >
-          <Grid item  xs={4}>
-            <List >
+        <Grid container direction="column" spacing={5} justifyContent="center" alignContent="center" alignItems="center">  
+          <Grid item  xs={2}>
+             
+          </Grid>
+          <Grid item  xs={10}>
             <Typography variant="h4" gutterBottom component="div">
-             Current quizzes
+             Create Quiz 
             </Typography>
-            {allquiz.length > 0 &&  allquiz.map((item, i) =>   
-            <ListItem
-                key={item['id']}
-              > 
-              <IconButton edge="end" aria-label="delete" onClick={() => deleteQuiz(item['id'])}>
-                <DeleteIcon sx={{ fontSize: 30 }}/>
-              </IconButton>
-              {item['status'] == 0 &&
-                <IconButton edge="end" onClick={() => openQuiz(item['id'])}>
-                  <ToggleOffIcon  sx={{ fontSize: 30 }}/>
-                </IconButton>
-              }
+            <Typography variant="body2" gutterBottom component="div">
+             (Please choose only 1 correct answer per question)
+            </Typography>
+            <TextField id="standard-basic" label="Quiz Name" variant="outlined" sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
 
-              {item['status'] == 1 &&
-                <IconButton edge="end" onClick={() => closeQuiz(item['id'])}>
-                  <ToggleOnIcon color="primary" sx={{ fontSize: 30 }}/>
-                </IconButton>
-              }   
-
-              <ListItemText sx={{ paddingLeft: 2 }}
-                primary={item['quiz_name']}
-              />
-
-            </ListItem>)}
-
-            </List>  
-          </Grid>   
-          <Grid item  xs={3}>
-            <IconButton edge="start" color="primary" sx={{ marginTop: 10, paddingRight: 3 }} onClick={handleCreateQuiz}>
+            {components.map((item, i) => ( <div>
+              <QuizComponent id={i} question={item['question']} ans={item['ans']} components={components} setComponents={setComponents}/> <Button onClick={(event) =>handleRemoveComponent(event,i)}>Remove</Button> </div>)
+            )} 
+            <IconButton edge="start" color="primary" sx={{ marginTop: 10, paddingRight: 3, fontSize:20}} onClick={addComponent}>
               <AddCircleIcon sx={{ paddingRight: 2 }} />
-              Create Quiz
+              Add Question
             </IconButton>
-          </Grid>     
+
+          </Grid> 
+          <Grid item  xs={2}>
+            <Button onClick={handleSubmitQuiz} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
+              Submit
+            </Button>               
+          </Grid>
+ 
         </Grid>
 
       </Box>

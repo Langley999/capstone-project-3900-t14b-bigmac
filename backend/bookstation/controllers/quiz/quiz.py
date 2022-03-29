@@ -48,7 +48,7 @@ def createquiz():
       db.session.commit()
       db.session.flush()
 
-      answers = question['answers']
+      answers = question['ans']
       for answer in answers:
         content = answer['content']
         is_correct = answer['is_correct']
