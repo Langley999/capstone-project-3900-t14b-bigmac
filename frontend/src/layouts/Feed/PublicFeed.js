@@ -32,7 +32,7 @@ const PublicFeed = () => {
       <h1>Public Feed</h1>
       {feed.length > 0 ? feed.map((post) => {
         return (
-          <FeedListing post={post}/>
+          <FeedListing post={post} isPublic={localStorage.getItem('token') ? false : true}/>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>No one has posted yet</div>}
     </div>

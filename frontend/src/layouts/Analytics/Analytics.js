@@ -12,6 +12,11 @@ import FriendPage from '../Analytics/FriendPage';
 const Analytics = ({ userInfo }) => {
   // can be goals, friends or genres
   const [analyticView, setAnalyticView] = React.useState('goals');
+  const [id, setId] = React.useState(-1);
+
+  React.useEffect(() =>{
+    setId(Number(window.location.pathname.split('/')[2]));
+  }, []);
 
   const clickGoals = () => {
     setAnalyticView('goals');
@@ -54,11 +59,11 @@ const Analytics = ({ userInfo }) => {
       overflow: 'auto'
     }}>
       <h1>Analytics</h1>
-      <p>View your monthly progress!</p>
+      <p>View your reading progress!</p>
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-      <GoalPage display={analyticView} userInfo={userInfo}/>
-      <FriendPage display={analyticView}/>
-      <GenrePage display={analyticView}/>
+      {analyticView == "goals" ? <GoalPage/> : <></>}
+      {analyticView == "friends" ? <FriendPage/> : <></>}
+      {analyticView == "genres" ? <GenrePage/> : <></>}
     </Paper>
     )
   }

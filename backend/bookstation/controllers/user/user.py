@@ -121,9 +121,8 @@ def get_all_goal():
     '''
     It gets goal histories of a user
     Args (GET):
-        email (string): the requester's email
         token (string): valid token
-        goal (int): the goal of user for this month
+
     Returns:
         "goal_history" (list):
             - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
@@ -133,17 +132,16 @@ def get_all_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    operator_email = request.args.get('operator')
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
     # sql select user
-    user = User.query.filter_by(email=operator_email).first()
+    user = User.query.filter_by(token=token).first()
     all_history = []
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
         history = {}
-        history['created_time'] = goal.created_time
+        history['created_time'] = str(goal.created_date)
         history['goal'] = goal.books_set
         history['books_completed'] = goal.books_completed
         all_history.append(history)
@@ -180,7 +178,9 @@ def get_user_profile():
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
     # sql select user
+    print("HERE",token, user_id)
     operator = User.query.filter_by(token=token).first()
+    print("OPERATOR", operator)
     user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
@@ -219,8 +219,7 @@ def update_user_profile():
     '''
     try:
         data = request.get_json()
-        new_email, new_username, token, new_password = \
-            data['email'], data['username'], data['token'], data['password']
+        new_username, token, new_password = data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
@@ -233,11 +232,6 @@ def update_user_profile():
         if (User.query.filter_by(username=new_username).first() != None):
             raise error.InputError(description="invalid username")
         user.username = new_username
-    # check if new_email is valid
-    if (user.email != new_email):
-        if (User.query.filter_by(email=new_email).first() != None):
-            raise error.InputError(description="invalid email")
-        user.email = new_email
     # change password
     user.password = pw_encode(new_password)
     db.session.add(user)

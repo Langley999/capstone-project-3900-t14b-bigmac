@@ -1,9 +1,12 @@
 from json import dumps
 import time
-from bookstation import app, request, db, error
-
+from bookstation import app, request, db, error, code
+from bookstation.utils.auth_util import get_user, pw_encode, generate_token
+from flask_mail import Mail, Message
 from bookstation.models.user_sys import *
 from bookstation.models.book_sys import *
+from datetime import datetime
+from random import randint
 
 from flask import session
 #from config import SECRET
@@ -122,15 +125,58 @@ def register():
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
     # store new user
+
+
+    return dumps({
+        'valid_user' : True
+    })
+
+@app.route(url_prefix + "/sendCode", methods=["POST"])
+def sendCode():
+    body = request.get_json()
+    email = body['email']
+    mail = Mail(app)
+    try:
+        msg = Message("Verification Code: ", sender= 'bigmaccomp3900@gmail.com', recipients=[email])
+        code[email] = randint(10000, 99999)
+        msg.body = f"Your verification code for BookStation is {str(code[email])}"
+        mail.send(msg)
+        print('VERIFICATION CODE:', code[email])
+    except:
+        raise error.NotFoundError(description="Email not found")
+
+    return dumps({
+        'sent_email' : True
+    })
+
+
+
+@app.route(url_prefix + "/verified", methods=["POST"])
+def verify():
+    data = request.get_json()
+    username, email, password, user_code = data['username'], data['email'], data['password'], data['user_code']
+    email = str(email)
+    if int(code[email]) != int(user_code):
+        print('comparison failed', code)
+        raise error.InputError(description="Verification code does not match")
+    code.pop(email, None)
     token = generate_token(username)
     new_user = User(username, email, pw_encode(password), token, None)
 
     db.session.add(new_user)
     db.session.commit()
+    db.session.flush()
+    new_default_collection = Collection(1, "Favourite", datetime.now(), new_user.user_id)
+    new_history_collection = Collection(2, "Reading History", datetime.now(), new_user.user_id)
+    db.session.add(new_default_collection)
+    db.session.add(new_history_collection)
+    db.session.commit()
     return dumps({
         'token': token,
         'user_id': new_user.user_id
     })
+
+
 
 @app.route(url_prefix + "/logout", methods=["POST"])
 def logout():

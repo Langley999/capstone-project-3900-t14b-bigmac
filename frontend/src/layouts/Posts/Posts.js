@@ -1,68 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
 import { url } from '../../components/Helper';
 import '../../App.css';
 
 import Button from '@mui/material/Button';
 import {
   Box,
-  CardActionArea,
-  Dialog, DialogActions,
-  DialogContent,
+  Dialog,
   DialogTitle,
   Grid,
   TextField,
-  Typography
 } from "@material-ui/core";
 import CardContent from "@mui/material/CardContent";
 import Card from "@material-ui/core/Card";
 import axios from "axios";
-import {Link, useParams} from "react-router-dom";
-import Rating from "@mui/material/Rating";
+import {useParams} from "react-router-dom";
+import UsernameLink from "../../components/UsernameLink";
 
-const data = [
-  {
-    post_id: 1,
-    content: 'fiset post',
-    time_created: '01/01/2022'
-  },
-  {
-    post_id: 2,
-    content: 'second post',
-    time_created: '01/01/2022'
-  }
-]
 const Posts = ({userInfo}) => {
   const urlParams = useParams();
 
+  let newPost = '';
   const [posts, setPosts] = useState([]);
   const [isSelf, setIsSelf] = useState(true);
-  let initialPosts = [];
-  const [open, setOpen] = useState(false);
   const [postFormOn, setReviewFormOn] = React.useState(false);
-  const [postValue, setpostValue] = React.useState(null);
+  const [tempPost, setTempPost] = useState({});
+  const [values, setValues] = useState({});
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
 
+    axios.get(`${url}/user/profile`, {
+      params: {
+        user_id: user_id,
+        token: localStorage.getItem('token')
+      }
+    })
+      .then(function (res) {
+        if (user_id === userInfo.user_id) {
+          setValues(userInfo);
+        } else {
+          setValues({
+            user_id: user_id,
+            username: res['data']['username'],
+            avatar: res['data']['avatar']
+          });
+        }
+      })
+
     axios.get(`${url}/post/getposts`, {params: {
-        token: localStorage.getItem('token'),
         user_id: user_id
       }})
       .then(res => {
         setPosts(res.data.posts);
-        initialPosts = [...res['data']['posts']];
+        console.log(res)
       })
       .catch(function (error) {
         alert("error")
         // alert(error.response.data.message);
       });
-  }, [window.location.href])
+  }, [window.location.href, userInfo, tempPost])
+
 
   const handleAddPost = () => {
     setReviewFormOn(true);
@@ -70,27 +68,41 @@ const Posts = ({userInfo}) => {
 
   const handleAddPostClose = () => {
     setReviewFormOn(false);
+    newPost = '';
+  }
+
+  const handleChange = (event) => {
+    newPost = event.target.value;
   }
 
   const handleSubmitPost = () => {
-    // axios.post(`${url}/post/addpost`, {
-    //   token: localStorage.getItem('token'),
-    //   content: postValue
-    // }).then(res => {
-      // var datetime = currentdate.getFullYear() + "-"
-      //   + (currentdate.getMonth()+1)  + "-"
-      //   + currentdate.getDate() + " "
-      //   + currentdate.getHours() + ":"
-      //   + currentdate.getMinutes() + ":"
-      //   + currentdate.getSeconds();
+    if (newPost.length > 400) {
+      alert('Please enter less than 200 characters.');
+      return;
+    }
+    axios.post(`${url}/post/addpost`, {
+      token: localStorage.getItem('token'),
+      content: newPost
+    }).then(res => {
+      console.log(res);
+      const currentdate = new Date();
+      const datetime = currentdate.getFullYear() + "-"
+        + (currentdate.getMonth()+1)  + "-"
+        + currentdate.getDate() + " "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
 
-    //   const newPost = {
-    //     post_id: res.data.post_id,
-    //     content: postValue,
-    //     time_created: datetime
-    //   }
-    //   setPosts([...posts, newPost])
-    // })
+      const createdPost = {
+        post_id: res.data.post_id,
+        content: newPost,
+        time_created: datetime
+      }
+      setTempPost(createdPost);
+      // const temp = [...posts];
+      // setPosts([...temp, createdPost]);
+      handleAddPostClose();
+    })
   }
 
 
@@ -113,8 +125,15 @@ const Posts = ({userInfo}) => {
                 maxWidth: '100%',
               }}
             >
-              <TextField fullWidth label="" id="fullWidth" multiline={true} value={postValue}
-                         onChange={(e) => setpostValue(e.target.value)} rows={12} />
+              <TextField
+                variant="outlined"
+                fullWidth
+                label=""
+                id="fullWidth"
+                multiline={true}
+                onChange={handleChange}
+                rows={12}
+              />
             </Box>
             <Button onClick={handleAddPostClose}>Cancel</Button>
             <Button onClick={handleSubmitPost}>Submit</Button>
@@ -125,15 +144,50 @@ const Posts = ({userInfo}) => {
     )
   }
 
+  const PostSection = ({postInfo}) => {
+    const removePost = () => {
+      axios.post(`${url}/post/removepost`, {
+        token: localStorage.getItem('token'),
+        post_id: postInfo.post_id
+      }).then(res=> {
+        setTempPost({});
+      })
+    }
+
+    return (
+      <Card>
+        <CardContent>
+          <div style={{display: "flex", flexDirection: "row", justifyContent: 'space-between'}} >
+            <UsernameLink username={values.username} id={values.user_id} avatar={values.avatar} />
+            <div>{postInfo.time_created}</div>
+          </div>
+          <div style={{marginTop: '5px', marginLeft: '55px', overflowWrap: 'break-word', display: 'flex', justifyContent: 'space-between'}}>
+            {postInfo.content}
+            {isSelf ? <Button onClick={removePost}>Remove</Button> : null}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  };
+
   return (
     <>
-      {isSelf ? <Button onClick={handleAddPost}>Add Post</Button> : null}
+      {isSelf ?
+        <Button
+          onClick={handleAddPost}
+          variant="outlined"
+          sx={{marginBottom: '10px'}}
+        >
+          Add Post
+        </Button>
+        : null}
       <CreatePost/>
 
-      {data.map(postInfo => {
+      {posts.map(postInfo => {
         return (
-          // <PostSection postInfo={postInfo}/>
-          <></>
+          <Box key={postInfo.post_id} sx={{marginBottom: '10px'}}>
+            <PostSection postInfo={postInfo}/>
+          </Box>
         )
       })}
     </>

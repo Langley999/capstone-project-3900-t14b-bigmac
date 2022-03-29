@@ -4,6 +4,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+Download devexpress components:
+
+### `npm install devextreme@21.2 devextreme-react@21.2 --save --save-exact`
+
 In the project directory, you can run:
 
 ### `npm start`

@@ -2,7 +2,8 @@
 // returns error messages if input not valid
 // otherwise return an empty string
 export const checkProfileInput = (username, email, password) => {
-  const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$';
+  //const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$';
+  let regex = '/^[^\s@]+@[^\s@]+\.[^\s@]+$/';
 
   if (username.length > 50 || username.length < 1) {
     return "Username has to be between 1 and 50 characters inclusively.";
