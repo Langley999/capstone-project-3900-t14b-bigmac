@@ -174,7 +174,7 @@ def followStats():
 
 
 @app.route(url_prefix + '/saves', methods=["GET"])
-def get_saves():
+def get_save1():
 
 	"""
 	Args: collection_id: collection to find number of saves

@@ -178,7 +178,9 @@ def get_user_profile():
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
     # sql select user
+    print("HERE",token, user_id)
     operator = User.query.filter_by(token=token).first()
+    print("OPERATOR", operator)
     user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")

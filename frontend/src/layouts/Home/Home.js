@@ -164,7 +164,7 @@ const Home = ({ifLogin, updateSearchResult}) => {
             <Typography gutterBottom variant="h5" component="div">
               {data.bookTitle}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="secondary">
               {data.bookAuthor}
             </Typography>
             <Typography variant="body2">

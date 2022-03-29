@@ -17,7 +17,7 @@ url_prefix = "/collection"
 @app.route(url_prefix + '/getall', methods=["GET"])
 def get_all_collections():
 	"""
-	Function for users to to get one user's all collection details. 
+	Function for users to to get one user's all collection details.
 	Args:
 			user_id (string): user_id of the user.
 	Returns:
@@ -30,8 +30,6 @@ def get_all_collections():
 	"""
 	#token = request.args.get('token')
 	user_id = request.args.get('user_id')
-	print('----')
-	print(user_id)
 	#user = User.query.filter_by(user_id=user_id).first()
 	collections = Collection.query.filter_by(user_id = user_id).all()
 	#collections = user.collections
@@ -117,7 +115,6 @@ def get_collection():
 				- when the user does not have permission to create collection
 				- when the user does not exist
 	"""
-	# user_name = request.args.get('user')
 	target_collection_id = request.args.get('collection_id')
 	token = request.args.get('token')
 	user = get_user(token)
@@ -136,10 +133,9 @@ def get_collection():
 			booklist.append(new)
 
 		return dumps({
-				"books": booklist,
-				"name": collection.name,
-				"has_saved": find!=[]
-
+			"books": booklist,
+			"name": collection.name,
+			"has_saved": find != []
 		})
 	except:
 		raise error.NotFoundError(description="Cannot get the collection")
@@ -242,7 +238,7 @@ def remove_collection():
 			success message
 	Raises:
 			NotFoundError: when the collection does not exist
-			AccessError: 
+			AccessError:
 				- when the user does not have permission to remove this collection
 			BadReqError:
 				- when removing collection fails
@@ -273,7 +269,7 @@ def remove_collection():
 @app.route(url_prefix + '/savecollection', methods=["POST"])
 def save_collections():
 	"""
-	Args: collection_id : collection id to be saved 
+	Args: collection_id : collection id to be saved
 		  token			: identifies and authenticates user
 
 	Returns: confirmation
@@ -295,7 +291,7 @@ def save_collections():
 @app.route(url_prefix + '/unsavecollection', methods=["POST"])
 def unsave_collections():
 	"""
-	Args: collection_id : collection id to be unsaved 
+	Args: collection_id : collection id to be unsaved
 		  token			: identifies and authenticates user
 
 	Returns: confirmation
@@ -320,13 +316,21 @@ def get_savedCollections():
 	"""
 	Args: token : user for which we want to find saved collections
 
-	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection) 
-	
-	"""
-	token = request.args.get('token')
-	user = get_user(token)
+	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection)
 
-	collections = Saved_collection.query.filter_by(user_id = user.user_id).all()
+	"""
+	try:
+		token = request.args.get('token')
+		user = get_user(token)
+	except:
+		raise error.AccessError(description="user doesn't exist or invalid token")
+
+	try:
+		user_id = request.args.get('user_id')
+	except:
+		raise error.InputError(description="not a valid user")
+
+	collections = Saved_collection.query.filter_by(user_id = user_id).all()
 	collection_list = []
 	for collection in collections:
 		collection_dict = {'collection_id' : collection.collection_id, 'name' : collection.collection.name, 'is_default' : collection.collection.is_default, 'created_time' : str(collection.collection.created_time), 'user_id' : collection.collection.user.user_id, 'username' : collection.collection.user.username}
@@ -336,6 +340,21 @@ def get_savedCollections():
 	return dumps({'collections' : collection_list})
 
 
+@app.route(url_prefix + '/saves', methods=["GET"])
+def get_saves():
+
+	"""
+	Args: collection_id: collection to find number of saves
+
+	Returns: number of people who saved this collection
+
+	"""
+	token = request.args.get('token')
+	user = get_user(token)
+	collection_id = request.args.get('collection_id')
+	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
+
+	return dumps({'saves' : saves})
 
 
 @app.route(url_prefix + '/rename', methods=["POST"])
@@ -346,7 +365,7 @@ def rename_collection():
 		  name		   : new name of collection
 
 	Returns: confirmation
-	
+
 	"""
 	body = request.get_json()
 	user = get_user(body['token'])
@@ -377,7 +396,7 @@ def recent_books():
 					- cover (string): url of the cover image
 	Raises:
 			NotFoundError: when the collection does not exist
-			AccessError: 
+			AccessError:
 				- when the user does not have permission to remove this collection
 			BadReqError:
 				- when removing collection fails
@@ -389,7 +408,7 @@ def recent_books():
 	except:
 			raise error.BadReqError(description="post body error")
 
-	
+
 	collections = Collection.query.filter_by(user_id = u_id).all()
 	all_books = []
 	for collection in collections:
@@ -401,7 +420,7 @@ def recent_books():
 			dic['book'] = cbook.book
 			all_books.append(dic)
 
-	newlist = sorted(all_books, key=lambda d: d['time'],reverse=True) 
+	newlist = sorted(all_books, key=lambda d: d['time'],reverse=True)
 	res = []
 	for n in newlist[:10]:
 		#book = Book.query.filter_by(book_id=n['book_id'])
