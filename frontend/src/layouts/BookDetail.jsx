@@ -50,7 +50,11 @@ const useStyles = makeStyles({
 });
 
 const BookDetail = ({userInfo}) => {
-  const u_id =  JSON.parse(localStorage.getItem('user'))['user_id'];
+  let u_id = -1;
+  if (localStorage.getItem('user')) {
+    u_id =  JSON.parse(localStorage.getItem('user'))['user_id'];
+  }
+  
   //console.log(userInfo)
   const classes = useStyles();
   const [rating, setRating] = React.useState(0);

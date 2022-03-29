@@ -19,6 +19,12 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
       errorMsg = errorMsg.substring(3, errorMsg.length - 4);
     }
   }
+  const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setSnackBarOpen(false);
+  };
   
   const errorStyle = {
     background: '#d32f2f',
@@ -29,8 +35,8 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
   }
 
   return (
-    <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={snackBarOpen}  onClose = {() =>setSnackBarOpen(false)} autoHideDuration={1500} >
-      <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} >
+    <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={snackBarOpen}  onClose={handleClose} autoHideDuration={1500} >
+      <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} onClose={handleClose} >
         {errorMsg }
       </Alert>
     </Snackbar>
