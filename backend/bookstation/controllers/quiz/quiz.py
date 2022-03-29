@@ -2,10 +2,10 @@ from json import dumps
 from bookstation.models.event_sys import Question, Answer
 from bookstation.models.event_sys import Quiz
 from bookstation.models.event_sys import Admin
-from bookstation import app, request, db, error
+from bookstation import app, request, db, error, admintoken
 from bookstation.models.user_sys import Follow_relationship, User, Post
 
-from bookstation.utils.auth_util import get_user
+from bookstation.utils.auth_util import get_user, generate_token
 from datetime import date, datetime
 from sqlalchemy import desc
 
@@ -23,13 +23,29 @@ def adminlogin():
         raise error.NotFoundError(description='Target admin not found')
     if password != admin.password:
         raise error.BadReqError(description= 'Wrong password')
+    token = generate_token(str(admin_id))
+    admintoken[token] = admin_id
+    return dumps({'id':admin.admin_id ,'token': token})
 
-    return dumps({'id':admin.admin_id})
+@app.route("/admin/logout", methods=["POST"])
+def adminlogout():
+
+    body = request.get_json()
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
+    else:
+        admintoken.pop(token)
+    return dumps({'success':[]})
+
 
 @app.route("/quiz/createquiz", methods=["POST"])
 def createquiz():
     
     body = request.get_json()
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
     id = body.get('id')
     print(id)
     quizname = body.get('name')
@@ -48,7 +64,7 @@ def createquiz():
       db.session.commit()
       db.session.flush()
 
-      answers = question['answers']
+      answers = question['ans']
       for answer in answers:
         content = answer['content']
         is_correct = answer['is_correct']
@@ -60,7 +76,10 @@ def createquiz():
 
 @app.route("/quiz/getallquiz", methods=["GET"])
 def getallquiz():
-    quizzes = Quiz.query.order_by(Quiz.publish_status).all()
+    token = request.args.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
+    quizzes = Quiz.query.order_by(desc(Quiz.publish_status)).all()
     result = []
     for quiz in quizzes:
       quiz_id = quiz.quiz_id
@@ -95,6 +114,9 @@ def getallquiz():
 @app.route("/quiz/openquiz", methods=["POST"])
 def openquiz():
     body = request.get_json()
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
     quiz_id = body.get('quiz_id')
     
     quiz = Quiz.query.get(quiz_id)
@@ -111,6 +133,9 @@ def openquiz():
 @app.route("/quiz/closequiz", methods=["POST"])
 def closequiz():
     body = request.get_json()
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
     quiz_id = body.get('quiz_id')
     
     quiz = Quiz.query.get(quiz_id)
@@ -128,7 +153,9 @@ def closequiz():
 def deletequiz():
     body = request.get_json()
     quiz_id = body.get('quiz_id')
-    
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
     quiz = Quiz.query.get(quiz_id)
     if quiz == None:
         raise error.NotFoundError(description='Target quiz not found')
