@@ -115,8 +115,10 @@ def removePost():
 def getPosts():
 
     user_id = request.args.get('user_id')
-
+    print(user_id)
+    print("lol")
     posts = Post.query.filter_by(user_id = user_id).all()
+    print(posts)
     posts_list = []
     for post in posts:
         post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
