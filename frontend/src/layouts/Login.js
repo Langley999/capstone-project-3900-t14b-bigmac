@@ -207,7 +207,11 @@ const Login = ({ updateLogin, updateUserInfo }) => {
           </FormControl>
 
           <Button variant="contained" type="submit">Login</Button>
-          <span style={{height: "20px", textAlign: "center"}}>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
+          <div style={{textAlign: "center"}}>
+            <span>Don't have an account? <a href="http://localhost:3000/bookstation/register">Register</a></span>
+            <br/>
+            <span>Login as admin <a href="http://localhost:3000/bookstation/admin">here</a></span>
+          </div>
         </Box>
       </div>
     );

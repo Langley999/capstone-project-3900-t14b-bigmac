@@ -139,9 +139,9 @@ def sendCode():
     try:
         msg = Message("Verification Code: ", sender= 'bigmaccomp3900@gmail.com', recipients=[email])
         code[email] = randint(10000, 99999)
-        print(code[email])
-        msg.body = f"Your reset code is {str(code)}"
+        msg.body = f"Your verification code for BookStation is {str(code[email])}"
         mail.send(msg)
+        print('VERIFICATION CODE:', code[email])
     except:
         raise error.NotFoundError(description="Email not found")
 
@@ -155,11 +155,7 @@ def sendCode():
 def verify():
     data = request.get_json()
     username, email, password, user_code = data['username'], data['email'], data['password'], data['user_code']
-    print('before string conversion', email)
     email = str(email)
-    print('after conversion', email)
-    print('stored code is: ', code[email])
-    print('frontend code', user_code, email)
     if int(code[email]) != int(user_code):
         print('comparison failed', code)
         raise error.InputError(description="Verification code does not match")
@@ -175,7 +171,6 @@ def verify():
     db.session.add(new_default_collection)
     db.session.add(new_history_collection)
     db.session.commit()
-    print(code)
     return dumps({
         'token': token,
         'user_id': new_user.user_id

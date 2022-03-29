@@ -217,8 +217,7 @@ def update_user_profile():
     '''
     try:
         data = request.get_json()
-        new_email, new_username, token, new_password = \
-            data['email'], data['username'], data['token'], data['password']
+        new_username, token, new_password = data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
 #     login_status_check(origin_email, token)
@@ -231,11 +230,6 @@ def update_user_profile():
         if (User.query.filter_by(username=new_username).first() != None):
             raise error.InputError(description="invalid username")
         user.username = new_username
-    # check if new_email is valid
-    if (user.email != new_email):
-        if (User.query.filter_by(email=new_email).first() != None):
-            raise error.InputError(description="invalid email")
-        user.email = new_email
     # change password
     user.password = pw_encode(new_password)
     db.session.add(user)

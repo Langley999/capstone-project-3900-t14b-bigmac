@@ -92,7 +92,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
 
     axios.post(`${url}/user/update`, {
       token: localStorage.getItem('token'),
-      email: values.email,
       username: values.username,
       password: values.password
     }).then(function (response) {
@@ -157,21 +156,20 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   </ Typography>
                 </Box>
                 <TextField
-                  fullWidth
-                  label="username"
-                  name="username"
-                  onChange={handleChange}
-                  required
-                  value={values.username ?? ''}
-                  variant="outlined"
-                />
-                <TextField
+                  disabled
                   fullWidth
                   label="Email"
                   name="email"
                   onChange={handleChange}
-                  required
                   value={values.email ?? ''}
+                  variant="outlined"
+                />
+                <TextField
+                  fullWidth
+                  label="Username"
+                  name="username"
+                  onChange={handleChange}
+                  value={values.username ?? ''}
                   variant="outlined"
                 />
                 <FormControl
