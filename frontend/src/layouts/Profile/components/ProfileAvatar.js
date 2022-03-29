@@ -44,10 +44,9 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }})
     .then(function (res) {
-      if (isSelf)
+      if (user_id === userInfo.user_id)
         setValues(userInfo);
       else {
-        console.log(res.data.avatar === <userInfo className="avatar">`</userInfo>)
         setValues({
           username: res.data.username,
           avatar: res.data.avatar
@@ -117,7 +116,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
     reader.readAsDataURL(file);
     reader.onloadend = function() {
       setSelected(reader.result);
-      console.log('RESULT', reader.result)
     }
   }
 
@@ -130,10 +128,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token'),
       avatar: selected
     }).then(res => {
-      console.log({
-        ...userInfo,
-        ['avatar']: selected,
-      })
       updateUserInfo({
         ...userInfo,
         ['avatar']: selected,
