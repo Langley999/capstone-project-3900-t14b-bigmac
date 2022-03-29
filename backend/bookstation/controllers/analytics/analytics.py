@@ -143,6 +143,7 @@ def followStats():
     
     """
     token = request.args.get('token')
+    user_id = request.args.get('user_id')
     user = get_user(token)
     curr_month = datetime.now().month
     curr_year = datetime.now().year
@@ -158,8 +159,8 @@ def followStats():
             init_year += 1
 
         month_dict = {'month' : init_month, 'followings' : 0, 'followers' : 0}
-        followings = Follow_relationship.query.filter_by(follower_user_id = user.user_id)
-        followers = Follow_relationship.query.filter_by(user_id = user.user_id)
+        followings = Follow_relationship.query.filter_by(follower_user_id = user_id)
+        followers = Follow_relationship.query.filter_by(user_id = user_id)
         for following in followings:
             if following.created_time.month == init_month and following.created_time.year == init_year:
                 month_dict['followings'] += 1

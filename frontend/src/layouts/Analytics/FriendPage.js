@@ -32,7 +32,8 @@ const FriendPage = () => {
 
   const getFollowStats = () => {
     axios.get(`${url}/analytics/followstats`, {params: {
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      user_id: id
     }}).then(function (response) {
       const temp = response['data']['follow_stats'];
       for (let i = 0; i < 6; i++) {
