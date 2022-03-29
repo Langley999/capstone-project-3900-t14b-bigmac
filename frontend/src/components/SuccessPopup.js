@@ -21,9 +21,7 @@ const SuccessPopup = ({ successMsg, snackBarOpen, setSnackBarOpen }) => {
   }
 
   const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
+
       setSnackBarOpen(false);
   };
   return (
