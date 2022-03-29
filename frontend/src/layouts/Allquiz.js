@@ -41,11 +41,13 @@ const Allquiz = () => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const navigate = useNavigate();
+  let admintoken = localStorage.getItem('admin_token');
   const openQuiz = (id) => {
     console.log('open')
     console.log(id)
     axios.post(`${url}/quiz/openquiz`, {
-      quiz_id: id
+      quiz_id: id,
+      token: admintoken
     }).then(function (res) {
       axios.get(`${url}/quiz/getallquiz`, {params: {
       }})
@@ -65,7 +67,8 @@ const Allquiz = () => {
     console.log('close')
     console.log(id)
     axios.post(`${url}/quiz/closequiz`, {
-      quiz_id: id
+      quiz_id: id,
+      token: admintoken
     }).then(function (res) {
       axios.get(`${url}/quiz/getallquiz`, {params: {
       }})
@@ -81,10 +84,11 @@ const Allquiz = () => {
   }
   const deleteQuiz = (id) => {
     let payload = {
-      quiz_id: id
+      quiz_id: id,
+      token:admintoken
     }
     axios.delete(`${url}/quiz/deletequiz`, { data: payload }).then(function (res) {
-      axios.get(`${url}/quiz/getallquiz`, {params: {
+      axios.get(`${url}/quiz/getallquiz`, {params: {token: admintoken
       }})
       .then(function (res) {
         console.log(res['data']['quizzes'])
@@ -101,7 +105,7 @@ const Allquiz = () => {
     navigate('/bookstation/makequiz');
   }
   useEffect(() => {
-    axios.get(`${url}/quiz/getallquiz`, {params: {
+    axios.get(`${url}/quiz/getallquiz`, {params: {token:admintoken
     }})
     .then(function (res) {
       console.log(res['data']['quizzes'])
@@ -109,8 +113,17 @@ const Allquiz = () => {
     })
   }, []);
   const handleLogOut = () => {
-    localStorage.clear();
-    navigate('/bookstation/login');
+    axios.post(`${url}/admin/logout`, {
+      token: admintoken
+    }).then(function (res) {
+      localStorage.clear();
+      navigate('/bookstation/login'); 
+    }).catch(function (error) {
+      setErrorMsg(JSON.stringify(error.response.data.message));
+      setSnackBarOpen(true);
+    });
+
+
   }
     return (
       <Box m={2} pt={2}>

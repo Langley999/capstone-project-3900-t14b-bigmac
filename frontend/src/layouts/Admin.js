@@ -62,6 +62,7 @@ const Admin = () => {
     })
     .then(function (response) {
       localStorage.setItem('admin_id', response['data']['id']);
+      localStorage.setItem('admin_token', response['data']['token']);
       navigate('/bookstation/allquiz');
 
     })

@@ -5,7 +5,7 @@ from flask_session import Session
 from json import dumps
 #import redis
 
-
+admintoken = {}
 
 def defaultHandler(err):
     response = err.get_response()
@@ -29,6 +29,7 @@ Session(app)
 app.register_error_handler(Exception, defaultHandler)
 
 db = SQLAlchemy(app)
+
 
 from bookstation import controllers
 from bookstation import models

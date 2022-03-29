@@ -46,14 +46,13 @@ const Addquiz = () => {
     ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
   }]); 
   
-
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const navigate = useNavigate();
  
-
+  let admintoken = localStorage.getItem('admin_token');
   useEffect(() => {
-    axios.get(`${url}/quiz/getallquiz`, {params: {
+    axios.get(`${url}/quiz/getallquiz`, {params: {token:admintoken
     }})
     .then(function (res) {
 
@@ -108,7 +107,8 @@ const Addquiz = () => {
       let body = {
         id: id,
         name: quizname,
-        questions: components
+        questions: components,
+        token: admintoken
       }
       axios.post(`${url}/quiz/createquiz`, 
         body
@@ -118,7 +118,7 @@ const Addquiz = () => {
           question:"",
           ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
         }]);
-        
+        navigate('/bookstation/allquiz');
       }).catch(function (error) {
         setErrorMsg(JSON.stringify(error.response.data.message));
         setSnackBarOpen(true);

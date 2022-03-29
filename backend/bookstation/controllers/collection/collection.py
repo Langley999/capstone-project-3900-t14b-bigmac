@@ -384,6 +384,8 @@ def recent_books():
 	"""
 	try:
 			u_id = request.args.get('user_id')
+			token = request.args.get('token')
+			user = get_user(token)
 	except:
 			raise error.BadReqError(description="post body error")
 
