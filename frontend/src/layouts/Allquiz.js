@@ -108,13 +108,17 @@ const Allquiz = () => {
       setAllquiz(res['data']['quizzes'])
     })
   }, []);
-
-
+  const handleLogOut = () => {
+    localStorage.clear();
+    navigate('/bookstation/login');
+  }
     return (
       <Box m={2} pt={2}>
 
+
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
         <Grid container direction="row" spacing={10} justifyContent="center" >
+
           <Grid item  xs={4}>
             <List >
             <Typography variant="h4" gutterBottom component="div">
@@ -148,11 +152,22 @@ const Allquiz = () => {
             </List>  
           </Grid>   
           <Grid item  xs={3}>
-            <IconButton edge="start" color="primary" sx={{ marginTop: 10, paddingRight: 3 }} onClick={handleCreateQuiz}>
-              <AddCircleIcon sx={{ paddingRight: 2 }} />
-              Create Quiz
-            </IconButton>
-          </Grid>     
+            <Grid container direction="column" spacing={3}>    
+              <Grid item  xs={2}>
+                <Button onClick={handleLogOut} variant="contained" sx={{ marginTop: 1, fontSize:15}}>
+                Log Out
+                </Button>
+              </Grid> 
+              <Grid item  xs={3}>
+                <Button edge="start" color="primary" variant="outlined" sx={{ marginTop: 5, paddingRight: 3 }} onClick={handleCreateQuiz}>
+                  <AddCircleIcon sx={{ paddingRight: 2 }} />
+                  Create Quiz
+                </Button>   
+              </Grid> 
+            </Grid>
+
+          </Grid>    
+
         </Grid>
 
       </Box>
