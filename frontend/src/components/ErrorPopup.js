@@ -20,9 +20,10 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
     }
   }
   const handleClose = (event, reason) => {
+    /*
       if (reason === 'clickaway') {
         return;
-      }
+      }*/
       setSnackBarOpen(false);
   };
   
@@ -36,7 +37,7 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
 
   return (
     <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={snackBarOpen}  onClose={handleClose} autoHideDuration={1500} >
-      <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} onClose={handleClose} >
+      <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} >
         {errorMsg }
       </Alert>
     </Snackbar>

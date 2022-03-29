@@ -28,6 +28,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
 import {Link, useParams} from "react-router-dom";
 import UsernameLink from '../components/UsernameLink';
+import Avatar from '@mui/material/Avatar';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -73,7 +74,7 @@ const BookDetail = ({userInfo}) => {
   const [authur, setAuther] = React.useState("");
   const [cover, setCover] = React.useState("");
   const [publisher, setPublisher] = React.useState("");
-  const [genres, setGenres] = React.useState("");
+  const [genres, setGenres] = React.useState("None");
   const [ave_rating, setaveRating] = React.useState(0);
   const [n_rating, setN_rating] = React.useState(0);
   const [reviewValue, setreviewValue] = React.useState(null);
@@ -195,6 +196,8 @@ const BookDetail = ({userInfo}) => {
       rev['time'] = datetime;
       rev['content'] = reviewValue;
       rev['username'] = userInfo.username;
+      rev['avatar'] = userInfo.avatar;
+      rev['user_id'] = userInfo.user_id;
       rev['rating'] = rating;
       setReviews(review => [rev,...review] );
 
@@ -398,7 +401,6 @@ const BookDetail = ({userInfo}) => {
       params: {
         token: localStorage.getItem('token'),
         bookId: book_id
-
       }
     })
     .then(function (response) {
@@ -459,6 +461,9 @@ const BookDetail = ({userInfo}) => {
         genres = genres+response['data']['genres'][i];
         genres = genres+", ";
       }
+      if (genres === "") {
+        genres = "None";
+      }
       setGenres(genres);
       setReviews(response['data']['reviews'].reverse())
     })
@@ -474,7 +479,7 @@ const BookDetail = ({userInfo}) => {
 
   return (
     <div>
-      {genres &&
+      {cover &&
       <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
 
         <Grid container direction="row" spacing={3}>
@@ -485,7 +490,7 @@ const BookDetail = ({userInfo}) => {
                 <Box
                   component="img"
                   sx={{
-                    height: 350,
+                    width: 250,
                     my:2
                   }}
                   alt="book cover"
@@ -599,26 +604,30 @@ const BookDetail = ({userInfo}) => {
               <Grid item xs={12}>
                 {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
                 {reviews.length > 0 &&  reviews.map((item, i) =>
-                  <Grid container direction="row" spacing={2} key={i}>
-
+                  <Grid container direction="row" spacing={2} key={i} style={{ marginBottom: 20 }} >
                     <Grid item xs={1}>
+                    <Avatar  variant="square" sx={{
+                          mt:2
+                        }}>
                       <Box
                         component="img"
+                        alt="avatar"
                         sx={{
-                          height: 50,
+                          width: 50,
                           my:1
                         }}
-                        alt="avatar"
                         src={item['avatar']==null?"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png":item['avatar']} 
-                      />
+                      />                      
+                    </Avatar>
+
                     </Grid>
                     <Grid item xs={10}>
                       <Grid container direction="row" spacing={0}>
                         <Grid item xs={4}>
                           
                           {localStorage.getItem('token')==null ?
-                            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"50px",justifyContent: "flex-start"}}>{item['username']}</Button>
-                            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"50px",justifyContent: "flex-start"}}>{item['username']}</Button>
+                            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
+                            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
                             }
                         </Grid>
                         <Grid item xs={3}>
@@ -636,7 +645,6 @@ const BookDetail = ({userInfo}) => {
                             {item['content']}
                           </Typography>
                         </Grid>
-                       
 
                       </Grid>
                      
