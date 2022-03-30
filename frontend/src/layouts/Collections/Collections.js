@@ -26,6 +26,7 @@ const Collections = ({userInfo}) => {
   const [canRemove, setCanRemove] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [saveStatus, setSaveStatus] = useState('Save');
+  const [viewRecently, setViewRencently] = useState(false);
   // let canRemove = false;
   const [collections, setCollections] = useState([]);
   const [saved, setSaved] = useState([]);
@@ -163,8 +164,13 @@ const Collections = ({userInfo}) => {
         });
     }
 
+    const clickMostRecently = () => {
+      setViewRencently(true);
+    }
+
     return (
       <div style={{display: 'flex', flexDirection: 'column'}}>
+        <Button onClick={clickMostRecently} variant="outlined" sx={{marginBottom: '10px'}}>Most Recently</Button>
         <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
           <MenuList>
             {isSelf ?

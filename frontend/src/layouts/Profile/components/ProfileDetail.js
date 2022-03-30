@@ -125,7 +125,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   return (
     <>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
-      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={2000} >
+      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
         <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
           {successMsg}
         </Alert>
