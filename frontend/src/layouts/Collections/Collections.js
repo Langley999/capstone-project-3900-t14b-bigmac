@@ -42,6 +42,7 @@ const Collections = ({userInfo}) => {
   const [rendering, setRendering] = useState('');
   let renameValue = '';
   const user_id = Number(window.location.pathname.split('/')[2]);
+  const [recentlyAdd, setRecentlyAdd] = useState({});
 
   useEffect(async () => {
     // const user_id = Number(window.location.pathname.split('/')[2]);
@@ -74,6 +75,19 @@ const Collections = ({userInfo}) => {
         setwarningcontent(error.message);
         setwarningopen(true);
       });
+
+    axios.get(`${url}/collection/recentbooks`, {params: {
+      token: localStorage.getItem('token'),
+      user_id: user_id
+    }})
+      .then(res => {
+        console.log(res.data);
+        setRecentlyAdd({
+          collection_id: -1,
+          name: 'Recently Added',
+          books: res.data.books
+        })
+      })
   }, [window.location.href, rendering, userInfo])
 
 
@@ -167,14 +181,26 @@ const Collections = ({userInfo}) => {
 
 
   const Sidebar = () => {
+    const clickRecentlyAdd = () => {
+      setCurrentCollection(recentlyAdd);
+      setCanRemove(false);
+      setIsSaved(false);
+    }
+
     return (
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
           <MenuList>
+            <MenuItem>
+              <ListItemText onClick={clickRecentlyAdd}>Recently Added</ListItemText>
+            </MenuItem>
             {isSelf ?
-              <MenuItem>
-                <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
-              </MenuItem>
+              <>
+                <Divider/>
+                <MenuItem>
+                  <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
+                </MenuItem>
+              </>
               : null
             }
             <Divider />
@@ -359,14 +385,14 @@ const Collections = ({userInfo}) => {
         </Dialog>
         <Box sx={{display: 'flex'}}>
           <h1>{currentCollection.name}</h1>
-          {currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf ?
+          {currentCollection.name === 'Recently Added' || currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf || isSaved ?
             null :
             <>
               <Button onClick={handleClickOpenRename} sx={{textTransform: 'none', marginLeft: '20px'}}>Rename</Button>
               <Button  sx={{textTransform: 'none'}} onClick={removeCollection}>Remove</Button>
             </>
           }
-          {!isSelf ?
+          {!isSelf && currentCollection.name !== 'Recently Added' ?
             <Button sx={{marginLeft: '20px'}} onClick={changeSaveStatus}>{saveStatus}</Button>
             : null
           }
@@ -432,7 +458,7 @@ const Collections = ({userInfo}) => {
       }}>
         <CollectionBar/>
         <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-        <Box sx={{overflow: 'auto'}}>
+        <Box sx={{height: '420px', overflow: 'auto'}}>
           <Grid
             container
             spacing={3}

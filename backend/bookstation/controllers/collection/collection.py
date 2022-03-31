@@ -422,16 +422,20 @@ def recent_books():
 
 	newlist = sorted(all_books, key=lambda d: d['time'],reverse=True)
 	res = []
-	for n in newlist[:10]:
+	for n in newlist:
 		#book = Book.query.filter_by(book_id=n['book_id'])
 		bookinfo ={}
 		bookinfo['id'] = n['book'].book_id
 		bookinfo['title'] = n['book'].title
 		bookinfo['cover'] = n['book'].cover_image
 		bookinfo['added_time'] = str(n['time'])
-		res.append(bookinfo)
+		if len([x['id'] for x in res if x['id'] == bookinfo['id']]) == 0:
+		    res.append(bookinfo)
+		    if len(res) == 10:
+		        break
+
 	return dumps({
-			"success": res
+			"books": res
 	})
 
 
