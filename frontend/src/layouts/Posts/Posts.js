@@ -53,7 +53,6 @@ const Posts = ({userInfo}) => {
       }})
       .then(res => {
         setPosts(res.data.posts);
-        console.log(res)
       })
       .catch(function (error) {
         alert("error")
@@ -84,7 +83,6 @@ const Posts = ({userInfo}) => {
       token: localStorage.getItem('token'),
       content: newPost
     }).then(res => {
-      console.log(res);
       const currentdate = new Date();
       const datetime = currentdate.getFullYear() + "-"
         + (currentdate.getMonth()+1)  + "-"
@@ -159,7 +157,7 @@ const Posts = ({userInfo}) => {
         <CardContent>
           <div style={{display: "flex", flexDirection: "row", justifyContent: 'space-between'}} >
             <UsernameLink username={values.username} id={values.user_id} avatar={values.avatar} />
-            <div>{postInfo.time_created}</div>
+            <div>{postInfo.time_created.slice(0, 19)}</div>
           </div>
           <div style={{marginTop: '5px', marginLeft: '55px', overflowWrap: 'break-word', display: 'flex', justifyContent: 'space-between'}}>
             {postInfo.content}
