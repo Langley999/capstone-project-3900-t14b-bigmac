@@ -37,7 +37,7 @@ const Collections = ({userInfo}) => {
     name: '',
     books: []
   });
-  let newCollection = '';   // the name of created collection
+  let nameValue = '';   // the name of created collection
   const [openRename, setOpenRename] = useState(false);
   const [rendering, setRendering] = useState('');
   let renameValue = '';
@@ -75,6 +75,52 @@ const Collections = ({userInfo}) => {
         setwarningopen(true);
       });
   }, [window.location.href, rendering, userInfo])
+
+
+  const handleChange = (e) => {
+    console.log(e.target.value)
+    nameValue = e.target.value;
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const createCollection = () => {
+    if (nameValue === '') {
+      setwarningopen(true);
+      setwarningcontent('Collection name cannot be empty.');
+      return;
+    }
+
+    if (collections.filter((collection) => collection.name === nameValue) !== []) {
+      setwarningopen(true);
+      setwarningcontent('Cannot have duplicate collection name.');
+      return;
+    }
+
+    axios.post(`${url}/collection/create`, {
+      name: nameValue,
+      token: localStorage.getItem('token')
+    }).then(res => {
+      const created = {
+        id: res['data']["id"],
+        name: nameValue,
+        flag: 3
+      }
+      const newCollections = [...collections];
+      setCollections([...newCollections, created]);
+      handleClose();
+    })
+      .catch(function (error) {
+        setwarningcontent(error.message);
+        setwarningopen(true);
+      });
+  }
 
   // get favourite collection id by flag
   const getFavouriteCollectionIdByFlag = () => {
@@ -120,49 +166,7 @@ const Collections = ({userInfo}) => {
   }
 
 
-
   const Sidebar = () => {
-
-    // for create collection dialog
-    const handleChange = (event) => {
-      newCollection = event.target.value;
-    }
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
-    ////////////////////////////////
-    // create a new collection
-    const createCollection = () => {
-
-      // if (collections.filter((collection) => collection.name === newCollection) !== []) {
-      //   alert("Cannot have duplicate collection name");
-      //   return;
-      // }
-
-      axios.post(`${url}/collection/create`, {
-        name: newCollection,
-        token: localStorage.getItem('token')
-      }).then(res => {
-        const created = {
-          id: res['data']["id"],
-          name: newCollection,
-          flag: 3
-        }
-        const newCollections = [...collections];
-        setCollections([...newCollections, created]);
-        handleClose();
-      })
-        .catch(function (error) {
-          setwarningcontent(error.message);
-          setwarningopen(true);
-        });
-    }
-
     return (
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <Paper sx={{ width: 200, maxWidth: '100%', height: 300, overflow: 'auto'}}>
@@ -173,35 +177,6 @@ const Collections = ({userInfo}) => {
               </MenuItem>
               : null
             }
-
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Create New Collection</DialogTitle>
-              <DialogContent>
-                <TextField
-                  fullWidth
-                  label="Collection Name"
-                  name="collectionName"
-                  onChange={handleChange}
-                  required
-                  variant="outlined"
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  variant='outlined'
-                  onClick={handleClose}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant='contained'
-                  onClick={createCollection}
-                  sx={{textTransform: 'none'}}
-                >
-                  Create Collection
-                </Button>
-              </DialogActions>
-            </Dialog>
             <Divider />
             {collections.map((collection) =>
                 <MenuItem
@@ -414,12 +389,12 @@ const Collections = ({userInfo}) => {
         }
       }).then(res => {
         const newBooks = currentCollection.books.filter((book) => book.title !== title);
-        const newCollection = {
+        const newC = {
           collection_id: currentCollection.collection_id,
           name: currentCollection.name,
           books: newBooks
         }
-        setCurrentCollection(newCollection);
+        setCurrentCollection(newC);
       })
         .catch(error => {
           alert(error.response.data.message);
@@ -479,6 +454,34 @@ const Collections = ({userInfo}) => {
     <>
       <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen}/>
       <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create New Collection</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Collection Name"
+            name="collectionName"
+            onChange={e => handleChange(e)}
+            required
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant='contained'
+            onClick={createCollection}
+            sx={{textTransform: 'none'}}
+          >
+            Create Collection
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Box
         sx={{
           display: 'flex',
