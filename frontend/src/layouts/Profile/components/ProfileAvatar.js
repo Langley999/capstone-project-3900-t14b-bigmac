@@ -202,6 +202,12 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
                 width: 150
               }}
             />
+            {isSelf ? <Button onClick={handleOpen} color="primary" variant='contained'>
+                Upload Avatar
+              </Button>
+              : <>{isFollowing ? <UnfollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
+                : <FollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
+              </>}
           </Box>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Upload Avatar</DialogTitle>
@@ -225,15 +231,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
                     }}
                   />
                 </div>
-                // <div>
-                //   <img
-                //     className='img-container'
-                //     style={{height: '150px', width: '150px'}}
-                //     src={selected}
-                //     alt=""
-                //     key={selected}
-                //   />
-                // </div>
               }
             </DialogContent>
             <DialogActions>
@@ -252,12 +249,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
               </Button>
             </DialogActions>
           </Dialog>
-          {isSelf ? <Button onClick={handleOpen} color="primary" variant='contained'>
-              Upload Avatar
-            </Button>
-            : <>{isFollowing ? <UnfollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
-            : <FollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
-          </>}
         </CardContent>
         <CardActions>
         </CardActions>

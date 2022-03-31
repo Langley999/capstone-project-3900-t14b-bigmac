@@ -6,7 +6,7 @@ import {
   DialogTitle,
   FormControlLabel,
   FormGroup,
-  FormLabel, InputLabel, Select,
+  FormLabel, InputLabel, Portal, Select,
 } from "@material-ui/core";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
@@ -15,6 +15,8 @@ import axios from "axios";
 import {url} from "./Helper";
 import {useNavigate} from 'react-router-dom';
 import MenuItem from "@mui/material/MenuItem";
+import ErrorPopup from "./ErrorPopup";
+import {padding} from "@mui/system";
 
 
 const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 'Nonfiction', 'Adult',
@@ -24,6 +26,8 @@ const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 
 
 const Genres = ({updateSearchResult}) => {
   const navigate = useNavigate();
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [genreRating, setGenreRating] = useState(0);
   const genreSet = [];
   const genreList = {
@@ -84,8 +88,14 @@ const Genres = ({updateSearchResult}) => {
   }
 
   const searchGenre = () => {
+    let selectedGenres = getGenres();
+    if (selectedGenres === '') {
+      setShowError(true);
+      setErrorMsg('Please choose at lease one genre');
+      return
+    }
     axios.get(`${url}/search/genre`, {params: {
-        genres: getGenres(),
+        genres: selectedGenres,
         rating: genreRating
       }})
       .then(res => {
@@ -100,7 +110,11 @@ const Genres = ({updateSearchResult}) => {
 
   return (
     <>
+      <Portal>
+        <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
+      </Portal>
       <Button
+        variant="contained"
         onClick={handleClickGenre}
       >
         Genres

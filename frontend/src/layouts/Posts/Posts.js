@@ -190,6 +190,7 @@ const Posts = ({userInfo}) => {
           </Box>
         )
       })}
+      {posts.length === 0 ? <h2>There is no post here.</h2> : null}
     </>
   );
 };

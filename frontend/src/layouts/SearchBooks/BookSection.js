@@ -22,7 +22,7 @@ const BookSection = ({bookInfo}) => {
               </Typography>
             </Box>
             <Box sx={{height: '50px', overflow: 'auto', marginBottom: '10px'}}>
-              <Typography variant="body2" color="secondary">
+              <Typography variant="body2" style={{color: '#757575'}}>
                 {bookInfo.author}
               </Typography>
             </Box>

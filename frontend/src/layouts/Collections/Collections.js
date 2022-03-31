@@ -74,7 +74,7 @@ const Collections = ({userInfo}) => {
         setwarningcontent(error.message);
         setwarningopen(true);
       });
-  }, [window.location.href, rendering])
+  }, [window.location.href, rendering, userInfo])
 
   // get favourite collection id by flag
   const getFavouriteCollectionIdByFlag = () => {
@@ -432,7 +432,7 @@ const Collections = ({userInfo}) => {
           <Box component={Link} to={`/book/?id=${id}`} className='remove-underline' sx={{color: 'black'}} >
             <img src={cover} alt="" style={{height: '200px', width: '140px'}}/>
             <Box sx={{height: '55px', overflow: 'auto'}}>
-              <Typography variant="body2" color="secondary">
+              <Typography variant="body2" style={{color: '#757575'}}>
                 {title}
               </Typography>
             </Box>

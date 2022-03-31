@@ -29,6 +29,8 @@ import Filter from "./Filter";
 import axios from "axios";
 import {url} from './Helper';
 import '../App.css';
+import InputAdornment from "@mui/material/InputAdornment";
+import {TextField} from "@material-ui/core";
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -40,49 +42,8 @@ const Slogan = styled('h1')(({ theme }) => ({
   color: '#6985c4',
 }));
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: 3,
-  color: 'grey',
-  border: 1,
-  backgroundColor: alpha('#9e9e9e', 0.1),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    marginRight: theme.spacing(1),
-    width: 'auto',
-  },
-}));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
-  },
-}));
-
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult }) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue }) {
   const [searchRating, setSearchRating] = useState(0);
   const [rating, setRating] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -110,7 +71,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     updateRadioValue(e.target.value);
   }
 
-  const submitSearch = () => {
+  const submitSearch = (e) => {
+    e.preventDefault();
     console.log(radioValue)
     console.log(searchValue)
     console.log(searchRating)
@@ -231,25 +193,25 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       >
-        <MenuItem component={Link} to={`/user/${userInfo.user_id}/profile`}>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/profile`} onClick={() => updateTabValue(0)}>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem component={Link} to={`/user/${userInfo.user_id}/collections`}>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/collections`} onClick={() => updateTabValue(1)}>
           <ListItemIcon>
             <CollectionsBookmarkIcon fontSize="small" />
           </ListItemIcon>
           Collections
         </MenuItem>
-        <MenuItem component={Link} to={`/user/${userInfo.user_id}/posts`}>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/posts`} onClick={() => updateTabValue(2)}>
           <ListItemIcon>
             <AutoFixHighIcon fontSize="small" />
           </ListItemIcon>
           Posts
         </MenuItem>
-        <MenuItem component={Link} to={`/user/${userInfo.user_id}/analytics`}>
+        <MenuItem component={Link} to={`/user/${userInfo.user_id}/analytics`} onClick={() => updateTabValue(3)}>
           <ListItemIcon>
             <BarChartIcon fontSize="small" />
           </ListItemIcon>
@@ -266,6 +228,32 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     )
   }
 
+  const SearchBox = () => {
+    return (
+      <Box
+        sx={{marginLeft: '10px', marginRight: '10px'}}
+        component="form"
+        onSubmit={(e) => submitSearch(e)}
+      >
+        <TextField
+          size="small"
+          placeholder="Search Books"
+          value={searchValue}
+          onChange={(e) => updateSearchValue(e.target.value)}
+          variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" color="primary">
+                  <SearchIcon onClick={(e) =>submitSearch(e)}/>
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+    )
+  }
 
   return (
       <HeaderContainer position="fixed" className='header'
@@ -288,19 +276,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 BookStation
             </Slogan>
           </Box>
-          <Box component="form">
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search Books"
-                value={searchValue}
-                onChange={(e) => updateSearchValue(e.target.value)}
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </Search>
-          </Box>
+          <SearchBox/>
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"
@@ -313,7 +289,10 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
             </RadioGroup>
           </FormControl>
          <Filter updateSearchRating={updateSearchRating} updateRating={updateRating} rating={rating}/>
-          <Button onClick={submitSearch} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
+          <Divider
+            orientation="vertical"
+            style={{ minHeight: "inherit", color: "red", marginLeft: '20px', marginRight: '20px'}}
+          />
           <Genres updateSearchResult={updateSearchResult}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}

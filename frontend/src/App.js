@@ -36,6 +36,7 @@ function App() {
   const [radioValue, setRadioValue] = useState('title');
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -64,6 +65,10 @@ function App() {
     setSearchResult(searchResult);
   }
 
+  const updateTabValue = (newTabValue) => {
+    setTabValue(newTabValue);
+  }
+
   return (
     <div>
       <Router>
@@ -79,6 +84,7 @@ function App() {
                 updateRadioValue={updateRadioValue}
                 radioValue={radioValue}
                 updateSearchResult={updateSearchResult}
+                updateTabValue={updateTabValue}
               />
               <div className='centre'>
                 <Outlet />
@@ -100,7 +106,7 @@ function App() {
             <Route path='user/:userid' element={
               <>
                 <AvatarBanner userInfo={userInfo}/>
-                <NavTabs/>
+                <NavTabs tabValue={tabValue} updateTabValue={updateTabValue}/>
                 <Outlet />
               </>
             }>
@@ -112,9 +118,7 @@ function App() {
           </Route>
 
           <Route path="bookstation" element={
-            <>
               <Outlet />
-            </>
           }>
             <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
             <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
