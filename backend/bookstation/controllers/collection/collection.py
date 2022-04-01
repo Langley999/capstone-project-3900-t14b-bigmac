@@ -256,6 +256,7 @@ def remove_collection():
 	if collection.user_id != user.user_id:
 		raise error.AccessError(description="You don't have permission to add this book")
 	try:
+		Collection_book.query.filter_by(collection_id = c_id).delete()
 		db.session.delete(collection)
 		db.session.commit()
 
@@ -430,9 +431,9 @@ def recent_books():
 		bookinfo['cover'] = n['book'].cover_image
 		bookinfo['added_time'] = str(n['time'])
 		if len([x['id'] for x in res if x['id'] == bookinfo['id']]) == 0:
-		    res.append(bookinfo)
-		    if len(res) == 10:
-		        break
+			res.append(bookinfo)
+			if len(res) == 10:
+				break
 
 	return dumps({
 			"books": res

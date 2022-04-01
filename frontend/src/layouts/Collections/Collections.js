@@ -13,6 +13,7 @@ import axios from "axios";
 import {Link, useParams} from "react-router-dom";
 import ErrorPopup from "../../components/ErrorPopup";
 import SuccessPopup from "../../components/SuccessPopup";
+import {Pagination} from "@mui/material";
 
 
 const Collections = ({userInfo}) => {
@@ -43,6 +44,10 @@ const Collections = ({userInfo}) => {
   let renameValue = '';
   const user_id = Number(window.location.pathname.split('/')[2]);
   const [recentlyAdd, setRecentlyAdd] = useState({});
+  const [pageBooks, setPageBooks] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(10);
+  const pageSize = 12;
 
   useEffect(async () => {
     // const user_id = Number(window.location.pathname.split('/')[2]);
@@ -90,6 +95,13 @@ const Collections = ({userInfo}) => {
       })
   }, [window.location.href, rendering, userInfo])
 
+  const handleChangePage = (event, value) => {
+    setPage(value);
+    const start = (value-1)*pageSize;
+    const end = value * pageSize;
+    setPageBooks(currentCollection['books'].slice(start, end));
+  }
+
 
   const handleChange = (e) => {
     console.log(e.target.value)
@@ -110,8 +122,9 @@ const Collections = ({userInfo}) => {
       setwarningcontent('Collection name cannot be empty.');
       return;
     }
-
-    if (collections.filter((collection) => collection.name === nameValue) !== []) {
+    console.log(collections)
+    console.log(collections.filter((collection) => collection.name === nameValue))
+    if (collections.filter((collection) => collection.name === nameValue).length !== 0) {
       setwarningopen(true);
       setwarningcontent('Cannot have duplicate collection name.');
       return;
@@ -161,6 +174,9 @@ const Collections = ({userInfo}) => {
             books: res.data.books,
             has_saved: res.data.has_saved
           })
+          setPage(1);
+          setPageCount(Math.ceil(res.data.books.length / pageSize))
+          setPageBooks(res.data.books.slice(0, pageSize));
           if (res.data.has_saved)
             setSaveStatus('Unsave');
           else
@@ -183,6 +199,9 @@ const Collections = ({userInfo}) => {
   const Sidebar = () => {
     const clickRecentlyAdd = () => {
       setCurrentCollection(recentlyAdd);
+      setPage(1);
+      setPageCount(Math.ceil(recentlyAdd.books.length / pageSize))
+      setPageBooks(recentlyAdd.books.slice(0, pageSize));
       setCanRemove(false);
       setIsSaved(false);
     }
@@ -195,12 +214,12 @@ const Collections = ({userInfo}) => {
               <ListItemText onClick={clickRecentlyAdd}>Recently Added</ListItemText>
             </MenuItem>
             {isSelf ?
-              <>
+              <div>
                 <Divider/>
                 <MenuItem>
                   <ListItemText onClick={handleClickOpen}>+ Add Collection</ListItemText>
                 </MenuItem>
-              </>
+              </div>
               : null
             }
             <Divider />
@@ -452,18 +471,24 @@ const Collections = ({userInfo}) => {
     return (
       <Paper sx={{
         width: '100%',
-        height: '500px',
+        height: '760px',
         marginLeft: '40px',
         padding: '20px',
       }}>
         <CollectionBar/>
         <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-        <Box sx={{height: '420px', overflow: 'auto'}}>
+        <Box sx={{
+          height: '670px',
+          overflow: 'auto',
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
           <Grid
             container
             spacing={3}
           >
-            {currentCollection.books.map((book) => {
+            {pageBooks.map((book) => {
               return (
                 <Grid item xs={12} sm={6} md={2} key={book.id}>
                   <Book id={book.id} title={book.title} cover={book.cover}/>
@@ -471,6 +496,7 @@ const Collections = ({userInfo}) => {
               )
             })}
           </Grid>
+          <Pagination count={pageCount} page={page} onChange={handleChangePage} />
         </Box>
       </Paper>
     )

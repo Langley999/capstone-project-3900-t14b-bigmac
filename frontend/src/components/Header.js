@@ -228,32 +228,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     )
   }
 
-  const SearchBox = () => {
-    return (
-      <Box
-        sx={{marginLeft: '10px', marginRight: '10px'}}
-        component="form"
-        onSubmit={(e) => submitSearch(e)}
-      >
-        <TextField
-          size="small"
-          placeholder="Search Books"
-          value={searchValue}
-          onChange={(e) => updateSearchValue(e.target.value)}
-          variant="outlined"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton edge="end" color="primary">
-                  <SearchIcon onClick={(e) =>submitSearch(e)}/>
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-    )
-  }
 
   return (
       <HeaderContainer position="fixed" className='header'
@@ -276,7 +250,28 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
                 BookStation
             </Slogan>
           </Box>
-          <SearchBox/>
+          <Box
+            sx={{marginLeft: '10px', marginRight: '10px'}}
+            component="form"
+            onSubmit={(e) => submitSearch(e)}
+          >
+            <TextField
+              size="small"
+              placeholder="Search Books"
+              value={searchValue}
+              onChange={(e) => updateSearchValue(e.target.value)}
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" color="primary">
+                      <SearchIcon onClick={(e) =>submitSearch(e)}/>
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
           <FormControl>
             <RadioGroup
               aria-labelledby="radio-buttons"

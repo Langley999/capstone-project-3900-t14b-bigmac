@@ -15,6 +15,7 @@ import Card from "@material-ui/core/Card";
 import axios from "axios";
 import {useParams} from "react-router-dom";
 import UsernameLink from "../../components/UsernameLink";
+import {Pagination} from "@mui/material";
 
 const Posts = ({userInfo}) => {
   const urlParams = useParams();
@@ -25,6 +26,10 @@ const Posts = ({userInfo}) => {
   const [postFormOn, setReviewFormOn] = React.useState(false);
   const [tempPost, setTempPost] = useState({});
   const [values, setValues] = useState({});
+  const [pagePosts, setPagePosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(10);
+  const pageSize = 10;
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
@@ -53,12 +58,22 @@ const Posts = ({userInfo}) => {
       }})
       .then(res => {
         setPosts(res.data.posts);
+        setPage(1);
+        setPageCount(Math.ceil(res.data.posts.length / pageSize))
+        setPagePosts(res.data.posts.slice(0, pageSize));
       })
       .catch(function (error) {
         alert("error")
         // alert(error.response.data.message);
       });
   }, [window.location.href, userInfo, tempPost])
+
+  const handleChangePage = (event, value) => {
+    setPage(value);
+    const start = (value-1)*pageSize;
+    const end = value * pageSize;
+    setPagePosts(posts.slice(start, end));
+  }
 
 
   const handleAddPost = () => {
@@ -180,15 +195,21 @@ const Posts = ({userInfo}) => {
         </Button>
         : null}
       <CreatePost/>
-
-      {posts.map(postInfo => {
-        return (
-          <Box key={postInfo.post_id} sx={{marginBottom: '10px'}}>
-            <PostSection postInfo={postInfo}/>
-          </Box>
-        )
-      })}
-      {posts.length === 0 ? <h2>There is no post here.</h2> : null}
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        {pagePosts.map(postInfo => {
+          return (
+            <Box key={postInfo.post_id} sx={{marginBottom: '10px', width: '100%'}}>
+              <PostSection postInfo={postInfo}/>
+            </Box>
+          )
+        })}
+        {posts.length === 0 ? <h2>There is no post here.</h2> : null}
+        <Pagination sx={{marginBottom: '10px'}} count={pageCount} page={page} onChange={handleChangePage} />
+      </Box>
     </>
   );
 };
