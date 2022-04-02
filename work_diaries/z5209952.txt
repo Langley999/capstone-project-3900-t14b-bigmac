@@ -30,3 +30,9 @@ week 6
 - I added book recommendation for single book
 - I added admin api
 - I added analytics api
+
+week 7
+- I added create quiz, delete quiz, get quiz api
+- I added frontend for admin quiz access and management
+- I modified book details page for unlogin users
+- I debugged book details page and pop ups
