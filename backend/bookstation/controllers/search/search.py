@@ -76,7 +76,7 @@ def search_book_author(author_name, rating_filter,page):
 
 def search_book_title(book_title, rating_filter,page):
     allbooks = []
-    books = Book.query.filter(Book.title.like('%'+book_title+'%')).order_by(desc(Book.average_rating)).paginate(
+    books = Book.query.filter(Book.title.like('%'+book_title+'%')).filter(Book.average_rating >= rating_filter).order_by(desc(Book.average_rating)).paginate(
             page=page,
             per_page=10,
             max_per_page=10,
@@ -84,17 +84,17 @@ def search_book_title(book_title, rating_filter,page):
         )
             
     for book in books.items:
-        if book.average_rating >= rating_filter: 
-            book_info = {}
-            book_info['id'] = book.book_id
-            book_info['title'] = book.title
-            book_info['author'] = book.author_string
-            book_info['num_rating'] = book.num_rating
-            book_info['cover'] = book.cover_image
-            book_info['average_rating'] = book.average_rating
-            book_info['publish_date'] = book.publish_date
-            allbooks.append(book_info)
-    
+
+        book_info = {}
+        book_info['id'] = book.book_id
+        book_info['title'] = book.title
+        book_info['author'] = book.author_string
+        book_info['num_rating'] = book.num_rating
+        book_info['cover'] = book.cover_image
+        book_info['average_rating'] = book.average_rating
+        book_info['publish_date'] = book.publish_date
+        allbooks.append(book_info)
+
     pages = books.pages 
     print(pages)
     return dumps({
