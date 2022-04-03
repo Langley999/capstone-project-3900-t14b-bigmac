@@ -35,7 +35,7 @@ class Quiz(db.Model):
     quiz_name = db.Column(db.String(256))
     description = db.Column(db.String(512))
     publish_status = db.Column(db.SmallInteger)
-
+    badge_id = db.Column(db.Integer, db.ForeignKey('badge.badge_id'), nullable=False)
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.admin_id'), nullable=False)
 
     
