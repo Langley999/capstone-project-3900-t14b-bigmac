@@ -33,6 +33,7 @@ class Quiz(db.Model):
 
     quiz_id = db.Column(db.Integer, primary_key=True)
     quiz_name = db.Column(db.String(256))
+    description = db.Column(db.String(512))
     publish_status = db.Column(db.SmallInteger)
 
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.admin_id'), nullable=False)
