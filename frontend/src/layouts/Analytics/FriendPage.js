@@ -14,13 +14,15 @@ import {
   Tooltip,
   Grid,
 } from 'devextreme-react/chart';
+import { useLocation } from 'react-router-dom';
 
-const FriendPage = () => {
+const FriendPage = ({userInfo}) => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const [stats, setStats] = React.useState([]);
   const [saves, setSaves] = React.useState(0);
-  const id = window.location.pathname.split('/')[2];
+  const location = useLocation();
+  const [id, setId] = React.useState(parseInt(location.pathname.split('/')[2]));
 
   const months = [ "January", "February", "March", "April", "May", "June", 
   "July", "August", "September", "October", "November", "December" ];
@@ -28,7 +30,8 @@ const FriendPage = () => {
   React.useEffect(() =>{
     getFollowStats();
     getSaves();
-  }, []);
+    setId(parseInt(location.pathname.split('/')[2]));
+  }, [location]);
 
   const getFollowStats = () => {
     axios.get(`${url}/analytics/followstats`, {params: {
@@ -102,7 +105,7 @@ const FriendPage = () => {
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: "normal"}}>Friend Activity</h2>
-      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves !== 1 ? <>s</>: <></>} ha{saves !== 1 ? <>ve</>: <>s</>} saved your collections! 📚</div>
+      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves !== 1 ? <>s</>: <></>} ha{saves !== 1 ? <>ve</>: <>s</>} saved {userInfo.user_id === id ? <>your</>: <>their</>} collections! 📚</div>
       <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
         <FollowGraph/>
       </div>

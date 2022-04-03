@@ -23,8 +23,8 @@ const FeedListing = ({ post, isPublic }) => {
     hours = hours ? hours : 12;
     let strTime = hours + ':' + minutes + ampm;
     return strTime;
-
   }
+
   return (
     <Card>
       <CardContent>
@@ -33,7 +33,10 @@ const FeedListing = ({ post, isPublic }) => {
           <div>{formatAMPM(post.time_created)} {createDate(post.time_created).toLocaleDateString("en-AU")}</div>
         </div>
         <br/>
-        {post.content}
+        {post.content.match('^Added a review for') ?
+          <>{post.content.split(':')[0]}<b>{post.content.split(':')[1].substring(2, post.content.split(':')[1].length - 3)}</b><br/><br/>"<i>{post.content.split(':')[2]}</i>"</>
+        : <>{post.content}</>
+        }
       </CardContent>
     </Card>
   )
