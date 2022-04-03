@@ -37,6 +37,12 @@ function App() {
   const [searchValue, setSearchValue] = useState('');
   const [searchResult, setSearchResult] = useState([]);
   const [tabValue, setTabValue] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [searchRating, setSearchRating] = useState(0);
+  const [searchType, setSearchType] = useState('');
+  const [genreRating, setGenreRating] = useState(0);
+  const [searchGenres, setSearchGenres] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -44,6 +50,30 @@ function App() {
       updateLogin(true);
     }
   }, []);
+
+  const updateSearchGenres = (newGenres) => {
+    setSearchGenres(newGenres);
+  }
+
+  const updateGenreRating = (newRating) => {
+    setGenreRating(newRating);
+  }
+
+  const updateSearchType = (type) => {
+    setSearchType(type);
+  }
+
+  const updateSearchRating = (rating) => {
+    setSearchRating(rating);
+  }
+
+  const updatePage = (newPage) => {
+    setPage(newPage);
+  }
+
+  const updatePageCount = (newCount) => {
+    setPageCount(newCount);
+  }
 
   const updateLogin = (ifLogin) => {
     setIfLogin(ifLogin);
@@ -85,6 +115,15 @@ function App() {
                 radioValue={radioValue}
                 updateSearchResult={updateSearchResult}
                 updateTabValue={updateTabValue}
+                searchRating={searchRating}
+                updateSearchRating={updateSearchRating}
+                updatePageCount={updatePageCount}
+                updatePage={updatePage}
+                updateSearchType={updateSearchType}
+                updateGenreRating={updateGenreRating}
+                genreRating={genreRating}
+                searchGenres={searchGenres}
+                updateSearchGenres={updateSearchGenres}
               />
               <div className='centre'>
                 <Outlet />
@@ -92,7 +131,7 @@ function App() {
 
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult}/>} />
+            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType}/>} />
             <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
               <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
             </Route>
@@ -100,7 +139,7 @@ function App() {
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
-            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult}/>} />
+            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} searchRating={searchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={

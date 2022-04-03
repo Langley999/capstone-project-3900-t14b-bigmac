@@ -24,11 +24,11 @@ const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 
   'Paranormal', 'Literature', 'Science Fiction', 'Childrens', 'Thriller', 'Magic', 'Humor'];
 
 
-const Genres = ({updateSearchResult}) => {
+const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreRating, updateSearchGenres}) => {
   const navigate = useNavigate();
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [genreRating, setGenreRating] = useState(0);
+
   const genreSet = [];
   const genreList = {
     'Fiction': false,
@@ -58,7 +58,7 @@ const Genres = ({updateSearchResult}) => {
   const openGenre = Boolean(anchorElGenre);
 
   const handleChangeGenreRating = (event) => {
-    setGenreRating(event.target.value);
+    updateGenreRating(event.target.value);
   }
 
   const handleChangeGenre = (event) => {
@@ -74,7 +74,7 @@ const Genres = ({updateSearchResult}) => {
 
   const handleCloseGenre = () => {
     setAnchorELGenre(null);
-    setGenreRating(0);
+    // updateGenreRating(0);
     setSelectGenres(genreList);
   };
 
@@ -99,11 +99,14 @@ const Genres = ({updateSearchResult}) => {
         rating: genreRating
       }})
       .then(res => {
+        updateSearchGenres(selectedGenres);
+        updateSearchType('byGenre');
+        console.log(res.data.books);
         updateSearchResult(res.data.books);
         navigate('searchbooks');
       })
       .catch(function (error) {
-        alert(error.response.data.message);
+        alert(error.message);
       });
     handleCloseGenre();
   }
