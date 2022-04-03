@@ -3,13 +3,36 @@ import React, { useState, useRef } from 'react';
 import {Grid} from "@material-ui/core";
 import BookSection from './BookSection';
 import Box from "@mui/material/Box";
+import {Pagination} from "@mui/material";
+import {url} from "../../components/Helper";
 
 
-const SearchBooks = ({searchResult}) => {
+const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, searchRating, updatePage, page, pageCount, searchType}) => {
+  const handleChangePage = (event, value) => {
+    updatePage(value);
+    console.log(searchType)
+    if (searchType === 'byValue') {
+      axios.get(`${url}/search/searchbook`, {
+        params: {
+          type: radioValue,
+          value: searchValue,
+          rating: searchRating,
+          page: value
+        }
+      })
+        .then(res => {
+          updateSearchResult(res.data.books);
+        })
+        .catch(function (error) {
+          alert(error.response.data.message);
+        });
+    } else {
 
+    }
+  }
 
   return (
-    <Box sx={{marginTop: '20px'}}>
+    <Box sx={{marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <Grid
         container
         spacing={3}
@@ -23,6 +46,7 @@ const SearchBooks = ({searchResult}) => {
           )
         }) : <div style={{paddingTop: "50px"}}>There were no books that matched the phrase</div>}
       </Grid>
+      <Pagination sx={{marginBottom: '20px', marginTop: '30px'}} count={pageCount} page={page} onChange={handleChangePage} />
     </Box>
   );
 };

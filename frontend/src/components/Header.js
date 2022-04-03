@@ -43,17 +43,14 @@ const Slogan = styled('h1')(({ theme }) => ({
 }));
 
 
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue }) {
-  const [searchRating, setSearchRating] = useState(0);
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres}) {
   const [rating, setRating] = useState(0);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const navigate = useNavigate();
 
-  const updateSearchRating = (rating) => {
-    setSearchRating(rating);
-  }
+  const navigate = useNavigate();
 
   const updateRating = (rating) => {
     setRating(rating);
@@ -80,11 +77,15 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         type: radioValue,
         value: searchValue,
         rating: searchRating,
-        page:1
+        page: 1
     }})
     .then(res => {
+      updatePage(1);
+      updateSearchType('byValue');
+      console.log('pagesCount', res.data.pages)
+      updatePageCount(res.data.pages);
       updateSearchResult(res.data.books);
-      updateSearchRating(0);
+      // updateSearchRating(0);
       setRating(0);
       navigate('searchbooks');
     })
@@ -289,7 +290,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
             orientation="vertical"
             style={{ minHeight: "inherit", color: "red", marginLeft: '20px', marginRight: '20px'}}
           />
-          <Genres updateSearchResult={updateSearchResult}/>
+          <Genres updateSearchResult={updateSearchResult} updateGenreRating={updateGenreRating} updateSearchType={updateSearchType} genreRating={genreRating} updateSearchGenres={updateSearchGenres}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?
