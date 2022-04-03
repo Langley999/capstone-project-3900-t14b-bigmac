@@ -227,6 +227,7 @@ def getfollower():
 
 @app.route("/post/getpublicfeed", methods=["GET"])
 def getPublicFeed():
+    page_no = request.args.get('page')
 
     posts_list = []
 
@@ -235,6 +236,6 @@ def getPublicFeed():
         post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'avatar' : post.user.avatar, 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
         posts_list.append(post_dict)
     
-
-    return dumps({'posts' : posts_list[:20]})
+    posts_list = posts_list[10*(page_no-1): 10*page_no]
+    return dumps({'posts' : posts_list})
 

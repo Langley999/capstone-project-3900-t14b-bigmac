@@ -185,7 +185,7 @@ def get_save1():
 	"""
 	token = request.args.get('token')
 	user = get_user(token)
-	collection_id = request.args.get('collection_id')
+	collection_id = int(request.args.get('collection_id'))
 	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
 
 	return dumps({'saves' : saves})
