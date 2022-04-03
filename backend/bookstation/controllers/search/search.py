@@ -129,9 +129,9 @@ def genre():
     page = request.args.get('page')
 
     if page == None:
-        page = 1
+        page = 0
     else:
-        page = int(page)
+        page = int(page)-1
     genres = genre_names.split('&')
     all_books = []
     for genre in genres:
@@ -141,6 +141,8 @@ def genre():
             booklist.append(book.book_id)
         all_books.append(booklist)
     books = set.intersection(*[set(x) for x in all_books])  
+    print("books")
+    print(books)
     pages = math.ceil(len(books)/12)
     results = []
     i = 0
