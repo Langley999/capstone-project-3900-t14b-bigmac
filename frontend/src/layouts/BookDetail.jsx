@@ -28,6 +28,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
 import {Link, useParams} from "react-router-dom";
 import UsernameLink from '../components/UsernameLink';
+import {Pagination} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -88,6 +89,7 @@ const BookDetail = ({userInfo}) => {
   const [warningopen,setwarningopen] = useState(false);
   const [warningcontent, setwarningcontent] = useState("");
   const [similarbooks, setSimilarbooks] = useState([]);
+  const [page,setpage] = useState(1);
   const book_id = searchParams.get('id');
 
   const handleAddReview = () => {
@@ -105,6 +107,28 @@ const BookDetail = ({userInfo}) => {
   const handleCreateCollection = () => {
     setCreateForm(true);
   }
+
+  const handleChangePage = (event, value) => {
+    setpage(value);
+    axios.get('http://127.0.0.1:8080/book/details', {
+      params: {
+        bookId: book_id,
+        token: localStorage.getItem('token'),
+        page:value
+      }
+    })
+    .then(function (response) {
+      console.log(response);
+
+      setReviews(response['data']['reviews'].reverse())
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
+
+  }
+
 
   const  handleLikeReview = (review_id) => {
     const body = JSON.stringify( {
@@ -442,17 +466,39 @@ const BookDetail = ({userInfo}) => {
     axios.get('http://127.0.0.1:8080/book/details', {
       params: {
         bookId: book_id,
-        token: localStorage.getItem('token')
+        token: localStorage.getItem('token'),
+        page:1
       }
     })
     .then(function (response) {
       console.log(response);
       setTitle(response['data']['title']);
       setBlurb(response['data']['blurb']);
-      setPublishdate(response['data']['publish_date']);
-      setCover(response['data']['cover_image']);
-      setAuther(response['data']['author_string']);
-      setPublisher(response['data']['publisher']);
+      if (setPublishdate(response['data']['publish_date']) === "") {
+        setPublishdate('Not Available');
+      } else {
+        setPublishdate(response['data']['publish_date']);
+      }
+      
+      if (response['data']['cover_image']==="") {
+        setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
+
+      } else{
+        setCover(response['data']['cover_image']);
+      }
+      if (response['data']['author_string'] === "") {
+        setAuther('unknown');
+      } else {
+        setAuther(response['data']['author_string']);        
+      }
+      
+
+      if (response['data']['publisher'] === "") {
+        setPublisher('Not Available');
+      } else {
+        setPublisher(response['data']['publisher']);
+      }
+     
       setaveRating(response['data']['average_rating'].toFixed(2));
       setN_rating(response['data']['num_rating'])
       console.log(response['data']);
@@ -523,7 +569,7 @@ const BookDetail = ({userInfo}) => {
                   <Typography variant="caption" gutterBottom component="div">Publish Date: {publishdate}</Typography>
                   <Box display="flex" flexDirection="row" alignItems='center' style={{width: '15rem'}}>
                     <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
-                    <Typography variant="caption" gutterBottom component="div" style={{marginTop: '1rem'}}>{genres}</Typography>
+                    <Typography variant="caption" gutterBottom component="div" style={{marginTop: '0rem'}}>{genres}</Typography>
                   </Box>
                 </Box>
 
@@ -601,7 +647,7 @@ const BookDetail = ({userInfo}) => {
 
 
 
-              <Grid item xs={12}>
+              <Grid item xs={12} >
                 {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
                 {reviews.length > 0 &&  reviews.map((item, i) =>
                   <Grid container direction="row" spacing={2} key={i} style={{ marginBottom: 20 }} >
@@ -678,7 +724,10 @@ const BookDetail = ({userInfo}) => {
                   <Pagination count={10} size="small" />
                 </Box>
               </Grid>
-            */}
+            */} 
+                <Grid container direction="row" justifyContent="center" spacing={2}  style={{ marginTop: 40 }} >
+                  <Pagination count={reviews['pages']} page={1} onChange={handleChangePage} />
+                </Grid>
               </Grid>
 
             </Grid>

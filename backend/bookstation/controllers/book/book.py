@@ -3,6 +3,7 @@ from datetime import datetime
 from json import dumps
 import ast
 import csv
+import math
 import time
 from bookstation.models.user_sys import Post
 # from typing import Collection
@@ -32,57 +33,40 @@ def getDetails():
     '''
     #get input
     token = request.args.get('token') 
-    if token:
+    if token != None:
         user = get_user(token)
-        book_id = request.args.get('bookId')
-        book = Book.query.get(book_id)
+    book_id = request.args.get('bookId')
+    page_no = int(request.args.get('page'))
+    book = Book.query.get(book_id)
 
-        #check book is db
-        if book == None:
-            raise error.InputError(description="book does not exist")
+    #check book is db
+    if book == None:
+        raise error.InputError(description="book does not exist")
 
-        #remove unecessary fields
-        genres = ast.literal_eval(book.genre_string)
-        book_dict = book.__dict__.copy()
-        book_dict.pop('_sa_instance_state', None)
-        book_dict.pop("genre_string", None)
-        book_dict['genres'] = genres
+    #remove unecessary fields
+    genres = ast.literal_eval(book.genre_string)
+    book_dict = book.__dict__.copy()
+    book_dict.pop('_sa_instance_state', None)
+    book_dict.pop("genre_string", None)
+    book_dict['genres'] = genres
 
-        #modify review dict to serialise timestamp of reivews
-        reviews = []
-        for review in book.reviews:
-            if review.content != None:
-                is_liked = False
+    #modify review dict to serialise timestamp of reivews
+    reviews = []
+    for review in book.reviews:
+        if review.content != None:
+            is_liked = False
+            if token != None:
                 if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
                     is_liked = True
-                reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+            reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+                
 
-        reviews.sort(key = lambda x: x['likes'], reverse=True)
-        book_dict['reviews'] = reviews
-    else:
- 
-        book_id = request.args.get('bookId')
-        book = Book.query.get(book_id)
+    reviews.sort(key = lambda x: x['likes'], reverse=True)
+    reviews = reviews[5*(page_no-1): 5*page_no]
+    review_pageno = math.ceil(len(reviews)/5)
+    book_dict['reviews'] = reviews
+    book_dict['pages'] = review_pageno
 
-        #check book is db
-        if book == None:
-            raise error.InputError(description="book does not exist")
-
-        #remove unecessary fields
-        genres = ast.literal_eval(book.genre_string)
-        book_dict = book.__dict__.copy()
-        book_dict.pop('_sa_instance_state', None)
-        book_dict.pop("genre_string", None)
-        book_dict['genres'] = genres
-
-        #modify review dict to serialise timestamp of reivews
-        reviews = []
-        for review in book.reviews:
-            if review.content != None:
-                reviews.append({'review_id': review.review_id, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes,  'is_liked' : False})
-
-        reviews.sort(key = lambda x: x['likes'], reverse=True)
-        book_dict['reviews'] = reviews 
 
     return dumps(book_dict)
 
