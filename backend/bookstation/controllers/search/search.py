@@ -32,14 +32,14 @@ def search():
         search_type = request.args.get('type')
         search_value = request.args.get('value')
         rating_filter = int(request.args.get('rating'))
-        #page = int(request.args.get('page'))
+        page = int(request.args.get('page'))
     except:
         raise error.BadReqError(description="invalid params")
     if (search_type == 'author'):
         # print(type(search_book_author(search_value)))
-        search_result = search_book_author(search_value, rating_filter,page=1)
+        search_result = search_book_author(search_value, rating_filter,page=page)
     if (search_type == 'title'):
-        search_result = search_book_title(search_value, rating_filter,page=1)
+        search_result = search_book_title(search_value, rating_filter,page=page)
 
     return search_result
 
@@ -49,8 +49,8 @@ def search_book_author(author_name, rating_filter,page):
 
     books = Book.query.filter(Book.author_string.like('%'+author_name+'%')).filter(Book.average_rating >= rating_filter).order_by(desc(Book.average_rating)).paginate(
                 page=page,
-                per_page=10,
-                max_per_page=10,
+                per_page=12,
+                max_per_page=12,
                 error_out=False
             )
 
@@ -76,25 +76,25 @@ def search_book_author(author_name, rating_filter,page):
 
 def search_book_title(book_title, rating_filter,page):
     allbooks = []
-    books = Book.query.filter(Book.title.like('%'+book_title+'%')).order_by(desc(Book.average_rating)).paginate(
+    books = Book.query.filter(Book.title.like('%'+book_title+'%')).filter(Book.average_rating >= rating_filter).order_by(desc(Book.average_rating)).paginate(
             page=page,
-            per_page=10,
-            max_per_page=10,
+            per_page=12,
+            max_per_page=12,
             error_out=False
         )
             
     for book in books.items:
-        if book.average_rating >= rating_filter: 
-            book_info = {}
-            book_info['id'] = book.book_id
-            book_info['title'] = book.title
-            book_info['author'] = book.author_string
-            book_info['num_rating'] = book.num_rating
-            book_info['cover'] = book.cover_image
-            book_info['average_rating'] = book.average_rating
-            book_info['publish_date'] = book.publish_date
-            allbooks.append(book_info)
-    
+
+        book_info = {}
+        book_info['id'] = book.book_id
+        book_info['title'] = book.title
+        book_info['author'] = book.author_string
+        book_info['num_rating'] = book.num_rating
+        book_info['cover'] = book.cover_image
+        book_info['average_rating'] = book.average_rating
+        book_info['publish_date'] = book.publish_date
+        allbooks.append(book_info)
+
     pages = books.pages 
     print(pages)
     return dumps({
@@ -129,9 +129,9 @@ def genre():
     page = request.args.get('page')
 
     if page == None:
-        page = 1
+        page = 0
     else:
-        page = int(page)
+        page = int(page)-1
     genres = genre_names.split('&')
     all_books = []
     for genre in genres:
@@ -141,12 +141,14 @@ def genre():
             booklist.append(book.book_id)
         all_books.append(booklist)
     books = set.intersection(*[set(x) for x in all_books])  
-    pages = math.ceil(len(books)/10)
+    print("books")
+    print(books)
+    pages = math.ceil(len(books)/12)
     results = []
     i = 0
     j = 0
     for id in books:
-        if i < page*10:
+        if i < page*12:
             i+=1
             continue
         print(i)
@@ -161,7 +163,7 @@ def genre():
         book_info['publish_date'] = book.publish_date
         results.append(book_info)
         j+=1
-        if j >= 10:
+        if j >= 12:
             break   
     '''
     genre_ids = []
