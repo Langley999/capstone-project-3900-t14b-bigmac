@@ -256,6 +256,7 @@ def remove_collection():
 	if collection.user_id != user.user_id:
 		raise error.AccessError(description="You don't have permission to add this book")
 	try:
+		Collection_book.query.filter_by(collection_id = c_id).delete()
 		db.session.delete(collection)
 		db.session.commit()
 
@@ -319,11 +320,6 @@ def get_savedCollections():
 	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection)
 
 	"""
-	try:
-		token = request.args.get('token')
-		user = get_user(token)
-	except:
-		raise error.AccessError(description="user doesn't exist or invalid token")
 
 	try:
 		user_id = request.args.get('user_id')
@@ -340,21 +336,21 @@ def get_savedCollections():
 	return dumps({'collections' : collection_list})
 
 
-@app.route(url_prefix + '/saves', methods=["GET"])
-def get_saves():
+# @app.route(url_prefix + '/saves', methods=["GET"])
+# def get_saves():
 
-	"""
-	Args: collection_id: collection to find number of saves
+# 	"""
+# 	Args: collection_id: collection to find number of saves
 
-	Returns: number of people who saved this collection
+# 	Returns: number of people who saved this collection
 
-	"""
-	token = request.args.get('token')
-	user = get_user(token)
-	collection_id = request.args.get('collection_id')
-	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
+# 	"""
+# 	token = request.args.get('token')
+# 	user = get_user(token)
+# 	collection_id = request.args.get('collection_id')
+# 	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
 
-	return dumps({'saves' : saves})
+# 	return dumps({'saves' : saves})
 
 
 @app.route(url_prefix + '/rename', methods=["POST"])
@@ -422,18 +418,21 @@ def recent_books():
 
 	newlist = sorted(all_books, key=lambda d: d['time'],reverse=True)
 	res = []
-	for n in newlist[:10]:
+	for n in newlist:
 		#book = Book.query.filter_by(book_id=n['book_id'])
 		bookinfo ={}
 		bookinfo['id'] = n['book'].book_id
 		bookinfo['title'] = n['book'].title
 		bookinfo['cover'] = n['book'].cover_image
 		bookinfo['added_time'] = str(n['time'])
-		res.append(bookinfo)
-	return dumps({
-			"success": res
-	})
+		if len([x['id'] for x in res if x['id'] == bookinfo['id']]) == 0:
+			res.append(bookinfo)
+			if len(res) == 10:
+				break
 
+	return dumps({
+			"books": res
+	})
 
 
 

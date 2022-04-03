@@ -179,13 +179,13 @@ def get_save1():
 
 	"""
 	Args: collection_id: collection to find number of saves
-
 	Returns: number of people who saved this collection
 	
 	"""
 	token = request.args.get('token')
 	user = get_user(token)
-	collection_id = request.args.get('collection_id')
+	collection_id = int(request.args.get('collection_id'))
 	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
 
 	return dumps({'saves' : saves})
+  
