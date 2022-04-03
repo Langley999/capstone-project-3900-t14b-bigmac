@@ -724,10 +724,13 @@ const BookDetail = ({userInfo}) => {
                   <Pagination count={10} size="small" />
                 </Box>
               </Grid>
-            */} 
+            */}
+              {reviews.length > 0 &&
                 <Grid container direction="row" justifyContent="center" spacing={2}  style={{ marginTop: 40 }} >
                   <Pagination count={reviews['pages']} page={1} onChange={handleChangePage} />
                 </Grid>
+              }
+
               </Grid>
 
             </Grid>
