@@ -255,8 +255,7 @@ const BookDetail = ({userInfo}) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-    .then(function (response) {
+    }).then(function (response) {
       let newone = [];
       for (let i = 0; i < reviews.length; i++) {
         if (reviews[i]['username'] == userInfo['username']) {
@@ -318,20 +317,20 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     })
-      .then(function (response) {
-        console.log(response)
-        if (response['status'] === 200) {
-          setbtnDisabled(true);
-          setreadingButtonText('completed');
-          setsnackbarcontent('Book has been added to Reading History');
-          setsnackbaropen(true);
-        }
-      })
-      .catch(function (error) {
-        setwarningcontent(error.response.data.message);
-        setwarningopen(true);
-        console.log(error);
-      });
+    .then(function (response) {
+      console.log(response)
+      if (response['status'] === 200) {
+        setbtnDisabled(true);
+        setreadingButtonText('completed');
+        setsnackbarcontent('Book has been added to Reading History');
+        setsnackbaropen(true);
+      }
+    })
+    .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+      console.log(error);
+    });
   }
   const handleCreateCollectionForm = () => {
     const body = JSON.stringify( {
@@ -357,24 +356,24 @@ const BookDetail = ({userInfo}) => {
               'Content-Type': 'application/json'
             }
           })
-            .then(function (response) {
-              console.log(response);
-              if (response['status'] === 200) {
-               
-                setsnackbarcontent('Book has been added to new collection');
-                setsnackbaropen(true);
-                setCreateForm(false);
-                settextFieldValue("");
-                setAnchorEl(null);
-                setCollection_ids([...collection_ids, c_id]);
-                setCollection_names([...collection_names, textFieldValue]);
-              }
-            })
-            .catch(function (error) {
-              setwarningcontent(error.response.data.message);
-              setwarningopen(true);
-              console.log(error);
-            });
+          .then(function (response) {
+            console.log(response);
+            if (response['status'] === 200) {
+              
+              setsnackbarcontent('Book has been added to new collection');
+              setsnackbaropen(true);
+              setCreateForm(false);
+              settextFieldValue("");
+              setAnchorEl(null);
+              setCollection_ids([...collection_ids, c_id]);
+              setCollection_names([...collection_names, textFieldValue]);
+            }
+          })
+          .catch(function (error) {
+            setwarningcontent(error.response.data.message);
+            setwarningopen(true);
+            console.log(error);
+          });
 
         }
       })
@@ -471,6 +470,10 @@ const BookDetail = ({userInfo}) => {
         }
 
       }
+      else {
+        setRating(0);
+        setreviewButtonshow(true);
+      }
 
     })
     .catch(function (error) {
@@ -517,17 +520,9 @@ const BookDetail = ({userInfo}) => {
           setPublishdate(converteddate);
         } else {
           setPublishdate(response['data']['publish_date']);
-        }
-        
-        
+        } 
       }
       
-      if (response['data']['cover_image']==="") {
-        setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
-
-      } else{
-        setCover(response['data']['cover_image']);
-      }
       if (response['data']['author_string'] === "") {
         setAuther('unknown');
       } else {
@@ -559,6 +554,14 @@ const BookDetail = ({userInfo}) => {
       }
       setGenres(genres);
       setReviews(response['data']['reviews'].reverse())
+
+      if (response['data']['cover_image']==="") {
+        setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
+
+      } else{
+        setCover(response['data']['cover_image']);
+      }
+
     })
     .catch(function (error) {
       setwarningcontent(error.response.data.message);

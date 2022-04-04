@@ -193,8 +193,6 @@ def getReview():
     else:
         return dumps({"reviews": []})
 
-
-
 #add rating only
 @app.route("/book/ratings", methods=["POST"])
 def addRating():
