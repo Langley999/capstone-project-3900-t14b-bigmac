@@ -82,6 +82,7 @@ const FriendPage = ({userInfo}) => {
   }
 
   const CollectionsGraph = () => {
+    saves.sort((a, b) => (a.name > b.name) ? 1 : -1);
     return (
       <Chart id="chart" dataSource={saves} resolveLabelOverlapping="stack">
         <Series
