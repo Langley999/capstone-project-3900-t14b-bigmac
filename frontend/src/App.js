@@ -24,7 +24,8 @@ import Collections from './layouts/Collections/Collections';
 import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
-import BookDetail from  './layouts/BookDetail'
+import BookDetail from  './layouts/BookDetail';
+import EditQuiz from  './layouts/EditQuiz';
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
 import axios from "axios";
@@ -164,6 +165,9 @@ function App() {
             <Route path="admin" element={<Admin />} />
             <Route path="makequiz" element={<Addquiz />} />
             <Route path="allquiz" element={<Allquiz />} />
+            <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
+              <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
+            </Route>
 
           </Route>
         </Routes>

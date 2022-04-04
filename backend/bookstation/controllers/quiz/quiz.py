@@ -178,3 +178,50 @@ def deletequiz():
     db.session.delete(quiz)
     db.session.commit()
     return dumps({ 'success' :[] })
+
+
+
+@app.route("/quiz/editquiz", methods=["PUT"])
+def updatequiz():
+    
+    body = request.get_json()
+    token = body.get('token')
+    if token not in admintoken:
+        raise error.NotFoundError(description='Target admin not found')
+    id = body.get('id')
+    print(id)
+    quizname = body.get('name')
+    description = body.get('description')
+    badge = body.get('badge')
+
+    #new_quiz = Quiz(publish_status=0, admin_id=id,quiz_name=quizname,description=description,badge_id=newbadge.badge_id)
+    quizinfo = Quiz.query.get(id)
+    quizinfo['quiz_name'] = quizname
+    quizinfo['description'] = description
+    badge = Badge.query.get(quizinfo['badge_id'])
+    badge['image'] = badge
+    db.session.add(quizinfo)
+    db.session.add(badge)
+    db.session.commit()
+    db.session.flush()
+
+    questions = body.get('questions')
+    for question in questions:
+        qid = question['id']
+        questioninfo = Question.query.get(qid)
+        questioninfo['description'] = question['question']
+    
+        db.session.add(questioninfo)
+        db.session.commit()
+        db.session.flush()
+
+        answers = question['ans']
+        for answer in answers:
+            ansinfo = Answer.query.get(answer['id'])
+            ansinfo['description'] = answer['content']
+            ansinfo['tag'] = answer['is_correct']
+            
+            db.session.add(ansinfo)
+            db.session.commit()
+  
+    return dumps({ 'success' : []})
