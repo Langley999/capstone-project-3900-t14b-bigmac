@@ -7,7 +7,7 @@ import {Pagination} from "@mui/material";
 import {url} from "../../components/Helper";
 
 
-const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, searchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating}) => {
+const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, tempsearchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating}) => {
   const handleChangePage = (event, value) => {
     updatePage(value);
     console.log(searchType)
@@ -16,7 +16,7 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
         params: {
           type: radioValue,
           value: searchValue,
-          rating: searchRating,
+          rating: tempsearchRating,
           page: value
         }
       })

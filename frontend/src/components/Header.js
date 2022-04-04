@@ -43,7 +43,7 @@ const Slogan = styled('h1')(({ theme }) => ({
 }));
 
 
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres}) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating}) {
   const [rating, setRating] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -81,6 +81,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
     }})
     .then(res => {
       updatePage(1);
+      updateTempsearchRating(searchRating);
+      updateSearchRating(0);
       updateSearchType('byValue');
       console.log('pagesCount', res.data.pages)
       updatePageCount(res.data.pages);

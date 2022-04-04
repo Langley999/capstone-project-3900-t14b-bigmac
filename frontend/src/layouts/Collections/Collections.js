@@ -47,7 +47,7 @@ const Collections = ({userInfo}) => {
   const [pageBooks, setPageBooks] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(10);
-  const pageSize = 12;
+  const pageSize = 2;
 
   useEffect(async () => {
     // const user_id = Number(window.location.pathname.split('/')[2]);
@@ -86,7 +86,6 @@ const Collections = ({userInfo}) => {
       user_id: user_id
     }})
       .then(res => {
-        console.log(res.data);
         setRecentlyAdd({
           collection_id: -1,
           name: 'Recently Added',
@@ -104,7 +103,6 @@ const Collections = ({userInfo}) => {
 
 
   const handleChange = (e) => {
-    console.log(e.target.value)
     nameValue = e.target.value;
   }
 
@@ -122,8 +120,6 @@ const Collections = ({userInfo}) => {
       setwarningcontent('Collection name cannot be empty.');
       return;
     }
-    console.log(collections)
-    console.log(collections.filter((collection) => collection.name === nameValue))
     if (collections.filter((collection) => collection.name === nameValue).length !== 0) {
       setwarningopen(true);
       setwarningcontent('Cannot have duplicate collection name.');
@@ -446,9 +442,16 @@ const Collections = ({userInfo}) => {
           name: currentCollection.name,
           books: newBooks
         }
-        console.log(newC)
         setCurrentCollection(newC);
-        setRendering(newC);
+        setPageCount(Math.ceil(newC.books.length / pageSize))
+        let p = page;
+        if (page > Math.ceil(newC.books.length / pageSize)) {
+          setPage(page - 1);
+          p = p-1
+        }
+        const start1 = (p-1)*pageSize;
+        const end1 = p * pageSize;
+        setPageBooks(newC['books'].slice(start1, end1));
       })
         .catch(error => {
           alert(error.response.data.message);

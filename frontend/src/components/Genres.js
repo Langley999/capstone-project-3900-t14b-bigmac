@@ -56,9 +56,10 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
   const [selectGenres, setSelectGenres] = useState(genreList);
   const [anchorElGenre, setAnchorELGenre] = useState(null);
   const openGenre = Boolean(anchorElGenre);
+  const [ratingDisplay, setRatingDisplay] = useState(0);
 
   const handleChangeGenreRating = (event) => {
-    updateGenreRating(event.target.value);
+    setRatingDisplay(event.target.value);
   }
 
   const handleChangeGenre = (event) => {
@@ -74,7 +75,7 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
 
   const handleCloseGenre = () => {
     setAnchorELGenre(null);
-    // updateGenreRating(0);
+    setRatingDisplay(0);
     setSelectGenres(genreList);
   };
 
@@ -96,10 +97,11 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
     }
     axios.get(`${url}/search/genre`, {params: {
         genres: selectedGenres,
-        rating: genreRating,
+        rating: ratingDisplay,
         page: 1
       }})
       .then(res => {
+        updateGenreRating(ratingDisplay);
         updateSearchGenres(selectedGenres);
         updateSearchType('byGenre');
         updatePage(1);
@@ -132,7 +134,7 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
             <Select
               labelId="select-rating"
               id="select-rating"
-              value={genreRating}
+              value={ratingDisplay}
               label="rating"
               onChange={handleChangeGenreRating}
             >

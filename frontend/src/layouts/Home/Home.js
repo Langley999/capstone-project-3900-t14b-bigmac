@@ -85,7 +85,7 @@ const data = {
   likeSubject: 'Science Fiction'
 }
 
-const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage}) => {
+const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage, updateGenreRating}) => {
   const navigate = useNavigate();
   const [topBooks, setTopBooks] = useState([]);
 
@@ -125,6 +125,7 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           page: 1
         }})
         .then(res => {
+          updateGenreRating(0);
           updateSearchGenres(genres);
           updateSearchType('byGenre');
           updatePage(1);
