@@ -24,7 +24,7 @@ const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 
   'Paranormal', 'Literature', 'Science Fiction', 'Childrens', 'Thriller', 'Magic', 'Humor'];
 
 
-const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreRating, updateSearchGenres}) => {
+const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreRating, updateSearchGenres, updatePageCount, updatePage}) => {
   const navigate = useNavigate();
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -102,7 +102,8 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
       .then(res => {
         updateSearchGenres(selectedGenres);
         updateSearchType('byGenre');
-        console.log(res.data.books);
+        updatePage(1);
+        updatePageCount(res.data.pages);
         updateSearchResult(res.data.books);
         navigate('searchbooks');
       })

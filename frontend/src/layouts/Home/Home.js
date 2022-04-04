@@ -85,7 +85,7 @@ const data = {
   likeSubject: 'Science Fiction'
 }
 
-const Home = ({ifLogin, updateSearchResult}) => {
+const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage}) => {
   const navigate = useNavigate();
   const [topBooks, setTopBooks] = useState([]);
 
@@ -121,14 +121,19 @@ const Home = ({ifLogin, updateSearchResult}) => {
     const searchGenre = (genres) => {
       axios.get(`${url}/search/genre`, {params: {
           genres: genres,
-          rating: 0
+          rating: 0,
+          page: 1
         }})
         .then(res => {
+          updateSearchGenres(genres);
+          updateSearchType('byGenre');
+          updatePage(1);
+          updatePageCount(res.data.pages);
           updateSearchResult(res.data.books);
           navigate('searchbooks');
         })
         .catch(function (error) {
-          alert(error.response.data.message);
+          alert(error.message);
         });
     }
 

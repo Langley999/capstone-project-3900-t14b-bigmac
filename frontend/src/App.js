@@ -132,7 +132,7 @@ function App() {
 
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType}/>} />
+            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount}/>} />
             <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
               <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
             </Route>
@@ -140,7 +140,7 @@ function App() {
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
-            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} searchRating={searchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType}/>} />
+            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} searchRating={searchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={

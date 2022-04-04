@@ -16,7 +16,7 @@ const BookSection = ({bookInfo}) => {
         <Box sx={{display: 'flex'}}>
           <img src={bookInfo.cover} alt="" style={{height: '250px', width: '175px'}}/>
           <Box sx={{padding: '10px'}}>
-            <Box sx={{height: '100px', overflow: 'auto'}}>
+            <Box sx={{height: '110px', overflow: 'auto'}}>
               <Typography gutterBottom variant="h6" component="div" sx={{textDecoration: 'none'}}>
                 {bookInfo.title}
               </Typography>
@@ -26,12 +26,22 @@ const BookSection = ({bookInfo}) => {
                 {bookInfo.author}
               </Typography>
             </Box>
-            <Rating
-              name={"rating-read"}
-              defaultValue={Math.round(bookInfo.average_rating * 10) /10}
-              precision={0.5}
-              readOnly
-            />
+            <Box sx={{height: '20px', overflow: 'auto', marginBottom: '10px'}}>
+              <Typography variant="body2" style={{color: '#757575'}}>
+                {bookInfo.publish_date}
+              </Typography>
+            </Box>
+            <Box sx={{display: 'flex'}}>
+              <Rating
+                name={"rating-read"}
+                defaultValue={Math.round(bookInfo.average_rating * 10) /10}
+                precision={0.5}
+                readOnly
+              />
+              <Typography variant="body2" style={{color: '#757575', marginLeft: '10px'}}>
+                {Math.round(bookInfo.average_rating * 10) /10}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </CardActionArea>

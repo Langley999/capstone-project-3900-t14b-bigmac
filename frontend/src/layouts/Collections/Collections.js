@@ -25,7 +25,7 @@ const Collections = ({userInfo}) => {
   const [snackbarcontent, setsnackbarcontent] = useState('');
 
   const [canRemove, setCanRemove] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState('no');
   const [saveStatus, setSaveStatus] = useState('Save');
   // let canRemove = false;
   const [collections, setCollections] = useState([]);
@@ -62,7 +62,7 @@ const Collections = ({userInfo}) => {
         setCollections(res['data']['collections']);
         initialCollections = [...res['data']['collections']]
         // default show Favourite Collection
-        getCollection(getFavouriteCollectionIdByFlag(), false);
+        getCollection(getFavouriteCollectionIdByFlag(), 'no');
       })
       .catch(function (error) {
         setwarningcontent(error.message);
@@ -182,7 +182,7 @@ const Collections = ({userInfo}) => {
           else
             setSaveStatus('Save');
 
-          if ((user_id === userInfo.user_id) && res.data.name !== 'Reading History' && !isSavedFlag) {
+          if ((user_id === userInfo.user_id) && res.data.name !== 'Reading History' && isSavedFlag === 'no') {
             setCanRemove(true);
           } else {
             setCanRemove(false);
@@ -203,7 +203,14 @@ const Collections = ({userInfo}) => {
       setPageCount(Math.ceil(recentlyAdd.books.length / pageSize))
       setPageBooks(recentlyAdd.books.slice(0, pageSize));
       setCanRemove(false);
-      setIsSaved(false);
+      setIsSaved('no');
+    }
+
+    const clickSavedCollection = (c) => {
+      if (isSelf)
+        getCollection(c.collection_id, 'my');
+      else
+        getCollection(c.collection_id, 'other');
     }
 
     return (
@@ -226,7 +233,7 @@ const Collections = ({userInfo}) => {
             {collections.map((collection) =>
                 <MenuItem
                   key={collection.id}
-                  onClick={() => getCollection(collection.id,false)}
+                  onClick={() => getCollection(collection.id,'no')}
                 >
                   <ListItemText>{collection.name}</ListItemText>
                 </MenuItem>
@@ -244,7 +251,7 @@ const Collections = ({userInfo}) => {
             {saved.map((c) =>
                 <MenuItem
                   key={c.collection_id}
-                  onClick={() => getCollection(c.collection_id, true)}
+                  onClick={() => clickSavedCollection(c)}
                 >
                   <ListItemText>{c.name} ({c.username})</ListItemText>
                 </MenuItem>
@@ -314,7 +321,7 @@ const Collections = ({userInfo}) => {
               fav = collection.id;
             }
           }
-          getCollection(fav, false);
+          getCollection(fav, 'no');
         })
         .catch(error => {
           setwarningcontent(error.message);
@@ -341,7 +348,7 @@ const Collections = ({userInfo}) => {
               fav = collection.id;
             }
           }
-          getCollection(fav, false);
+          getCollection(fav, 'no');
         })
         .catch(error => {
           setwarningcontent(error.message);
@@ -404,18 +411,18 @@ const Collections = ({userInfo}) => {
         </Dialog>
         <Box sx={{display: 'flex'}}>
           <h1>{currentCollection.name}</h1>
-          {currentCollection.name === 'Recently Added' || currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf || isSaved ?
+          {currentCollection.name === 'Recently Added' || currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf || isSaved !== 'no'?
             null :
             <>
               <Button onClick={handleClickOpenRename} sx={{textTransform: 'none', marginLeft: '20px'}}>Rename</Button>
               <Button  sx={{textTransform: 'none'}} onClick={removeCollection}>Remove</Button>
             </>
           }
-          {!isSelf && currentCollection.name !== 'Recently Added' ?
+          {!isSelf && currentCollection.name !== 'Recently Added'  && isSaved === 'no' ?
             <Button sx={{marginLeft: '20px'}} onClick={changeSaveStatus}>{saveStatus}</Button>
             : null
           }
-          {isSaved ?
+          {isSaved === 'my' ?
             <Button sx={{marginLeft: '20px'}} onClick={unsaveCollection}>Unsave</Button>
             : null
           }

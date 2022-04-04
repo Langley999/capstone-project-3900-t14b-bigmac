@@ -7,7 +7,8 @@ import {
   Typography
 } from '@mui/material';
 import {CardMedia} from "@material-ui/core";
-import banner from '../assets/banner.png'
+import banner from '../assets/banner.png';
+import banner2 from '../assets/banner2.jpeg';
 import React, { useState, useRef, useEffect } from 'react';
 import {useParams} from "react-router-dom";
 import axios from "axios";
@@ -17,9 +18,9 @@ import {url} from "./Helper";
 export const AvatarBanner = ({userInfo}) => {
   const urlParams = useParams();
   const [target, setTarget] = useState({});
+  const user_id = Number(window.location.pathname.split('/')[2]);
 
   useEffect(async () => {
-    const user_id = Number(window.location.pathname.split('/')[2]);
 
     axios.get(`${url}/user/profile`, {params: {
         user_id: user_id,
@@ -44,7 +45,7 @@ export const AvatarBanner = ({userInfo}) => {
         component="img"
         alt="Contemplative Reptile"
         height="100"
-        image={banner}
+        image={user_id === userInfo.user_id ? banner : banner2}
         title="Contemplative Reptile"
       />
       <CardContent>

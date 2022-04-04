@@ -290,7 +290,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
             orientation="vertical"
             style={{ minHeight: "inherit", color: "red", marginLeft: '20px', marginRight: '20px'}}
           />
-          <Genres updateSearchResult={updateSearchResult} updateGenreRating={updateGenreRating} updateSearchType={updateSearchType} genreRating={genreRating} updateSearchGenres={updateSearchGenres}/>
+          <Genres updateSearchResult={updateSearchResult} updateGenreRating={updateGenreRating} updateSearchType={updateSearchType} genreRating={genreRating} updateSearchGenres={updateSearchGenres} updatePageCount={updatePageCount} updatePage={updatePage}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?

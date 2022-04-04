@@ -68,6 +68,24 @@ const Posts = ({userInfo}) => {
       });
   }, [window.location.href, userInfo, tempPost])
 
+  const createDate = (str) => {
+    let li = str.split(' ');
+    let time = li[1];
+    const date = new Date(li[0].replace(/-/g,"/"));
+    return date;
+  }
+  const formatAMPM = (str) => {
+    let li = str.split(' ');
+    let time = li[1].split(':');
+    let hours = time[0];
+    let minutes = time[1];
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    let strTime = hours + ':' + minutes + ampm;
+    return strTime;
+  }
+
   const handleChangePage = (event, value) => {
     setPage(value);
     const start = (value-1)*pageSize;
@@ -172,7 +190,7 @@ const Posts = ({userInfo}) => {
         <CardContent>
           <div style={{display: "flex", flexDirection: "row", justifyContent: 'space-between'}} >
             <UsernameLink username={values.username} id={values.user_id} avatar={values.avatar} />
-            <div>{postInfo.time_created.slice(0, 19)}</div>
+            <div>{formatAMPM(postInfo.time_created)} {createDate(postInfo.time_created).toLocaleDateString("en-AU")}</div>
           </div>
           <div style={{marginTop: '5px', marginLeft: '55px', overflowWrap: 'break-word', display: 'flex', justifyContent: 'space-between'}}>
             {postInfo.content}

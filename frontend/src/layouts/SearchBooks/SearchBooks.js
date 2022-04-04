@@ -7,7 +7,7 @@ import {Pagination} from "@mui/material";
 import {url} from "../../components/Helper";
 
 
-const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, searchRating, updatePage, page, pageCount, searchType}) => {
+const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, searchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating}) => {
   const handleChangePage = (event, value) => {
     updatePage(value);
     console.log(searchType)
@@ -27,21 +27,17 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
           alert(error.response.data.message);
         });
     } else {
-      // axios.get(`${url}/search/genre`, {params: {
-      //     genres: selectedGenres,
-      //     rating: genreRating,
-      //     page: 1
-      //   }})
-      //   .then(res => {
-      //     updateSearchGenres(selectedGenres);
-      //     updateSearchType('byGenre');
-      //     console.log(res.data.books);
-      //     updateSearchResult(res.data.books);
-      //     navigate('searchbooks');
-      //   })
-      //   .catch(function (error) {
-      //     alert(error.message);
-      //   });
+      axios.get(`${url}/search/genre`, {params: {
+          genres: searchGenres,
+          rating: genreRating,
+          page: value
+        }})
+        .then(res => {
+          updateSearchResult(res.data.books);
+        })
+        .catch(function (error) {
+          alert(error.message);
+        });
     }
   }
 
