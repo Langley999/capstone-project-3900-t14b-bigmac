@@ -11,18 +11,21 @@ import Box from '@mui/material/Box';
 import {url} from '../../components/Helper';
 import axios from 'axios';
 import ErrorPopup from '../../components/ErrorPopup';
+import { useLocation } from 'react-router-dom';
 
-const GenrePage = () => {
+const GenrePage = ({userInfo}) => {
   const [genres, setGenres] = React.useState([]);
   const [authors, setAuthors] = React.useState([]);
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
-  const id = window.location.pathname.split('/')[2];
-  
+  const location = useLocation();
+  const [id, setId] = React.useState(parseInt(location.pathname.split('/')[2]));
+
   React.useEffect(() =>{
     getFavGenres();
     getFavAuthors();
-  }, []);
+    setId(parseInt(location.pathname.split('/')[2]));
+  }, [location]);
 
   const getFavGenres = () => {
     axios.get(`${url}/analytics/getfavgenres`, {params: {
@@ -83,7 +86,7 @@ const GenrePage = () => {
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
-      <h2 style={{fontWeight: "normal"}}>Your Genres</h2>
+      <h2 style={{fontWeight: "normal"}}>{userInfo.user_id === id ? <>Your</> : <>Their</>} Genres</h2>
       <div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
         <Box m={0} p={0} style={{width: "425px", height: "100px"}}>
           <Paper elevation={3} style={{padding: "10px"}} >

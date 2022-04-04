@@ -48,7 +48,7 @@ const Analytics = ({ userInfo }) => {
           </MenuItem>
           <Divider/>
           <MenuItem>
-            <ListItemText onClick={clickGenres}>Your Genres</ListItemText>
+            <ListItemText onClick={clickGenres}>{userInfo.user_id === id ? <>Your</> : <>Their</>} Genres</ListItemText>
           </MenuItem>
         </MenuList>
       </Paper>
@@ -70,7 +70,7 @@ const Analytics = ({ userInfo }) => {
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
       {analyticView === "goals" ? <GoalPage/> : <></>}
       {analyticView === "friends" ? <FriendPage userInfo={userInfo}/> : <></>}
-      {analyticView === "genres" ? <GenrePage/> : <></>}
+      {analyticView === "genres" ? <GenrePage userInfo={userInfo}/> : <></>}
     </Paper>
     )
   }

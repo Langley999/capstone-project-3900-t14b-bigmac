@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import axios from "axios";
 import {url} from './Helper';
 
-const FollowButton = ({id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
+const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
   const followUser = () => {
     axios.post(`${url}/user/follow`, {
       token: localStorage.getItem('token'),
@@ -13,6 +13,9 @@ const FollowButton = ({id, username, isFollowing, setIsFollowing, setShowError, 
         setSuccessMsg(`Followed ${username}!`);
         setShowSuccess(true);
         setIsFollowing(!isFollowing);
+        if (setFollowerCount !== null) {
+          setFollowerCount(followerCount+1);
+        }
       }
     })
     .catch(function (error) {

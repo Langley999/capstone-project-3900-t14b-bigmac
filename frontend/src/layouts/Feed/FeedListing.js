@@ -24,8 +24,13 @@ const FeedListing = ({ post, isPublic }) => {
     let strTime = hours + ':' + minutes + ampm;
     return strTime;
   }
-  const reviewSplit = post.content.split(':');
-  const reviewTitle = reviewSplit[0].split("<");
+
+  let postSplit = [];
+  let bookReview = [];
+  if (post.content.match('^Added a review for')) {
+    postSplit = post.content.split('<');
+    bookReview = postSplit[1].split('>');
+  }
 
   return (
     <Card>
@@ -36,7 +41,7 @@ const FeedListing = ({ post, isPublic }) => {
         </div>
         <br/>
         {post.content.match('^Added a review for') ?
-          <>{reviewTitle[0]}<b>{reviewTitle[1].substring(1, reviewTitle[1].length-2)}</b><br/><br/>"<i>{reviewSplit[1]}</i> "</>
+          <>{postSplit[0]}<b>{bookReview[0]}</b><br/><br/>"<i>{bookReview[1].substring(2)} </i>"</>
         : <>{post.content}</>
         }
       </CardContent>

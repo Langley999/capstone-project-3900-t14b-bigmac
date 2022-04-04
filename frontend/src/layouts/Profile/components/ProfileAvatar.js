@@ -34,6 +34,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('');
+  const [numFollowers, setNumFollowers] = useState(0);
+  const [numFollowings, setNumFollowings] = useState(0);
   let user_id = Number(window.location.pathname.split('/')[2]);
   
   useEffect(() => {
@@ -67,6 +69,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       console.log(user_id)
       console.log(response.data.followers);
       setFollowers(response.data.followers);
+      setNumFollowers(response.data.followers.length);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
@@ -77,6 +80,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       user_id: user_id
     }}).then(function (response) {
       setFollowings(response.data.followings);
+      setNumFollowings(response.data.followings.length);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
@@ -108,12 +112,15 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   }
 
   const getFollowers = () => {
+    console.log('hi')
     axios.get(`${url}/user/getfollower`, {params: {
       user_id: user_id,
       token: localStorage.getItem('token')
     }}).then(function (response) {
       setFollowers(response.data.followers);
+      setNumFollowers(response.data.followers.length);
       setShowFollowers(true);
+      console.log(response.data.followers)
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
       setErrorMsg(JSON.stringify(error.message));
@@ -127,6 +134,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }}).then(function (response) {
       setFollowings(response.data.followings);
+      setNumFollowings(response.data.followings.length);
       setShowFollowings(true);
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
@@ -210,8 +218,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
             {isSelf ? <Button onClick={handleOpen} color="primary" variant='contained'>
                 Upload Avatar
               </Button>
-              : <>{isFollowing ? <UnfollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
-                : <FollowButton id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
+              : <>{isFollowing ? <UnfollowButton followerCount={numFollowers} setFollowerCount={setNumFollowers} id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
+                : <FollowButton followerCount={numFollowers}  setFollowerCount={setNumFollowers} id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
               </>}
           </Box>
           <Dialog open={open} onClose={handleClose}>
@@ -265,7 +273,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
           sx={{textTransform: "none"}}
           onClick={getFollowings}
         >
-          {followings.length} followings
+          {numFollowings} followings
         </Button>
         <Button
           fullWidth
@@ -273,7 +281,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
           sx={{textTransform: "none"}}
           onClick={getFollowers}
         >
-          {followers.length} followers
+          {numFollowers} followers
         </Button>
       </Card>
       {showFollowers ? <FollowerPopup followers={followers} setShowFollowers={setShowFollowers} getProfile={getProfile}/> : <></>}
