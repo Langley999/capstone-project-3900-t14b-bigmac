@@ -41,6 +41,8 @@ import { TryRounded } from '@mui/icons-material';
 const Addquiz = () => {
 
   const [quizname,setquizname] = React.useState('');
+  const [quizdescription, setquizdescription] =  React.useState('');
+  const [badge, setBadge] = React.useState('');
   const [components, setComponents] = useState([{
     question:"",
     ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
@@ -60,7 +62,15 @@ const Addquiz = () => {
   }, []);
   const handleSubmitQuiz = () => {
     let canSubmit = true;
-    if (quizname === "") {
+    if (badge === "") {
+      setErrorMsg("Please select a badge");
+      setSnackBarOpen(true);
+      canSubmit = false;
+    } else if (quizdescription === "") {
+      setErrorMsg("Please enter a quiz description");
+      setSnackBarOpen(true);
+      canSubmit = false;
+    } else if (quizname === "") {
       setErrorMsg("Please enter quiz name");
       setSnackBarOpen(true);
       canSubmit = false;
@@ -101,14 +111,15 @@ const Addquiz = () => {
 
 
     if (canSubmit) {
-
       let id = localStorage.getItem('admin_id');
       console.log(id);
       let body = {
         id: id,
         name: quizname,
         questions: components,
-        token: admintoken
+        token: admintoken,
+        description: quizdescription,
+        badge: badge
       }
       axios.post(`${url}/quiz/createquiz`, 
         body
@@ -147,6 +158,15 @@ const Addquiz = () => {
     }
     setComponents(componentscopy);
   }
+  function onImageChange(e) {
+    setBadge('');
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = function() {
+      setBadge(reader.result);
+    }
+  }
     return (
       <Box mx={30} pt={0} >
             <Button onClick={handleBack} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
@@ -165,7 +185,28 @@ const Addquiz = () => {
              (Please choose only 1 correct answer per question)
             </Typography>
             <TextField id="standard-basic" label="Quiz Name" variant="outlined" sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
-
+            <TextField id="standard-basic" label="Quiz Description" variant="outlined" sx={{ marginBottom: 3 }} multiline={true} rows={3} style = {{width: 760}} value={quizdescription} onChange={(event) => setquizdescription(event.target.value)}/>
+            <input
+                type="file"
+                id="upload"
+                accept='image/*'
+                onChange={onImageChange}
+              />
+              {badge === '' ?
+                null
+                :
+                <div style={{marginTop: '10px'}}>
+                  <Avatar
+                    src={badge}
+                    sx={{
+                      height: 50,
+                      mb: 2,
+                      width: 50
+                    }}
+                  />
+                </div>
+              }
+        
             {components.map((item, i) => ( <div>
               <QuizComponent id={i} question={item['question']} ans={item['ans']} components={components} setComponents={setComponents}/> <Button onClick={(event) =>handleRemoveComponent(event,i)}>Remove</Button> </div>)
             )} 

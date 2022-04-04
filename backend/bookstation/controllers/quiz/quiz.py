@@ -1,5 +1,5 @@
 from json import dumps
-from bookstation.models.event_sys import Question, Answer
+from bookstation.models.event_sys import Question, Answer, Badge
 from bookstation.models.event_sys import Quiz
 from bookstation.models.event_sys import Admin
 from bookstation import app, request, db, error, admintoken
@@ -49,7 +49,14 @@ def createquiz():
     id = body.get('id')
     print(id)
     quizname = body.get('name')
-    new_quiz = Quiz(publish_status=0, admin_id=id,quiz_name=quizname)
+    description = body.get('description')
+    badge = body.get('badge')
+    newbadge = Badge(image=badge)
+    db.session.add(newbadge)
+    db.session.commit()
+    db.session.flush()
+
+    new_quiz = Quiz(publish_status=0, admin_id=id,quiz_name=quizname,description=description,badge_id=newbadge.badge_id)
 
     db.session.add(new_quiz)
     db.session.commit()
