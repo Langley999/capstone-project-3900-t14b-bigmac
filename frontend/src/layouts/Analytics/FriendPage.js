@@ -148,7 +148,9 @@ const FriendPage = ({userInfo}) => {
       <h2 style={{fontWeight: "normal"}}>Friend Activity</h2>
       <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {userInfo.user_id === id ? <>Your</>: <>Their</>} collections ha{totalSaves !== 1 ? <>ve</>: <>s</>} been saved {totalSaves} times by other users ! 📚</div>
       <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
-        <CollectionsGraph style={{marginBottom: "50px"}}/>
+        <CollectionsGraph/>
+        <br/>
+        <br/>
         <FollowGraph/>
       </div>
     </div>
