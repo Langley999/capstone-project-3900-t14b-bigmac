@@ -12,7 +12,6 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
-import ErrorPopup from '../components/ErrorPopup';
 import Stack from '@mui/material/Stack';
 import HomeButton from '../components/HomeButton';
 import {checkProfileInput} from '../components/Helper';
@@ -30,6 +29,8 @@ import Typography from '@mui/material/Typography';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ErrorPopup from '../components/ErrorPopup';
+import SuccessPopup from '../components/SuccessPopup';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
@@ -38,28 +39,28 @@ import WysiwygIcon from '@mui/icons-material/Wysiwyg';
 import { QuizComponent } from './QuizComponent.js'; 
 import { TryRounded } from '@mui/icons-material';
 
-const EditQuiz = () => {
-
+const EditQuiz = (userInfo) => {
+  const quiz_id = Number(window.location.search.split('=')[1]);
+  console.log(quiz_id)
+  console.log(window.location.search.split('=')[1])
   const [quizname,setquizname] = React.useState('');
   const [quizdescription, setquizdescription] =  React.useState('');
   const [badge, setBadge] = React.useState('');
+  const [snackbaropen,setsnackbaropen] = useState(false);
+  const [snackbarcontent, setsnackbarcontent] = useState("");
+  const [warningopen,setwarningopen] = useState(false);
+  const [warningcontent, setwarningcontent] = useState("");
   const [components, setComponents] = useState([{
     question:"",
     ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
-  }]); 
+  }]);
   
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const navigate = useNavigate();
  
   let admintoken = localStorage.getItem('admin_token');
-  useEffect(() => {
-    axios.get(`${url}/quiz/getallquiz`, {params: {token:admintoken
-    }})
-    .then(function (res) {
 
-    })
-  }, []);
   const handleSubmitQuiz = () => {
     let canSubmit = true;
     if (badge === "") {
@@ -111,7 +112,7 @@ const EditQuiz = () => {
 
 
     if (canSubmit) {
-      let id = localStorage.getItem('admin_id');
+      let id = Number(window.location.search.split('=')[1]);
       console.log(id);
       let body = {
         id: id,
@@ -121,7 +122,7 @@ const EditQuiz = () => {
         description: quizdescription,
         badge: badge
       }
-      axios.post(`${url}/quiz/createquiz`, 
+      axios.put(`${url}/quiz/editquiz`, 
         body
       ).then(function (res) {
         setquizname("");
@@ -129,11 +130,12 @@ const EditQuiz = () => {
           question:"",
           ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
         }]);
+
         navigate('/bookstation/allquiz');
-      }).catch(function (error) {
-        setErrorMsg(JSON.stringify(error.response.data.message));
-        setSnackBarOpen(true);
-      });
+      }) .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+      });;
     }
 
   }
@@ -167,6 +169,26 @@ const EditQuiz = () => {
       setBadge(reader.result);
     }
   }
+  useEffect(() => {
+    const quiz_id = Number(window.location.search.split('=')[1]);
+    axios.get('http://127.0.0.1:8080/quiz/getquiz', {
+      params: {
+        quiz_id: quiz_id,
+        token: localStorage.getItem('admin_token')
+      }
+    })
+    .then(function (response) {
+      let data = response['data'];
+      console.log(data['questions'])
+      setBadge(data['badge']);
+      setquizname(data['quizname']);
+      setquizdescription(data['description']);
+      setComponents(data['questions']);
+    }).catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });;
+  }, [window.location.href, userInfo]);
     return (
       <Box mx={30} pt={0} >
             <Button onClick={handleBack} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
@@ -179,13 +201,14 @@ const EditQuiz = () => {
           </Grid>
           <Grid item  xs={10}>
             <Typography variant="h4" gutterBottom component="div">
-             Create Quiz 
+             Update Quiz 
             </Typography>
             <Typography variant="body2" gutterBottom component="div">
              (Please choose only 1 correct answer per question)
             </Typography>
             <TextField id="standard-basic" label="Quiz Name" variant="outlined" sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
             <TextField id="standard-basic" label="Quiz Description" variant="outlined" sx={{ marginBottom: 3 }} multiline={true} rows={3} style = {{width: 760}} value={quizdescription} onChange={(event) => setquizdescription(event.target.value)}/>
+            <div></div>
             <input
                 type="file"
                 id="upload"
@@ -223,7 +246,8 @@ const EditQuiz = () => {
           </Grid>
  
         </Grid>
-
+        <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
+        <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
       </Box>
     );
 };

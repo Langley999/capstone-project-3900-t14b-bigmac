@@ -186,6 +186,7 @@ const Addquiz = () => {
             </Typography>
             <TextField id="standard-basic" label="Quiz Name" variant="outlined" sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
             <TextField id="standard-basic" label="Quiz Description" variant="outlined" sx={{ marginBottom: 3 }} multiline={true} rows={3} style = {{width: 760}} value={quizdescription} onChange={(event) => setquizdescription(event.target.value)}/>
+            <div></div>
             <input
                 type="file"
                 id="upload"
