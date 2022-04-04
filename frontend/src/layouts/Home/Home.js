@@ -13,54 +13,66 @@ import axios from "axios";
 import {url} from "../../components/Helper";
 import {useNavigate} from 'react-router-dom';
 import BookSection from "../SearchBooks/BookSection";
+import adult from '../../assets/adult.jpeg';
+import audiobook from '../../assets/audiobooks.png';
+import classics from '../../assets/classics.jpeg';
+import contemporary from '../../assets/contemporary.jpeg';
+import fantasy from '../../assets/fantasy.jpeg';
+import fiction from '../../assets/fiction.jpeg';
+import historical from '../../assets/historical fiction.jpeg';
+import mystery from '../../assets/mystery.jpeg';
+import nonfiction from '../../assets/nonfiction.webp';
+import novels from '../../assets/novels.jpeg';
+import romance from '../../assets/romance.jpeg';
+import youngAdult from '../../assets/young adult.jpeg';
 
 const itemData = [
   {
-    img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    img: fiction,
     title: 'Fiction',
   },
   {
-    img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    img: romance,
     title: 'Romance',
   },
   {
-    img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    img: fantasy,
     title: 'Fantasy',
   },
   {
-    img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+    img: youngAdult,
     title: 'Young Adult',
   },
   {
-    img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    img: contemporary,
     title: 'Contemporary',
   },
   {
-    img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    img: nonfiction,
     title: 'Nonfiction',
   },
   {
-    img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+    img: adult,
     title: 'Adult',
   },
   {
-    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    img: novels,
     title: 'Novels',
   },
   {
-    img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+    img: mystery,
     title: 'Mystery',
   },
   {
-    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    img: historical,
     title: 'Historical Fiction',
   },
   {
-    img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+    img: audiobook,
     title: 'Audiobook',
   },
   {
-    img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    img: classics,
     title: 'Classics',
   },
 ];
@@ -133,8 +145,9 @@ const Home = ({ifLogin, updateSearchResult}) => {
             >
               <ImageListItem>
                 <img
-                  src={`${item.img}?w=248&fit=crop&auto=format`}
-                  srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  // src={`${item.img}?w=248&fit=crop&auto=format`}
+                  src={item.img}
+                  // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   alt={item.title}
                   loading="lazy"
                 />
@@ -148,33 +161,6 @@ const Home = ({ifLogin, updateSearchResult}) => {
         </div>
       </>
     );
-  }
-
-  const BookCard = () => {
-    return (
-      <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image='https://images.unsplash.com/photo-1551963831-b3b1ca40c98e'
-            alt="book card"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {data.bookTitle}
-            </Typography>
-            <Typography variant="body2" color="secondary">
-              {data.bookAuthor}
-            </Typography>
-            <Typography variant="body2">
-              {data.bookRating}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-
-      </Card>
-    )
   }
 
   const TopBooks = () => {

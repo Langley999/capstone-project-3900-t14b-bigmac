@@ -27,7 +27,21 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
           alert(error.response.data.message);
         });
     } else {
-
+      // axios.get(`${url}/search/genre`, {params: {
+      //     genres: selectedGenres,
+      //     rating: genreRating,
+      //     page: 1
+      //   }})
+      //   .then(res => {
+      //     updateSearchGenres(selectedGenres);
+      //     updateSearchType('byGenre');
+      //     console.log(res.data.books);
+      //     updateSearchResult(res.data.books);
+      //     navigate('searchbooks');
+      //   })
+      //   .catch(function (error) {
+      //     alert(error.message);
+      //   });
     }
   }
 

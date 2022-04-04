@@ -96,7 +96,8 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
     }
     axios.get(`${url}/search/genre`, {params: {
         genres: selectedGenres,
-        rating: genreRating
+        rating: genreRating,
+        page: 1
       }})
       .then(res => {
         updateSearchGenres(selectedGenres);
