@@ -61,6 +61,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
     axios.get(`${url}/user/getfollower`, {params: {
       user_id: user_id
     }}).then(function (response) {
+      console.log(user_id)
+      console.log(response.data.followers)
       setFollowers(response.data.followers);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
