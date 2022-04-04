@@ -56,7 +56,6 @@ const FriendPage = ({userInfo}) => {
       user_id: id
     }}). then (function (response) {
       setCollections(response['data']['collections']);
-      console.log(response['data']['collections']);
       const collectionsList = response['data']['collections'];
       let temp = []
       let sum = 0
@@ -67,8 +66,10 @@ const FriendPage = ({userInfo}) => {
         }}).then(function (response) {
           sum += response['data']['saves']
           temp.push({name: collection.name, saves: response['data']['saves']});
-          setTotalSaves(sum);
-          setSaves(temp);
+          setTimeout(() => {
+            setTotalSaves(sum);
+            setSaves(temp);
+          }, 200);
         }).catch(function (error) {
           setErrorMsg(JSON.stringify(error.message));
           setSnackBarOpen(true);
