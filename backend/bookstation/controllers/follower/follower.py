@@ -132,7 +132,6 @@ def getPosts():
 def getFeed():
 
     token = request.args.get('token')
-    page_no = int(request.args.get('page'))
     user = get_user(token)
     followed_users = Follow_relationship.query.filter_by(follower_user_id = user.user_id).all()
     posts_list = []
@@ -143,7 +142,6 @@ def getFeed():
             posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
-    posts_list = posts_list[10*(page_no-1): 10*page_no]
     return dumps({'posts' : posts_list})
 
 
@@ -227,7 +225,6 @@ def getfollower():
 
 @app.route("/post/getpublicfeed", methods=["GET"])
 def getPublicFeed():
-    page_no = int(request.args.get('page'))
 
     posts_list = []
 
@@ -235,6 +232,5 @@ def getPublicFeed():
     for post in posts:
         post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'avatar' : post.user.avatar, 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
         posts_list.append(post_dict)
-    
-    posts_list = posts_list[10*(page_no-1): 10*page_no]
+
     return dumps({'posts' : posts_list})
