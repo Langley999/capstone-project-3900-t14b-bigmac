@@ -208,16 +208,18 @@ const BookDetail = ({userInfo}) => {
 
       setReviewFormOn(false);
       setreviewButtonshow(false);
-      var currentdate = new Date();
-      var datetime = currentdate.getFullYear() + "-"
-        + (currentdate.getMonth()+1)  + "-"
-        + currentdate.getDate() + " "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
+      var d = new Date();
+
+      let ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+      let hours = d.getHours() % 12;
+      hours = hours ? hours : 12;
+      let strTime = hours + ':' + d.getMinutes();
+      var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
+      d.getFullYear() + " " + strTime;
+      console.log(datestring)
 
       let rev = {};
-      rev['time'] = datetime;
+      rev['time'] = datestring;
       rev['content'] = reviewValue;
       rev['username'] = userInfo.username;
       rev['avatar'] = userInfo.avatar;
@@ -280,7 +282,24 @@ const BookDetail = ({userInfo}) => {
     });
   }
 
+  const createDate = (str) => {
+    let li = str.split(' ');
+    let time = li[1];
+    const date = new Date(li[0].replace(/-/g,"/"));
+    return date;
+  }
+  const formatAMPM = (str) => {
+    let li = str.split(' ');
+    let time = li[1].split(':');
+    let hours = time[0];
+    let minutes = time[1];
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    let strTime = hours + ':' + minutes + ampm;
+    return strTime;
 
+  }
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
       token: localStorage.getItem('token'),
@@ -662,7 +681,7 @@ const BookDetail = ({userInfo}) => {
                           width: 50,
                           my:1
                         }}
-                        src={item['avatar']==null?"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png":item['avatar']} 
+                        src={(item['avatar']===null || item['avatar']==="") ?"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png":item['avatar']} 
                       />                      
                     </Avatar>
 
@@ -677,7 +696,7 @@ const BookDetail = ({userInfo}) => {
                             }
                         </Grid>
                         <Grid item xs={3}>
-                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {item['time'].split(".")[0]} </Typography>
+                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {formatAMPM(item['time'])} {createDate(item['time']).toLocaleDateString("en-AU")}</Typography>
                         </Grid>
                         <Grid item xs={4}>
                           <Rating

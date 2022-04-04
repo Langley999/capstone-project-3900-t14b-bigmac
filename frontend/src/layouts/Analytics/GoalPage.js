@@ -137,8 +137,8 @@ const GoalPage = () => {
   const GoalLine = () => {
     return (
       <span>
-        I want to read
-          <FormControl disabled={!enableEditGoal} sx={{ m: 1, width: '4ch' }} variant="standard" style={{marginTop: '5px'}}>
+        <span >I want to read</span>
+          <FormControl disabled={!enableEditGoal} sx={{ m: 2, width: '4ch' }} variant="standard" style={{marginTop: '5px', marginLeft:'5px', marginRight:'3px'}}>
             <Input
               type="number"
               size="small"
@@ -146,7 +146,8 @@ const GoalPage = () => {
               onChange={e => setGoal(e.target.value)}
             />
           </FormControl>
-        books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
+        <span>books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
+        </span>
         <IconButton
           aria-label="toggle password visibility"
           onClick={toggleEditGoal}
