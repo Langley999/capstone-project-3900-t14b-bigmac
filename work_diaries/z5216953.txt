@@ -13,8 +13,20 @@ Week 3:
 
 Week 4:
 - I made profile page, collection page, search books result page for frontend
-<<<<<<< HEAD
-=======
 - I wrote justification for frontend including framework and UI library.
 - I updated the router and made the header, initial page, navigation tabs.
->>>>>>> sprint2-jane
+
+Week 5:
+- Implemented editing user profile, creating collections, removing collections, adding books
+to collections, searching books by title or author, showing searching result for frontend.
+
+Week 6:
+- Implemented consistent login
+- Enable to see other user's account.
+- Implemented genre book recommendation, editing collection name, filter for searching for frontend
+- Completed Retrospective B with teammates
+
+Week 7:
+- Implemented top 10 recently added books, saving other readers' collections,
+adding & removing & showing posts for frontend.
+- Adding pagination for search books result, collections, posts for frontend
