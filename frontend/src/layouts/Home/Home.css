@@ -30,3 +30,8 @@
   margin-top: 10px;
   margin-bottom: 40px;
 }
+
+.picture {
+  height: 130px !important;
+  width: 200px !important;
+}

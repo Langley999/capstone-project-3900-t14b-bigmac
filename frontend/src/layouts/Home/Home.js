@@ -143,14 +143,15 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         <h1>Popular Genres</h1>
         <div className='subjects-container'>
           {itemData.map((item, idx) => (
-            <Box
-              sx={{cursor: 'pointer'}}
+            <div
+              style={{cursor: 'pointer'}}
               className='img-container'
               key={idx}
               onClick={() => searchGenre(item.title)}
             >
               <ImageListItem>
                 <img
+                  className='picture'
                   // src={`${item.img}?w=248&fit=crop&auto=format`}
                   src={item.img}
                   // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -162,7 +163,7 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
                   title={item.title}
                 />
               </ImageListItem>
-            </Box>
+            </div>
           ))}
         </div>
       </>
