@@ -46,13 +46,13 @@ const Feed = () => {
   return (
     <div>
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
-      <h1>Feed</h1>
+      <h1 style={{height: '40px'}}>Feed</h1>
       {pagePosts.length > 0 ? pagePosts.map((post) => {
         return (
           <FeedListing post={post}/>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>Follow other users to see their posts</div>}
-      <Pagination sx={{marginBottom: '10px'}} count={pageCount} page={page} onChange={handleChangePage} />
+      {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}
     </div>
   );
 };

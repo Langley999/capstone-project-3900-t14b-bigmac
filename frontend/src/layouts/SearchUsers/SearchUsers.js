@@ -47,7 +47,7 @@ const SearchUsers = () => {
       <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       <div style={{display: "flex", flexDirection: "row", margin: "30px", marginLeft: "5px"}}>
-        <Box component="form">
+        <Box component="form" style={{marginLeft: "70px"}}>
           <TextField
             placeholder="Search Users"
             value={searchValue}
