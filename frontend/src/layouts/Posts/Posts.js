@@ -29,7 +29,7 @@ const Posts = ({userInfo}) => {
   const [pagePosts, setPagePosts] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(10);
-  const pageSize = 10;
+  const pageSize = 12;
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
@@ -66,7 +66,7 @@ const Posts = ({userInfo}) => {
         alert("error")
         // alert(error.response.data.message);
       });
-  }, [window.location.href, userInfo, tempPost])
+  }, [window.location.href, userInfo])
 
   const createDate = (str) => {
     let li = str.split(' ');
@@ -129,9 +129,13 @@ const Posts = ({userInfo}) => {
         content: newPost,
         time_created: datetime
       }
-      setTempPost(createdPost);
-      // const temp = [...posts];
-      // setPosts([...temp, createdPost]);
+      // setTempPost(createdPost);
+      let temp = [...posts];
+      temp.unshift(createdPost)
+      setPosts(temp);
+      setPageCount(Math.ceil(temp.length / pageSize))
+      setPage(1);
+      setPagePosts(temp.slice(0, pageSize));
       handleAddPostClose();
     })
   }
@@ -181,7 +185,18 @@ const Posts = ({userInfo}) => {
         token: localStorage.getItem('token'),
         post_id: postInfo.post_id
       }).then(res=> {
-        setTempPost({});
+        let temp = [...posts];
+        temp = temp.filter(post => post.post_id !== postInfo.post_id);
+        setPosts(temp);
+        setPageCount(Math.ceil(temp.length / pageSize))
+        let p = page;
+        if (page > Math.ceil(temp.length / pageSize)) {
+          setPage(page - 1);
+          p = p-1
+        }
+        const start1 = (p-1)*pageSize;
+        const end1 = p * pageSize;
+        setPagePosts(temp.slice(start1, end1));
       })
     }
 
