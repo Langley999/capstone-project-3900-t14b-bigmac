@@ -22,7 +22,8 @@ const SearchUsers = () => {
     searchUser();
   }, []);
 
-  const searchUser = () => {
+  const searchUser = (e) => {
+    if (e) e.preventDefault();
     // show user search results
     axios.get(`${url}/user/search`, {params: {
         token: localStorage.getItem('token'),
@@ -47,7 +48,7 @@ const SearchUsers = () => {
       <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       <div style={{display: "flex", flexDirection: "row", margin: "30px", marginLeft: "5px"}}>
-        <Box component="form">
+        <Box component="form" style={{marginLeft: "70px"}} onSubmit={(e) => searchUser(e)}>
           <TextField
             placeholder="Search Users"
             value={searchValue}
@@ -55,7 +56,7 @@ const SearchUsers = () => {
             inputProps={{ 'aria-label': 'search' }}
           />
         </Box>
-        <Button onClick={searchUser} variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
+        <Button type="submit" variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
       </div>
       {users.length > 0 ? users.map((searchedUser) => {
         return (

@@ -13,22 +13,27 @@ import {
   Subtitle,
   Tooltip,
   Grid,
+  CommonAxisSettings,
 } from 'devextreme-react/chart';
+import { useLocation } from 'react-router-dom';
 
-const FriendPage = () => {
+const FriendPage = ({userInfo}) => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const [stats, setStats] = React.useState([]);
-  const [saves, setSaves] = React.useState(0);
-  const id = window.location.pathname.split('/')[2];
-
+  const [saves, setSaves] = React.useState([]);
+  const location = useLocation();
+  const [id, setId] = React.useState(parseInt(location.pathname.split('/')[2]));
   const months = [ "January", "February", "March", "April", "May", "June", 
   "July", "August", "September", "October", "November", "December" ];
+  const [totalSaves, setTotalSaves] = React.useState(0);
+  const [collections, setCollections] = React.useState([]);
 
   React.useEffect(() =>{
     getFollowStats();
-    getSaves();
-  }, []);
+    getCollections();
+    setId(parseInt(location.pathname.split('/')[2]));
+  }, [location]);
 
   const getFollowStats = () => {
     axios.get(`${url}/analytics/followstats`, {params: {
@@ -40,24 +45,64 @@ const FriendPage = () => {
         temp[i]['month'] = months[temp[i]['month']-1];
       }
       setStats(temp);
-      console.log(temp);
-      console.log(id);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setSnackBarOpen(true);
     })
   }
 
-  const getSaves = () => {
-    axios.get(`${url}/analytics/saves`, {params: {
-      token: localStorage.getItem('token')
-    }}).then(function (response) {
-      setSaves(response['data']['saves']);
-      console.log(response['data']['saves']);
+  const getCollections = () => {
+    axios.get(`${url}/collection/getall`, {params: {
+      user_id: id
+    }}). then (function (response) {
+      setCollections(response['data']['collections']);
+      const collectionsList = response['data']['collections'];
+      let temp = []
+      let sum = 0
+      for (let collection of collectionsList) {
+        axios.get(`${url}/analytics/saves`, {params: {
+          token: localStorage.getItem('token'),
+          collection_id: collection.id
+        }}).then(function (response) {
+          sum += response['data']['saves']
+          temp.push({name: collection.name, saves: response['data']['saves']});
+          setTimeout(() => {
+            setTotalSaves(sum);
+            setSaves(temp);
+          }, 200);
+        }).catch(function (error) {
+          setErrorMsg(JSON.stringify(error.message));
+          setSnackBarOpen(true);
+        })
+      }
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setSnackBarOpen(true);
     })
+  }
+
+  const CollectionsGraph = () => {
+    saves.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    return (
+      <Chart id="chart" dataSource={saves} resolveLabelOverlapping="stack">
+        <Series
+          valueField="saves"
+          argumentField="name"
+          name="Saves"
+          type="bar"
+          color="#ad79cd" />
+        <Legend
+          verticalAlignment="bottom"
+          horizontalAlignment="center"
+          itemTextPosition="bottom"
+        />
+        <CommonAxisSettings
+          allowDecimals={false}
+          discreteAxisDivisionMode="betweenLabels"
+        />
+        <Title text={`Number of saves ${userInfo.user_id === id ? "your": "their"} collections have`}/>
+      </Chart>
+    )
   }
 
   const FollowGraph = () => {
@@ -102,8 +147,11 @@ const FriendPage = () => {
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: "normal"}}>Friend Activity</h2>
-      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {saves} user{saves !== 1 ? <>s</>: <></>} ha{saves !== 1 ? <>ve</>: <>s</>} saved your collections! 📚</div>
+      <div style={{textAlign: "center", fontSize: 22, margin: "50px"}}>📚 {userInfo.user_id === id ? <>Your</>: <>Their</>} collections ha{totalSaves !== 1 ? <>ve</>: <>s</>} been saved {totalSaves} times by other users ! 📚</div>
       <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
+        <CollectionsGraph/>
+        <br/>
+        <br/>
         <FollowGraph/>
       </div>
     </div>

@@ -114,17 +114,17 @@ def removePost():
 @app.route("/post/getposts", methods=["GET"])
 def getPosts():
 
-    user_id = request.args.get('user_id')
-    print(user_id)
-    print("lol")
-    posts = Post.query.filter_by(user_id = user_id).all()
-    print(posts)
+    token = request.args.get('token')
+    page_no = request.args.get('page')
+    user = get_user(token)
+    posts = Post.query.filter_by(user_id = user.user_id).all()
     posts_list = []
     for post in posts:
         post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
         posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
+    posts_list = posts_list[10*(page_no-1): 10*page_no]
     return dumps({'posts' : posts_list})
 
 
@@ -163,9 +163,9 @@ def getfollowing():
         BadReqError:
           - when removing book fails
     """
-    user_id = request.args.get('user_id')
     token = request.args.get('token')
     user = get_user(token)
+    user_id = user.user_id
     if User.query.get(user_id) == None:
         raise error.NotFoundError(description='Target user not found')
 
@@ -190,7 +190,7 @@ def getfollower():
     """
     Function for user to to get all followers
     Args:
-        user_id (int): id of the user
+
     Returns:
         - followers (list):
             - user_id (int)
@@ -202,9 +202,9 @@ def getfollower():
         BadReqError:
           - when removing book fails
     """
-    user_id = request.args.get('user_id')
     token = request.args.get('token')
     user = get_user(token)
+    user_id = user.user_id
     if User.query.get(user_id) == None:
         raise error.NotFoundError(description='Target user not found')
 
@@ -233,5 +233,4 @@ def getPublicFeed():
         post_dict = {'user_id': post.user.user_id, 'username': post.user.username , 'avatar' : post.user.avatar, 'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
         posts_list.append(post_dict)
 
-    return dumps({'posts' : posts_list[:20]})
-
+    return dumps({'posts' : posts_list})

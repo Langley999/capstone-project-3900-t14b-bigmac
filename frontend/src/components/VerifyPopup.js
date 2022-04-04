@@ -38,7 +38,6 @@ const VerifyPopup = ({setShowVerify, username, email, password, setErrorMsg, set
         avatar: ''
       }));
       localStorage.setItem('token', response.data.token);
-      
       navigate('/');
       console.log('code success');
     }).catch(function (error) {

@@ -200,6 +200,8 @@ const GoalPage = () => {
   const GoalGraph = () => {
     const statSources = [{value:'goal', name: 'Goal'}, {value:'books_completed', name: 'Books Completed'}];
     return (
+      <>
+      {allGoal.length > 0 ?
       <Chart
         dataSource={allGoal}
         palette="Harmony Light"
@@ -231,7 +233,9 @@ const GoalPage = () => {
           <Subtitle text="(within the last year)" />
         </Title>
         <Tooltip enabled={true} />
-      </Chart>
+      </Chart> :
+      <div>You don't have past reading goal history, check again next month</div>}
+      </>
     )
   }
 

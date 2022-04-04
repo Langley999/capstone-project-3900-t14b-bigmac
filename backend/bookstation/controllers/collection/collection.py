@@ -320,11 +320,6 @@ def get_savedCollections():
 	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection)
 
 	"""
-	try:
-		token = request.args.get('token')
-		user = get_user(token)
-	except:
-		raise error.AccessError(description="user doesn't exist or invalid token")
 
 	try:
 		user_id = request.args.get('user_id')
@@ -341,21 +336,21 @@ def get_savedCollections():
 	return dumps({'collections' : collection_list})
 
 
-@app.route(url_prefix + '/saves', methods=["GET"])
-def get_saves():
+# @app.route(url_prefix + '/saves', methods=["GET"])
+# def get_saves():
 
-	"""
-	Args: collection_id: collection to find number of saves
+# 	"""
+# 	Args: collection_id: collection to find number of saves
 
-	Returns: number of people who saved this collection
+# 	Returns: number of people who saved this collection
 
-	"""
-	token = request.args.get('token')
-	user = get_user(token)
-	collection_id = request.args.get('collection_id')
-	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
+# 	"""
+# 	token = request.args.get('token')
+# 	user = get_user(token)
+# 	collection_id = request.args.get('collection_id')
+# 	saves = len(Saved_collection.query.filter_by(collection_id = collection_id).all())
 
-	return dumps({'saves' : saves})
+# 	return dumps({'saves' : saves})
 
 
 @app.route(url_prefix + '/rename', methods=["POST"])
@@ -438,7 +433,6 @@ def recent_books():
 	return dumps({
 			"books": res
 	})
-
 
 
 
