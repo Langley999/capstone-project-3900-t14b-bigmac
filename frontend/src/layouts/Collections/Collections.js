@@ -446,6 +446,7 @@ const Collections = ({userInfo}) => {
           name: currentCollection.name,
           books: newBooks
         }
+        console.log(newC)
         setCurrentCollection(newC);
       })
         .catch(error => {

@@ -34,10 +34,12 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState('');
-  const user_id = Number(window.location.pathname.split('/')[2]);
+  let user_id = Number(window.location.pathname.split('/')[2]);
   
   useEffect(() => {
     // get profile
+    user_id = Number(window.location.pathname.split('/')[2]);
+    console.log(user_id);
     setIsSelf(user_id === userInfo.user_id);
     axios.get(`${url}/user/profile`, {params: {
       user_id: user_id,
@@ -59,7 +61,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
     });
     // get follower list
     axios.get(`${url}/user/getfollower`, {params: {
-      user_id: user_id
+      user_id: user_id,
+      token: localStorage.getItem('token')
     }}).then(function (response) {
       console.log(user_id)
       console.log(response.data.followers);

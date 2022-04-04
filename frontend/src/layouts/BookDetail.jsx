@@ -30,6 +30,7 @@ import {Link, useParams} from "react-router-dom";
 import UsernameLink from '../components/UsernameLink';
 import {Pagination} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
+import {convertDate,months} from '../components/Helper';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -506,10 +507,19 @@ const BookDetail = ({userInfo}) => {
       console.log(response);
       setTitle(response['data']['title']);
       setBlurb(response['data']['blurb']);
-      if (setPublishdate(response['data']['publish_date']) === "") {
+      console.log("=======");
+      console.log(response['data']['publish_date'])
+      if (response['data']['publish_date'] === "" ) {
         setPublishdate('Not Available');
       } else {
-        setPublishdate(response['data']['publish_date']);
+        if (months.includes(response['data']['publish_date'].split(' ')[0]) ) {
+          let converteddate = convertDate(response['data']['publish_date']);
+          setPublishdate(converteddate);
+        } else {
+          setPublishdate(response['data']['publish_date']);
+        }
+        
+        
       }
       
       if (response['data']['cover_image']==="") {
@@ -626,7 +636,7 @@ const BookDetail = ({userInfo}) => {
 
                   <Grid item xs={3}>
                     <Box sx={{ flexGrow: 1, ml: 3}} >
-                      <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating} ratings)</Typography>
+                      <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating} rating{n_rating === 1? <></>: <>s</> })</Typography>
                     </Box>
                   </Grid>
                 </Grid>

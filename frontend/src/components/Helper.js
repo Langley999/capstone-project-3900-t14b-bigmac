@@ -14,3 +14,29 @@ export const checkProfileInput = (username, email, password) => {
   }
   return '';
 }
+
+export const convertDate = (str) => {
+  const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+  const strList = str.split(' ');
+  if (strList.length === 3) {
+    const monthNum = months.indexOf(strList[0])+1;
+    let month = monthNum.toString();
+    let day = strList[1].substring(0, strList[1].length-2);
+    //const year = strList[2].substring(2);
+    const year = strList[2];
+    if (day.length === 1) day = '0' + day;
+    if (month.length === 1) month = '0' + month;
+    return day + "/" + month + "/" + year;   
+  } else if (strList.length === 2) {
+    const monthNum = months.indexOf(strList[0])+1;
+    let month = monthNum.toString();
+    //const year = strList[2].substring(2);
+    const year = strList[1];
+    if (month.length === 1) month = '0' + month;
+    return month + "/" + year;  
+  }
+  return str;
+
+}
+
+export const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];

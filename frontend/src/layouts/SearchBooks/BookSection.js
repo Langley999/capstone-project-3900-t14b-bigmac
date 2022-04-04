@@ -5,11 +5,13 @@ import Typography from "@mui/material/Typography";
 import {Link} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Rating from '@mui/material/Rating';
-
+import {convertDate,months} from '../../components/Helper';
 
 const BookSection = ({bookInfo}) => {
-
-
+  let converteddate = bookInfo.publish_date;
+  if (months.includes(bookInfo.publish_date.split(' ')[0]) ) {
+    converteddate = convertDate(bookInfo.publish_date);
+  }
   return (
     <Card>
       <CardActionArea component={Link} to={`/book/?id=${bookInfo.id}`}>
@@ -28,7 +30,7 @@ const BookSection = ({bookInfo}) => {
             </Box>
             <Box sx={{height: '20px', overflow: 'auto', marginBottom: '10px'}}>
               <Typography variant="body2" style={{color: '#757575'}}>
-                {bookInfo.publish_date}
+                {converteddate}
               </Typography>
             </Box>
             <Box sx={{display: 'flex'}}>

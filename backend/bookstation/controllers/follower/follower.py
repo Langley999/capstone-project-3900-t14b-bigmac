@@ -115,16 +115,17 @@ def removePost():
 def getPosts():
 
     token = request.args.get('token')
-    page_no = request.args.get('page')
+    user_id = request.args.get('user_id')
+    #page_no = int(request.args.get('page'))
     user = get_user(token)
-    posts = Post.query.filter_by(user_id = user.user_id).all()
+    posts = Post.query.filter_by(user_id = user_id).all()
     posts_list = []
     for post in posts:
         post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
         posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
-    posts_list = posts_list[10*(page_no-1): 10*page_no]
+    #posts_list = posts_list[10*(page_no-1): 10*page_no]
     return dumps({'posts' : posts_list})
 
 
@@ -164,11 +165,8 @@ def getfollowing():
           - when removing book fails
     """
     token = request.args.get('token')
+    user_id = request.args.get('user_id')
     user = get_user(token)
-    user_id = user.user_id
-    if User.query.get(user_id) == None:
-        raise error.NotFoundError(description='Target user not found')
-
     followings = Follow_relationship.query.filter_by(follower_user_id = user_id).all()
     result = []
     for following in followings:
@@ -203,10 +201,8 @@ def getfollower():
           - when removing book fails
     """
     token = request.args.get('token')
+    user_id = request.args.get('user_id')
     user = get_user(token)
-    user_id = user.user_id
-    if User.query.get(user_id) == None:
-        raise error.NotFoundError(description='Target user not found')
 
     followings = Follow_relationship.query.filter_by(user_id = user_id).all()
     result = []
