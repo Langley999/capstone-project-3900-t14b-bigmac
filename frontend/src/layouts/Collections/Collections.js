@@ -448,6 +448,7 @@ const Collections = ({userInfo}) => {
         }
         console.log(newC)
         setCurrentCollection(newC);
+        setRendering(newC);
       })
         .catch(error => {
           alert(error.response.data.message);

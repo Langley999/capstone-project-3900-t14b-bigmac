@@ -549,6 +549,11 @@ const BookDetail = ({userInfo}) => {
         genres = genres+response['data']['genres'][i];
         genres = genres+", ";
       }
+      if (genres !== "") {
+        genres = genres.substring(0,genres.length-2);
+        //console.log(genres.substring(0,genres.length-1))
+      }
+  
       if (genres === "") {
         genres = "None";
       }
