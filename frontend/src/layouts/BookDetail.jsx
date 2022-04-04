@@ -604,12 +604,12 @@ const BookDetail = ({userInfo}) => {
 
 
               <Grid item xs={7}>
-                <Box display="flex" flexDirection="column" alignItems='center' >
-                  <Typography variant="caption" gutterBottom component="div">Publisher: {publisher}</Typography>
-                  <Typography variant="caption" gutterBottom component="div">Publish Date: {publishdate}</Typography>
+                <Box display="flex" flexDirection="column" alignItems='flex-start' >
+                  <Typography variant="caption" gutterBottom component="div">Publisher: <b>{publisher}</b> </Typography>
+                  <Typography variant="caption" gutterBottom component="div">Publish Date: <b>{publishdate}</b></Typography>
                   <Box display="flex" flexDirection="row" alignItems='center' style={{width: '15rem'}}>
                     <Typography variant="caption" gutterBottom component="div" style={{marginRight: '1rem'}}>Tags:</Typography>
-                    <Typography variant="caption" gutterBottom component="div" style={{marginTop: '0rem'}}>{genres}</Typography>
+                    <Typography variant="caption" gutterBottom component="div" style={{marginTop: '0rem'}}><b>{genres}</b></Typography>
                   </Box>
                 </Box>
 
