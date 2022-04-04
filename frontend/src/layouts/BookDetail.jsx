@@ -193,48 +193,54 @@ const BookDetail = ({userInfo}) => {
       });
   }
   const handleSubmitReview = () => {
-    const body = JSON.stringify( {
-      book_id: book_id,
-      review: reviewValue,
-      rating: rating,
-      token: localStorage.getItem('token')
-    });
-    axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(function (response) {
-
-      setReviewFormOn(false);
-      setreviewButtonshow(false);
-      var d = new Date();
-
-      let ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-      let hours = d.getHours() % 12;
-      hours = hours ? hours : 12;
-      let strTime = hours + ':' + d.getMinutes();
-      var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
-      d.getFullYear() + " " + strTime;
-      console.log(datestring)
-
-      let rev = {};
-      rev['time'] = datestring;
-      rev['content'] = reviewValue;
-      rev['username'] = userInfo.username;
-      rev['avatar'] = userInfo.avatar;
-      rev['user_id'] = userInfo.user_id;
-      rev['rating'] = rating;
-      setReviews(review => [rev,...review] );
-
-
-    })
-    .catch(function (error) {
-
-      setwarningcontent(error.response.data.message);
+    if (rating === 0) {
+      setwarningcontent("Please select a rating!");
       setwarningopen(true);
-      console.log(error);
-    });
+    } else if (reviewValue === "") { 
+      setwarningcontent("Please enter a review!");
+      setwarningopen(true);
+    } else {
+      const body = JSON.stringify( {
+        book_id: book_id,
+        review: reviewValue,
+        rating: rating,
+        token: localStorage.getItem('token')
+      });
+      axios.post('http://127.0.0.1:8080/book/ratings_reviews', body,{
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function (response) {
+  
+        setReviewFormOn(false);
+        setreviewButtonshow(false);
+        var d = new Date();
+  
+        let hours = d.getHours() % 12;
+        hours = hours ? hours : 12;
+        let strTime = hours + ':' + d.getMinutes();
+        var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
+        d.getFullYear() + " " + strTime;
+        console.log(datestring)
+  
+        let rev = {};
+        rev['time'] = datestring;
+        rev['content'] = reviewValue;
+        rev['username'] = userInfo.username;
+        rev['avatar'] = userInfo.avatar;
+        rev['user_id'] = userInfo.user_id;
+        rev['rating'] = rating;
+        setReviews(review => [rev,...review] );
+      })
+      .catch(function (error) {
+  
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
+    }
+
   }
 
   const handleSubmitRating = (newValue) => {
@@ -359,6 +365,8 @@ const BookDetail = ({userInfo}) => {
                 setCreateForm(false);
                 settextFieldValue("");
                 setAnchorEl(null);
+                setCollection_ids([...collection_ids, c_id]);
+                setCollection_names([...collection_names, textFieldValue]);
               }
             })
             .catch(function (error) {
@@ -378,6 +386,11 @@ const BookDetail = ({userInfo}) => {
         setwarningopen(true);*/
       });
   }
+
+  const closeDialog = () => {
+    setCreateForm(false);
+  }
+   
   const handleAddToCollection = (key) => {
 
     axios.post('http://127.0.0.1:8080/collection/addbook', {
@@ -570,17 +583,7 @@ const BookDetail = ({userInfo}) => {
               <Grid item xs={6}>
                 <Button variant="contained" style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<LibraryAddIcon />} onClick={handleAddCollection}>Collection</Button>
               </Grid>}
-              {localStorage.getItem('token') &&
-              <Grid item xs={6}>
-                <Rating
-                  name="simple-controlled"
-                  value={rating}
-                  onChange={(event, newValue) => {
 
-                    handleSubmitRating(newValue);
-                  }}
-                />
-              </Grid>}
 
               <Grid item xs={7}>
                 <Box display="flex" flexDirection="column" alignItems='center' >
@@ -604,13 +607,13 @@ const BookDetail = ({userInfo}) => {
               </Grid>
               <Grid item xs={12}>
                 <Grid container direction="row" spacing={0}>
-                  <Grid item xs={8}>
+                  <Grid item xs={7}>
                     <Box sx={{ flexGrow: 1, mb: 3}} >
                       <Typography variant="subtitle1" style={{ fontWeight: 800 }} gutterBottom component="div">by {authur}</Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={2}>
-                    <Box sx={{ flexGrow: 1, ml: 7}} >
+                    <Box sx={{ flexGrow: 1, ml: 5}} >
                       <Rating
                         name="simple-controlled"
                         value={ave_rating}
@@ -621,9 +624,9 @@ const BookDetail = ({userInfo}) => {
                     </Box>
                   </Grid>
 
-                  <Grid item xs={2}>
-                    <Box sx={{ flexGrow: 1, ml: 6}} >
-                      <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating})</Typography>
+                  <Grid item xs={3}>
+                    <Box sx={{ flexGrow: 1, ml: 3}} >
+                      <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating} ratings)</Typography>
                     </Box>
                   </Grid>
                 </Grid>
@@ -850,7 +853,8 @@ const BookDetail = ({userInfo}) => {
         </Popover>
 
 
-        <Dialog open={create_form} >
+        <Dialog open={create_form} onClose={closeDialog}>
+          
           <DialogTitle>Create a new collection to add this book</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -869,13 +873,15 @@ const BookDetail = ({userInfo}) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
+            
+            <Button type="submit" onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
           </DialogActions>
 
         </Dialog>
-        <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
-        <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
+
       </Box>}
+      <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
+      <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
     </div>
 
   );
