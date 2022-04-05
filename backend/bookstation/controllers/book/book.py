@@ -147,6 +147,14 @@ def similarBooks():
             similarity_set.add((book.book_id, similarity))
             
     book_list = sorted(similarity_set, key = lambda x: x[1])
+    if len(book_list) == 0:
+        no_similar_list = []
+        books = Book.query.order_by(Book.average_rating.desc()).limit(3).all()
+        for book in books:
+            no_similar_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
+            no_similar_list.append(no_similar_dict)
+        return dumps({'books' : no_similar_list})
+
     return_list = []
     i = 0
     for book_tup in book_list:
