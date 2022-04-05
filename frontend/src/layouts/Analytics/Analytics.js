@@ -66,7 +66,7 @@ const Analytics = ({ userInfo }) => {
       overflow: 'auto'
     }}>
       <h1>Analytics</h1>
-      <p>View your reading progress!</p>
+      <p>View {userInfo.user_id === id ? <>your</>:<>their</>} reading progress!</p>
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
       {analyticView === "goals" ? <GoalPage/> : <></>}
       {analyticView === "friends" ? <FriendPage userInfo={userInfo}/> : <></>}

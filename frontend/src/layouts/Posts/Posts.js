@@ -16,6 +16,9 @@ import axios from "axios";
 import {useParams} from "react-router-dom";
 import UsernameLink from "../../components/UsernameLink";
 import {Pagination} from "@mui/material";
+import ErrorPopup from "../../components/ErrorPopup";
+import SuccessPopup from "../../components/SuccessPopup";
+import FeedListing from '../Feed/FeedListing';
 
 const Posts = ({userInfo}) => {
   const urlParams = useParams();
@@ -25,6 +28,10 @@ const Posts = ({userInfo}) => {
   const [isSelf, setIsSelf] = useState(true);
   const [postFormOn, setReviewFormOn] = React.useState(false);
   const [tempPost, setTempPost] = useState({});
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   const [values, setValues] = useState({});
   const [pagePosts, setPagePosts] = useState([]);
   const [page, setPage] = useState(1);
@@ -63,28 +70,10 @@ const Posts = ({userInfo}) => {
         setPagePosts(res.data.posts.slice(0, pageSize));
       })
       .catch(function (error) {
-        alert("error")
-        // alert(error.response.data.message);
+        setErrorMsg(error.response.data.message);
+        setShowError(true);
       });
   }, [window.location.href, userInfo])
-
-  const createDate = (str) => {
-    let li = str.split(' ');
-    let time = li[1];
-    const date = new Date(li[0].replace(/-/g,"/"));
-    return date;
-  }
-  const formatAMPM = (str) => {
-    let li = str.split(' ');
-    let time = li[1].split(':');
-    let hours = time[0];
-    let minutes = time[1];
-    let ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    let strTime = hours + ':' + minutes + ampm;
-    return strTime;
-  }
 
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -109,7 +98,8 @@ const Posts = ({userInfo}) => {
 
   const handleSubmitPost = () => {
     if (newPost.length > 400) {
-      alert('Please enter less than 200 characters.');
+      setErrorMsg('Please enter less than 200 characters.');
+      setShowError(true);
       return;
     }
     axios.post(`${url}/post/addpost`, {
@@ -137,6 +127,8 @@ const Posts = ({userInfo}) => {
       setPage(1);
       setPagePosts(temp.slice(0, pageSize));
       handleAddPostClose();
+      setSuccessMsg("You made a post!");
+      setShowSuccess(true);
     })
   }
 
@@ -201,23 +193,14 @@ const Posts = ({userInfo}) => {
     }
 
     return (
-      <Card>
-        <CardContent>
-          <div style={{display: "flex", flexDirection: "row", justifyContent: 'space-between'}} >
-            <UsernameLink username={values.username} id={values.user_id} avatar={values.avatar} />
-            <div>{formatAMPM(postInfo.time_created)} {createDate(postInfo.time_created).toLocaleDateString("en-AU")}</div>
-          </div>
-          <div style={{marginTop: '5px', marginLeft: '55px', overflowWrap: 'break-word', display: 'flex', justifyContent: 'space-between'}}>
-            {postInfo.content}
-            {isSelf ? <Button onClick={removePost}>Remove</Button> : null}
-          </div>
-        </CardContent>
-      </Card>
+      <FeedListing post={postInfo} username={values.username} avatar={values.avatar} id={values.user_id} removePost={removePost} isSelf={isSelf} />
     )
   };
 
   return (
     <>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
+      <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
       {isSelf ?
         <Button
           onClick={handleAddPost}
