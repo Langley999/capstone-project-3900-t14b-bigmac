@@ -66,14 +66,14 @@ const FriendPage = ({userInfo}) => {
         }}).then(function (response) {
           sum += response['data']['saves']
           temp.push({name: collection.name, saves: response['data']['saves']});
-          setTimeout(() => {
-            setTotalSaves(sum);
-            setSaves(temp);
-          }, 200);
+          setTotalSaves(sum);
         }).catch(function (error) {
           setErrorMsg(JSON.stringify(error.message));
           setSnackBarOpen(true);
         })
+      }
+      if (temp.length >= 2) {
+        setSaves(temp);
       }
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
