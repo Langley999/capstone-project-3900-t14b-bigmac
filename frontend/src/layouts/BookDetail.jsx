@@ -491,6 +491,9 @@ const BookDetail = ({userInfo}) => {
       if (response['data']['success'] == true) {
         setbtnDisabled(true);
         setreadingButtonText('completed');
+      } else {
+        setbtnDisabled(false);
+        setreadingButtonText('complete');
       }
 
     })
