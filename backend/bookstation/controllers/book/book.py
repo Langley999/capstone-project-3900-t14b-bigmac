@@ -262,7 +262,7 @@ def addRatingReview():
     '''
     #get body
     body = request.get_json()
-
+    new_review_id = 0
     #extract information
     book_id = body['book_id']
     token = body['token']
@@ -281,6 +281,8 @@ def addRatingReview():
         db.session.add(book)
         db.session.add(review)
         db.session.commit()
+        db.session.flush()
+        new_review_id = review.review_id
     else:
         book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)
         db.session.add(book)
@@ -289,12 +291,14 @@ def addRatingReview():
         review.created_time = datetime.now()
         db.session.add(review)
         db.session.commit()
+        db.session.flush()
+        new_review_id = review.review_id
     new_content = "Added a review for " + "< " + book.title + " > " + ": " + content
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     db.session.add(newPost)
     db.session.commit()
-
-    return dumps({"success": True})
+   
+    return dumps({"review_id": new_review_id})
 
 
 
