@@ -1,7 +1,7 @@
 export const url = 'http://localhost:8080';
 
 export const checkProfileInput = (username, email, password) => {
-  const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]*[\\._]*[a-zA-Z0-9]+[@]\\w+[.]\\w{2,3}$';
+  const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]*[\\._]*[a-zA-Z0-9]+[@]\\w+[.].*\\w{2,3}$';
 
   if (username.length > 50 || username.length < 1) {
     return "Username has to be between 1 and 50 characters inclusively.";
