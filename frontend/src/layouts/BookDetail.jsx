@@ -217,12 +217,14 @@ const BookDetail = ({userInfo}) => {
         setReviewFormOn(false);
         setreviewButtonshow(false);
         var d = new Date();
-  
+        console.log(reviews);
         let hours = d.getHours() % 12;
         hours = hours ? hours : 12;
         let strTime = hours + ':' + d.getMinutes();
-        var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
-        d.getFullYear() + " " + strTime;
+        //var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
+        //d.getFullYear() + " " + strTime;
+
+        var datestring = d.getFullYear() + "-" +("0"+(d.getMonth()+1)).slice(-2)+ "-" + ("0" + d.getDate()).slice(-2)+" " + strTime;
         console.log(datestring)
   
         let rev = {};
@@ -232,6 +234,7 @@ const BookDetail = ({userInfo}) => {
         rev['avatar'] = userInfo.avatar;
         rev['user_id'] = userInfo.user_id;
         rev['rating'] = rating;
+        rev['is_liked'] = false;
         setReviews(review => [rev,...review] );
       })
       .catch(function (error) {
@@ -557,7 +560,7 @@ const BookDetail = ({userInfo}) => {
       }
       setGenres(genres);
       setReviews(response['data']['reviews'].reverse())
-
+      console.log(response['data']['reviews'])
       if (response['data']['cover_image']==="") {
         setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
 
