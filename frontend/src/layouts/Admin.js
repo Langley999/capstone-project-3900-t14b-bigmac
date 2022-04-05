@@ -67,8 +67,8 @@ const Admin = () => {
 
     })
     .catch(function (error) {
-      console.log(error);
-      //setErrorMsg(JSON.stringify(error));
+      //console.log(JSON.stringify(error));
+      setErrorMsg("Invalid admin id or password!");
       setSnackBarOpen(true);
     });
 
