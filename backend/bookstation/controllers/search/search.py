@@ -135,19 +135,22 @@ def genre():
     genres = genre_names.split('&')
     all_books = []
     for genre in genres:
-        books = Book.query.filter(Book.genre_string.like('%'+genre+'%')).filter(Book.average_rating >= rating_filter).order_by(desc(Book.average_rating)).all()
+        books = Book.query.filter(Book.genre_string.like('%'+genre+'%')).filter(Book.average_rating >= rating_filter).order_by(Book.average_rating.desc()).all()
         booklist = []
         for book in books:
-            booklist.append(book.book_id)
+            booklist.append((book.book_id,book.average_rating))
         all_books.append(booklist)
     books = set.intersection(*[set(x) for x in all_books])  
     print("books")
-    print(books)
+ 
     pages = math.ceil(len(books)/12)
     results = []
     i = 0
     j = 0
-    for id in books:
+    #list(books).sort(key = lambda x: x[1], reverse=True)
+    books2 = list(books)
+    books2.sort(key = lambda x: x[1], reverse=True)
+    for id,rating in books2:
         if i < page*12:
             i+=1
             continue
