@@ -243,6 +243,18 @@ def addRating():
         db.session.add(review)
         db.session.commit()
 
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection == None:
+        new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
+        db.session.add(new_book_collection)
+        db.session.commit()
+
     return dumps({"success": True})
 
 
@@ -293,6 +305,18 @@ def addRatingReview():
         db.session.commit()
         db.session.flush()
         new_review_id = review.review_id
+
+    collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
+    if collection == None:
+        new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
+        db.session.add(new_history_collection)
+        db.session.commit()
+        db.session.flush()
+    book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
+    if book_collection == None:
+        new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
+        db.session.add(new_book_collection)
+
     new_content = "Added a review for " + "< " + book.title + " > " + ": " + content
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     db.session.add(newPost)

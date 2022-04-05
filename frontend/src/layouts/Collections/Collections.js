@@ -47,7 +47,7 @@ const Collections = ({userInfo}) => {
   const [pageBooks, setPageBooks] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(10);
-  const pageSize = 2;
+  const pageSize = 12;
 
   useEffect(async () => {
     // const user_id = Number(window.location.pathname.split('/')[2]);

@@ -239,6 +239,8 @@ const BookDetail = ({userInfo}) => {
         rev['likes'] = 0;
         setReviews(review => [rev,...review] );
         setreviewValue("");
+        setbtnDisabled(true);
+        setreadingButtonText('completed');
       })
       .catch(function (error) {
   
@@ -284,7 +286,8 @@ const BookDetail = ({userInfo}) => {
         setaveRating(newrating.toFixed(2));
         setRating(newValue);
       }
-
+      setbtnDisabled(true);
+      setreadingButtonText('completed');
     })
     .catch(function (error) {
 
@@ -330,6 +333,7 @@ const BookDetail = ({userInfo}) => {
         setreadingButtonText('completed');
         setsnackbarcontent('Book has been added to Reading History');
         setsnackbaropen(true);
+        
       }
     })
     .catch(function (error) {
