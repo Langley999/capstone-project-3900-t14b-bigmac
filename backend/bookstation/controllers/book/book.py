@@ -139,6 +139,8 @@ def similarBooks():
     for author in authors:
         author_books = Book_author.query.filter_by(author_id = author.author_id).all()
         for book in author_books:
+            if book.book_id == book_id:
+                continue
             comptags = set()
             compgenres = Book_genre.query.filter_by(book_id = book.book_id).all()
             for compgenre in compgenres:
