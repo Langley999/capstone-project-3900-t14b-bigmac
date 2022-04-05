@@ -174,6 +174,7 @@ def getfollowing():
         user = User.query.get(following.user_id) 
         userinfo['user_id'] = following.user_id
         userinfo['username'] = user.username
+        userinfo['avatar'] = user.avatar
         result.append(userinfo)
         
     result.sort(key = lambda x: x['username'])
@@ -211,6 +212,7 @@ def getfollower():
         user = User.query.get(following.follower_user_id) 
         userinfo['user_id'] = following.follower_user_id
         userinfo['username'] = user.username
+        userinfo['avatar'] = user.avatar
         result.append(userinfo)
 
     result.sort(key = lambda x: x['username'])

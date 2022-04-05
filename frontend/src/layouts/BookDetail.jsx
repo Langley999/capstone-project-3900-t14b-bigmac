@@ -213,7 +213,7 @@ const BookDetail = ({userInfo}) => {
         }
       })
       .then(function (response) {
-  
+        console.log(response.data.review_id)
         setReviewFormOn(false);
         setreviewButtonshow(false);
         var d = new Date();
@@ -235,7 +235,10 @@ const BookDetail = ({userInfo}) => {
         rev['user_id'] = userInfo.user_id;
         rev['rating'] = rating;
         rev['is_liked'] = false;
+        rev['review_id'] = response.data.review_id;
+        rev['likes'] = 0;
         setReviews(review => [rev,...review] );
+        setreviewValue("");
       })
       .catch(function (error) {
   
