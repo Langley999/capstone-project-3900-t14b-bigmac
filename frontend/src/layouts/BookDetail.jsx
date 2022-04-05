@@ -790,6 +790,7 @@ const BookDetail = ({userInfo}) => {
               <Grid item xs={12} style={{textAlign: "center"}} key={i}>
                 <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
                   <Grid item xs={12} style={{textAlign: "center"}}>
+                  <Box component={Link} to={`/book/?id=${item['id']}`}  >
                     <Box
                       component="img"
                       sx={{
@@ -799,7 +800,7 @@ const BookDetail = ({userInfo}) => {
                       alt="book cover"
                       src={item['cover_image']}
                     />
-                                        
+                  </Box>               
                   </Grid>
                   <Grid item xs={12} style={{textAlign: "center"}}> 
                     <Box component={Link} to={`/book/?id=${item['id']}`} style={{width: "600px"}} >
