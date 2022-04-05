@@ -67,7 +67,8 @@ const FriendPage = ({userInfo}) => {
           sum += response['data']['saves']
           temp.push({name: collection.name, saves: response['data']['saves']});
           setTotalSaves(sum);
-          if (temp.length === collections.length) {
+          console.log(temp.length, collections.length, collectionsList.length);
+          if (temp.length === collectionsList.length) {
             setSaves(temp);
           }
         }).catch(function (error) {
@@ -75,7 +76,6 @@ const FriendPage = ({userInfo}) => {
           setSnackBarOpen(true);
         })
       }
-      
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setSnackBarOpen(true);
