@@ -1,0 +1,12 @@
+token : 105c766632be2269d0926c9f2e7633584603c329df8b7e4e91843ff3d0595995	eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw
+
+
+###
+GET http://127.0.0.1:8080/recommendation/favouriteGenre?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw
+
+
+###
+GET http://127.0.0.1:8080/recommendation/favouriteAuthor?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw
+
+###
+GET http://127.0.0.1:8080/recommendation/favouriteFollowed?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw
