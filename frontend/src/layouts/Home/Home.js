@@ -88,6 +88,10 @@ const data = {
 const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage, updateGenreRating}) => {
   const navigate = useNavigate();
   const [topBooks, setTopBooks] = useState([]);
+  const [highRating, setHighRating] = useState([]);
+  const [favAuthor, setFavAuthor] = useState({});
+  const [favGenre, setFavGenre] = useState({});
+  const [followingFav, setFollowingFav] = useState({});
 
   useEffect(async () => {
     axios.get(`${url}/recommendation/toprating`)
@@ -97,21 +101,67 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
       .catch(error => {
         alert(error.message);
       })
+
+    axios.get(`${url}/recommendation/highrating`)
+      .then(res => {
+        setHighRating(res.data.books);
+      })
+
+    if (ifLogin) {
+      axios.get(`${url}/recommendation/favouriteAuthor`, {
+        params: {
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(res => {
+          setFavAuthor(res.data);
+        })
+
+      axios.get(`${url}/recommendation/favouriteGenre`, {
+        params: {
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(res => {
+          setFavGenre(res.data);
+        })
+
+      axios.get(`${url}/recommendation/favouritefollowings`, {
+        params: {
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(res => {
+          setFollowingFav(res.data.books);
+        })
+    }
   }, [])
 
   const Recommendations = () => {
+    const getAuthorBooks = () => {
+
+    }
+
+    const getGenreBooks = () => {
+
+    }
+
+    const getFollowingBooks = () => {
+
+    }
 
     return (
       <>
         <h1>Recommendations</h1>
-        <div className='flex-container'>
-          <Button variant="outlined">{data.likeAuthor}</Button>
-          <Button variant="outlined" color='success'>{data.likeSubject}</Button>
-        </div>
+        {ifLogin ?
+          <div className='flex-container'>
+            <Button variant="outlined" onClick={getAuthorBooks}>{favAuthor.author}</Button>
+            <Button variant="outlined" color='success' onClick={getGenreBooks}>{favGenre.genre}</Button>
+            <Button variant="outlined" color='warning' onClick={getFollowingBooks}>Your followings' favourite</Button>
+          </div> : null
+        }
         <div className='flex-container'>
           <Button variant="outlined" color='error'>4-5 star rating</Button>
-          <Button variant="outlined" color='warning'>Guess you like...</Button>
-          <Button variant="outlined" color='secondary'>Most Popular</Button>
         </div>
       </>
     )
