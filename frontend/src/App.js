@@ -30,6 +30,9 @@ import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
 import axios from "axios";
 import {url} from "./components/Helper";
+import { withSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
+import Button from '@mui/material/Button';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -46,13 +49,56 @@ function App() {
   const [searchGenres, setSearchGenres] = useState('');
   const [tempsearchRating, setTempsearchRating] = useState(0);
   const [tempgenreRating, setTempgenreRating] = useState(0);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [notificationHistory, setNotificationHistory] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
       updateUserInfo(JSON.parse(localStorage.getItem('user')));
       updateLogin(true);
     }
+    // while (true) {
+    //   setTimeout(() => {
+    //     getNotifications();
+    //   },3000);
+    // }
   }, []);
+
+  const followNotif = {
+    variant: 'warning',
+    autoHideDuration: 3000,
+  }
+
+  const postNotif = {
+    variant: 'info',
+    autoHideDuration: 3000,
+  }
+
+  const reviewNotif = {
+    variant: 'success',
+    autoHideDuration: 3000,
+  }
+
+  const getNotifications = () => {
+    axios.get(`${url}//`, {params: {
+      token: localStorage.getItem('token')
+    }}).then(function(res){
+      const notifs = res.data.notifications;
+      if (notifs.length !== notificationHistory.length) {
+        const lastNotif = notifs[notifs.length-1];
+        if (lastNotif.type === 'post') {
+          enqueueSnackbar(` ${lastNotif.username} just posted to your feed`, postNotif);
+        } else if (lastNotif.type === 'review') {
+          enqueueSnackbar(` ${lastNotif.username} just reviewed a book`, reviewNotif);
+        } else if (lastNotif.type === 'follow') {
+          enqueueSnackbar(` ${lastNotif.username} just followed your account`, followNotif);
+        }
+        setNotificationHistory(res.data.notifications);
+      }
+    }).catch(function(error) {
+      alert(JSON.stringify(error.response.data.message));
+    })
+  }
 
   const updateTempsearchRating = (newRating) => {
     setTempsearchRating(newRating);
@@ -153,7 +199,7 @@ function App() {
             <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
             <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
-            <Route path='notifications' element={<Notifications />} />
+            <Route path='notifications' element={<Notifications notificationHistory={notificationHistory} />} />
             <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={
               <>
@@ -188,4 +234,4 @@ function App() {
   );
 }
 
-export default App;
+export default withSnackbar(App);
