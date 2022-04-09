@@ -12,6 +12,7 @@ import Login from './layouts/Login';
 import Register from './layouts/Register';
 import Home from './layouts/Home/Home';
 import Quiz from './layouts/Quiz';
+import EnterQuiz from './layouts/EnterQuiz';
 import Feed from './layouts/Feed/Feed';
 import PublicFeed from './layouts/Feed/PublicFeed';
 import SearchUsers from './layouts/SearchUsers/SearchUsers';
@@ -149,6 +150,9 @@ function App() {
               <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
             </Route>
             <Route path='quiz' element={<Quiz />} />
+            <Route path="enterquiz" element={<EnterQuiz />}>
+              <Route path=":id" element={<EnterQuiz />} />
+            </Route>
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
