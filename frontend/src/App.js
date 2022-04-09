@@ -46,6 +46,7 @@ function App() {
   const [searchGenres, setSearchGenres] = useState('');
   const [tempsearchRating, setTempsearchRating] = useState(0);
   const [tempgenreRating, setTempgenreRating] = useState(0);
+  const [followingFav, setFollowingFav] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -53,6 +54,10 @@ function App() {
       updateLogin(true);
     }
   }, []);
+
+  const updateFollowingFav = (newFav) => {
+    setFollowingFav(newFav);
+  }
 
   const updateTempsearchRating = (newRating) => {
     setTempsearchRating(newRating);
@@ -136,7 +141,7 @@ function App() {
                 searchGenres={searchGenres}
                 updateSearchGenres={updateSearchGenres}
                 updateTempsearchRating={updateTempsearchRating}
-                // updateTempgenreRating={updateTempgenreRating}
+                updateTempgenreRating={updateTempgenreRating}
               />
               <div className='centre'>
                 <Outlet />
@@ -144,7 +149,22 @@ function App() {
 
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount} updateGenreRating={updateGenreRating}/>} />
+            <Route path='/' element={
+              <Home
+                ifLogin={ifLogin}
+                updateSearchResult={updateSearchResult}
+                updateSearchType={updateSearchType}
+                updateSearchGenres={updateSearchGenres}
+                updatePage={updatePage}
+                updatePageCount={updatePageCount}
+                updateGenreRating={updateGenreRating}
+                updateTempsearchRating={updateTempsearchRating}
+                updateSearchValue={updateSearchValue}
+                updateRadioValue={updateRadioValue}
+                updateFollowingFav={updateFollowingFav}
+                followingFav={followingFav}
+              />}
+            />
             <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
               <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
             </Route>
@@ -152,7 +172,23 @@ function App() {
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
             <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
-            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
+            <Route path='searchbooks' element={
+              <SearchBooks
+                searchResult={searchResult}
+                searchValue={searchValue}
+                radioValue={radioValue}
+                tempsearchRating={tempsearchRating}
+                updateSearchResult={updateSearchResult}
+                page={page}
+                updatePage={updatePage}
+                pageCount={pageCount}
+                updatePageCount={updatePageCount}
+                searchType={searchType}
+                searchGenres={searchGenres}
+                genreRating={genreRating}
+                followingFav={followingFav}
+              />}
+            />
             <Route path='notifications' element={<Notifications />} />
             <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={

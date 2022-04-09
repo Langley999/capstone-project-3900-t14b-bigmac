@@ -77,21 +77,12 @@ const itemData = [
   },
 ];
 
-const data = {
-  bookTitle: 'Harry Potter',
-  bookAuthor: 'J.K.Rowling',
-  bookRating: '4.5',
-  likeAuthor: 'J.K.Rowling',
-  likeSubject: 'Science Fiction'
-}
-
-const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage, updateGenreRating}) => {
+const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage, updateGenreRating, updateTempsearchRating, updateSearchValue, updateRadioValue, updateFollowingFav, followingFav}) => {
   const navigate = useNavigate();
   const [topBooks, setTopBooks] = useState([]);
-  const [highRating, setHighRating] = useState([]);
-  const [favAuthor, setFavAuthor] = useState({});
-  const [favGenre, setFavGenre] = useState({});
-  const [followingFav, setFollowingFav] = useState({});
+  const [favAuthor, setFavAuthor] = useState('');
+  const [favGenre, setFavGenre] = useState('');
+  const pageSize = 12;
 
   useEffect(async () => {
     axios.get(`${url}/recommendation/toprating`)
@@ -102,11 +93,6 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         alert(error.message);
       })
 
-    axios.get(`${url}/recommendation/highrating`)
-      .then(res => {
-        setHighRating(res.data.books);
-      })
-
     if (ifLogin) {
       axios.get(`${url}/recommendation/favouriteAuthor`, {
         params: {
@@ -114,7 +100,10 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         }
       })
         .then(res => {
-          setFavAuthor(res.data);
+          if (res.data.favourite_authors.length > 0)
+            setFavAuthor(res.data.favourite_authors[0]);
+          else
+            setFavAuthor('Find More Authors');
         })
 
       axios.get(`${url}/recommendation/favouriteGenre`, {
@@ -123,31 +112,103 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         }
       })
         .then(res => {
-          setFavGenre(res.data);
+          console.log(res.data);
+          if (res.data.favourite_genres.length > 0)
+            setFavGenre(res.data.favourite_genres[0]);
+          else
+            setFavGenre('Find More Genres')
         })
 
-      axios.get(`${url}/recommendation/favouritefollowings`, {
+      axios.get(`${url}/recommendation/favouriteFollowed`, {
         params: {
           token: localStorage.getItem('token')
         }
       })
         .then(res => {
-          setFollowingFav(res.data.books);
+          updateFollowingFav(res.data.favourite_followed_books);
         })
     }
   }, [])
 
   const Recommendations = () => {
     const getAuthorBooks = () => {
+      if (favAuthor === 'Find More Authors') {
+        alert("Please add books to your collection");
+        return;
+      }
 
+      axios.get(`${url}/search/searchbook`, {params: {
+          type: 'author',
+          value: favAuthor,
+          rating: 0,
+          page: 1
+        }})
+        .then(res => {
+          updateSearchValue(favAuthor);
+          updateRadioValue('author');
+          updatePage(1);
+          updateTempsearchRating(0);
+          updateSearchType('byValue');
+          updatePageCount(res.data.pages);
+          updateSearchResult(res.data.books);
+          navigate('searchbooks');
+        })
     }
 
     const getGenreBooks = () => {
+      if (favGenre === 'Find More Genres') {
+        alert("Please add books to your collection");
+        return;
+      }
 
+      axios.get(`${url}/search/genre`, {params: {
+          genres: favGenre,
+          rating: 0,
+          page: 1
+        }})
+        .then(res => {
+          updateGenreRating(0);
+          updateSearchGenres(favGenre);
+          updateSearchType('byGenre');
+          updatePage(1);
+          updatePageCount(res.data.pages);
+          updateSearchResult(res.data.books);
+          navigate('searchbooks');
+        })
+        .catch(function (error) {
+          alert(error.message);
+        });
     }
 
     const getFollowingBooks = () => {
+      if (followingFav.length === 0) {
+        alert("Please follow some users");
+        return;
+      }
+      updateSearchResult(followingFav.slice(0, pageSize));
+      updatePage(1);
+      updatePageCount(Math.ceil(followingFav.length / pageSize));
+      updateSearchType('byRecommendation');
+      navigate('searchbooks');
+    }
 
+    const getHighRating = () => {
+      axios.get(`${url}/search/searchbook`, {params: {
+          type: 'title',
+          value: '',
+          rating: 4,
+          page: 1
+        }})
+        .then(res => {
+          updateSearchValue('');
+          updateRadioValue('title');
+          updatePage(1);
+          updateTempsearchRating(4);
+          updateSearchType('byValue');
+          updatePageCount(res.data.pages);
+          updateSearchResult(res.data.books);
+          navigate('searchbooks');
+        })
     }
 
     return (
@@ -155,13 +216,13 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         <h1>Recommendations</h1>
         {ifLogin ?
           <div className='flex-container'>
-            <Button variant="outlined" onClick={getAuthorBooks}>{favAuthor.author}</Button>
-            <Button variant="outlined" color='success' onClick={getGenreBooks}>{favGenre.genre}</Button>
+            <Button variant="outlined" onClick={getAuthorBooks}>{favAuthor}</Button>
+            <Button variant="outlined" color='success' onClick={getGenreBooks}>{favGenre}</Button>
             <Button variant="outlined" color='warning' onClick={getFollowingBooks}>Your followings' favourite</Button>
           </div> : null
         }
         <div className='flex-container'>
-          <Button variant="outlined" color='error'>4-5 star rating</Button>
+          <Button variant="outlined" color='error' onClick={getHighRating}>4-5 star rating</Button>
         </div>
       </>
     )
@@ -245,11 +306,9 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
 
   return (
     <>
-      {ifLogin ?
       <div className='space'>
         <Recommendations/>
-      </div> : null
-      }
+      </div>
       <div className='space'>
         <Subjects/>
       </div>

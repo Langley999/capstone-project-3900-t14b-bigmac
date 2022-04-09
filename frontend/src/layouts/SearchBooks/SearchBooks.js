@@ -7,7 +7,9 @@ import {Pagination} from "@mui/material";
 import {url} from "../../components/Helper";
 
 
-const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, tempsearchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating}) => {
+const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, tempsearchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating, followingFav}) => {
+  const pageSize = 12;
+
   const handleChangePage = (event, value) => {
     updatePage(value);
     console.log(searchType)
@@ -26,7 +28,7 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
         .catch(function (error) {
           alert(error.response.data.message);
         });
-    } else {
+    } else if (searchType === 'byGenre') {
       axios.get(`${url}/search/genre`, {params: {
           genres: searchGenres,
           rating: genreRating,
@@ -38,6 +40,10 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
         .catch(function (error) {
           alert(error.message);
         });
+    } else {
+      const start = (value-1)*pageSize;
+      const end = value * pageSize;
+      updateSearchResult(followingFav.slice(start, end));
     }
   }
 
