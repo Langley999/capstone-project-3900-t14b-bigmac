@@ -37,3 +37,14 @@ Week 6
 - Added pie charts of genre and author proportions to user profile analytics page
 - Held a meeting to confirm Retrospective A submission
 - Held brief daily standups at 8pm
+
+Week 7
+- Created graphs for following/followers and reading goals in profile analytics page
+- Formatted posts that included a book review
+- Fixed bugs and grammatical errors in frontend
+- Had quick standups and meetings for merging frontend branches
+
+Week 8
+- Had a group meeting to test all website components prepare for Project Demo B
+- Allocated Sprint 3 tasks in Jira backlog/board
+- Decided on design of notification communication between frontend and backend
