@@ -1,4 +1,5 @@
 from json import dumps
+from bookstation.models.event_sys import Badge,Quiz
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Collection, Goal
@@ -176,7 +177,7 @@ def get_user_profile():
     '''
     user_id = request.args.get('user_id')
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
+    # login_status_check(operator_email, token)
     # sql select user
     print("HERE",token, user_id)
     operator = User.query.filter_by(token=token).first()
@@ -187,12 +188,26 @@ def get_user_profile():
     isFollowing = False
     if Follow_relationship.query.filter_by(follower_user_id = operator.user_id, user_id = user_id).first() != None:
         isFollowing = True
+
+    badges = Badge.query.filter_by(user_id=user_id).all()
+    badgelist = []
+    for badge in badges:
+        badgeobj = {}
+        quiz = Quiz.query.filter_by(badge_id=badge.badge_id).first()
+        badgeobj['badge_id'] = badge.badge_id
+        badgeobj['badge_image'] = badge.image
+        badgeobj['quiz_id'] = quiz.quiz_id
+        badgeobj['quiz_name'] = quiz.quiz_name
+        badgeobj['quiz_description'] = quiz.description
+        badgelist.append(badgeobj)
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
         "email": user.email,
         "avatar": user.avatar,
-        "isFollowing" : isFollowing
+        "isFollowing" : isFollowing,
+        "badges": badgelist
+
     })
 
 @app.route(url_prefix + '/update', methods=["POST"])
