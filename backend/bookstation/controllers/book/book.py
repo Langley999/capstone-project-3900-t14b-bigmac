@@ -5,6 +5,8 @@ import ast
 import csv
 import math
 import time
+
+from itsdangerous import NoneAlgorithm
 from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
@@ -58,6 +60,8 @@ def getDetails():
             if token != None:
                 if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
                     is_liked = True
+                if review.user_id == user.user_id:
+                    continue
             reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
                 
 
@@ -70,6 +74,19 @@ def getDetails():
 
     return dumps(book_dict)
 
+
+@app.route("/book/ownreview", methods=["GET"])
+def ownReview():
+    token = request.args.get('token') 
+    book_id = request.args.get('bookId')
+    user = get_user(token)
+    review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
+    review_dict = {}
+    if review != None:
+        if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
+            is_liked = True
+        review_dict = {'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked}
+    return dumps({'review' : review_dict})
 
 @app.route("/book/likereview", methods=["POST"])
 def likeReview():
