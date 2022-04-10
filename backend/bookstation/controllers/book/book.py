@@ -83,6 +83,7 @@ def ownReview():
     review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
     review_dict = {}
     if review != None:
+        is_liked = False
         if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
             is_liked = True
         review_dict = {'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked}
