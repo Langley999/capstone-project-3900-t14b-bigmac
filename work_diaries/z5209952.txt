@@ -36,3 +36,7 @@ week 7
 - I added frontend for admin quiz access and management
 - I modified book details page for unlogin users
 - I debugged book details page and pop ups
+
+week 8
+- I added quiz functionality in frontend
+- I added quiz checkasnwer api for backend, and badge system for backend
