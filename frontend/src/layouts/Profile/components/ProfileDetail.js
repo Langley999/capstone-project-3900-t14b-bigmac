@@ -7,7 +7,8 @@ import {
   CardHeader,
   Divider,
   TextField,
-  Typography
+  Typography,
+  Avatar
 } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -38,6 +39,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
+    console.log(userInfo)
 
     axios.get(`${url}/user/profile`, {
       params: {
@@ -46,12 +48,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       }
     })
       .then(function (res) {
+        console.log(user_id === userInfo.user_id)
         if (user_id === userInfo.user_id) {
           setValues(userInfo);
         } else {
           setValues({
             username: res['data']['username'],
-            avatar: res.data.avatar
+            avatar: res.data.avatar,
+            badges: res.data.badges
           });
         }
       })
@@ -101,7 +105,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         email: values.email,
         username: values.username,
         password: values.password,
-        avatar: userInfo.avatar
+        avatar: userInfo.avatar,
+        badges: userInfo.badges
       }))
       setSuccessMsg('Profile details updated');
       setShowSuccess(true);
@@ -159,8 +164,12 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   < Typography
                     color='#616161'
                   >
-                    Badge: Empty
+                    Badge:
                   </ Typography>
+                  {values.badges > 0 ? values.badges.map((badge) => {
+                    return ( <Avatar src={badge} key={badge} sx={{height: 50, width: 50}}/>
+                    )
+                  }) : <Typography>Empty</Typography>}
                 </Box>
                 <TextField
                   disabled

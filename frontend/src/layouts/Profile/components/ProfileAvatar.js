@@ -173,7 +173,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
         email: userInfo.email,
         username: userInfo.username,
         password: userInfo.password,
-        avatar: selected
+        avatar: selected,
+        badges: userInfo.badges
       }))
       setShowSuccess(true);
       setSuccessMsg("Upload avatar success!");
