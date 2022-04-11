@@ -1,5 +1,5 @@
 from json import dumps
-from backend.bookstation.models.event_sys import User_badge
+from bookstation.models.event_sys import User_badge
 from bookstation.models.event_sys import Badge,Quiz
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error

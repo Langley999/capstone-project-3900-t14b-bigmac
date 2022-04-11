@@ -357,6 +357,7 @@ def getrightanswer(q_id):
     ans = Answer.query.filter_by(question_id=q_id).all()
     for answer in ans:
         if answer.tag == True:
+            print(answer.answer_id)
             return answer.answer_id
 
 @app.route("/quiz/submitanswer", methods=["POST"])
@@ -372,10 +373,11 @@ def checkanswer():
         raise error.NotFoundError(description='No access right')
     
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    print(questions)
     totalpoints = len(questions)
     gainedpoints = 0
     for question in questions:
-        if anslist[str(question.question_id)] == getrightanswer(question.question_id):
+        if str(anslist[str(question.question_id)]) == str(getrightanswer(question.question_id)):
             gainedpoints +=1
     if round(gainedpoints/totalpoints,2) >= 0.6:
         status = "PASS"
