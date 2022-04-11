@@ -11,6 +11,7 @@ from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
 from bookstation.models.user_sys import User, Collection
+from bookstation.models.event_sys import User_badge
 from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
 
@@ -28,6 +29,7 @@ def getDetails():
     Get book details
     Args (GET):
         bookId (integer): request bookId
+        sort (string): can be 'time', 'likes', 'badges'
     Returns:
         json object of book details
     Raises:
@@ -35,11 +37,13 @@ def getDetails():
     '''
     #get input
     token = request.args.get('token') 
+    sort = request.args.get('sort')
     if token != None:
         user = get_user(token)
     book_id = request.args.get('bookId')
     page_no = int(request.args.get('page'))
     book = Book.query.get(book_id)
+
 
     #check book is db
     if book == None:
@@ -62,10 +66,16 @@ def getDetails():
                     is_liked = True
                 if review.user_id == user.user_id:
                     continue
-            reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+            badges = []
+            user_badges = User_badge.query.filter_by(user_id = review.user_id).all()
+            for user_badge in user_badges:
+                badge = user_badge.badge
+                badges.append({'badge_id' : badge.badge_id, 'image' : badge.image})
+            reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar, 'badges' : badges,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
                 
-
-    reviews.sort(key = lambda x: x['time'], reverse=False)
+    reviews.sort(key = lambda x: x[sort], reverse=True)
+    if sort == 'badges':
+        reviews.sort(key = lambda x: len(x[sort]), reverse=True)
     reviews = reviews[5*(page_no-1): 5*page_no]
     review_pageno = math.ceil(len(reviews)/5)
     book_dict['reviews'] = reviews
