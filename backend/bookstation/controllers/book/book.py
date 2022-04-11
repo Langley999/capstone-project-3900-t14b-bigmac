@@ -91,12 +91,12 @@ def ownReview():
     book_id = request.args.get('bookId')
     user = get_user(token)
     review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
-    review_dict = {}
+    review_dict = []
     if review != None:
         is_liked = False
         if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
             is_liked = True
-        review_dict = {'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked}
+        review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
     return dumps({'review' : review_dict})
 
 @app.route("/book/likereview", methods=["POST"])
@@ -116,6 +116,32 @@ def likeReview():
     review = Review.query.get(review_id)
     review.likes = review.likes + 1
     db.session.add(user_like)
+    db.session.commit()
+
+    return dumps({})
+
+
+@app.route("/book/editreview", methods=["POST"])
+def editReview():
+
+    """
+    Arg: review_id to like
+    review: new content of review
+    
+    """
+    body = request.get_json()
+    print(body)
+    user = get_user(body['token'])
+
+    review_id = body['review_id']
+    review_content = body['review']
+
+    review = Review.query.get(review_id)
+
+    if review.user_id != user.user_id:
+        raise error.AccessError(description="No right to edit this review")
+    review.content = review_content
+    db.session.add(review)
     db.session.commit()
 
     return dumps({})
