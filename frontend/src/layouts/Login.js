@@ -109,6 +109,7 @@ const Login = ({ updateLogin, updateUserInfo }) => {
           token: response.data.token
         }})
         .then(function (res) {
+          console.log(res.data.badges)
           updateUserInfo({
             email: email,
             user_id: response.data.user_id,

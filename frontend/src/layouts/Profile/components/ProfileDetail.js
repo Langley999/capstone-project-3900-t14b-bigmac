@@ -51,6 +51,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       }
     })
       .then(function (res) {
+        console.log(res['data'])
         console.log(user_id === userInfo.user_id)
         if (user_id === userInfo.user_id) {
           setValues(userInfo);
@@ -201,7 +202,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   >
                     Badge:
                   </ Typography>
-                  {values.badges > 0 ? values.badges.map((badge) => {
+                  {values.badges.length > 0 ? values.badges.map((badge) => {
                     return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
                     )
                   }) : <Typography>Empty</Typography>}
