@@ -1,4 +1,5 @@
 from json import dumps
+from backend.bookstation.models.event_sys import User_badge
 from bookstation.models.event_sys import Badge,Quiz
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
@@ -189,7 +190,7 @@ def get_user_profile():
     if Follow_relationship.query.filter_by(follower_user_id = operator.user_id, user_id = user_id).first() != None:
         isFollowing = True
 
-    badges = Badge.query.filter_by(user_id=user_id).all()
+    badges = User_badge.query.filter_by(user_id=user_id).all()
     badgelist = []
     for badge in badges:
         badgeobj = {}
