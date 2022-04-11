@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -23,6 +23,7 @@ import {url, checkProfileInput} from '../../../components/Helper';
 import {useParams, useLocation, useNavigate} from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const params = useParams();
@@ -35,6 +36,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [successMsg, setSuccessMsg] = useState('');
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [currentBadge, setCurrentBadge] = useState({});
+  const [openBadge, setOpenBadge] = useState(false);
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
@@ -64,6 +67,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       });
 
   }, [window.location.href, userInfo])
+
+  const handleClickOpenBadge = () => {
+    setOpenBadge(true);
+  };
+
+  const handleCloseBadge = () => {
+    setOpenBadge(false);
+  };
 
 
   const handleChange = (event) => {
@@ -126,8 +137,32 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     padding: '0 30px'
   }
 
+  const openBadgeInfo = (badge) => {
+    handleClickOpenBadge();
+    setCurrentBadge(badge);
+  }
+
   return (
     <>
+      <Dialog open={openBadge} onClose={handleCloseBadge}>
+        <DialogTitle>Badge Information</DialogTitle>
+        <DialogContent>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Avatar src={currentBadge.badge_image} sx={{height: 50, width: 50}}/>
+            <Typography>{`Quiz: ${currentBadge.quiz_name}`}</Typography>
+            <Typography>{`Quiz Description: `}</Typography>
+            <Typography>{currentBadge.quiz_description}</Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            onClick={handleCloseBadge}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
         <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
@@ -167,7 +202,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                     Badge:
                   </ Typography>
                   {values.badges > 0 ? values.badges.map((badge) => {
-                    return ( <Avatar src={badge} key={badge} sx={{height: 50, width: 50}}/>
+                    return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
                     )
                   }) : <Typography>Empty</Typography>}
                 </Box>

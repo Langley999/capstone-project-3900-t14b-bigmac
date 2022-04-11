@@ -372,6 +372,7 @@ def checkanswer():
         raise error.NotFoundError(description='No access right')
     
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    print(questions)
     totalpoints = len(questions)
     gainedpoints = 0
     for question in questions:
