@@ -36,6 +36,7 @@ import Select from '@mui/material/Select';
 import {Pagination} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {convertDate,months} from '../components/Helper';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import Review from '../components/Review';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -303,28 +304,15 @@ const BookDetail = ({userInfo}) => {
         console.log(response.data.review_id)
         setReviewFormOn(false);
         setreviewButtonshow(false);
-        var d = new Date();
-        console.log(reviews);
-        let hours = d.getHours() % 12;
-        hours = hours ? hours : 12;
-        let strTime = hours + ':' + d.getMinutes();
-        //var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
-        //d.getFullYear() + " " + strTime;
-
-        var datestring = d.getFullYear() + "-" +("0"+(d.getMonth()+1)).slice(-2)+ "-" + ("0" + d.getDate()).slice(-2)+" " + strTime;
-        console.log(datestring)
-  
-        let rev = {};
-        rev['time'] = datestring;
-        rev['content'] = reviewValue;
-        rev['username'] = userInfo.username;
-        rev['avatar'] = userInfo.avatar;
-        rev['user_id'] = userInfo.user_id;
-        rev['rating'] = rating;
-        rev['is_liked'] = false;
-        rev['review_id'] = response.data.review_id;
-        rev['likes'] = 0;
-        setReviews(review => [rev,...review] );
+        axios.get('http://127.0.0.1:8080/book/ownreview', {
+          params: {
+            token: localStorage.getItem('token'),
+            bookId: book_id
+          }
+        }).then(function(response){
+          console.log(response['data']['review'])
+          setmyreview(response['data']['review']);
+        });
         setreviewValue("");
         setbtnDisabled(true);
         setreadingButtonText('completed');
@@ -785,6 +773,7 @@ const BookDetail = ({userInfo}) => {
                       label="Time"
                       onChange={handleChangeSort}
                       autoWidth
+                      style={{ fontSize:14,height: 40 }}
                     >
                       <MenuItem value={'time'}>Time</MenuItem>
                       <MenuItem value={'likes'}>Likes</MenuItem>

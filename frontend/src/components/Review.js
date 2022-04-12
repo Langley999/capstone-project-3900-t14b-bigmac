@@ -13,6 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import AddIcon from '@mui/icons-material/Add';
 import Popover from '@mui/material/Popover';
+import Badge from '@mui/material/Badge';
 import TextField from '@mui/material/TextField';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import DialogActions from '@mui/material/DialogActions';
@@ -26,8 +27,18 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
 import {Link, useParams} from "react-router-dom";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 import Avatar from '@mui/material/Avatar';
+import { styled } from "@material-ui/core";
+
+const StyledBadge = styled(Badge)({
+  "& .MuiBadge-badge": {
+    color: "white",
+    backgroundColor: "grey",
+    fontSize: 13
+  }
+});
 
 const Review = ({item,i}) => {
 
@@ -69,17 +80,25 @@ const Review = ({item,i}) => {
     </Grid>
     <Grid item xs={10}>
       <Grid container direction="row" spacing={0}>
-        <Grid item xs={4}>
+        <Grid item xs={5}>
           
           {localStorage.getItem('token')==null ?
-            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
-            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
+            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']} 
+              <StyledBadge style={{color: '#00AFD7'}}showZero badgeContent={item['badges'].length} color="primary">
+                <LightbulbIcon style={{ color: '#FF9900' }} />
+              </StyledBadge> </Button>
+            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}
+              <StyledBadge  showZero style={{color: '#00AFD7'}} badgeContent={item['badges'].length} color="primary">
+                <LightbulbIcon style={{ color: '#FF9900' }} />
+              </StyledBadge> </Button>
             }
+   
         </Grid>
-        <Grid item xs={3}>
+
+        <Grid item xs={4}>
           <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {formatAMPM(item['time'])} {createDate(item['time']).toLocaleDateString("en-AU")}</Typography>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Rating
             size="small"
             value={item['rating']}

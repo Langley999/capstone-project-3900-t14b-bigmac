@@ -73,9 +73,11 @@ def getDetails():
                 badges.append({'badge_id' : badge.badge_id, 'image' : badge.image})
             reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar, 'badges' : badges,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
                 
-    reviews.sort(key = lambda x: x[sort], reverse=True)
+    
     if sort == 'badges':
         reviews.sort(key = lambda x: len(x[sort]), reverse=True)
+    else:
+        reviews.sort(key = lambda x: x[sort], reverse=True)
     reviews = reviews[5*(page_no-1): 5*page_no]
     review_pageno = math.ceil(len(reviews)/5)
     book_dict['reviews'] = reviews
@@ -96,7 +98,12 @@ def ownReview():
         is_liked = False
         if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
             is_liked = True
-        review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+        user_badges = User_badge.query.filter_by(user_id = user.user_id).all()
+        badges = []
+        for user_badge in user_badges:
+            badge = user_badge.badge
+            badges.append({'badge_id' : badge.badge_id, 'image' : badge.image})
+        review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username,'badges':badges, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
     return dumps({'review' : review_dict})
 
 @app.route("/book/likereview", methods=["POST"])

@@ -46,6 +46,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       }
     })
       .then(function (res) {
+        console.log(res)
         if (user_id === userInfo.user_id) {
           setValues(userInfo);
         } else {

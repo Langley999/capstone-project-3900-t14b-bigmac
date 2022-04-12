@@ -196,7 +196,8 @@ def get_user_profile():
         badgeobj = {}
         quiz = Quiz.query.filter_by(badge_id=badge.badge_id).first()
         badgeobj['badge_id'] = badge.badge_id
-        badgeobj['badge_image'] = badge.image
+
+        badgeobj['badge_image'] = Badge.query.get(badge.badge_id).image
         badgeobj['quiz_id'] = quiz.quiz_id
         badgeobj['quiz_name'] = quiz.quiz_name
         badgeobj['quiz_description'] = quiz.description
