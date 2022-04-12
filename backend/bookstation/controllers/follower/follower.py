@@ -1,9 +1,26 @@
 from json import dumps
 from bookstation import app, request, db, error
-from bookstation.models.user_sys import Follow_relationship, User, Post
+from bookstation.models.user_sys import Follow_relationship, Notification, User, Post
 from bookstation.utils.auth_util import get_user
 from datetime import date, datetime
 from sqlalchemy import desc
+
+
+@app.route("/user/notifications", methods=["GET"])
+def getNotifications():
+    token = request.args.get('token')
+    user = get_user(token)
+    following_users = Follow_relationship.query.filter_by(follower_user_id = user.user_id).all()
+    all_notifications = []
+    for fuser in following_users:
+        notifications = Notification.query.filter_by(user_id = fuser.user_id).all()
+        for notification in notifications:
+            all_notifications.append({'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
+
+    all_notifications.sort(key = lambda x: x['time'], reverse=True)
+    return dumps({'notifications' : all_notifications})
+
+
 
 @app.route("/user/search", methods=["GET"])
 def findUsers():
@@ -42,8 +59,11 @@ def follow():
     if Follow_relationship.query.filter_by(user_id = target_user_id ,follower_user_id = user.user_id).first() != None:
         raise error.BadReqError(description= 'User is already following target user')
     following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id, created_time = datetime.now())
+    newNotif = Notification(user_id=user.user_id, type='follow', type_id= None, time= datetime.now())
+    db.session.add(newNotif)
     db.session.add(following_entry)
     db.session.commit()
+
 
     return dumps({})
 
@@ -80,7 +100,9 @@ def addPost():
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     db.session.add(newPost)
     db.session.commit()
-
+    newNotif = Notification(user_id=user.user_id, type='post', type_id=newPost.post_id, time= datetime.now())
+    db.session.add(newNotif)
+    db.session.commit()
     return dumps({
         "post_id": newPost.post_id
     })
@@ -189,7 +211,6 @@ def getfollower():
     """
     Function for user to to get all followers
     Args:
-
     Returns:
         - followers (list):
             - user_id (int)

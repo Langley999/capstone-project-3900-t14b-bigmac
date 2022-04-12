@@ -52,16 +52,20 @@ function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [notificationHistory, setNotificationHistory] = useState([]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (localStorage.getItem('token')) {
       updateUserInfo(JSON.parse(localStorage.getItem('user')));
       updateLogin(true);
+      let id;
+      const api = async () => {
+        getNotifications();
+        id = setTimeout(api, 5000);
+      }
+      await api();
+      return () => {
+        clearTimeout(id);
+      };
     }
-    // while (true) {
-    //   setTimeout(() => {
-    //     getNotifications();
-    //   },3000);
-    // }
   }, []);
 
   const followNotif = {
@@ -80,10 +84,13 @@ function App() {
   }
 
   const getNotifications = () => {
-    axios.get(`${url}//`, {params: {
+    if (!localStorage.getItem('token')) return;
+    console.log('get notif')
+    axios.get(`${url}/user/notifications`, {params: {
       token: localStorage.getItem('token')
     }}).then(function(res){
       const notifs = res.data.notifications;
+      console.log(res.data.notifications)
       if (notifs.length !== notificationHistory.length) {
         const lastNotif = notifs[notifs.length-1];
         if (lastNotif.type === 'post') {
