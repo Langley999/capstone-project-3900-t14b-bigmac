@@ -10,3 +10,35 @@ GET http://127.0.0.1:8080/recommendation/favouriteAuthor?token=eyJ0eXAiOiJKV1QiL
 
 ###
 GET http://127.0.0.1:8080/recommendation/favouriteFollowed?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw
+
+
+### user 14 post
+
+POST http://127.0.0.1:8080/post/addpost 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw",
+    "content": "this is my second post as user 14"
+}
+
+### user 9 follow 14
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0",
+    "user_id": "14"
+}
+
+### user 9 unfollow 14
+POST http://127.0.0.1:8080/user/unfollow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0",
+    "user_id": "14"
+}
+
+### user 20 check notifications
+GET http://127.0.0.1:8080/user/notifications?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0
