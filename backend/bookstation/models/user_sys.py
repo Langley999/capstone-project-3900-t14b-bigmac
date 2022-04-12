@@ -46,6 +46,7 @@ class Notification(db.Model):
     type = db.Column(db.String(32))
     type_id = db.Column(db.Integer)
     time = db.Column(db.DateTime)
+    user = db.relationship('User')
 
 
 class Collection(db.Model):

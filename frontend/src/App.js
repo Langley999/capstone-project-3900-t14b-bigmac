@@ -1,10 +1,12 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, Fragment} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
   Routes,
   Outlet,
   Route,
+  Link,
+  useNavigate
 } from 'react-router-dom';
 import Main from './components/Main';
 import Header from './components/Header';
@@ -51,56 +53,55 @@ function App() {
   const [tempgenreRating, setTempgenreRating] = useState(0);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [notificationHistory, setNotificationHistory] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     if (localStorage.getItem('token')) {
       updateUserInfo(JSON.parse(localStorage.getItem('user')));
       updateLogin(true);
+
+      // Check for notification updates every 10 secs
       let id;
-      const api = async () => {
-        getNotifications();
-        id = setTimeout(api, 5000);
+      const notifApi = async () => {
+        await getNotifications();
+        id = setTimeout(notifApi, 10000);
       }
-      await api();
+      await notifApi();
       return () => {
         clearTimeout(id);
       };
     }
   }, []);
 
-  const followNotif = {
-    variant: 'warning',
-    autoHideDuration: 3000,
-  }
-
-  const postNotif = {
-    variant: 'info',
-    autoHideDuration: 3000,
-  }
-
-  const reviewNotif = {
-    variant: 'success',
-    autoHideDuration: 3000,
-  }
-
-  const getNotifications = () => {
+  const getNotifications = async () => {
     if (!localStorage.getItem('token')) return;
     console.log('get notif')
     axios.get(`${url}/user/notifications`, {params: {
       token: localStorage.getItem('token')
     }}).then(function(res){
       const notifs = res.data.notifications;
-      console.log(res.data.notifications)
+      console.log(notifs)
+      console.log(notificationHistory)
+      
       if (notifs.length !== notificationHistory.length) {
-        const lastNotif = notifs[notifs.length-1];
-        if (lastNotif.type === 'post') {
-          enqueueSnackbar(` ${lastNotif.username} just posted to your feed`, postNotif);
-        } else if (lastNotif.type === 'review') {
-          enqueueSnackbar(` ${lastNotif.username} just reviewed a book`, reviewNotif);
-        } else if (lastNotif.type === 'follow') {
-          enqueueSnackbar(` ${lastNotif.username} just followed your account`, followNotif);
+        const newNotif = notifs[0];
+        if (newNotif.type === 'post') {
+          const action = key => (
+            <Button onClick={() => {navigate('/feed')}} style={{color: 'white'}} >Your Feed</Button>
+          );
+          enqueueSnackbar(` ${newNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
+        } else if (newNotif.type === 'review') {
+          const action = key => {
+            <Button onClick={() => {navigate`/book/?id=${newNotif.type_id}`}} >Book Page</Button>
+          }
+          enqueueSnackbar(` ${newNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
+        } else if (newNotif.type === 'follow') {
+          const action = key => {
+            <Button onClick={() => {navigate`/user/${newNotif.type_id}/profile`}} >Their Profile</Button>
+          }
+          enqueueSnackbar(` ${newNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
         }
-        setNotificationHistory(res.data.notifications);
+        setNotificationHistory(notifs);
       }
     }).catch(function(error) {
       alert(JSON.stringify(error.response.data.message));
@@ -165,78 +166,76 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path='/' element={
-            <>
-              <Header
-                ifLogin={ifLogin}
-                updateLogin={updateLogin}
-                userInfo={userInfo}
-                updateSearchValue={updateSearchValue}
-                searchValue={searchValue}
-                updateRadioValue={updateRadioValue}
-                radioValue={radioValue}
-                updateSearchResult={updateSearchResult}
-                updateTabValue={updateTabValue}
-                searchRating={searchRating}
-                updateSearchRating={updateSearchRating}
-                updatePageCount={updatePageCount}
-                updatePage={updatePage}
-                updateSearchType={updateSearchType}
-                updateGenreRating={updateGenreRating}
-                genreRating={genreRating}
-                searchGenres={searchGenres}
-                updateSearchGenres={updateSearchGenres}
-                updateTempsearchRating={updateTempsearchRating}
-                // updateTempgenreRating={updateTempgenreRating}
-              />
-              <div className='centre'>
-                <Outlet />
-              </div>
+      <Routes>
+        <Route path='/' element={
+          <>
+            <Header
+              ifLogin={ifLogin}
+              updateLogin={updateLogin}
+              userInfo={userInfo}
+              updateSearchValue={updateSearchValue}
+              searchValue={searchValue}
+              updateRadioValue={updateRadioValue}
+              radioValue={radioValue}
+              updateSearchResult={updateSearchResult}
+              updateTabValue={updateTabValue}
+              searchRating={searchRating}
+              updateSearchRating={updateSearchRating}
+              updatePageCount={updatePageCount}
+              updatePage={updatePage}
+              updateSearchType={updateSearchType}
+              updateGenreRating={updateGenreRating}
+              genreRating={genreRating}
+              searchGenres={searchGenres}
+              updateSearchGenres={updateSearchGenres}
+              updateTempsearchRating={updateTempsearchRating}
+              // updateTempgenreRating={updateTempgenreRating}
+            />
+            <div className='centre'>
+              <Outlet />
+            </div>
 
+          </>
+        }>
+          <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount} updateGenreRating={updateGenreRating}/>} />
+          <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
+            <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
+          </Route>
+          <Route path='quiz' element={<Quiz />} />
+          <Route path='feed' element={<Feed />} />
+          <Route path='publicfeed' element={<PublicFeed />} />
+          <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
+          <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
+          <Route path='notifications' element={<Notifications notificationHistory={notificationHistory} />} />
+          <Route path='main' element={<Main />} />
+          <Route path='user/:userid' element={
+            <>
+              <AvatarBanner userInfo={userInfo}/>
+              <NavTabs tabValue={tabValue} updateTabValue={updateTabValue}/>
+              <Outlet />
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount} updateGenreRating={updateGenreRating}/>} />
-            <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
-              <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
-            </Route>
-            <Route path='quiz' element={<Quiz />} />
-            <Route path='feed' element={<Feed />} />
-            <Route path='publicfeed' element={<PublicFeed />} />
-            <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
-            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
-            <Route path='notifications' element={<Notifications notificationHistory={notificationHistory} />} />
-            <Route path='main' element={<Main />} />
-            <Route path='user/:userid' element={
-              <>
-                <AvatarBanner userInfo={userInfo}/>
-                <NavTabs tabValue={tabValue} updateTabValue={updateTabValue}/>
-                <Outlet />
-              </>
-            }>
-              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
-              <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
-              <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
-              <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
-            </Route>
+            <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
+            <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
+            <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
+            <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
+          </Route>
+        </Route>
+
+        <Route path="bookstation" element={
+            <Outlet />
+        }>
+          <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+          <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+          <Route path="admin" element={<Admin />} />
+          <Route path="makequiz" element={<Addquiz />} />
+          <Route path="allquiz" element={<Allquiz />} />
+          <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
+            <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
           </Route>
 
-          <Route path="bookstation" element={
-              <Outlet />
-          }>
-            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="makequiz" element={<Addquiz />} />
-            <Route path="allquiz" element={<Allquiz />} />
-            <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
-              <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
-            </Route>
-
-          </Route>
-        </Routes>
-      </Router>
+        </Route>
+      </Routes>
     </div>
   );
 }

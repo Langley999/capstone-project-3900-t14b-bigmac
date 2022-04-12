@@ -10,14 +10,22 @@ from sqlalchemy import desc
 def getNotifications():
     token = request.args.get('token')
     user = get_user(token)
-    following_users = Follow_relationship.query.filter_by(follower_user_id = user.user_id).all()
     all_notifications = []
+
+    notifications = Notification.query.filter_by(type= 'follow', type_id= user.user_id).all()
+    for notification in notifications:
+        all_notifications.append({'username' : notification.user.username ,'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
+
+    following_users = Follow_relationship.query.filter_by(follower_user_id = user.user_id).all()
     for fuser in following_users:
         notifications = Notification.query.filter_by(user_id = fuser.user_id).all()
         for notification in notifications:
-            all_notifications.append({'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
+            all_notifications.append({'username' : notification.user.username , 'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
+
 
     all_notifications.sort(key = lambda x: x['time'], reverse=True)
+    for notification in all_notifications:
+        notification['time'] = str(notification['time'])
     return dumps({'notifications' : all_notifications})
 
 
@@ -59,7 +67,7 @@ def follow():
     if Follow_relationship.query.filter_by(user_id = target_user_id ,follower_user_id = user.user_id).first() != None:
         raise error.BadReqError(description= 'User is already following target user')
     following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id, created_time = datetime.now())
-    newNotif = Notification(user_id=user.user_id, type='follow', type_id= None, time= datetime.now())
+    newNotif = Notification(user_id=user.user_id, type='follow', type_id= target_user_id, time= datetime.now())
     db.session.add(newNotif)
     db.session.add(following_entry)
     db.session.commit()
