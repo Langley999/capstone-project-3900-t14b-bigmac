@@ -1,4 +1,17 @@
+import axios from "axios";
+
 export const url = 'http://localhost:8080';
+
+export const setUnreadNotifs = (number) => {
+  axios.post(`${url}/user/setunreadnotif`, {
+    token: localStorage.getItem('token'),
+    num: number
+  }).then(function(res) {
+    console.log(number, 'in setunreadnotifs');
+  }).catch(function(error) {
+    console.log('error in setunreadnotifs');
+  });
+}
 
 export const checkProfileInput = (username, email, password) => {
   const regex = '^[a-zA-Z0-9]+[\\._]?[a-zA-Z0-9]*[\\._]*[a-zA-Z0-9]+[@]\\w+[.].*\\w{2,3}$';

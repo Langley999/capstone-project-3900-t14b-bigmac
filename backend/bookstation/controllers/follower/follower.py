@@ -1,5 +1,5 @@
 from json import dumps
-from bookstation import app, request, db, error
+from bookstation import app, request, db, error, unreadNotification
 from bookstation.models.user_sys import Follow_relationship, Notification, User, Post
 from bookstation.utils.auth_util import get_user
 from datetime import date, datetime
@@ -20,6 +20,8 @@ def getNotifications():
     for fuser in following_users:
         notifications = Notification.query.filter_by(user_id = fuser.user_id).all()
         for notification in notifications:
+            if notification.type == 'follow':
+                continue
             all_notifications.append({'username' : notification.user.username , 'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
 
 
@@ -28,7 +30,24 @@ def getNotifications():
         notification['time'] = str(notification['time'])
     return dumps({'notifications' : all_notifications})
 
+@app.route("/user/setunreadnotif", methods=["POST"])
+def setUnreadNotif():
+    body = request.get_json()
+    token = body.get('token')
+    num = int(body.get('num'))
+    user = get_user(token)
+    unreadNotification[user.user_id] = num
+    print('SET',num)
+    return dumps({})
 
+@app.route("/user/getunreadnotif", methods=["GET"])
+def getUnreadNotif():
+    token = request.args.get('token')
+    user = get_user(token)
+    num = unreadNotification.get(user.user_id, 0)
+    print('GET',num)
+    return dumps({'unreadNotifs': num})
+    
 
 @app.route("/user/search", methods=["GET"])
 def findUsers():

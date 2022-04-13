@@ -4,12 +4,18 @@ import CardContent from '@mui/material/CardContent';
 import Pagination from '@mui/material/Pagination';
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
+import {setUnreadNotifs} from '../components/Helper';
 
-const Notifications = ({notificationHistory}) => {
+const Notifications = ({getUnreadNotifs, notificationHistory}) => {
   const [pageNotifs, setPageNotifs] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(10);
   const pageSize = 10;
+
+  const setZeroNotifs = () => {
+    setUnreadNotifs("0");
+    setTimeout(() => {getUnreadNotifs();}, 1500);
+  }
 
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -19,10 +25,11 @@ const Notifications = ({notificationHistory}) => {
     setPageNotifs(notificationHistory.slice(start, end));
   }
   React.useEffect(() => {
+    setZeroNotifs();
     setPage(1);
     setPageCount(Math.ceil(notificationHistory.length / pageSize));
     setPageNotifs(notificationHistory.slice(0, pageSize));
-  }, []);
+  }, [notificationHistory]);
   return (
     <div>
       <h1 style={{height: '40px'}}>Notifications</h1>

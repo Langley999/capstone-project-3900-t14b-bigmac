@@ -6,6 +6,7 @@ from json import dumps
 #import redis
 
 admintoken = {}
+unreadNotification = {}
 
 def defaultHandler(err):
     response = err.get_response()

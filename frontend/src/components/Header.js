@@ -43,7 +43,7 @@ const Slogan = styled('h1')(({ theme }) => ({
 }));
 
 
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating}) {
+function Header ({ numNotifs, ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating}) {
   const [rating, setRating] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -137,7 +137,9 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         </Tooltip>
         <Tooltip title="Notifications">
           <IconButton sx={{ ml: 1 }} component={Link} to='notifications'>
-            <NotificationsIcon fontSize="large"/>
+            <Badge badgeContent={numNotifs} color="primary" showZero>
+              <NotificationsIcon fontSize="large"/>
+            </Badge>
           </IconButton>
         </Tooltip>
         <Tooltip title='Home'>

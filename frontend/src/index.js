@@ -9,7 +9,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 ReactDOM.render(
   // <React.StrictMode>
   <SnackbarProvider
-    maxSnack={3}
+    maxSnack={4}
     iconVariant={{
       success: '📝',
       error: '✖️',

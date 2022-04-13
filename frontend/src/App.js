@@ -31,10 +31,11 @@ import EditQuiz from  './layouts/EditQuiz';
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
 import axios from "axios";
-import {url} from "./components/Helper";
+import {url, setUnreadNotifs} from "./components/Helper";
 import { withSnackbar } from 'notistack';
 import { useSnackbar } from 'notistack';
 import Button from '@mui/material/Button';
+import { number } from 'prop-types';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -52,64 +53,118 @@ function App() {
   const [tempsearchRating, setTempsearchRating] = useState(0);
   const [tempgenreRating, setTempgenreRating] = useState(0);
   const [notificationHistory, setNotificationHistory] = useState([]);
+  const [numNotifs, setNumNotifs] = useState(0);
   const navigate = useNavigate();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  useEffect(async () => {
+  let notifLen = 0;
+  let lastNotif = {};
+
+  useEffect(() => {
     if (localStorage.getItem('token')) {
       updateUserInfo(JSON.parse(localStorage.getItem('user')));
       updateLogin(true);
 
+      // axios.get(`${url}/user/notifications`, {params: {
+      //   token: localStorage.getItem('token')
+      // }}).then(function(res){
+      //   setNotificationHistory(res.data.notifications);
+      //   lastNotif = res.data.notifications[0];
+      // }).catch(function(error) {
+      //   alert(JSON.stringify(error.response.data.message));
+      // })
+
+      getNotifications();
+
       // Check for notification updates every 10 secs
-      let id;
-      const notifApi = async () => {
-        await getNotifications();
-        id = setTimeout(notifApi, 10000);
-      }
-      await notifApi();
-      return () => {
-        clearTimeout(id);
-      };
+      // let id;
+      // const notifApi = async () => {
+      //   await getNotifications();
+      //   id = setTimeout(notifApi, 10000);
+      // }
+      // await notifApi();
+      // return () => {
+      //   clearTimeout(id);
+      // };
     }
   }, []);
 
-  const updateNotifHistory = (notifs) => {
-    setNotificationHistory(notifs);
+  const getUnreadNotifs = () => {
+    axios.get(`${url}/user/getunreadnotif`, {params:{
+      token: localStorage.getItem('token')
+    }}).then(function(res) {
+      console.log(res.data.unreadNotifs, 'unread notifs gotten')
+      setNumNotifs(res.data.unreadNotifs);
+    }).catch(function(error) {
+      console.log('error in getunreadnotifs')
+    });
   }
 
   const getNotifications = async () => {
     if (!localStorage.getItem('token')) return;
-    console.log('get notif')
-    axios.get(`${url}/user/notifications`, {params: {
+    // console.log('get notif');
+    const response = await axios.get(`${url}/user/notifications`, {params: {
       token: localStorage.getItem('token')
-    }}).then(function(res){
-      const notifs = res.data.notifications;
-      console.log(notifs)
-      console.log(notificationHistory)
-      
-      if (notifs.length !== notificationHistory.length) {
-        const newNotif = notifs[0];
-        if (newNotif.type === 'post') {
-          const action = key => (
-            <Button onClick={() => {navigate('/feed')}} style={{color: 'white'}} >Your Feed</Button>
-          );
-          enqueueSnackbar(` ${newNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
-        } else if (newNotif.type === 'review') {
-          const action = key => (
-            <Button onClick={() => {navigate(`/book/?id=${newNotif.type_id}`)}} style={{color: 'white'}} >Book Page</Button>
-          )
-          enqueueSnackbar(` ${newNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
-        } else if (newNotif.type === 'follow') {
-          const action = key => (
-            <Button onClick={() => {navigate(`/user/${newNotif.type_id}/profile`)}} style={{color: 'white'}} >Their Profile</Button>
-          )
-          enqueueSnackbar(` ${newNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
-        }
-        updateNotifHistory(notifs);
+    }})
+    // return on fetch error
+    if (response.status !== 200) return;
+    const notifs = await response.data.notifications;
+    // console.log(notifs);
+    // console.log(lastNotif)
+    // console.log(notifLen)
+    // console.log(notificationHistory)
+    const newNotif = notifs[0];
+
+    const setNewNotifNum = (num) => {
+      axios.get(`${url}/user/getunreadnotif`, {params:{
+        token: localStorage.getItem('token')
+      }}).then(function(res) {
+        console.log(res.data.unreadNotifs, 'unread notifs gotten')
+        setUnreadNotifs((res.data.unreadNotifs+num).toString());
+        setTimeout(() => {getUnreadNotifs();}, 2000);
+      }).catch(function(error) {
+        console.log('error in getunreadnotifs')
+      });
+    }
+
+    const popupClick = (key) => {
+      closeSnackbar(key);
+      setNewNotifNum(-1);
+    }
+    
+    // update notifications history and unread notifications number if length has changed
+    if (notifs.length !== notifLen && JSON.stringify(lastNotif) !== JSON.stringify(newNotif)) {
+      let numNewNotifs = 0;
+      if (notifs.length - notifLen > 5) {
+        numNewNotifs = 5;
+      } else {
+        numNewNotifs = notifs.length - notifLen;
       }
-    }).catch(function(error) {
-      alert(JSON.stringify(error.response.data.message));
-    })
+      
+      setNewNotifNum(numNewNotifs);
+      for (let i = 0; i < numNewNotifs; i++) {
+        let currNotif = notifs[i];
+        if (currNotif.type === 'post') {
+          const action = key => (
+            <Button onClick={() => {navigate('/feed');popupClick(key)}} style={{color: 'white'}} >Your Feed</Button>
+          );
+          enqueueSnackbar(` ${currNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
+        } else if (currNotif.type === 'review') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/book/?id=${currNotif.type_id}`);popupClick(key)}} style={{color: 'white'}} >Book Page</Button>
+          )
+          enqueueSnackbar(` ${currNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
+        } else if (currNotif.type === 'follow') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/user/${currNotif.type_id}/profile`);popupClick(key);}} style={{color: 'white'}} >Their Profile</Button>
+          )
+          enqueueSnackbar(` ${currNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
+        }
+      }
+      lastNotif = newNotif;
+      notifLen = notifs.length;
+      setNotificationHistory(notifs);
+    }
   }
 
   const updateTempsearchRating = (newRating) => {
@@ -174,6 +229,8 @@ function App() {
         <Route path='/' element={
           <>
             <Header
+              numNotifs={numNotifs}
+              getUnreadNotifs={getUnreadNotifs}
               ifLogin={ifLogin}
               updateLogin={updateLogin}
               userInfo={userInfo}
@@ -213,7 +270,7 @@ function App() {
           <Route path='publicfeed' element={<PublicFeed />} />
           <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
           <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
-          <Route path='notifications' element={<Notifications />} />
+          <Route path='notifications' element={<Notifications notificationHistory={notificationHistory} getUnreadNotifs={getUnreadNotifs} />} />
           <Route path='main' element={<Main />} />
           <Route path='user/:userid' element={
             <>

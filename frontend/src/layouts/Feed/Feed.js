@@ -47,9 +47,9 @@ const Feed = () => {
     <div>
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       <h1 style={{height: '40px'}}>Feed</h1>
-      {pagePosts.length > 0 ? pagePosts.map((post) => {
+      {pagePosts.length > 0 ? pagePosts.map((post, idx) => {
         return (
-          <FeedListing post={post}/>
+          <FeedListing post={post} key={idx}/>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>Follow other users to see their posts</div>}
       {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}
