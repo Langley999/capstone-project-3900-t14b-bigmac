@@ -5,6 +5,7 @@ import {
   Routes,
   Outlet,
   Route,
+  useNavigate
 } from 'react-router-dom';
 import Main from './components/Main';
 import Header from './components/Header';
@@ -31,6 +32,9 @@ import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
 import axios from "axios";
 import {url} from "./components/Helper";
+import { withSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
+import Button from '@mui/material/Button';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -47,13 +51,62 @@ function App() {
   const [searchGenres, setSearchGenres] = useState('');
   const [tempsearchRating, setTempsearchRating] = useState(0);
   const [tempgenreRating, setTempgenreRating] = useState(0);
+  const [notificationHistory, setNotificationHistory] = useState([]);
+  const navigate = useNavigate();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  useEffect(() => {
+  useEffect(async () => {
     if (localStorage.getItem('token')) {
       updateUserInfo(JSON.parse(localStorage.getItem('user')));
       updateLogin(true);
+
+      // Check for notification updates every 10 secs
+      let id;
+      const notifApi = async () => {
+        await getNotifications();
+        id = setTimeout(notifApi, 10000);
+      }
+      await notifApi();
+      return () => {
+        clearTimeout(id);
+      };
     }
   }, []);
+
+  const getNotifications = async () => {
+    if (!localStorage.getItem('token')) return;
+    console.log('get notif')
+    axios.get(`${url}/user/notifications`, {params: {
+      token: localStorage.getItem('token')
+    }}).then(function(res){
+      const notifs = res.data.notifications;
+      console.log(notifs)
+      console.log(notificationHistory)
+      
+      if (notifs.length !== notificationHistory.length) {
+        const newNotif = notifs[0];
+        if (newNotif.type === 'post') {
+          const action = key => (
+            <Button onClick={() => {navigate('/feed')}} style={{color: 'white'}} >Your Feed</Button>
+          );
+          enqueueSnackbar(` ${newNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
+        } else if (newNotif.type === 'review') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/book/?id=${newNotif.type_id}`)}} style={{color: 'white'}} >Book Page</Button>
+          )
+          enqueueSnackbar(` ${newNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
+        } else if (newNotif.type === 'follow') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/user/${newNotif.type_id}/profile`)}} style={{color: 'white'}} >Their Profile</Button>
+          )
+          enqueueSnackbar(` ${newNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
+        }
+        setNotificationHistory(notifs);
+      }
+    }).catch(function(error) {
+      alert(JSON.stringify(error.response.data.message));
+    })
+  }
 
   const updateTempsearchRating = (newRating) => {
     setTempsearchRating(newRating);
@@ -190,4 +243,4 @@ function App() {
   );
 }
 
-export default App;
+export default withSnackbar(App);
