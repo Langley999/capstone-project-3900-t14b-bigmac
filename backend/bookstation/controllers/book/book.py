@@ -1,5 +1,6 @@
 from csv import unregister_dialect
 from datetime import datetime
+from getpass import getuser
 from json import dumps
 import ast
 import csv
@@ -248,7 +249,8 @@ def getReview():
     #get input
     token = request.args.get('token')
     book_id = request.args.get('bookId')
-    user = User.query.filter_by(token = token).first()
+    user = get_user(token)
+    print('token')
     #target_user_id = session.get(token)
     review = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
@@ -357,6 +359,7 @@ def addRatingReview():
         db.session.commit()
         db.session.flush()
         newNotif = Notification(user_id=user.user_id, type='review', type_id=book_id, time= datetime.now())
+
         db.session.add(newNotif)
         db.session.commit()
         new_review_id = review.review_id
@@ -369,6 +372,10 @@ def addRatingReview():
         db.session.add(review)
         db.session.commit()
         db.session.flush()
+        newNotif = Notification(user_id=user.user_id, type='review', type_id=book_id, time= datetime.now())
+     
+        db.session.add(newNotif)
+        db.session.commit()
         new_review_id = review.review_id
 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
