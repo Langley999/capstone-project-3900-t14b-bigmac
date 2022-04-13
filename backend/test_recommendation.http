@@ -40,5 +40,26 @@ content-type: application/json
     "user_id": "14"
 }
 
-### user 20 check notifications
+### user 14 posts review
+
+POST http://127.0.0.1:8080/book/ratings_reviews 
+content-type: application/json
+
+{
+    "token" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw",
+    "book_id": 1,
+    "rating": 4,
+    "review": "User 14's first review"
+}
+
+### user 9 check notifications
 GET http://127.0.0.1:8080/user/notifications?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMiIsInRpbWUiOjE2NDc0NDY3NzYuMjIxNzIyOH0.N44XX985l1ONKNLuWzWuTZvwWPKKd_-AFmOAUxUxuO0
+
+### user 14 follow 9
+POST http://127.0.0.1:8080/user/follow 
+content-type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzNyIsInRpbWUiOjE2NDg3MzM5NzguMjk5NzY0fQ.eZTSFYkP0di9XDLVROolG7xqSjgJhh9t2gsITUr-Gcw",
+    "user_id": "9"
+}
