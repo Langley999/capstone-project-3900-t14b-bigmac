@@ -94,7 +94,7 @@ def ownReview():
     user = get_user(token)
     review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
     review_dict = []
-    if review != None:
+    if review != None and review.content != None:
         is_liked = False
         if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
             is_liked = True
