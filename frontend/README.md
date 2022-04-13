@@ -8,6 +8,10 @@ Download devexpress components:
 
 ### `npm install devextreme@21.2 devextreme-react@21.2 --save --save-exact`
 
+Download notistack for formatting notifications:
+
+### `npm install notistack`
+
 In the project directory, you can run:
 
 ### `npm start`

@@ -19,8 +19,10 @@ const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowin
       }
     })
     .catch(function (error) {
-      setErrorMsg(error.response.data.message);
-      setShowError(true);
+      if (error.response.data.message) {
+        setErrorMsg(error.response.data.message);
+        setShowError(true);
+      }
     });
   }
 

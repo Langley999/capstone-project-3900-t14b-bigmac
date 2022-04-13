@@ -10,7 +10,7 @@ from itsdangerous import NoneAlgorithm
 from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
-from bookstation.models.user_sys import User, Collection
+from bookstation.models.user_sys import User, Collection, Notification
 from bookstation.models.event_sys import User_badge
 from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
@@ -183,7 +183,6 @@ def similarBooks():
 
     """
     Arg: book_id of book to get simialr books from
-
     Returns: list of book objects that are similar to target book
     
     """
@@ -357,6 +356,9 @@ def addRatingReview():
         db.session.add(review)
         db.session.commit()
         db.session.flush()
+        newNotif = Notification(user_id=user.user_id, type='review', type_id=book_id, time= datetime.now())
+        db.session.add(newNotif)
+        db.session.commit()
         new_review_id = review.review_id
     else:
         book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)

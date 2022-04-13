@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { SnackbarProvider } from 'notistack';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 ReactDOM.render(
   // <React.StrictMode>
-    <App />,
+  <SnackbarProvider
+    maxSnack={3}
+    iconVariant={{
+      success: '📝',
+      error: '✖️',
+      warning: `👋🏻`,
+      info: '✉️',}}
+  >
+    <Router>
+      <App />
+    </Router>
+  </SnackbarProvider>,
   // </React.StrictMode>,
   document.getElementById('root')
 );

@@ -37,6 +37,17 @@ class Post(db.Model):
     created_time = db.Column(db.DateTime)
     user = db.relationship('User')
 
+class Notification(db.Model):
+
+    __tablename__ = 'notification'
+
+    notification_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    type = db.Column(db.String(32))
+    type_id = db.Column(db.Integer)
+    time = db.Column(db.DateTime)
+    user = db.relationship('User')
+
 
 class Collection(db.Model):
 
