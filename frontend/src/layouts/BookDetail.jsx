@@ -798,7 +798,7 @@ const BookDetail = ({userInfo}) => {
                   </Grid>
                   <Grid item xs={1} style={{ marginLeft: -62}}> 
                     <IconButton aria-label="edit" size="small" onClick={() => handleEditReview(item['review_id'])}>
-                        <EditIcon fontSize="inherit" /> 
+                        <EditIcon fontSize="inherit" color="white" style={{ color: 'white',backgroundColor: '#1976d2' , borderRadius:'15px',padding: '4px'}}/> 
                     </IconButton>                      
                   </Grid>
                   { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
@@ -988,7 +988,8 @@ const BookDetail = ({userInfo}) => {
       <Dialog open={reviewform} onClose={handleCloseReviewForm}>
         <DialogTitle>Enter new review</DialogTitle>
         <DialogContent>
-          <TextField
+          <TextField 
+            style={{ width: '500px' }}
             fullWidth label="" id="fullWidth" multiline={true} value={newreview}
             onChange={(e) => setNewreview(e.target.value)}
           />
