@@ -67,6 +67,8 @@ def follow():
     if Follow_relationship.query.filter_by(user_id = target_user_id ,follower_user_id = user.user_id).first() != None:
         raise error.BadReqError(description= 'User is already following target user')
     following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id, created_time = datetime.now())
+    newNotif = Notification(user_id=user.user_id, type='follow', type_id= target_user_id, time= datetime.now())
+    db.session.add(newNotif)
     db.session.add(following_entry)
     db.session.commit()
 

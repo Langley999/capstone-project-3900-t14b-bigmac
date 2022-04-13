@@ -73,6 +73,10 @@ function App() {
     }
   }, []);
 
+  const updateNotifHistory = (notifs) => {
+    setNotificationHistory(notifs);
+  }
+
   const getNotifications = async () => {
     if (!localStorage.getItem('token')) return;
     console.log('get notif')
@@ -101,7 +105,7 @@ function App() {
           )
           enqueueSnackbar(` ${newNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
         }
-        setNotificationHistory(notifs);
+        updateNotifHistory(notifs);
       }
     }).catch(function(error) {
       alert(JSON.stringify(error.response.data.message));
