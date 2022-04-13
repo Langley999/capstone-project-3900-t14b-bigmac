@@ -14,7 +14,7 @@ def getNotifications():
 
     notifications = Notification.query.filter_by(type= 'follow', type_id= user.user_id).all()
     for notification in notifications:
-        all_notifications.append({'username' : notification.user.username ,'type' : notification.type, 'type_id': notification.type_id, 'time' : notification.time})
+        all_notifications.append({'username' : notification.user.username ,'type' : notification.type, 'type_id': notification.user.user_id, 'time' : notification.time})
 
     following_users = Follow_relationship.query.filter_by(follower_user_id = user.user_id).all()
     for fuser in following_users:

@@ -91,14 +91,14 @@ function App() {
           );
           enqueueSnackbar(` ${newNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
         } else if (newNotif.type === 'review') {
-          const action = key => {
-            <Button onClick={() => {navigate`/book/?id=${newNotif.type_id}`}} >Book Page</Button>
-          }
+          const action = key => (
+            <Button onClick={() => {navigate(`/book/?id=${newNotif.type_id}`)}} style={{color: 'white'}} >Book Page</Button>
+          )
           enqueueSnackbar(` ${newNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
         } else if (newNotif.type === 'follow') {
-          const action = key => {
-            <Button onClick={() => {navigate`/user/${newNotif.type_id}/profile`}} >Their Profile</Button>
-          }
+          const action = key => (
+            <Button onClick={() => {navigate(`/user/${newNotif.type_id}/profile`)}} style={{color: 'white'}} >Their Profile</Button>
+          )
           enqueueSnackbar(` ${newNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
         }
         setNotificationHistory(notifs);
