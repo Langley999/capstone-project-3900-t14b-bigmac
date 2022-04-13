@@ -113,81 +113,79 @@ function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path='/' element={
-            <>
-              <Header
-                ifLogin={ifLogin}
-                updateLogin={updateLogin}
-                userInfo={userInfo}
-                updateSearchValue={updateSearchValue}
-                searchValue={searchValue}
-                updateRadioValue={updateRadioValue}
-                radioValue={radioValue}
-                updateSearchResult={updateSearchResult}
-                updateTabValue={updateTabValue}
-                searchRating={searchRating}
-                updateSearchRating={updateSearchRating}
-                updatePageCount={updatePageCount}
-                updatePage={updatePage}
-                updateSearchType={updateSearchType}
-                updateGenreRating={updateGenreRating}
-                genreRating={genreRating}
-                searchGenres={searchGenres}
-                updateSearchGenres={updateSearchGenres}
-                updateTempsearchRating={updateTempsearchRating}
-                // updateTempgenreRating={updateTempgenreRating}
-              />
-              <div className='centre'>
-                <Outlet />
-              </div>
+      <Routes>
+        <Route path='/' element={
+          <>
+            <Header
+              ifLogin={ifLogin}
+              updateLogin={updateLogin}
+              userInfo={userInfo}
+              updateSearchValue={updateSearchValue}
+              searchValue={searchValue}
+              updateRadioValue={updateRadioValue}
+              radioValue={radioValue}
+              updateSearchResult={updateSearchResult}
+              updateTabValue={updateTabValue}
+              searchRating={searchRating}
+              updateSearchRating={updateSearchRating}
+              updatePageCount={updatePageCount}
+              updatePage={updatePage}
+              updateSearchType={updateSearchType}
+              updateGenreRating={updateGenreRating}
+              genreRating={genreRating}
+              searchGenres={searchGenres}
+              updateSearchGenres={updateSearchGenres}
+              updateTempsearchRating={updateTempsearchRating}
+              // updateTempgenreRating={updateTempgenreRating}
+            />
+            <div className='centre'>
+              <Outlet />
+            </div>
 
+          </>
+        }>
+          <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount} updateGenreRating={updateGenreRating}/>} />
+          <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
+            <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
+          </Route>
+          <Route path='quiz' element={<Quiz />} />
+          <Route path="enterquiz" element={<EnterQuiz />}>
+            <Route path=":id" element={<EnterQuiz />} />
+          </Route>
+          <Route path='feed' element={<Feed />} />
+          <Route path='publicfeed' element={<PublicFeed />} />
+          <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
+          <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
+          <Route path='notifications' element={<Notifications />} />
+          <Route path='main' element={<Main />} />
+          <Route path='user/:userid' element={
+            <>
+              <AvatarBanner userInfo={userInfo}/>
+              <NavTabs tabValue={tabValue} updateTabValue={updateTabValue}/>
+              <Outlet />
             </>
           }>
-            <Route path='/' element={<Home ifLogin={ifLogin} updateSearchResult={updateSearchResult} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePage={updatePage} updatePageCount={updatePageCount} updateGenreRating={updateGenreRating}/>} />
-            <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
-              <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
-            </Route>
-            <Route path='quiz' element={<Quiz />} />
-            <Route path="enterquiz" element={<EnterQuiz />}>
-              <Route path=":id" element={<EnterQuiz />} />
-            </Route>
-            <Route path='feed' element={<Feed />} />
-            <Route path='publicfeed' element={<PublicFeed />} />
-            <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
-            <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
-            <Route path='notifications' element={<Notifications />} />
-            <Route path='main' element={<Main />} />
-            <Route path='user/:userid' element={
-              <>
-                <AvatarBanner userInfo={userInfo}/>
-                <NavTabs tabValue={tabValue} updateTabValue={updateTabValue}/>
-                <Outlet />
-              </>
-            }>
-              <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
-              <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
-              <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
-              <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
-            </Route>
+            <Route path='profile' element={<Profile userInfo={userInfo} updateUserInfo={updateUserInfo}/>}/>
+            <Route path='collections' element={<Collections userInfo={userInfo}/>}/>
+            <Route path='posts' element={<Posts userInfo={userInfo}/>}/>
+            <Route path='analytics' element={<Analytics userInfo={userInfo}/>}/>
+          </Route>
+        </Route>
+
+        <Route path="bookstation" element={
+            <Outlet />
+        }>
+          <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+          <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+          <Route path="admin" element={<Admin />} />
+          <Route path="makequiz" element={<Addquiz />} />
+          <Route path="allquiz" element={<Allquiz />} />
+          <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
+            <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
           </Route>
 
-          <Route path="bookstation" element={
-              <Outlet />
-          }>
-            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="makequiz" element={<Addquiz />} />
-            <Route path="allquiz" element={<Allquiz />} />
-            <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
-              <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
-            </Route>
-
-          </Route>
-        </Routes>
-      </Router>
+        </Route>
+      </Routes>
     </div>
   );
 }
