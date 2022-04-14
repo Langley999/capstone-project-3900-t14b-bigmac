@@ -40,10 +40,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [openBadge, setOpenBadge] = useState(false);
 
   useEffect(async () => {
-    console.log('haha')
     const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
-    console.log(userInfo)
 
     axios.get(`${url}/user/profile`, {
       params: {
@@ -52,13 +50,9 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       }
     })
       .then(function (res) {
-        console.log(res)
-        console.log(user_id === userInfo.user_id)
         if (user_id === userInfo.user_id) {
-          //setValues(userInfo);
           setValues({
-            username: res['data']['username'],
-            avatar: res.data.avatar,
+            ...userInfo,
             badges: res.data.badges
           });
         } else {
@@ -130,7 +124,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       setShowSuccess(true);
       
     }).catch(function (error) {
-      console.log(error.message)
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
     });
@@ -207,6 +200,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 >
                   < Typography
                     color='#616161'
+                    sx={{marginRight: '10px'}}
                   >
                     Badge:
                   </ Typography>
@@ -297,9 +291,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 < Typography
                   color='#616161'
                   variant='h5'
+                  sx={{marginRight: '10px'}}
                 >
-                  Badge: Empty
+                  Badge:
                 </ Typography>
+                {values.badges.length > 0 ? values.badges.map((badge) => {
+                  return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
+                  )
+                }) : <Typography>Empty</Typography>}
               </Box>
               < Typography
                 color='#616161'

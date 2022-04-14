@@ -63,14 +63,11 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
           }
         }).then(res => {
           setToRead(res.data.to_read);
-          console.log(res.data.to_read > 0);
           if (res.data.to_read > 0)
             updateNewNotif(res.data);
         })
-      } else {
-        console.log('not log in')
       }
-    }, 200000)
+    }, 2000)
     return () => {
       clearInterval(myInterval);
     };
@@ -108,7 +105,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       updateTempsearchRating(searchRating);
       updateSearchRating(0);
       updateSearchType('byValue');
-      console.log('pagesCount', res.data.pages)
       updatePageCount(res.data.pages);
       updateSearchResult(res.data.books);
       // updateSearchRating(0);
