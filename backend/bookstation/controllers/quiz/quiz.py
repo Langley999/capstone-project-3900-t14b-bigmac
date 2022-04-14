@@ -149,6 +149,13 @@ def getopenquiz():
         quizobj['quiz_name'] = quiz_name
         quizobj['badge_id'] = badge.badge_id
         quizobj['badge_image'] = badge.image
+        participants = Quiz_user.query.filter_by(quiz_id=quiz_id).all()
+        quizobj['num_participants'] = len(participants)
+        badges_get = User_badge.query.filter_by(badge_id=badge.badge_id).all()
+        if len(participants) > 0:
+            quizobj['pass_rate'] = round(len(badges_get)/len(participants)*100,2)
+        else:
+            quizobj['pass_rate'] = -1
         if User_badge.query.filter_by(badge_id=badge.badge_id,user_id=user.user_id).first() != None:
             quizobj['complete_status'] = 1
         elif Quiz_user.query.filter_by(quiz_id=quiz_id,user_id=user.user_id).first() != None:

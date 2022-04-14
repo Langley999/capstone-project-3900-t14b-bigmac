@@ -81,9 +81,9 @@ const Quiz = () => {
                   <Grid item xs ={1}>
                     <Avatar src={item['badge_image']} />
                   </Grid>
-                  <Grid item xs ={2}>
+                  <Grid item xs ={3}>
                     <Typography variant="body1" gutterBottom component="div">
-                      {item['quiz_name']}
+                      <b>{item['quiz_name']}</b>
                     </Typography>
                   </Grid>
                   <Grid item xs ={2}>
@@ -102,17 +102,32 @@ const Quiz = () => {
                   </Grid>
                 </Grid>
               </Grid>
+         
+              <Grid item xs ={10}>
+                <Box component="span" sx={{
+                      display: 'block',
+                      pt: 1,
+                      pl: 2,
+                      width: 800,
+                      color:  'grey.800',
+                      borderRadius: 2,
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }}>
+                  {item['num_participants'] > 1 && <div>{item['num_participants']} people participated in this quiz.</div>}
+                  {item['num_participants'] === 1 && <div>{item['num_participants']} person participated in this quiz.</div>}
+                  {item['num_participants'] === 0 && <div>{'No one has participated in this quiz. Be the first one!'}</div>}
+                  {item['pass_rate'] >= 0 &&<div>Pass rate: {item['pass_rate']} %</div>}
+                </Box>  
+              </Grid>
               {item['complete_status'] === 0 &&
                 <Grid item xs ={10}>
                   <Box component="span" sx={{
                         display: 'block',
                         p: 1,
-                        m: 1,
                         width: 800,
                         bgcolor: 'grey.100' ,
                         color:  'grey.800',
-                        border: '1px solid',
-                        borderColor: 'grey.300',
                         borderRadius: 2,
                         fontSize: '0.875rem',
                         fontWeight: '600',
