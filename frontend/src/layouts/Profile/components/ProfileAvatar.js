@@ -95,6 +95,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }})
     .then(function (res) {
+      console.log(res)
       if (isSelf)
         setValues(userInfo);
       else {

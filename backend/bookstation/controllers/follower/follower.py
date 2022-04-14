@@ -1,4 +1,5 @@
 from json import dumps
+from bookstation.models.user_sys import Notification
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Post
 from bookstation.utils.auth_util import get_user
@@ -42,7 +43,10 @@ def follow():
     if Follow_relationship.query.filter_by(user_id = target_user_id ,follower_user_id = user.user_id).first() != None:
         raise error.BadReqError(description= 'User is already following target user')
     following_entry = Follow_relationship(follower_user_id=user.user_id, user_id=target_user_id, created_time = datetime.now())
+
+    newnotif = Notification(user_id=target_user_id, type='follow', type_id = -1, time= datetime.now(), sender_id=user.user_id)
     db.session.add(following_entry)
+    db.session.add(newnotif)
     db.session.commit()
 
     return dumps({})
@@ -78,6 +82,13 @@ def addPost():
     user = get_user(token)
 
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
+    
+
+    followers = Follow_relationship.query.filter_by(user_id = user.user_id).all()
+    for follower in followers:
+        newnotif = Notification(user_id=follower.follower_user_id, type='post', type_id = -1, time= datetime.now(), sender_id=user.user_id)
+        db.session.add(newnotif)
+        db.session.commit()
     db.session.add(newPost)
     db.session.commit()
 

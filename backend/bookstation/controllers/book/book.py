@@ -5,10 +5,14 @@ import ast
 import csv
 import math
 import time
+
+from itsdangerous import NoneAlgorithm
+from bookstation.models.user_sys import Follow_relationship, Notification
 from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
 from bookstation.models.user_sys import User, Collection
+from bookstation.models.event_sys import User_badge
 from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
 
@@ -26,6 +30,7 @@ def getDetails():
     Get book details
     Args (GET):
         bookId (integer): request bookId
+        sort (string): can be 'time', 'likes', 'badges'
     Returns:
         json object of book details
     Raises:
@@ -33,11 +38,13 @@ def getDetails():
     '''
     #get input
     token = request.args.get('token') 
+    sort = request.args.get('sort')
     if token != None:
         user = get_user(token)
     book_id = request.args.get('bookId')
     page_no = int(request.args.get('page'))
     book = Book.query.get(book_id)
+
 
     #check book is db
     if book == None:
@@ -58,10 +65,20 @@ def getDetails():
             if token != None:
                 if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
                     is_liked = True
-            reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+                if review.user_id == user.user_id:
+                    continue
+            badges = []
+            user_badges = User_badge.query.filter_by(user_id = review.user_id).all()
+            for user_badge in user_badges:
+                badge = user_badge.badge
+                badges.append({'badge_id' : badge.badge_id, 'image' : badge.image})
+            reviews.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username, 'avatar' : review.user.avatar, 'badges' : badges,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
                 
-
-    reviews.sort(key = lambda x: x['time'], reverse=False)
+    
+    if sort == 'badges':
+        reviews.sort(key = lambda x: len(x[sort]), reverse=True)
+    else:
+        reviews.sort(key = lambda x: x[sort], reverse=True)
     reviews = reviews[5*(page_no-1): 5*page_no]
     review_pageno = math.ceil(len(reviews)/5)
     book_dict['reviews'] = reviews
@@ -70,6 +87,25 @@ def getDetails():
 
     return dumps(book_dict)
 
+
+@app.route("/book/ownreview", methods=["GET"])
+def ownReview():
+    token = request.args.get('token') 
+    book_id = request.args.get('bookId')
+    user = get_user(token)
+    review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
+    review_dict = []
+    if review != None and review.content != None:
+        is_liked = False
+        if User_likes.query.filter_by(user_id = user.user_id, review_id = review.review_id).first() != None:
+            is_liked = True
+        user_badges = User_badge.query.filter_by(user_id = user.user_id).all()
+        badges = []
+        for user_badge in user_badges:
+            badge = user_badge.badge
+            badges.append({'badge_id' : badge.badge_id, 'image' : badge.image})
+        review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username,'badges':badges, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
+    return dumps({'review' : review_dict})
 
 @app.route("/book/likereview", methods=["POST"])
 def likeReview():
@@ -88,6 +124,32 @@ def likeReview():
     review = Review.query.get(review_id)
     review.likes = review.likes + 1
     db.session.add(user_like)
+    db.session.commit()
+
+    return dumps({})
+
+
+@app.route("/book/editreview", methods=["POST"])
+def editReview():
+
+    """
+    Arg: review_id to like
+    review: new content of review
+    
+    """
+    body = request.get_json()
+    print(body)
+    user = get_user(body['token'])
+
+    review_id = body['review_id']
+    review_content = body['review']
+
+    review = Review.query.get(review_id)
+
+    if review.user_id != user.user_id:
+        raise error.AccessError(description="No right to edit this review")
+    review.content = review_content
+    db.session.add(review)
     db.session.commit()
 
     return dumps({})
@@ -321,6 +383,13 @@ def addRatingReview():
 
     new_content = "Added a review for " + "< " + book.title + " > " + ": " + content
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
+
+    # add notification for followers
+    followers = Follow_relationship.query.filter_by(user_id = user.user_id).all()
+    for follower in followers:
+        newnotif = Notification(user_id=follower.follower_user_id, type='review', type_id = book_id, time= datetime.now(), sender_id=user.user_id)
+        db.session.add(newnotif)
+        db.session.commit()
     db.session.add(newPost)
     db.session.commit()
    

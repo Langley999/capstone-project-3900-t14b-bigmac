@@ -21,6 +21,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { makeStyles } from '@mui/styles';
+import EditIcon from '@mui/icons-material/Edit';
 import ErrorPopup from '../components/ErrorPopup';
 import SuccessPopup from '../components/SuccessPopup';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -28,9 +29,15 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import IconButton from '@mui/material/IconButton';
 import {Link, useParams} from "react-router-dom";
 import UsernameLink from '../components/UsernameLink';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import {Pagination} from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import {convertDate,months} from '../components/Helper';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import Review from '../components/Review';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -91,8 +98,70 @@ const BookDetail = ({userInfo}) => {
   const [warningcontent, setwarningcontent] = useState("");
   const [similarbooks, setSimilarbooks] = useState([]);
   const [page,setpage] = useState(1);
+  const [myreview,setmyreview] = useState([]);
+  const [sort, setSort] = useState("time");
+  const [reviewform, setReviewform] = useState(false);
+  const [newreview, setNewreview] = useState("");
   const book_id = searchParams.get('id');
+  
+  const handleSubmitNewReview = () => {
+    const body = JSON.stringify( {
+      token: localStorage.getItem('token'),
+      review_id: myreview[0].review_id,
+      review: newreview
+    });
 
+    axios.post('http://127.0.0.1:8080/book/editreview', body,{
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(function (response) {
+        console.log(response)
+        if (response['status'] === 200) {
+          setReviewform(false);
+          setNewreview("");
+          axios.get('http://127.0.0.1:8080/book/ownreview', {
+            params: {
+              token: localStorage.getItem('token'),
+              bookId: book_id
+            }
+          }).then(function(response){
+            console.log(response['data']['review'])
+            setmyreview(response['data']['review']);
+          });
+
+        }
+      })
+      .catch(function (error) {
+        setwarningcontent(error.response.data.message);
+        setwarningopen(true);
+        console.log(error);
+      });
+    
+  }
+  const handleCloseReviewForm = () => {
+    setReviewform(false);
+  }
+  const handleChangeSort = (event) => {
+    setSort(event.target.value);
+    axios.get('http://127.0.0.1:8080/book/details', {
+      params: {
+        bookId: book_id,
+        token: localStorage.getItem('token'),
+        page:1,
+        sort: event.target.value
+      }
+    })
+    .then(function (response) {
+      setReviews(response['data']['reviews']);
+
+    })
+    .catch(function (error) {
+      setwarningcontent(error);
+      setwarningopen(true);
+    });
+  };
   const handleAddReview = () => {
     setReviewFormOn(true);
   }
@@ -130,6 +199,10 @@ const BookDetail = ({userInfo}) => {
 
   }
 
+  const handleEditReview = (review_id) => {
+   setReviewform(true);
+  }
+
 
   const  handleLikeReview = (review_id) => {
     const body = JSON.stringify( {
@@ -152,7 +225,15 @@ const BookDetail = ({userInfo}) => {
               reviewsCopy[i]['is_liked'] = true;
               setReviews(reviewsCopy);
             }
-        }
+          }
+         
+          let reviewsCopy = [...myreview];
+          if (reviewsCopy[0]['review_id'] === review_id) {
+            reviewsCopy[0]['likes'] ++;
+            reviewsCopy[0]['is_liked'] = true;
+            setmyreview(reviewsCopy);
+          }
+          
         }
       })
       .catch(function (error) {
@@ -184,7 +265,14 @@ const BookDetail = ({userInfo}) => {
               reviewsCopy[i]['is_liked'] = false;
               setReviews(reviewsCopy);
             }
-        }
+          }
+          let reviewsCopy = [...myreview];
+          if (reviewsCopy[0]['review_id'] === review_id) {
+            reviewsCopy[0]['likes'] --;
+            reviewsCopy[0]['is_liked'] = false;
+            setmyreview(reviewsCopy);
+          }
+          
         }
       })
       .catch(function (error) {
@@ -216,28 +304,15 @@ const BookDetail = ({userInfo}) => {
         console.log(response.data.review_id)
         setReviewFormOn(false);
         setreviewButtonshow(false);
-        var d = new Date();
-        console.log(reviews);
-        let hours = d.getHours() % 12;
-        hours = hours ? hours : 12;
-        let strTime = hours + ':' + d.getMinutes();
-        //var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" +
-        //d.getFullYear() + " " + strTime;
-
-        var datestring = d.getFullYear() + "-" +("0"+(d.getMonth()+1)).slice(-2)+ "-" + ("0" + d.getDate()).slice(-2)+" " + strTime;
-        console.log(datestring)
-  
-        let rev = {};
-        rev['time'] = datestring;
-        rev['content'] = reviewValue;
-        rev['username'] = userInfo.username;
-        rev['avatar'] = userInfo.avatar;
-        rev['user_id'] = userInfo.user_id;
-        rev['rating'] = rating;
-        rev['is_liked'] = false;
-        rev['review_id'] = response.data.review_id;
-        rev['likes'] = 0;
-        setReviews(review => [rev,...review] );
+        axios.get('http://127.0.0.1:8080/book/ownreview', {
+          params: {
+            token: localStorage.getItem('token'),
+            bookId: book_id
+          }
+        }).then(function(response){
+          console.log(response['data']['review'])
+          setmyreview(response['data']['review']);
+        });
         setreviewValue("");
         setbtnDisabled(true);
         setreadingButtonText('completed');
@@ -264,15 +339,7 @@ const BookDetail = ({userInfo}) => {
         'Content-Type': 'application/json'
       }
     }).then(function (response) {
-      let newone = [];
-      for (let i = 0; i < reviews.length; i++) {
-        if (reviews[i]['username'] == userInfo['username']) {
-          reviews[i]['rating'] = newValue;
 
-        }
-        newone.push(reviews[i]);
-      }
-      setReviews(newone);
       if (rating == 0) {
 
         let newrating = (newValue+n_rating*ave_rating)/(n_rating+1);
@@ -288,6 +355,15 @@ const BookDetail = ({userInfo}) => {
       }
       setbtnDisabled(true);
       setreadingButtonText('completed');
+      axios.get('http://127.0.0.1:8080/book/ownreview', {
+        params: {
+          token: localStorage.getItem('token'),
+          bookId: book_id
+        }
+      }).then(function(response){
+        console.log(response['data']['review'])
+        setmyreview(response['data']['review']);
+      });
     })
     .catch(function (error) {
 
@@ -297,24 +373,7 @@ const BookDetail = ({userInfo}) => {
     });
   }
 
-  const createDate = (str) => {
-    let li = str.split(' ');
-    let time = li[1];
-    const date = new Date(li[0].replace(/-/g,"/"));
-    return date;
-  }
-  const formatAMPM = (str) => {
-    let li = str.split(' ');
-    let time = li[1].split(':');
-    let hours = time[0];
-    let minutes = time[1];
-    let ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    let strTime = hours + ':' + minutes + ampm;
-    return strTime;
 
-  }
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
       token: localStorage.getItem('token'),
@@ -490,6 +549,15 @@ const BookDetail = ({userInfo}) => {
       console.log(error);
     });
 
+    axios.get('http://127.0.0.1:8080/book/ownreview', {
+      params: {
+        token: localStorage.getItem('token'),
+        bookId: book_id
+      }
+    }).then(function(response){
+      console.log(response['data']['review'])
+      setmyreview(response['data']['review']);
+    });
     axios.get('http://127.0.0.1:8080/book/check_completed', {
       params: {
         token: localStorage.getItem('token'),
@@ -516,7 +584,8 @@ const BookDetail = ({userInfo}) => {
       params: {
         bookId: book_id,
         token: localStorage.getItem('token'),
-        page:1
+        page:1,
+        sort: sort
       }
     })
     .then(function (response) {
@@ -566,8 +635,8 @@ const BookDetail = ({userInfo}) => {
         genres = "None";
       }
       setGenres(genres);
-      setReviews(response['data']['reviews'].reverse())
-      console.log(response['data']['reviews'])
+      setReviews(response['data']['reviews']);
+      console.log(response['data']['reviews']);
       if (response['data']['cover_image']==="") {
         setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
 
@@ -577,7 +646,7 @@ const BookDetail = ({userInfo}) => {
 
     })
     .catch(function (error) {
-      setwarningcontent(error.response.data.message);
+      setwarningcontent(error);
       setwarningopen(true);
     });
 
@@ -585,6 +654,7 @@ const BookDetail = ({userInfo}) => {
 
 
   }, [window.location.href, userInfo]);
+
 
   return (
     <div>
@@ -668,14 +738,13 @@ const BookDetail = ({userInfo}) => {
               </Grid>
 
 
-
-              <Grid item xs={12}>
+              <Grid item xs={12} >
                 <Grid container direction="row" spacing={2}>
                   <Grid item xs={12}>
                     <Box sx={{ flexGrow: 1, mt: 8,ml: 0 }} >
                       <Typography variant="h6" gutterBottom component="div">Community Reviews</Typography>
                     </Box>
-                    <Divider/>
+                    <Divider sx={{ mb: 2}}/>
                   </Grid>
                   {localStorage.getItem('token') &&
                   <Grid item xs={2}>
@@ -695,89 +764,93 @@ const BookDetail = ({userInfo}) => {
                     {reviewButtonshow &&
                     <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
                   </Grid>}
+                  <FormControl >
+                    <InputLabel style ={{width: '100%'}} id="demo-simple-select-label">Sort by </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={sort}
+                      label="Time"
+                      onChange={handleChangeSort}
+                      autoWidth
+                      style={{ fontSize:14,height: 40 }}
+                    >
+                      <MenuItem value={'time'}>Time</MenuItem>
+                      <MenuItem value={'likes'}>Likes</MenuItem>
+                      <MenuItem value={'badges'}>Badges</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
 
 
 
               <Grid item xs={12} >
-                {reviews.length == 0 &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
+   
+
+        
+                {(reviews.length == 0 && myreview.length == 0) &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
+                
+                {myreview.length > 0 &&  myreview.map((item, i) =>
+                <Grid container direction="row" spacing={0} key={i} style={{ marginBottom: 0 }} >
+                  <Grid item xs = {10}>
+                    <Review item={item} i = {i}></Review>
+                  </Grid>
+                  <Grid item xs={1} style={{ marginLeft: -62}}> 
+                    <IconButton aria-label="edit" size="small" onClick={() => handleEditReview(item['review_id'])}>
+                        <EditIcon fontSize="inherit" color="white" style={{ color: 'white',backgroundColor: '#1976d2' , borderRadius:'15px',padding: '4px'}}/> 
+                    </IconButton>                      
+                  </Grid>
+                  { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
+                    <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
+                      <ThumbUpOffAltIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}
+                    </Grid>}
+                  { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
+                    <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
+                      <ThumbUpIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}
+                  </Grid>}
+              
+                  { localStorage.getItem('token') === null && <Grid item xs={1}>
+                    <IconButton aria-label="delete" size="small" disabled>
+                      <ThumbUpOffAltIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}      
+                    </Grid>}         
+                </Grid>
+
+                )}
                 {reviews.length > 0 &&  reviews.map((item, i) =>
-                  <Grid container direction="row" spacing={2} key={i} style={{ marginBottom: 20 }} >
-                    <Grid item xs={1}>
-                    <Avatar  variant="square" sx={{
-                          mt:2
-                        }}>
-                      <Box
-                        component="img"
-                        alt="avatar"
-                        sx={{
-                          width: 50,
-                          my:1
-                        }}
-                        src={(item['avatar']===null || item['avatar']==="") ?"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png":item['avatar']} 
-                      />                      
-                    </Avatar>
-
-                    </Grid>
-                    <Grid item xs={10}>
-                      <Grid container direction="row" spacing={0}>
-                        <Grid item xs={4}>
-                          
-                          {localStorage.getItem('token')==null ?
-                            <Button disabled="true" style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
-                            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: "none", fontSize:"16px",width:"100px",justifyContent: "flex-start"}}>{item['username']}</Button>
-                            }
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Typography variant="subtitle2" style={{ fontWeight: 600 }} display="block" gutterBottom> {formatAMPM(item['time'])} {createDate(item['time']).toLocaleDateString("en-AU")}</Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Rating
-                            size="small"
-                            value={item['rating']}
-                            readOnly
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Typography variant="body2" display="block" gutterBottom>
-                            {item['content']}
-                          </Typography>
-                        </Grid>
-
-                      </Grid>
-                     
-                     
-                    </Grid>
+                <Grid container direction="row" spacing={0} key={i} style={{ marginBottom: 0 }} >
+                  <Grid item xs = {10}>
+                    <Review item={item} i = {i}></Review>
+                  </Grid>
                     { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
-                      <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
-                        <ThumbUpOffAltIcon fontSize="inherit" /> 
-                      </IconButton>
-                        {item['likes']}
-                    </Grid>}
-                    { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
-                      <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
-                        <ThumbUpIcon fontSize="inherit" /> 
-                      </IconButton>
-                        {item['likes']}
-                    </Grid>}
+                    <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
+                      <ThumbUpOffAltIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}
+                  </Grid>}
+                  { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
+                    <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
+                      <ThumbUpIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}
+                  </Grid>}
+              
+                  { localStorage.getItem('token') === null && <Grid item xs={1}>
+                    <IconButton aria-label="delete" size="small" disabled>
+                      <ThumbUpOffAltIcon fontSize="inherit" /> 
+                    </IconButton>
+                      {item['likes']}      
+                    </Grid>}         
+                </Grid>
 
-                    { localStorage.getItem('token') === null && <Grid item xs={1}>
-                      <IconButton aria-label="delete" size="small" disabled>
-                        <ThumbUpOffAltIcon fontSize="inherit" /> 
-                      </IconButton>
-                        {item['likes']}
-                    </Grid>}
-                   
-                  </Grid>)
-                }
-                {/*
-              <Grid item xs={12}>
-                <Box sx={{ flexGrow: 1, mt: 3,ml: 50,mb: 5}} >
-                  <Pagination count={10} size="small" />
-                </Box>
-              </Grid>
-            */}
+                )}
+          
               {reviews.length > 0 &&
                 <Grid container direction="row" justifyContent="center" spacing={2}  style={{ marginTop: 40 }} >
                   <Pagination count={reviews['pages']} page={1} onChange={handleChangePage} />
@@ -912,6 +985,20 @@ const BookDetail = ({userInfo}) => {
         </Dialog>
 
       </Box>}
+      <Dialog open={reviewform} onClose={handleCloseReviewForm}>
+        <DialogTitle>Enter new review</DialogTitle>
+        <DialogContent>
+          <TextField 
+            style={{ width: '500px' }}
+            fullWidth label="" id="fullWidth" multiline={true} value={newreview}
+            onChange={(e) => setNewreview(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseReviewForm}>Cancel</Button>
+          <Button onClick={handleSubmitNewReview}>Submit</Button>
+        </DialogActions>
+      </Dialog>
       <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen} />
       <SuccessPopup successMsg={snackbarcontent} snackBarOpen={snackbaropen} setSnackBarOpen={setsnackbaropen} />
     </div>
