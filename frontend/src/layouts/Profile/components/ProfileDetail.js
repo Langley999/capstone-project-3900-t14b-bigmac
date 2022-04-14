@@ -52,10 +52,15 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       }
     })
       .then(function (res) {
-        console.log(res['data'])
+        console.log(res)
         console.log(user_id === userInfo.user_id)
         if (user_id === userInfo.user_id) {
-          setValues(userInfo);
+          //setValues(userInfo);
+          setValues({
+            username: res['data']['username'],
+            avatar: res.data.avatar,
+            badges: res.data.badges
+          });
         } else {
           setValues({
             username: res['data']['username'],
@@ -146,6 +151,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
 
   return (
     <>
+    {values.badges && 
+      <div>
       <Dialog open={openBadge} onClose={handleCloseBadge}>
         <DialogTitle>Badge Information</DialogTitle>
         <DialogContent>
@@ -304,6 +311,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
           </CardContent>
         </Card>
       }
+      </div>}
     </>
   );
 };
