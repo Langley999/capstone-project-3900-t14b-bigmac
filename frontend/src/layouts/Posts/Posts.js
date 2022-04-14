@@ -132,45 +132,6 @@ const Posts = ({userInfo}) => {
     })
   }
 
-
-  const CreatePost = () => {
-    return (
-      <Dialog onClose={handleAddPostClose} open={postFormOn}>
-        <Box
-          sx={{
-            width: 1000,
-            height: 500,
-            maxWidth: '100%',
-          }}
-        >
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
-            <DialogTitle>Write a post</DialogTitle>
-            <Box
-              sx={{
-                paddingTop:3,
-                width: 500,
-                maxWidth: '100%',
-              }}
-            >
-              <TextField
-                variant="outlined"
-                fullWidth
-                label=""
-                id="fullWidth"
-                multiline={true}
-                onChange={handleChange}
-                rows={12}
-              />
-            </Box>
-            <Button onClick={handleAddPostClose}>Cancel</Button>
-            <Button onClick={handleSubmitPost}>Submit</Button>
-          </Grid>
-
-        </Box>
-      </Dialog>
-    )
-  }
-
   const PostSection = ({postInfo}) => {
     const removePost = () => {
       axios.post(`${url}/post/removepost`, {
@@ -210,7 +171,39 @@ const Posts = ({userInfo}) => {
           Add Post
         </Button>
         : null}
-      <CreatePost/>
+      <Dialog onClose={handleAddPostClose} open={postFormOn}>
+        <Box
+          sx={{
+            width: 1000,
+            height: 500,
+            maxWidth: '100%',
+          }}
+        >
+          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
+            <DialogTitle>Write a post</DialogTitle>
+            <Box
+              sx={{
+                paddingTop:3,
+                width: 500,
+                maxWidth: '100%',
+              }}
+            >
+              <TextField
+                variant="outlined"
+                fullWidth
+                label=""
+                id="fullWidth"
+                multiline={true}
+                onChange={handleChange}
+                rows={12}
+              />
+            </Box>
+            <Button onClick={handleAddPostClose}>Cancel</Button>
+            <Button onClick={handleSubmitPost}>Submit</Button>
+          </Grid>
+
+        </Box>
+      </Dialog>
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
