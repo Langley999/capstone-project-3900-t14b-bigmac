@@ -48,6 +48,7 @@ function App() {
   const [tempsearchRating, setTempsearchRating] = useState(0);
   const [tempgenreRating, setTempgenreRating] = useState(0);
   const [followingFav, setFollowingFav] = useState([]);
+  const [newNotif, setNewNotif] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -55,6 +56,10 @@ function App() {
       updateLogin(true);
     }
   }, []);
+
+  const updateNewNotif = (newNotifs) => {
+    setNewNotif(newNotifs);
+  }
 
   const updateFollowingFav = (newFav) => {
     setFollowingFav(newFav);
@@ -143,6 +148,7 @@ function App() {
                 updateSearchGenres={updateSearchGenres}
                 updateTempsearchRating={updateTempsearchRating}
                 updateTempgenreRating={updateTempgenreRating}
+                updateNewNotif={updateNewNotif}
               />
               <div className='centre'>
                 <Outlet />
@@ -193,7 +199,7 @@ function App() {
                 followingFav={followingFav}
               />}
             />
-            <Route path='notifications' element={<Notifications />} />
+            <Route path='notifications' element={<Notifications notifs={newNotif}/>} />
             <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={
               <>

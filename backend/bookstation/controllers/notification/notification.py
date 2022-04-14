@@ -37,15 +37,16 @@ def getallnotif():
       notif['type'] = notification.type
       notif['time'] = str(notification.time)
       if notification.type_id != -1 :
+        notif['book_id'] = notification.type_id
         notif['book_name'] = Book.query.get(notification.type_id).title
       all_notifications.append(notif)
     history = Notification_history.query.filter_by(user_id=user.user_id).first()
-    if history == None:
-      newhistory = Notification_history(user_id=user.user_id,last_read=0)
-      db.session.add(newhistory)
-    else:
-      history.last_read = len(all_notifications)
-      db.session.add(history)
+#     if history == None:
+#       newhistory = Notification_history(user_id=user.user_id,last_read=0)
+#       db.session.add(newhistory)
+#     else:
+    history.last_read = len(all_notifications)
+    db.session.add(history)
     db.session.commit()
     return dumps({'notifications' : all_notifications})
 

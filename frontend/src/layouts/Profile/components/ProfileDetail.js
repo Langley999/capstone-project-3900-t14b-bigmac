@@ -40,6 +40,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [openBadge, setOpenBadge] = useState(false);
 
   useEffect(async () => {
+    console.log('haha')
     const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
     console.log(userInfo)

@@ -1,7 +1,3 @@
 .idea/
-<<<<<<< HEAD
-=======
 .DS_Store
 backend/flask_session
-backend/bookstation/bookstation.db
->>>>>>> sprint2-jane
