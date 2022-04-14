@@ -52,6 +52,17 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
 
   const navigate = useNavigate();
 
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(()=>{
+    let myInterval = setInterval(() => {
+      setSeconds(seconds + 1);
+    }, 2000)
+    return ()=> {
+      clearInterval(myInterval);
+    };
+  });
+
   const updateRating = (rating) => {
     setRating(rating);
   }
@@ -137,7 +148,9 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         </Tooltip>
         <Tooltip title="Notifications">
           <IconButton sx={{ ml: 1 }} component={Link} to='notifications'>
-            <NotificationsIcon fontSize="large"/>
+            <Badge badgeContent={seconds} color="primary">
+              <NotificationsIcon fontSize="large"/>
+            </Badge>
           </IconButton>
         </Tooltip>
         <Tooltip title='Home'>
