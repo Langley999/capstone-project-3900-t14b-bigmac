@@ -16,3 +16,23 @@ db.session.add(Goal(20,datetime(2021,4,26), 2, 1))
 db.session.add(Goal(20,datetime(2021,3,26), 3, 4))
 db.session.add(Goal(20,datetime(2021,2,26), 2, 2))
 db.session.commit()
+
+
+NEW API FOR NOTIFICATIONS
+
+Need new column in notifications for "seen" (boolean)
+Need notification_id if don't have already
+
+ADD ROUTES IN FOLLOWER.PY
+notification/setallseen (sets all seen = true in seen column)
+input: token
+
+notification/setseen (sets matching notificaton seen = true)
+input: token, notification_id
+
+notification/getunread (list of notifications where seen = false)
+input: token
+output: notifications (will include seen for each notif)
+
+other changes
+make getnotifications also return seen for each notif

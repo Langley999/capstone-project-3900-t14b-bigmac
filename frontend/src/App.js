@@ -74,12 +74,14 @@ function App() {
       //   alert(JSON.stringify(error.response.data.message));
       // })
 
-      getNotifications();
+      // getUnseenNotifications();
+
+      getAllNotifications();
 
       // Check for notification updates every 10 secs
       // let id;
       // const notifApi = async () => {
-      //   await getNotifications();
+      //   await getAllNotifications();
       //   id = setTimeout(notifApi, 10000);
       // }
       // await notifApi();
@@ -100,7 +102,70 @@ function App() {
     });
   }
 
-  const getNotifications = async () => {
+  const getUnseenNotifications = () => {
+
+    const setSeen = (notifId) => {
+      axios.post(`${url}/notification/setseen`, {
+        token: localStorage.getItem('token'),
+        notification_id: notifId
+      }).then(function(response) {
+        console.log('notif now seen');
+      }).catch(function(error) {
+        console.log('error setting notif seen');
+      })
+    }
+
+    const setNewNotifNum = (isAdd, num) => {
+      axios.post(`${url}/user/getunreadnotif`, {
+        token: localStorage.getItem('token')
+      }).then(function(res) {
+        console.log(res.data.unreadNotifs, 'unread notifs gotten')
+        if (isAdd) {
+          setUnreadNotifs((res.data.unreadNotifs+num).toString());
+        } else {
+          setUnreadNotifs(num.toString());
+        }
+        setTimeout(() => {getUnreadNotifs();}, 2000);
+      }).catch(function(error) {
+        console.log('error in getunreadnotifs')
+      });
+    }
+
+    const popupClick = (key, notifId) => {
+      closeSnackbar(key);
+      setSeen(notifId);
+      setNewNotifNum(true, -1);
+    }
+
+    axios.get(`${url}/notification/getunread`, {params:{
+      token: localStorage.getItem('token')
+    }}).then(function(res) {
+      console.log(res.data.notifications);
+      setNewNotifNum(false, res.data.notifications.length);
+      for (const currNotif of res.data.notifications) {
+        if (currNotif.type === 'post') {
+          const action = key => (
+            <Button onClick={() => {navigate('/feed');popupClick(key, currNotif.notification_id)}} style={{color: 'white'}} >Your Feed</Button>
+          );
+          enqueueSnackbar(` ${currNotif.username} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
+        } else if (currNotif.type === 'review') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/book/?id=${currNotif.type_id}`);popupClick(key, currNotif.notification_id)}} style={{color: 'white'}} >Book Page</Button>
+          )
+          enqueueSnackbar(` ${currNotif.username} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
+        } else if (currNotif.type === 'follow') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/user/${currNotif.type_id}/profile`);popupClick(key, currNotif.notification_id);}} style={{color: 'white'}} >Their Profile</Button>
+          )
+          enqueueSnackbar(` ${currNotif.username} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
+        }
+      }
+    }).catch(function(error) {
+      console.log('error getting unseen');
+    });
+  }
+
+  const getAllNotifications = async () => {
     if (!localStorage.getItem('token')) return;
     // console.log('get notif');
     const response = await axios.get(`${url}/user/notifications`, {params: {
@@ -109,10 +174,6 @@ function App() {
     // return on fetch error
     if (response.status !== 200) return;
     const notifs = await response.data.notifications;
-    // console.log(notifs);
-    // console.log(lastNotif)
-    // console.log(notifLen)
-    // console.log(notificationHistory)
     const newNotif = notifs[0];
 
     const setNewNotifNum = (num) => {
@@ -270,7 +331,7 @@ function App() {
           <Route path='publicfeed' element={<PublicFeed />} />
           <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
           <Route path='searchbooks' element={<SearchBooks searchResult={searchResult} searchValue={searchValue} radioValue={radioValue} tempsearchRating={tempsearchRating} updateSearchResult={updateSearchResult} page={page} updatePage={updatePage} pageCount={pageCount} updatePageCount={updatePageCount} searchType={searchType} searchGenres={searchGenres} genreRating={genreRating}/>} />
-          <Route path='notifications' element={<Notifications notificationHistory={notificationHistory} getUnreadNotifs={getUnreadNotifs} />} />
+          <Route path='notifications' element={<Notifications setNumNotifs={setNumNotifs} notificationHistory={notificationHistory} getUnreadNotifs={getUnreadNotifs} />} />
           <Route path='main' element={<Main />} />
           <Route path='user/:userid' element={
             <>

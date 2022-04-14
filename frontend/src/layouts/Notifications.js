@@ -6,11 +6,30 @@ import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
 import {setUnreadNotifs} from '../components/Helper';
 
-const Notifications = ({getUnreadNotifs, notificationHistory}) => {
+const Notifications = ({setNumNotifs, getUnreadNotifs, notificationHistory}) => {
   const [pageNotifs, setPageNotifs] = useState([]);
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(10);
   const pageSize = 10;
+
+  React.useEffect(() => {
+    // setAllSeen();
+    // setNumNotifs(0);
+    setZeroNotifs();
+    setPage(1);
+    setPageCount(Math.ceil(notificationHistory.length / pageSize));
+    setPageNotifs(notificationHistory.slice(0, pageSize));
+  }, [notificationHistory]);
+
+  const setAllSeen = () => {
+    axios.post(`${url}/notification/setallseen`, {
+      token: localStorage.getItem('token')
+    }).then(function(res) {
+      console.log("set all seen");
+    }).catch(function(error) {
+      console.log("error setting all seen");
+    })
+  }
 
   const setZeroNotifs = () => {
     setUnreadNotifs("0");
@@ -24,12 +43,7 @@ const Notifications = ({getUnreadNotifs, notificationHistory}) => {
     console.log(notificationHistory.length, value, start, end)
     setPageNotifs(notificationHistory.slice(start, end));
   }
-  React.useEffect(() => {
-    setZeroNotifs();
-    setPage(1);
-    setPageCount(Math.ceil(notificationHistory.length / pageSize));
-    setPageNotifs(notificationHistory.slice(0, pageSize));
-  }, [notificationHistory]);
+  
   return (
     <div>
       <h1 style={{height: '40px'}}>Notifications</h1>
