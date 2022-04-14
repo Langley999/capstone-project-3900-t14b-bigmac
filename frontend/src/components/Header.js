@@ -43,7 +43,7 @@ const Slogan = styled('h1')(({ theme }) => ({
 }));
 
 
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating}) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating, updateNewNotif}) {
   const [rating, setRating] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,6 +51,30 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
 
 
   const navigate = useNavigate();
+
+  const [toRead, setToRead] = useState(0);
+
+  useEffect(()=>{
+    let myInterval = setInterval(() => {
+      if (ifLogin) {
+        axios.get(`${url}/notification/checknew`, {
+          params: {
+            token: localStorage.getItem('token')
+          }
+        }).then(res => {
+          setToRead(res.data.to_read);
+          console.log(res.data.to_read > 0);
+          if (res.data.to_read > 0)
+            updateNewNotif(res.data);
+        })
+      } else {
+        console.log('not log in')
+      }
+    }, 200000)
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
 
   const updateRating = (rating) => {
     setRating(rating);
@@ -117,6 +141,16 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   function NavBarV2 () {
+    // const showNotifications = () => {
+    //   axios.get(`${url}/notification/getall`, {
+    //     params: {
+    //       token: localStorage.getItem('token')
+    //     }
+    //   }).then(res => {
+    //     updateNotifications(res.data.notifications);
+    //   })
+    // }
+
     return (
       <>
         <PublicFeedIcon/>
@@ -137,7 +171,9 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         </Tooltip>
         <Tooltip title="Notifications">
           <IconButton sx={{ ml: 1 }} component={Link} to='notifications'>
-            <NotificationsIcon fontSize="large"/>
+            <Badge badgeContent={toRead} color="primary">
+              <NotificationsIcon fontSize="large"/>
+            </Badge>
           </IconButton>
         </Tooltip>
         <Tooltip title='Home'>

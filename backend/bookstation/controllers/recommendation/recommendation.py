@@ -125,11 +125,19 @@ def favouriteFollowed():
 			books = Collection_book.query.filter_by(collection_id = collection.collection_id)
 			for collection_book in books:
 				book = collection_book.book
-				book_dict = {'book_id' : book.book_id, 'title' : book.title, 'rating' : book.average_rating}
+				book_dict = {
+				    'book_id' : book.book_id,
+				    'title' : book.title,
+				    'author': book.author_string,
+		            'num_rating': book.num_rating,
+		            'cover': book.cover_image,
+				    'average_rating' : book.average_rating,
+				    'publish_date': book.publish_date
+                }
 				if book.book_id not in book_set:
 					books_list.append(book_dict)
 					book_set.add(book.book_id)
 
 
-	books_list.sort(key = lambda x: x['rating'], reverse=True)
+	books_list.sort(key = lambda x: x['average_rating'], reverse=True)
 	return dumps({'favourite_followed_books' : books_list})

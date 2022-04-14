@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -7,7 +7,8 @@ import {
   CardHeader,
   Divider,
   TextField,
-  Typography
+  Typography,
+  Avatar
 } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -22,6 +23,7 @@ import {url, checkProfileInput} from '../../../components/Helper';
 import {useParams, useLocation, useNavigate} from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const params = useParams();
@@ -34,10 +36,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [successMsg, setSuccessMsg] = useState('');
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [currentBadge, setCurrentBadge] = useState({});
+  const [openBadge, setOpenBadge] = useState(false);
 
   useEffect(async () => {
+    console.log('haha')
     const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
+    console.log(userInfo)
 
     axios.get(`${url}/user/profile`, {
       params: {
@@ -47,12 +53,19 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     })
       .then(function (res) {
         console.log(res)
+        console.log(user_id === userInfo.user_id)
         if (user_id === userInfo.user_id) {
-          setValues(userInfo);
+          //setValues(userInfo);
+          setValues({
+            username: res['data']['username'],
+            avatar: res.data.avatar,
+            badges: res.data.badges
+          });
         } else {
           setValues({
             username: res['data']['username'],
-            avatar: res.data.avatar
+            avatar: res.data.avatar,
+            badges: res.data.badges
           });
         }
       })
@@ -61,6 +74,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       });
 
   }, [window.location.href, userInfo])
+
+  const handleClickOpenBadge = () => {
+    setOpenBadge(true);
+  };
+
+  const handleCloseBadge = () => {
+    setOpenBadge(false);
+  };
 
 
   const handleChange = (event) => {
@@ -102,7 +123,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         email: values.email,
         username: values.username,
         password: values.password,
-        avatar: userInfo.avatar
+        avatar: userInfo.avatar,
+        badges: userInfo.badges
       }))
       setSuccessMsg('Profile details updated');
       setShowSuccess(true);
@@ -122,8 +144,34 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     padding: '0 30px'
   }
 
+  const openBadgeInfo = (badge) => {
+    handleClickOpenBadge();
+    setCurrentBadge(badge);
+  }
+
   return (
     <>
+    {values.badges && 
+      <div>
+      <Dialog open={openBadge} onClose={handleCloseBadge}>
+        <DialogTitle>Badge Information</DialogTitle>
+        <DialogContent>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Avatar src={currentBadge.badge_image} sx={{height: 50, width: 50}}/>
+            <Typography>{`Quiz: ${currentBadge.quiz_name}`}</Typography>
+            <Typography>{`Quiz Description: `}</Typography>
+            <Typography>{currentBadge.quiz_description}</Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            onClick={handleCloseBadge}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
         <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
@@ -160,8 +208,12 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   < Typography
                     color='#616161'
                   >
-                    Badge: Empty
+                    Badge:
                   </ Typography>
+                  {values.badges.length > 0 ? values.badges.map((badge) => {
+                    return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
+                    )
+                  }) : <Typography>Empty</Typography>}
                 </Box>
                 <TextField
                   disabled
@@ -259,6 +311,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
           </CardContent>
         </Card>
       }
+      </div>}
     </>
   );
 };
