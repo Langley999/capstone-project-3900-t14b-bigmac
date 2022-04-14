@@ -44,12 +44,7 @@ const Quiz = () => {
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
 
   const navigate = useNavigate();
-  let admintoken = localStorage.getItem('admin_token');
 
-
-  const handleCreateQuiz = () => {
-    navigate('/bookstation/makequiz');
-  }
 
 
   useEffect(() => {
@@ -71,44 +66,67 @@ const Quiz = () => {
   }, [window.location.href]);
   return (
     <Box m={2} pt={2}>
-
-
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-      <Grid container direction="row" spacing={10} justifyContent="center" >
-
-        <Grid item  xs={4}>
-          <List >
-          <Typography variant="h4" gutterBottom component="div">
-            Current quizzes
+      <Grid container direction="column" spacing={12} justifyContent="center" >
+        <Grid item  xs={12}>
+          <Typography variant="h5" gutterBottom component="div">
+            Current running quizzes
           </Typography>
+        </Grid>
+        <Grid item xs={12}>
           {allquiz.length > 0 &&  allquiz.map((item, i) =>   
-          <ListItem
-              key={item['id']}
-            > 
-            
-            
-            <Avatar src={item['badge_image']} />
-            <ListItemText sx={{ paddingLeft: 2 }} 
-              primary={item['quiz_name']}
-            />
-          
-           {item['complete_status'] === 'NONE' &&
-            <Button variant="outlined" component = {Link} to={`/enterquiz/?id=${item['id']}`}>
-              Enter
-            </Button>}          
-            {item['complete_status'] === 'PASS' &&
-            <Button variant="outlined" disabled>
-              PASSED
-            </Button>}    
-            {item['complete_status'] === 'FAIL' &&
-            <Button variant="outlined" disabled>
-              COMPLETED 
-            </Button>}       
+            <Grid container direction="row" spacing={1} justifyContent="center" sx={{ marginBottom:5 }} >
+              <Grid item xs ={9} >
+                <Grid container direction="row" spacing={1} justifyContent="left-satrt" >
+                  <Grid item xs ={1}>
+                    <Avatar src={item['badge_image']} />
+                  </Grid>
+                  <Grid item xs ={2}>
+                    <Typography variant="body1" gutterBottom component="div">
+                      {item['quiz_name']}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs ={2}>
+                    {item['complete_status'] === 0 &&
+                      <Button variant="contained"  sx={{ width:110 }}  component = {Link} to={`/enterquiz/?id=${item['id']}`}>
+                        Enter
+                      </Button>}          
+                      {item['complete_status'] === 1 &&
+                      <Button sx={{ width:110 }} variant="contained" disabled>
+                        PASSED
+                      </Button>}    
+                      {item['complete_status'] === 2 &&
+                      <Button sx={{ width:110 }} variant="contained" disabled>
+                        COMPLETED 
+                      </Button>}
+                  </Grid>
+                </Grid>
+              </Grid>
+              {item['complete_status'] === 0 &&
+                <Grid item xs ={10}>
+                  <Box component="span" sx={{
+                        display: 'block',
+                        p: 1,
+                        m: 1,
+                        width: 800,
+                        bgcolor: 'grey.100' ,
+                        color:  'grey.800',
+                        border: '1px solid',
+                        borderColor: 'grey.300',
+                        borderRadius: 2,
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                      }}>
+                    {item['description']}
+                  </Box>  
+                </Grid>}
+            </Grid>
 
-          </ListItem>)}
+          )}
+          </Grid>
 
-          </List>  
-        </Grid>    
+ 
+    
 
       </Grid>
 

@@ -150,14 +150,16 @@ def getopenquiz():
         quizobj['badge_id'] = badge.badge_id
         quizobj['badge_image'] = badge.image
         if User_badge.query.filter_by(badge_id=badge.badge_id,user_id=user.user_id).first() != None:
-            quizobj['complete_status'] = "PASS"
+            quizobj['complete_status'] = 1
         elif Quiz_user.query.filter_by(quiz_id=quiz_id,user_id=user.user_id).first() != None:
-            quizobj['complete_status'] = "FAIL"
+            quizobj['complete_status'] = 2
         else:
-            quizobj['complete_status'] = "NONE"
+            quizobj['complete_status'] = 0
         result.append(quizobj)
+   
+    newres = sorted(result, key=lambda x:x['complete_status'])
   
-    return dumps({ 'quizzes' : result})
+    return dumps({ 'quizzes' : newres})
 
 @app.route("/quiz/openquiz", methods=["POST"])
 def openquiz():

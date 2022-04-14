@@ -154,35 +154,52 @@ const EnterQuiz = () => {
     <Box m={2} pt={2}>
       {allquestions.length > 0&&
       <div>
-        <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-        <Grid container direction="row" spacing={10} justifyContent="center" >
+        <Grid container direction="row" spacing={2} justifyContent="space-between" >
+          <Grid item  xs={1}>
+            <Button variant='outlined' sx={{ width:190 }}  onClick={handleReturn}>
+                {"> Back To Quiz List"}
+            </Button>   
+          </Grid>
+          <Grid item  xs={10}>
+            <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
+            <Grid container direction="row" spacing={3} justifyContent="center" alignContent="center">
 
-          <Grid item  xs={4}>
-            
-            <Typography variant="h4" gutterBottom component="div">
-              {allquestions[curr_question]['question']}
-            </Typography>
-          
-            <FormLabel component="legend">Please choose the right answer:</FormLabel>
-            <RadioGroup name="value" value={selection?selection:-1} onChange={updateSelection}>
-              {allquestions[curr_question]['ans']
-                .map(datum => (
-                  <FormControlLabel
-                    label={datum.content}
-                    key={datum.id}
-                    value={datum.id}
-                    
-                    control={<Radio color="primary" />}
-                  />
-                ))}
-            </RadioGroup>
-
-            <Pagination count={allquestions.length} page={page} onChange={handleChange} />
-            <Button variant='outlined' onClick={handlesubmit}>
-              Submit
-            </Button>
-          </Grid>    
-
+              <Grid item  xs={10}>
+                <Typography variant="body1" gutterBottom component="div">
+                 {"Question"} {page}
+                </Typography>
+                <Typography variant="h5" gutterBottom component="div">
+                  {allquestions[curr_question]['question']}
+                </Typography>
+              
+                <FormLabel sx={{ marginTop:6 }} component="legend">Please choose the right answer:</FormLabel>
+                <RadioGroup name="value" value={selection?selection:-1} onChange={updateSelection}>
+                  {allquestions[curr_question]['ans']
+                    .map(datum => (
+                      <FormControlLabel
+                        label={datum.content}
+                        key={datum.id}
+                        value={datum.id}
+                        
+                        control={<Radio color="primary" />}
+                      />
+                    ))}
+                </RadioGroup>
+              </Grid> 
+              <Grid item xs={6}>
+                <Box m={2} pt={2}>
+                  <Pagination count={allquestions.length} page={page} onChange={handleChange} />
+                </Box>
+              </Grid>
+              <Grid item xs={7}>
+                <Button sx={{ marginLeft: '25%' }} variant='contained' onClick={handlesubmit}>
+                  Submit
+                </Button>
+              </Grid>
+                           
+               
+            </Grid>
+          </Grid>
         </Grid>
         <Dialog
           maxWidth={200}
@@ -192,8 +209,7 @@ const EnterQuiz = () => {
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              
-              {mark}%
+              You got {mark}%.
             </DialogContentText>
             <DialogContentText>
 
