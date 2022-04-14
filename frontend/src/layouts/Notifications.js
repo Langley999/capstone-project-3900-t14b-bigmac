@@ -5,7 +5,8 @@ import Pagination from '@mui/material/Pagination';
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
 import axios from "axios";
-import {url} from "../components/Helper";
+import {url, createDate, formatAMPM} from "../components/Helper";
+import CardActionArea from '@mui/material/CardActionArea';
 
 const Notifications = ({notifs}) => {
   const [notifications, setNotifications] = useState([]);
@@ -33,17 +34,62 @@ const Notifications = ({notifs}) => {
       setPageNotifs(res.data.notifications.slice(0, pageSize));
     })
   }, [notifs]);
+
+  const userLinkStyle = {
+    minWidth: 0,
+    minHeight: 0,
+    fontSize: "18px",
+    paddingTop: "1px",
+    marginLeft: "4px",
+    textTransform: "none"
+  }
+
+  const rowStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  }
+
+  const UsernameButton = ({notif}) => {
+    return (
+      <Button style={userLinkStyle} component = {Link} to={`/user/${notif.sender_id}/profile`}>{notif.sender_name}</Button>
+    )
+  }
   return (
     <div>
       <h1 style={{height: '40px'}}>Notifications</h1>
       {notifications.length > 0 ? pageNotifs.map((notif) => {
         return (
           <Card>
-            <CardContent>
-              {notif.type === 'follow' ? <Button component = {Link} to={`/user/${notif.sender_id}/profile`}>{notif.sender_name} followed your account</Button> : <></>}
-              {notif.type === 'review' ? <Button component = {Link} to={`/book/?id=${notif.book_id}`}>{notif.sender_name} reviewed "{notif.book_name}"</Button> : <></>}
-              {notif.type === 'post' ? <Button component = {Link} to={`/feed`}>{notif.sender_name} made a post</Button> : <></>}
-            </CardContent>
+            {notif.type === 'follow' ? 
+            <CardActionArea component = {Link} to={`/user/${notif.sender_id}/profile`}>
+              <div style={rowStyle}>
+                <CardContent>
+                  👋🏻 <UsernameButton notif={notif}/> followed your account <br/><i style={{marginLeft: "30px"}}>Click to see their profile</i>
+                  </CardContent>
+                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+              </div>
+            </CardActionArea> : <></>}
+
+            {notif.type === 'review' ?
+            <CardActionArea component = {Link} to={`/book/?id=${notif.book_id}`}>
+              <div style={rowStyle}>
+                <CardContent>
+                  📝 <UsernameButton notif={notif}/> reviewed <b>{notif.book_name}</b> <br/><i style={{marginLeft: "30px"}}>Click to see the book page</i>
+                </CardContent>
+                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+              </div>
+            </CardActionArea> : <></>}
+
+            {notif.type === 'post' ?
+            <CardActionArea component = {Link} to={`/feed`}>
+              <div style={rowStyle}>
+                <CardContent>
+                  ✉️ <UsernameButton notif={notif}/> made a post <br/><i style={{marginLeft: "30px"}}>Click to see your feed</i>
+                </CardContent>
+                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+              </div>
+            </CardActionArea> : <></>}
           </Card>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>Follow other users to see their activity in your notifications</div>}

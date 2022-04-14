@@ -3,26 +3,9 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import CardContent from '@mui/material/CardContent';
 import UsernameLink from '../../components/UsernameLink';
+import {createDate, formatAMPM} from '../../components/Helper';
 
 const FeedListing = ({ post, isPublic, username, avatar, id, removePost, isSelf }) => {
-
-  const createDate = (str) => {
-    let li = str.split(' ');
-    let time = li[1];
-    const date = new Date(li[0].replace(/-/g,"/"));
-    return date;
-  }
-  const formatAMPM = (str) => {
-    let li = str.split(' ');
-    let time = li[1].split(':');
-    let hours = time[0];
-    let minutes = time[1];
-    let ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    let strTime = hours + ':' + minutes + ampm;
-    return strTime;
-  }
 
   let postSplit = [];
   let bookReview = [];
