@@ -4,7 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import Pagination from '@mui/material/Pagination';
 import {Link} from "react-router-dom";
 import Button from '@mui/material/Button';
-import {setUnreadNotifs} from '../components/Helper';
+import {url, setUnreadNotifs} from '../components/Helper';
+import axios from "axios";
 
 const Notifications = ({setNumNotifs, getUnreadNotifs, notificationHistory}) => {
   const [pageNotifs, setPageNotifs] = useState([]);
