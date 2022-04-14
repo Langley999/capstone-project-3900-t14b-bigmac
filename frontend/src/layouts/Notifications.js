@@ -47,7 +47,7 @@ const Notifications = ({notifs}) => {
           </Card>
         )
       }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>Follow other users to see their activity in your notifications</div>}
-      <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} />
+      {notifications.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : null}
     </div>
   );
 };
