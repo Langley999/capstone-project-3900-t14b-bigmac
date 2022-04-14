@@ -69,3 +69,24 @@ class Goal(db.Model):
         self.created_date = created_date
         self.books_set = books_set
         self.books_completed = books_completed
+
+class Notification(db.Model):
+
+    __tablename__ = 'notification'
+
+    notification_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+    type = db.Column(db.String(32))
+    type_id = db.Column(db.Integer)
+    time = db.Column(db.DateTime)
+    sender_id = db.Column(db.Integer, nullable=False)
+    user = db.relationship('User')
+
+
+class Notification_history(db.Model):
+
+    __tablename__ = 'notification_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    last_read = db.Column(db.Integer, nullable=False)

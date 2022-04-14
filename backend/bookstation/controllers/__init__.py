@@ -10,3 +10,4 @@ from bookstation.controllers import follower
 from bookstation.controllers import recommendation
 from bookstation.controllers import analytics
 from bookstation.controllers import quiz
+from bookstation.controllers import notification

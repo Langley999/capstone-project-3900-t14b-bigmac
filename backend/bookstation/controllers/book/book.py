@@ -7,6 +7,7 @@ import math
 import time
 
 from itsdangerous import NoneAlgorithm
+from bookstation.models.user_sys import Follow_relationship, Notification
 from bookstation.models.user_sys import Post
 # from typing import Collection
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
@@ -382,6 +383,13 @@ def addRatingReview():
 
     new_content = "Added a review for " + "< " + book.title + " > " + ": " + content
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
+
+    # add notification for followers
+    followers = Follow_relationship.query.filter_by(user_id = user.user_id).all()
+    for follower in followers:
+        newnotif = Notification(user_id=follower.follower_user_id, type='review', type_id = book_id, time= datetime.now(), sender_id=user.user_id)
+        db.session.add(newnotif)
+        db.session.commit()
     db.session.add(newPost)
     db.session.commit()
    
