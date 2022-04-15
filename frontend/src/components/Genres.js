@@ -7,24 +7,25 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel, InputLabel, Portal, Select,
-} from "@material-ui/core";
-import FormControl from "@mui/material/FormControl";
-import Button from "@mui/material/Button";
-import Checkbox from "antd/es/checkbox/Checkbox";
-import axios from "axios";
-import {url} from "./Helper";
+} from '@material-ui/core';
+import FormControl from '@mui/material/FormControl';
+import Button from '@mui/material/Button';
+import Checkbox from 'antd/es/checkbox/Checkbox';
+import axios from 'axios';
+import {url} from './Helper';
 import {useNavigate} from 'react-router-dom';
-import MenuItem from "@mui/material/MenuItem";
-import ErrorPopup from "./ErrorPopup";
-import {padding} from "@mui/system";
+import MenuItem from '@mui/material/MenuItem';
+import ErrorPopup from './ErrorPopup';
 
 
 const genres = ['Fiction', 'Romance', 'Fantasy', 'Young Adult', 'Contemporary', 'Nonfiction', 'Adult',
   'Novels', 'Mystery', 'Historical Fiction', 'Audiobook', 'Classics', 'Adventure', 'Historical',
   'Paranormal', 'Literature', 'Science Fiction', 'Childrens', 'Thriller', 'Magic', 'Humor'];
 
-
-const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreRating, updateSearchGenres, updatePageCount, updatePage}) => {
+/**
+ * Genre filter for searching books
+ */
+const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, updateSearchGenres, updatePageCount, updatePage}) => {
   const navigate = useNavigate();
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -84,7 +85,6 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
       if (selectGenres[genre])
         genreSet.push(genre);
     }
-    console.log(genreSet.join('&'))
     return genreSet.join('&');
   }
 
@@ -110,7 +110,8 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
         navigate('searchbooks');
       })
       .catch(function (error) {
-        alert(error.message);
+        setShowError(true);
+        setErrorMsg(error.message);
       });
     handleCloseGenre();
   }
@@ -121,7 +122,7 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       </Portal>
       <Button
-        variant="contained"
+        variant='contained'
         onClick={handleClickGenre}
       >
         Genres
@@ -130,12 +131,12 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
         <DialogTitle>Genres</DialogTitle>
         <DialogContent sx={{height: '200px', overflow: 'auto'}}>
           <FormControl fullWidth>
-            <InputLabel id="select-rating">Rating greater or equal than...</InputLabel>
+            <InputLabel id='select-rating'>Rating greater or equal than...</InputLabel>
             <Select
-              labelId="select-rating"
-              id="select-rating"
+              labelId='select-rating'
+              id='select-rating'
               value={ratingDisplay}
-              label="rating"
+              label='rating'
               onChange={handleChangeGenreRating}
             >
               <MenuItem value={0}>0</MenuItem>
@@ -146,8 +147,8 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
               <MenuItem value={5}>5</MenuItem>
             </Select>
           </FormControl>
-          <FormControl sx={{m:3}} component="fieldset" variant="standard">
-            <FormLabel component="legend">Pick Genres</FormLabel>
+          <FormControl sx={{m:3}} component='fieldset' variant='standard'>
+            <FormLabel component='legend'>Pick Genres</FormLabel>
             <FormGroup>
               {genres.map((genre) => {
                 return (

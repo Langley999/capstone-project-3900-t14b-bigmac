@@ -8,14 +8,17 @@ import {url} from '../../components/Helper';
 import '../../App.css';
 
 import Button from '@mui/material/Button';
-import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography} from "@material-ui/core";
-import axios from "axios";
-import {Link, useParams} from "react-router-dom";
-import ErrorPopup from "../../components/ErrorPopup";
-import SuccessPopup from "../../components/SuccessPopup";
-import {Pagination} from "@mui/material";
+import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography} from '@material-ui/core';
+import axios from 'axios';
+import {Link, useParams} from 'react-router-dom';
+import ErrorPopup from '../../components/ErrorPopup';
+import SuccessPopup from '../../components/SuccessPopup';
+import {Pagination} from '@mui/material';
 
-
+/**
+ * Collections component is the page for user's collections
+ * and books in the collections
+ */
 const Collections = ({userInfo}) => {
   const urlParams = useParams();
 
@@ -27,7 +30,6 @@ const Collections = ({userInfo}) => {
   const [canRemove, setCanRemove] = useState(false);
   const [isSaved, setIsSaved] = useState('no');
   const [saveStatus, setSaveStatus] = useState('Save');
-  // let canRemove = false;
   const [collections, setCollections] = useState([]);
   const [saved, setSaved] = useState([]);
   const [isSelf, setIsSelf] = useState(false);
@@ -50,7 +52,6 @@ const Collections = ({userInfo}) => {
   const pageSize = 12;
 
   useEffect(async () => {
-    // const user_id = Number(window.location.pathname.split('/')[2]);
     setIsSelf(user_id === userInfo.user_id);
 
     axios.get(`${url}/collection/getall`, {
@@ -92,7 +93,7 @@ const Collections = ({userInfo}) => {
           books: res.data.books
         })
       })
-  }, [window.location.href, rendering, userInfo])
+  }, [window.location.href, rendering, userInfo]);
 
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -131,7 +132,7 @@ const Collections = ({userInfo}) => {
       token: localStorage.getItem('token')
     }).then(res => {
       const created = {
-        id: res['data']["id"],
+        id: res['data']['id'],
         name: nameValue,
         flag: 3
       }
@@ -171,7 +172,7 @@ const Collections = ({userInfo}) => {
             has_saved: res.data.has_saved
           })
           setPage(1);
-          setPageCount(Math.ceil(res.data.books.length / pageSize))
+          setPageCount(Math.ceil(res.data.books.length / pageSize));
           setPageBooks(res.data.books.slice(0, pageSize));
           if (res.data.has_saved)
             setSaveStatus('Unsave');
@@ -191,12 +192,12 @@ const Collections = ({userInfo}) => {
     }
   }
 
-
+  // show a list of collections
   const Sidebar = () => {
     const clickRecentlyAdd = () => {
       setCurrentCollection(recentlyAdd);
       setPage(1);
-      setPageCount(Math.ceil(recentlyAdd.books.length / pageSize))
+      setPageCount(Math.ceil(recentlyAdd.books.length / pageSize));
       setPageBooks(recentlyAdd.books.slice(0, pageSize));
       setCanRemove(false);
       setIsSaved('no');
@@ -259,6 +260,7 @@ const Collections = ({userInfo}) => {
     )
   }
 
+  // show the detail of a collection
   const CollectionBar = () => {
     const handleChangeRename = (event) => {
        renameValue = event.target.value;
@@ -333,7 +335,7 @@ const Collections = ({userInfo}) => {
         .then(res => {
           const newSaved = saved.filter((collection) => collection.collection_id !== currentCollection.collection_id);
           setSaved(newSaved);
-          setsnackbarcontent("Unsave collection successfully!");
+          setsnackbarcontent('Unsave collection successfully!');
           setsnackbaropen(true);
           setSaveStatus('Save');
 
@@ -358,7 +360,7 @@ const Collections = ({userInfo}) => {
         collection_id: currentCollection.collection_id
       })
       .then(res => {
-        setsnackbarcontent("Save collection successfully!");
+        setsnackbarcontent('Save collection successfully!');
         setsnackbaropen(true);
         setSaveStatus('Unsave');
       })
@@ -382,11 +384,11 @@ const Collections = ({userInfo}) => {
           <DialogContent>
             <TextField
               fullWidth
-              label="New Name"
-              name="collectionRename"
+              label='New Name'
+              name='collectionRename'
               onChange={handleChangeRename}
               required
-              variant="outlined"
+              variant='outlined'
             />
           </DialogContent>
           <DialogActions>
@@ -427,6 +429,7 @@ const Collections = ({userInfo}) => {
     )
   }
 
+  // component for a book in a collection
   const Book = ({id, title, cover}) => {
 
     const removeBook = () => {
@@ -443,11 +446,11 @@ const Collections = ({userInfo}) => {
           books: newBooks
         }
         setCurrentCollection(newC);
-        setPageCount(Math.ceil(newC.books.length / pageSize))
+        setPageCount(Math.ceil(newC.books.length / pageSize));
         let p = page;
         if (page > Math.ceil(newC.books.length / pageSize)) {
           setPage(page - 1);
-          p = p-1
+          p = p-1;
         }
         const start1 = (p-1)*pageSize;
         const end1 = p * pageSize;
@@ -462,9 +465,9 @@ const Collections = ({userInfo}) => {
       <>
         <Box sx={{height: '300px', width: '140px'}}>
           <Box component={Link} to={`/book/?id=${id}`} className='remove-underline' sx={{color: 'black'}} >
-            <img src={cover} alt="" style={{height: '200px', width: '140px'}}/>
+            <img src={cover} alt='' style={{height: '200px', width: '140px'}}/>
             <Box sx={{height: '55px', overflow: 'auto'}}>
-              <Typography variant="body2" style={{color: '#757575'}}>
+              <Typography variant='body2' style={{color: '#757575'}}>
                 {title}
               </Typography>
             </Box>
@@ -478,6 +481,7 @@ const Collections = ({userInfo}) => {
     )
   }
 
+  // all the books in the collection
   const Books = () => {
 
     return (
@@ -523,11 +527,11 @@ const Collections = ({userInfo}) => {
         <DialogContent>
           <TextField
             fullWidth
-            label="Collection Name"
-            name="collectionName"
+            label='Collection Name'
+            name='collectionName'
             onChange={e => handleChange(e)}
             required
-            variant="outlined"
+            variant='outlined'
           />
         </DialogContent>
         <DialogActions>

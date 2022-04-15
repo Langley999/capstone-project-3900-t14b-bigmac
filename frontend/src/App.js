@@ -27,10 +27,8 @@ import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetail';
 import EditQuiz from  './layouts/EditQuiz';
-import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import SearchBooks from './layouts/SearchBooks/SearchBooks';
 import Posts from './layouts/Posts/Posts';
-import axios from "axios";
-import {url} from "./components/Helper";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -143,8 +141,6 @@ function App() {
                 updatePage={updatePage}
                 updateSearchType={updateSearchType}
                 updateGenreRating={updateGenreRating}
-                genreRating={genreRating}
-                searchGenres={searchGenres}
                 updateSearchGenres={updateSearchGenres}
                 updateTempsearchRating={updateTempsearchRating}
                 updateTempgenreRating={updateTempgenreRating}
@@ -167,17 +163,16 @@ function App() {
                 updateGenreRating={updateGenreRating}
                 updateTempsearchRating={updateTempsearchRating}
                 updateSearchValue={updateSearchValue}
-                updateRadioValue={updateRadioValue}
                 updateFollowingFav={updateFollowingFav}
                 followingFav={followingFav}
               />}
             />
-            <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
-              <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
+            <Route path='book' element={<BookDetail userInfo={userInfo}/>}>
+              <Route path=':id' element={<BookDetail userInfo={userInfo}/>} />
             </Route>
             <Route path='quiz' element={<Quiz />} />
-            <Route path="enterquiz" element={<EnterQuiz />}>
-              <Route path=":id" element={<EnterQuiz />} />
+            <Route path='enterquiz' element={<EnterQuiz />}>
+              <Route path=':id' element={<EnterQuiz />} />
             </Route>
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
@@ -215,16 +210,16 @@ function App() {
             </Route>
           </Route>
 
-          <Route path="bookstation" element={
+          <Route path='bookstation' element={
               <Outlet />
           }>
-            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="makequiz" element={<Addquiz />} />
-            <Route path="allquiz" element={<Allquiz />} />
-            <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
-              <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
+            <Route path='login' element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path='register' element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path='admin' element={<Admin />} />
+            <Route path='makequiz' element={<Addquiz />} />
+            <Route path='allquiz' element={<Allquiz />} />
+            <Route path='editquiz' element={<EditQuiz userInfo={userInfo}/>}>
+              <Route path=':id' element={<EditQuiz userInfo={userInfo}/>} />
             </Route>
 
           </Route>

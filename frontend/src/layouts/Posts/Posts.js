@@ -9,25 +9,21 @@ import {
   DialogTitle,
   Grid,
   TextField,
-} from "@material-ui/core";
-import CardContent from "@mui/material/CardContent";
-import Card from "@material-ui/core/Card";
-import axios from "axios";
-import {useParams} from "react-router-dom";
-import UsernameLink from "../../components/UsernameLink";
-import {Pagination} from "@mui/material";
-import ErrorPopup from "../../components/ErrorPopup";
-import SuccessPopup from "../../components/SuccessPopup";
+} from '@material-ui/core';
+import axios from 'axios';
+import {Pagination} from '@mui/material';
+import ErrorPopup from '../../components/ErrorPopup';
+import SuccessPopup from '../../components/SuccessPopup';
 import FeedListing from '../Feed/FeedListing';
 
+/**
+ * Post page for a user
+ */
 const Posts = ({userInfo}) => {
-  const urlParams = useParams();
-
   let newPost = '';
   const [posts, setPosts] = useState([]);
   const [isSelf, setIsSelf] = useState(true);
   const [postFormOn, setReviewFormOn] = React.useState(false);
-  const [tempPost, setTempPost] = useState({});
   const [errorMsg, setErrorMsg] = useState('');
   const [showError, setShowError] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -66,14 +62,14 @@ const Posts = ({userInfo}) => {
       .then(res => {
         setPosts(res.data.posts);
         setPage(1);
-        setPageCount(Math.ceil(res.data.posts.length / pageSize))
+        setPageCount(Math.ceil(res.data.posts.length / pageSize));
         setPagePosts(res.data.posts.slice(0, pageSize));
       })
       .catch(function (error) {
         setErrorMsg(error.response.data.message);
         setShowError(true);
       });
-  }, [window.location.href, userInfo])
+  }, [window.location.href, userInfo]);
 
   const handleChangePage = (event, value) => {
     setPage(value);
@@ -107,11 +103,11 @@ const Posts = ({userInfo}) => {
       content: newPost
     }).then(res => {
       const currentdate = new Date();
-      const datetime = currentdate.getFullYear() + "-"
-        + (currentdate.getMonth()+1)  + "-"
-        + currentdate.getDate() + " "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
+      const datetime = currentdate.getFullYear() + '-'
+        + (currentdate.getMonth()+1)  + '-'
+        + currentdate.getDate() + ' '
+        + currentdate.getHours() + ':'
+        + currentdate.getMinutes() + ':'
         + currentdate.getSeconds();
 
       const createdPost = {
@@ -119,7 +115,7 @@ const Posts = ({userInfo}) => {
         content: newPost,
         time_created: datetime
       }
-      // setTempPost(createdPost);
+
       let temp = [...posts];
       temp.unshift(createdPost)
       setPosts(temp);
@@ -127,7 +123,7 @@ const Posts = ({userInfo}) => {
       setPage(1);
       setPagePosts(temp.slice(0, pageSize));
       handleAddPostClose();
-      setSuccessMsg("You made a post!");
+      setSuccessMsg('You made a post!');
       setShowSuccess(true);
     })
   }
@@ -162,13 +158,13 @@ const Posts = ({userInfo}) => {
     <>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
-      <div style={{textAlign: "center", height: "25px", marginTop: "10px"}}>
+      <div style={{textAlign: 'center', height: '25px', marginTop: '10px'}}>
         {isSelf ? <>Share your</> : <>Their</>} thoughts about books{isSelf ? <> with your followers</> : <></>}!
       </div>
       {isSelf ?
         <Button
           onClick={handleAddPost}
-          variant="outlined"
+          variant='outlined'
           sx={{marginBottom: '10px'}}
         >
           Add Post
@@ -182,7 +178,7 @@ const Posts = ({userInfo}) => {
             maxWidth: '100%',
           }}
         >
-          <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
+          <Grid container direction='column' alignItems='center' justifyContent='flex-start' spacing={0}>
             <DialogTitle>Write a post</DialogTitle>
             <Box
               sx={{
@@ -192,10 +188,10 @@ const Posts = ({userInfo}) => {
               }}
             >
               <TextField
-                variant="outlined"
+                variant='outlined'
                 fullWidth
-                label=""
-                id="fullWidth"
+                label=''
+                id='fullWidth'
                 multiline={true}
                 onChange={handleChange}
                 rows={12}

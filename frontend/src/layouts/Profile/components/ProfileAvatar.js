@@ -8,17 +8,20 @@ import {
   CardContent,
   Divider,
 } from '@mui/material';
-import {useParams} from "react-router-dom";
-import axios from "axios";
-import {url} from "../../../components/Helper";
+import {useParams} from 'react-router-dom';
+import axios from 'axios';
+import {url} from '../../../components/Helper';
 import FollowerPopup from './FollowerPopup';
 import FollowingPopup from './FollowingPopup';
 import ErrorPopup from '../../../components/ErrorPopup';
 import SuccessPopup from '../../../components/SuccessPopup';
 import FollowButton from '../../../components/FollowButton';
 import UnfollowButton from '../../../components/UnfollowButton';
-import {Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 
+/**
+ * Showing the user's profile avatar in profile page
+ */
 export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   const urlParams = useParams();
   const [isSelf, setIsSelf] = useState(true);
@@ -41,7 +44,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   useEffect(() => {
     // get profile
     user_id = Number(window.location.pathname.split('/')[2]);
-    console.log(user_id);
     setIsSelf(user_id === userInfo.user_id);
     axios.get(`${url}/user/profile`, {params: {
       user_id: user_id,
@@ -59,15 +61,14 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       }
     })
     .catch(function (error) {
-      alert(error.response.data.message)
+      setShowError(true);
+      setErrorMsg(error.message);
     });
     // get follower list
     axios.get(`${url}/user/getfollower`, {params: {
       user_id: user_id,
       token: localStorage.getItem('token')
     }}).then(function (response) {
-      console.log(user_id)
-      console.log(response.data.followers);
       setFollowers(response.data.followers);
       setNumFollowers(response.data.followers.length);
     }).catch(function (error) {
@@ -86,7 +87,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       setShowError(true);
     });
 
-  }, [window.location.href, userInfo])
+  }, [window.location.href, userInfo]);
 
 
   const getProfile = () => {
@@ -95,7 +96,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }})
     .then(function (res) {
-      console.log(res)
       if (isSelf)
         setValues(userInfo);
       else {
@@ -113,7 +113,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   }
 
   const getFollowers = () => {
-    console.log('hi')
     axios.get(`${url}/user/getfollower`, {params: {
       user_id: user_id,
       token: localStorage.getItem('token')
@@ -121,7 +120,6 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       setFollowers(response.data.followers);
       setNumFollowers(response.data.followers.length);
       setShowFollowers(true);
-      console.log(response.data.followers)
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
       setErrorMsg(JSON.stringify(error.message));
@@ -148,8 +146,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
 
   function onImageChange(e) {
     setSelected('');
-    var file = e.target.files[0];
-    var reader = new FileReader();
+    let file = e.target.files[0];
+    let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = function() {
       setSelected(reader.result);
@@ -159,7 +157,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
   const uploadAvatar = () => {
     if (selected.length === 0) {
       setShowError(true);
-      setErrorMsg("Please choose an image to upload");
+      setErrorMsg('Please choose an image to upload');
     }
     axios.post(`${url}/user/updateavatar`, {
       token: localStorage.getItem('token'),
@@ -178,7 +176,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
         badges: userInfo.badges
       }))
       setShowSuccess(true);
-      setSuccessMsg("Upload avatar success!");
+      setSuccessMsg('Upload avatar success!');
       handleClose();
     }).catch(error => {
       setErrorMsg(JSON.stringify(error.message));
@@ -217,7 +215,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
                 width: 150
               }}
             />
-            {isSelf ? <Button onClick={handleOpen} color="primary" variant='contained'>
+            {isSelf ? <Button onClick={handleOpen} color='primary' variant='contained'>
                 Upload Avatar
               </Button>
               : <>{isFollowing ? <UnfollowButton followerCount={numFollowers} setFollowerCount={setNumFollowers} id={user_id} username={values.username} isFollowing={isFollowing} setIsFollowing={setIsFollowing} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
@@ -228,8 +226,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
             <DialogTitle>Upload Avatar</DialogTitle>
             <DialogContent>
               <input
-                type="file"
-                id="upload"
+                type='file'
+                id='upload'
                 accept='image/*'
                 onChange={onImageChange}
               />
@@ -271,16 +269,16 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
         <Button
           color='warning'
           fullWidth
-          variant="text"
-          sx={{textTransform: "none"}}
+          variant='text'
+          sx={{textTransform: 'none'}}
           onClick={getFollowings}
         >
           {numFollowings} followings
         </Button>
         <Button
           fullWidth
-          variant="text"
-          sx={{textTransform: "none"}}
+          variant='text'
+          sx={{textTransform: 'none'}}
           onClick={getFollowers}
         >
           {numFollowers} followers

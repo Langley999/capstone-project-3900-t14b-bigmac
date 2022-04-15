@@ -2,17 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid} from '@material-ui/core';
 import Button from '@mui/material/Button';
 import './Home.css';
-import Card from '@material-ui/core/Card'
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import {Avatar, CardActionArea, CardActions, ListItemText, MenuItem, MenuList} from '@mui/material';
-import axios from "axios";
-import {url} from "../../components/Helper";
+import {ListItemText, MenuItem, MenuList} from '@mui/material';
+import axios from 'axios';
+import {url} from '../../components/Helper';
 import {useNavigate} from 'react-router-dom';
-import BookSection from "../SearchBooks/BookSection";
+import BookSection from '../SearchBooks/BookSection';
 import adult from '../../assets/adult.jpeg';
 import audiobook from '../../assets/audiobooks.png';
 import classics from '../../assets/classics.jpeg';
@@ -25,6 +21,7 @@ import nonfiction from '../../assets/nonfiction.webp';
 import novels from '../../assets/novels.jpeg';
 import romance from '../../assets/romance.jpeg';
 import youngAdult from '../../assets/young adult.jpeg';
+import ErrorPopup from '../../components/ErrorPopup';
 
 const itemData = [
   {
@@ -77,7 +74,12 @@ const itemData = [
   },
 ];
 
+/**
+ * Home page for BookStation
+ */
 const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres, updatePageCount, updatePage, updateGenreRating, updateTempsearchRating, updateSearchValue, updateRadioValue, updateFollowingFav, followingFav}) => {
+  const [warningopen, setwarningopen] = useState(false);
+  const [warningcontent, setwarningcontent] = useState('');
   const navigate = useNavigate();
   const [topBooks, setTopBooks] = useState([]);
   const [favAuthors, setFavAuthors] = useState([]);
@@ -92,7 +94,8 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         setTopBooks(res.data.books);
       })
       .catch(error => {
-        alert(error.message);
+        setwarningopen(true);
+        setwarningcontent(error.message);
       })
 
     if (ifLogin) {
@@ -129,12 +132,12 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           updateFollowingFav(res.data.favourite_followed_books);
         })
     }
-  }, [])
+  }, []);
 
   const Recommendations = () => {
     const getFavAuthors = () => {
       if (favAuthors[0] === 'Find More Authors') {
-        alert("Please add books to your collection");
+        alert('Please add books to your collection');
         return;
       }
 
@@ -163,7 +166,7 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
 
     const getFavGenres = () => {
       if (favGenres[0] === 'Find More Genres') {
-        alert("Please add books to your collection");
+        alert('Please add books to your collection');
         return;
       }
 
@@ -187,13 +190,14 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           navigate('searchbooks');
         })
         .catch(function (error) {
-          alert(error.message);
+          setwarningopen(true);
+          setwarningcontent(error.message);
         });
     }
 
     const getFollowingBooks = () => {
       if (followingFav.length === 0) {
-        alert("Please follow some users");
+        alert('Please follow some users');
         return;
       }
       updateSearchResult(followingFav.slice(0, pageSize));
@@ -300,13 +304,13 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         <h1>Recommendations</h1>
         {ifLogin ?
           <div className='flex-container'>
-            <Button variant="outlined" onClick={getFavAuthors}>Favourite Authors</Button>
-            <Button variant="outlined" color='success' onClick={getFavGenres}>Favourite Genres</Button>
-            <Button variant="outlined" color='warning' onClick={getFollowingBooks}>Your followings' favourite</Button>
+            <Button variant='outlined' onClick={getFavAuthors}>Favourite Authors</Button>
+            <Button variant='outlined' color='success' onClick={getFavGenres}>Favourite Genres</Button>
+            <Button variant='outlined' color='warning' onClick={getFollowingBooks}>Your followings' favourite</Button>
           </div> : null
         }
         <div className='flex-container'>
-          <Button variant="outlined" color='error' onClick={getHighRating}>4-5 star rating</Button>
+          <Button variant='outlined' color='error' onClick={getHighRating}>4-5 star rating</Button>
         </div>
       </>
     )
@@ -329,7 +333,8 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           navigate('searchbooks');
         })
         .catch(function (error) {
-          alert(error.message);
+          setwarningopen(true);
+          setwarningcontent(error.message);
         });
     }
 
@@ -347,11 +352,9 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
               <ImageListItem>
                 <img
                   className='picture'
-                  // src={`${item.img}?w=248&fit=crop&auto=format`}
                   src={item.img}
-                  // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   alt={item.title}
-                  loading="lazy"
+                  loading='lazy'
                 />
 
                 <ImageListItemBar
@@ -373,7 +376,7 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         <Grid
           container
           spacing={3}
-          justifyContent="center"
+          justifyContent='center'
         >
           {topBooks.map((bookInfo) => {
             return (
@@ -390,6 +393,7 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
 
   return (
     <>
+      <ErrorPopup errorMsg={warningcontent} snackBarOpen={warningopen} setSnackBarOpen={setwarningopen}/>
       <div className='space'>
         <Recommendations/>
       </div>
