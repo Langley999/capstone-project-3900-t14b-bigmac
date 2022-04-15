@@ -1,4 +1,3 @@
-from csv import unregister_dialect
 from datetime import datetime
 from json import dumps
 import ast
@@ -7,7 +6,7 @@ import math
 from bookstation.models.user_sys import Follow_relationship, Notification
 from bookstation.models.user_sys import Post
 from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre,  Review
-from bookstation.models.user_sys import User, Collection
+from bookstation.models.user_sys import Collection
 from bookstation.models.event_sys import User_badge
 from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
