@@ -62,9 +62,41 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
             token: localStorage.getItem('token')
           }
         }).then(res => {
+          console.log(res.data.to_read)
           setToRead(res.data.to_read);
-          if (res.data.to_read > 0)
+          if (res.data.to_read > 0) {
             updateNewNotif(res.data);
+            // get all notifications
+            axios.get(`${url}/notification/getall`, {
+              params: {
+                token: localStorage.getItem('token')
+              }
+            }).then(response => {
+              console.log(response.data.notifications);
+              
+            //   // show notification popups
+            //   const notifHistory = response.data.notifications;
+            //   for (let i = 0; i < res.data.to_read; i++) {
+            //     if (notifHistory[i].type === 'post') {
+            //       const action = key => (
+            //         <Button onClick={() => {navigate('/feed');closeSnackbar(key)}} style={{color: 'white'}} >Your Feed</Button>
+            //       );
+            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
+            //     } else if (notifHistory[i].type === 'review') {
+            //       const action = key => (
+            //         <Button onClick={() => {navigate(`/book/?id=${notifHistory[i].book_id}`);closeSnackbar(key)}} style={{color: 'white'}} >Book Page</Button>
+            //       )
+            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
+            //     } else if (notifHistory[i].type === 'follow') {
+            //       const action = key => (
+            //         <Button onClick={() => {navigate(`/user/${notifHistory[i].sender_id}/profile`);closeSnackbar(key);}} style={{color: 'white'}} >Their Profile</Button>
+            //       )
+            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
+            //     }
+            //   }
+            });
+          }
+            
         })
       }
     }, 2000)
