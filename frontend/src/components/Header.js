@@ -31,6 +31,8 @@ import {url} from './Helper';
 import '../App.css';
 import InputAdornment from "@mui/material/InputAdornment";
 import {TextField} from "@material-ui/core";
+import { withSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -45,65 +47,69 @@ const Slogan = styled('h1')(({ theme }) => ({
 
 function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating, updateNewNotif}) {
   const [rating, setRating] = useState(0);
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-
-
-  const navigate = useNavigate();
-
   const [toRead, setToRead] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(()=>{
     let myInterval = setInterval(() => {
-      if (ifLogin) {
-        axios.get(`${url}/notification/checknew`, {
-          params: {
-            token: localStorage.getItem('token')
-          }
-        }).then(res => {
-          console.log(res.data.to_read)
-          setToRead(res.data.to_read);
-          if (res.data.to_read > 0) {
-            updateNewNotif(res.data);
-            // get all notifications
-            axios.get(`${url}/notification/getall`, {
-              params: {
-                token: localStorage.getItem('token')
-              }
-            }).then(response => {
-              console.log(response.data.notifications);
-              
-            //   // show notification popups
-            //   const notifHistory = response.data.notifications;
-            //   for (let i = 0; i < res.data.to_read; i++) {
-            //     if (notifHistory[i].type === 'post') {
-            //       const action = key => (
-            //         <Button onClick={() => {navigate('/feed');closeSnackbar(key)}} style={{color: 'white'}} >Your Feed</Button>
-            //       );
-            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just posted to your feed`, {variant: 'info', autoHideDuration: 5000, action});
-            //     } else if (notifHistory[i].type === 'review') {
-            //       const action = key => (
-            //         <Button onClick={() => {navigate(`/book/?id=${notifHistory[i].book_id}`);closeSnackbar(key)}} style={{color: 'white'}} >Book Page</Button>
-            //       )
-            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just reviewed a book`, {variant: 'success', autoHideDuration: 5000, action});
-            //     } else if (notifHistory[i].type === 'follow') {
-            //       const action = key => (
-            //         <Button onClick={() => {navigate(`/user/${notifHistory[i].sender_id}/profile`);closeSnackbar(key);}} style={{color: 'white'}} >Their Profile</Button>
-            //       )
-            //       enqueueSnackbar(` ${notifHistory[i].sender_name} just followed your account`, {variant: 'warning', autoHideDuration: 5000, action});
-            //     }
-            //   }
-            });
-          }
-            
-        })
-      }
+      axios.get(`${url}/notification/checknew`, {
+        params: {
+          token: localStorage.getItem('token')
+        }
+      }).then(res => {
+        if (location.pathname === "/notifications" && toRead !== 0) {
+          setToRead(0);
+        } else {
+          setToRead(toRead + res.data.to_read);
+        }
+        if (res.data.to_read > 0) {
+          updateNewNotif(res.data);
+          addNotifPopup(res.data.to_read);
+        }
+      })
     }, 2000)
     return () => {
       clearInterval(myInterval);
     };
   });
+
+  const addNotifPopup = (to_read) => {
+    // get all notifications
+    axios.get(`${url}/notification/getall`, {
+      params: {
+        token: localStorage.getItem('token')
+      }
+    }).then(response => {
+      console.log(response.data.notifications);
+      
+      // show notification popups
+      const notifHistory = response.data.notifications;
+      for (let i = 0; i < to_read; i++) {
+        if (notifHistory[i].type === 'post') {
+          const action = key => (
+            <Button onClick={() => {navigate('/feed');closeSnackbar(key)}} style={{color: 'white'}} >Your Feed</Button>
+          );
+          enqueueSnackbar(` ${notifHistory[i].sender_name} just posted to your feed`, {variant: 'info', autoHideDuration: 4000, action});
+        } else if (notifHistory[i].type === 'review') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/book/?id=${notifHistory[i].book_id}`);closeSnackbar(key)}} style={{color: 'white'}} >Book Page</Button>
+          )
+          enqueueSnackbar(` ${notifHistory[i].sender_name} just reviewed a book`, {variant: 'success', autoHideDuration: 4000, action});
+        } else if (notifHistory[i].type === 'follow') {
+          const action = key => (
+            <Button onClick={() => {navigate(`/user/${notifHistory[i].sender_id}/profile`);closeSnackbar(key);}} style={{color: 'white'}} >Their Profile</Button>
+          )
+          enqueueSnackbar(` ${notifHistory[i].sender_name} just followed your account`, {variant: 'warning', autoHideDuration: 4000, action});
+        }
+      }
+    });
+  }
 
   const updateRating = (rating) => {
     setRating(rating);
@@ -198,7 +204,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
           </IconButton>
         </Tooltip>
         <Tooltip title="Notifications">
-          <IconButton sx={{ ml: 1 }} component={Link} to='notifications'>
+          <IconButton sx={{ ml: 1 }} component={Link} to='notifications' onClick={() => {setToRead(0)}} >
             <Badge badgeContent={toRead} color="primary">
               <NotificationsIcon fontSize="large"/>
             </Badge>
@@ -391,4 +397,4 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   );
 }
 
-export default Header
+export default withSnackbar(Header);

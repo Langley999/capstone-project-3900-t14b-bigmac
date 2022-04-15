@@ -63,9 +63,9 @@ const Notifications = ({notifs}) => {
   return (
     <div>
       <h1 style={{height: '40px'}}>Notifications</h1>
-      {notifications.length > 0 ? pageNotifs.map((notif) => {
+      {notifications.length > 0 ? pageNotifs.map((notif, idx) => {
         return (
-          <Card>
+          <Card key={idx}>
             {notif.type === 'follow' ? 
             <CardActionArea component = {Link} to={`/user/${notif.sender_id}/profile`}>
               <div style={rowStyle}>

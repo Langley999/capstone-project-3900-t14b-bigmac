@@ -29,8 +29,7 @@ import BookDetail from  './layouts/BookDetail';
 import EditQuiz from  './layouts/EditQuiz';
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
-import axios from "axios";
-import {url} from "./components/Helper";
+import { withSnackbar } from 'notistack';
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -234,4 +233,4 @@ function App() {
   );
 }
 
-export default App;
+export default withSnackbar(App);
