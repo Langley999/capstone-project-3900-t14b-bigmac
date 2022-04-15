@@ -151,8 +151,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         <DialogContent>
           <Box sx={{display: 'flex', flexDirection: 'column'}}>
             <Avatar src={currentBadge.badge_image} sx={{height: 50, width: 50}}/>
-            <Typography>{`Quiz: ${currentBadge.quiz_name}`}</Typography>
-            <Typography>{`Quiz Description: `}</Typography>
+            <Typography><b>Quiz:</b> {currentBadge.quiz_name}</Typography>
+            <Typography><b>Quiz Description:</b></Typography>
             <Typography>{currentBadge.quiz_description}</Typography>
           </Box>
         </DialogContent>
@@ -202,10 +202,13 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                     color='#616161'
                     sx={{marginRight: '10px'}}
                   >
-                    Badge:
+                    Badges:
                   </ Typography>
                   {values.badges.length > 0 ? values.badges.map((badge) => {
-                    return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
+                    return (
+                      <IconButton onClick={() => openBadgeInfo(badge)}>
+                        <Avatar src={badge.badge_image} key={badge.badge_id} sx={{height: 50, width: 50}}/>
+                      </IconButton>
                     )
                   }) : <Typography>Empty</Typography>}
                 </Box>
@@ -276,36 +279,34 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
           <CardContent>
             <Box
               sx={{
-                alignItems: 'flex-start',
+                alignItems: 'center',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '30px',
+                justifyContent: 'space-evenly',
               }}
-            >
-              <Box
-                display='flex'
-                flexDirection='row'
-                justifyContent="flex-start"
-                width='100%'
-              >
-                < Typography
-                  color='#616161'
-                  variant='h5'
-                  sx={{marginRight: '10px'}}
-                >
-                  Badge:
-                </ Typography>
-                {values.badges.length > 0 ? values.badges.map((badge) => {
-                  return ( <Avatar src={badge.badge_image} key={badge.badge_id} onClick={() => openBadgeInfo(badge)} sx={{height: 50, width: 50}}/>
-                  )
-                }) : <Typography>Empty</Typography>}
-              </Box>
+            > 
               < Typography
                 color='#616161'
                 variant='h5'
+                sx={{marginRight: '10px', textAlign: "center"}}
               >
-                {`Username: ${values.username}`}
+                Badge Collection
               </ Typography>
+                <br/>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  justifyContent="center"
+                  width='100%'
+                >
+                {values.badges.length > 0 ? values.badges.map((badge) => {
+                  return ( 
+                    <IconButton onClick={() => openBadgeInfo(badge)}>
+                      <Avatar src={badge.badge_image} key={badge.badge_id} sx={{height: 50, width: 50}}/>
+                    </IconButton>
+                  )
+                }) : <Typography>Empty</Typography>}
+              </Box>
             </Box>
           </CardContent>
         </Card>

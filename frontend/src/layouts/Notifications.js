@@ -55,6 +55,11 @@ const Notifications = ({notifs}) => {
       <Button style={userLinkStyle} component = {Link} to={`/user/${notif.sender_id}/profile`}>{notif.sender_name}</Button>
     )
   }
+  const FormattedTime = ({notif}) => {
+    return (
+      <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+    )
+  }
   return (
     <div>
       <h1 style={{height: '40px'}}>Notifications</h1>
@@ -67,7 +72,7 @@ const Notifications = ({notifs}) => {
                 <CardContent>
                   👋🏻 <UsernameButton notif={notif}/> followed your account <br/><i style={{marginLeft: "30px"}}>Click to see their profile</i>
                   </CardContent>
-                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+                <FormattedTime notif={notif}/>
               </div>
             </CardActionArea> : <></>}
 
@@ -77,7 +82,7 @@ const Notifications = ({notifs}) => {
                 <CardContent>
                   📝 <UsernameButton notif={notif}/> reviewed <b>{notif.book_name}</b> <br/><i style={{marginLeft: "30px"}}>Click to see the book page</i>
                 </CardContent>
-                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+                <FormattedTime notif={notif}/>
               </div>
             </CardActionArea> : <></>}
 
@@ -87,7 +92,7 @@ const Notifications = ({notifs}) => {
                 <CardContent>
                   ✉️ <UsernameButton notif={notif}/> made a post <br/><i style={{marginLeft: "30px"}}>Click to see your feed</i>
                 </CardContent>
-                <div style={{marginTop: "25px", marginRight: "15px"}} >{formatAMPM(notif.time)} {createDate(notif.time).toLocaleDateString("en-AU")}</div>
+                <FormattedTime notif={notif}/>
               </div>
             </CardActionArea> : <></>}
           </Card>

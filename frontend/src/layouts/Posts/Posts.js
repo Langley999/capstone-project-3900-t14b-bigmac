@@ -162,6 +162,9 @@ const Posts = ({userInfo}) => {
     <>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
+      <div style={{textAlign: "center", height: "25px", marginTop: "10px"}}>
+        {isSelf ? <>Share your</> : <>Their</>} thoughts about books{isSelf ? <> with your followers</> : <></>}!
+      </div>
       {isSelf ?
         <Button
           onClick={handleAddPost}
@@ -216,7 +219,7 @@ const Posts = ({userInfo}) => {
             </Box>
           )
         })}
-        {posts.length === 0 ? <h2>There is no post here.</h2> : null}
+        {posts.length === 0 ? <h2>There is no post here.</h2> : <></>}
         <Pagination sx={{marginBottom: '10px'}} count={pageCount} page={page} onChange={handleChangePage} />
       </Box>
     </>
