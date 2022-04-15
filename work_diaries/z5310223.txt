@@ -48,3 +48,10 @@ Week 8
 - Had a group meeting to test all website components prepare for Project Demo B
 - Allocated Sprint 3 tasks in Jira backlog/board
 - Decided on design of notification communication between frontend and backend
+
+Week 9
+- Managed Jira user stories
+- Styled and formatted notifications page in frontend
+- Edited style of profile badges to be more readable and user-friendly
+- Added comments to frontend code, removed unused variables and moved repeated components to helper file for importing
+- Added snackbar popups for notifications
