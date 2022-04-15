@@ -4,39 +4,34 @@ from bookstation.models.event_sys import Badge,Quiz
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Collection, Goal
-from bookstation.utils.auth_util import login_status_check, pw_encode
-from datetime import datetime,date
+from bookstation.utils.auth_util import pw_encode
+from datetime import datetime
+from bookstation.utils.auth_util import get_user
 import datetime
 
 url_prefix = '/user'
 
-
+'''
+It returns the goal of current month and current progress: if the goal is not set, - 1 will be returned
+Args (GET):
+    operator (string): the requester's email
+    token (string): valid token
+Returns:
+    goal (int): -1 if the user hasn't set a goal for this month
+    finished (int): the number of books finished in this month
+Raises:
+    AccessError: login check
+    NotFoundError: when the user is not found
+'''
 @app.route(url_prefix + '/checkgoal', methods=["GET"])
 def get_goal():
-    '''
-    It returns the goal of current month and current progress: if the goal is not set, - 1 will be returned
-    Args (GET):
-        operator (string): the requester's email
-        token (string): valid token
-    Returns:
-        goal (int): -1 if the user hasn't set a goal for this month
-        finished (int): the number of books finished in this month
-    Raises:
-        AccessError: login check
-        NotFoundError: when the user is not found
-    '''
-
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
-
-    # sql select user
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     collection = Collection.query.filter_by(user_id = user.user_id, name = "Reading History").first()
     if collection == None:
         return dumps({
             "goal": -1,
             "finished": 0,
-
         })
     book_collections = Collection_book.query.filter_by(collection_id=collection.collection_id).all()
 
@@ -60,31 +55,30 @@ def get_goal():
 
     })
 
+
+'''
+It sets the goal of this user for this month
+Args (GET):
+    email (string): the requester's email
+    token (string): valid token
+    goal (int): the goal of user for this month
+Returns:
+    "success"
+Raises:
+    AccessError: login check
+    NotFoundError: when the user is not found
+'''
 @app.route(url_prefix + '/setgoal', methods=["POST"])
 def set_goal():
-    '''
-    It sets the goal of this user for this month
-    Args (GET):
-        email (string): the requester's email
-        token (string): valid token
-        goal (int): the goal of user for this month
-    Returns:
-        "success"
-    Raises:
-        AccessError: login check
-        NotFoundError: when the user is not found
-    '''
+
     try:
         data = request.get_json()
         goal, token = data['goal'], data['token']
     except:
         raise error.BadReqError(description="post body error")
-#     login_status_check(email, token)
-    # sql select user
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
-
 
     today = datetime.date.today()
     new_goal = Goal(user.user_id, today, goal, 0)
@@ -117,27 +111,24 @@ def set_goal():
         "succuss":[]
     })
 
-
+'''
+It gets goal histories of a user
+Args (GET):
+    token (string): valid token
+Returns:
+    "goal_history" (list):
+        - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
+        - goal (int): goal of this user for that month
+        - books_completed (int): number of books user completed during that month
+Raises:
+    AccessError: login check
+    NotFoundError: when the user is not found
+'''
 @app.route(url_prefix + '/getallgoal', methods=["GET"])
 def get_all_goal():
-    '''
-    It gets goal histories of a user
-    Args (GET):
-        token (string): valid token
-    Returns:
-        "goal_history" (list):
-            - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
-            - goal (int): goal of this user for that month
-            - books_completed (int): number of books user completed during that month
-    Raises:
-        AccessError: login check
-        NotFoundError: when the user is not found
-    '''
-    token = request.args.get('token')
-#     login_status_check(operator_email, token)
 
-    # sql select user
-    user = User.query.filter_by(token=token).first()
+    token = request.args.get('token')
+    user = get_user(token)
     all_history = []
     goals = Goal.query.filter_by(user_id=user.user_id).all()
     for goal in goals:
@@ -154,34 +145,27 @@ def get_all_goal():
 
 
 
+'''
+It returns profile data of target user.
+Args (GET):
 
+    user_id (string): target user's id
+    token (string): valid token
+Returns:
+    is_self (boolean): True if the user is requesting his own profile, else False
+    username (string): target user's username
+    email (string): target user's email
+    avatar (string base64): user's avatar
+Raises:
+    AccessError: login check
+    NotFoundError: when target email is an invalid email
+'''
 @app.route(url_prefix + '/profile', methods=["GET"])
 def get_user_profile():
-    '''
-    It returns profile data of target user.
-    Args (GET):
 
-        user_id (string): target user's id
-        token (string): valid token
-    Returns:
-        is_self (boolean): True if the user is requesting his own profile, else False
-        username (string): target user's username
-        email (string): target user's email
-        avatar (string base64): user's avatar
-    Raises:
-        AccessError: login check
-        NotFoundError: when target email is an invalid email
-    TODO:
-        1. add returns
-        2. find a way to prevent potential security issues
-    '''
     user_id = int(request.args.get('user_id'))
     token = request.args.get('token')
-    # login_status_check(operator_email, token)
-    # sql select user
-    print("HERE",token, user_id)
-    operator = User.query.filter_by(token=token).first()
-    print("OPERATOR", operator)
+    operator = get_user(token)
     user = User.query.get(user_id)
     if (user == None):
         raise error.NotFoundError(description="cannot find user")
@@ -190,20 +174,17 @@ def get_user_profile():
         isFollowing = True
 
     badges = User_badge.query.filter_by(user_id=user_id).all()
-    print(badges)
     badgelist = []
     for badge in badges:
-        badgeobj = {}
-
         quiz = Quiz.query.filter_by(badge_id=badge.badge_id).first()
-        badgeobj['badge_id'] = badge.badge_id
-        badgeobj['badge_image'] = Badge.query.get(badge.badge_id).image
-        badgeobj['quiz_id'] = quiz.quiz_id
-        badgeobj['quiz_name'] = quiz.quiz_name
-        badgeobj['quiz_description'] = quiz.description
-        print(quiz.description)
+        badgeobj = {
+            'badge_id': badge.badge_id,
+            'badge_image': Badge.query.get(badge.badge_id).image,
+            'quiz_id': quiz.quiz_id,
+            'quiz_name': quiz.quiz_name,
+            'quiz_description': quiz.description
+        }
         badgelist.append(badgeobj)
-    print(badgelist)
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
@@ -214,36 +195,31 @@ def get_user_profile():
 
     })
 
+'''
+It will update user's details like username
+Args (POST):
+    origin (string): the origin email
+    token (string): valid token
+    username (string): new username
+    password (string): new raw password
+Returns:
+    no returns.
+Raises:
+    AccessError: login check
+    BadReqError: when post body is invalid
+    InputError:
+        1. new username has been registered
+        2. new email has been registerd
+'''
 @app.route(url_prefix + '/update', methods=["POST"])
 def update_user_profile():
-    '''
-    It will update user's details like username, email.
-    Args (POST):
-        origin (string): the origin email
-        token (string): valid token
-        email (string): new email
-        username (string): new username
-        password (string): new raw password
-        TODO: add more data
-    Returns:
-        no returns.
-    Raises:
-        AccessError: login check
-        BadReqError: when post body is invalid
-        InputError:
-            1. new username has been registered
-            2. new email has been registerd
-    TODO:
-        1. add more params
-    '''
+
     try:
         data = request.get_json()
         new_username, token, new_password = data['username'], data['token'], data['password']
     except:
         raise error.BadReqError(description="post body error")
-#     login_status_check(origin_email, token)
-    # sql select origin user
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     if (user == None):
         raise error.BadReqError(description="post body error")
     # check if new_username is valid
@@ -257,34 +233,30 @@ def update_user_profile():
     db.session.commit()
     return dumps({})
 
-
+'''
+It will update user's avatar.
+Args (POST):
+    token (string): valid token
+    avatar (base64 string): avatar image of base64 format
+Returns:
+    no returns.
+Raises:
+    AccessError: login check
+    BadReqError: when post body is invalid
+    InputError:
+        1. new username has been registered
+        2. new email has been registerd
+'''
 @app.route(url_prefix + '/updateavatar', methods=["POST"])
 def update_user_avatar():
-    '''
-    It will update user's avatar.
-    Args (POST):
-        token (string): valid token
-        avatar (base64 string): avatar image of base64 format
-    Returns:
-        no returns.
-    Raises:
-        AccessError: login check
-        BadReqError: when post body is invalid
-        InputError:
-            1. new username has been registered
-            2. new email has been registerd
-    TODO:
-        1. add more params
-    '''
+
     try:
         data = request.get_json()
         avatar, token = \
             data['avatar'], data['token']
     except:
         raise error.BadReqError(description="post body error")
-#     login_status_check(origin_email, token)
-    # sql select origin user
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     if (user == None):
         raise error.BadReqError(description="post body error")
     # change password

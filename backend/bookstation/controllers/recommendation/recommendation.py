@@ -1,31 +1,29 @@
 from json import dumps
 import ast
-from bookstation import app, request, db, error
+from bookstation import app, request
 from bookstation.models.book_sys import *
 from bookstation.models.user_sys import Collection, Follow_relationship
-from sqlalchemy import func, desc
+from sqlalchemy import desc
 from bookstation.utils.auth_util import get_user
-#from bookstation.utlis.auth_util import login_status_check
 
 url_prefix = '/recommendation'
-
+"""
+Function to get top 20 best rating books
+Args:
+Returns:
+	books (list): list of all books from the search
+		- id (int): book id
+		- title (string): title of the book
+		- cover (string): url of the cover image
+		- author (string): author of the book
+		- num_rating (int): number of people who rated this book
+		- average_rating (float): the rating of the book
+		- publish_date (string): the publish date of the book
+"""
 @app.route(url_prefix + "/toprating", methods=["GET"])
 def toprating():
-	"""
-	Function to get top 20 best rating books
-	Args:
-	Returns:
-			books (list): list of all books from the search
-					- id (int): book id
-					- title (string): title of the book
-					- cover (string): url of the cover image
-					- author (string): author of the book
-					- num_rating (int): number of people who rated this book
-					- average_rating (float): the rating of the book
-					- publish_date (string): the publish date of the book
-	"""
-	results = []
 
+	results = []
 	books = Book.query.order_by(desc(Book.average_rating)).all()
 	for book in books[0:20]:
 		book_info = {}
@@ -42,7 +40,13 @@ def toprating():
 		"books": results
 	})
 
-
+"""
+Function to get user's top 5 favorite genres
+Args:
+	token (str): token of the user
+Returns:
+	favourite_genres (list): list of genres and their percentages
+"""
 @app.route(url_prefix + "/favouriteGenre", methods=["GET"])
 def favouriteGenre():
 	token = request.args.get('token')
@@ -66,10 +70,15 @@ def favouriteGenre():
 				genre_freq[genre] = 1
 	
 	max_genres = [keys for keys, values in genre_freq.items() if values == max(genre_freq.values())]
-
 	return dumps({'favourite_genres' : max_genres})
 		
-		
+"""
+Function to get user's top 5 favorite authors
+Args:
+	token (str): token of the user
+Returns:
+	favourite_authors (list): list of authors and their percentages
+"""		
 @app.route(url_prefix + "/favouriteAuthor", methods=["GET"])
 def favouriteAuthor():
 	token = request.args.get('token')
@@ -93,7 +102,6 @@ def favouriteAuthor():
 				author_freq[author] = 1
 	
 	max_authors = [keys for keys, values in author_freq.items() if values == max(author_freq.values())]
-
 	author_book_set = set()
 	books_list = []
 	for author_name in max_authors:
@@ -106,7 +114,6 @@ def favouriteAuthor():
 				books_list.append(book_dict)
 				author_book_set.add(book.book_id)
 
-	
 	books_list.sort(key = lambda x: x['rating'], reverse=True)
 	return dumps({'favourite_authors' : max_authors, 'books' : books_list})
 
