@@ -181,23 +181,14 @@ def similarBooks():
         no_similar_list = []
         books = Book.query.order_by(Book.average_rating.desc()).limit(3).all()
         for book in books:
+            if book.book_id == book_id:
+                continue
             no_similar_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
             no_similar_list.append(no_similar_dict)
         return dumps({'books' : no_similar_list})
-
-    return_list = []
-    i = 0
-    for book_tup in book_list:
-        book = Book.query.get(book_tup[0])
-        if book.cover_image != "":
-            return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
-            return_list.append(return_dict)
-            i += 1
-            if i > 3:
-                break
     
 
-    return dumps({'books' : return_list})
+    return dumps({'books' : book_list})
 
 
 
