@@ -6,14 +6,27 @@ from bookstation.utils.auth_util import get_user
 from datetime import date, datetime
 from sqlalchemy import desc
 
+"""
+Description: 
+- Searches for a users in the system based on some key phrase
+
+Args:
+- token String: to be used for session validation
+- search_phrase String: phrase for pattern matching
+
+Return:
+- userf_list List: List of users in the sytem, augmented to include following status.
+
+"""
 @app.route("/user/search", methods=["GET"])
 def findUsers():
-    print("reach search")
+
     token = request.args.get('token')
     search_prhase = request.args.get('search_phrase')
     user = get_user(token)
     users = User.query.filter(User.username.ilike('%'+ search_prhase +'%'))
     userf_list = []
+    
     for userf in users:
         if userf.user_id == user.user_id:
             continue
@@ -29,6 +42,20 @@ def findUsers():
     return dumps({ 'users' : userf_list})
 
 
+
+"""
+Description: 
+- Establish a following relationship between the current user and a target user
+- Checks whether there is already a pre-existing relatinoship and throw errors accordingly
+
+Args:
+- token String: to be used for session validation
+- target_user_id Integer: user id of the requested following user
+
+Return:
+- none
+
+"""
 @app.route("/user/follow", methods=["POST"])
 def follow():
 
@@ -51,6 +78,20 @@ def follow():
 
     return dumps({})
 
+
+"""
+Description: 
+- Delete a following relationship between the current user and a target user
+- Checks whether the relationship doesn't alreayd exist and throw errors accordingly
+
+Args:
+- token String: to be used for session validation
+- target_user_id Integer: user id of the requested user to be unfollowed
+
+Return:
+- none
+
+"""
 @app.route("/user/unfollow", methods=["POST"])
 def unfollow():
 
@@ -72,7 +113,19 @@ def unfollow():
     return dumps({})
 
 
+"""
+Description: 
+- Create a new comment post for the current user
+- Sends notification to all followers
 
+Args:
+- token String: to be used for session validation
+- content String: information to be posted
+
+Return:
+- post_id Integer: Id of the newly created post after commiting to database
+
+"""
 @app.route("/post/addpost", methods=["POST"])
 def addPost():
 
@@ -97,6 +150,20 @@ def addPost():
     })
 
 
+"""
+Description: 
+- Remvoe comment post for the current user
+- Checks whether post exists and throws error accordingly
+- Checks whether current user is the owner of the post, throws error accordingly
+
+Args:
+- token String: to be used for session validation
+- post_id Integer: token of the post being requested for removal
+
+Return:
+- dict: Confirmation JSON object
+
+"""
 @app.route("/post/removepost", methods=["POST"])
 def removePost():
 
@@ -122,13 +189,25 @@ def removePost():
         raise error.BadReqError(description="Cannot remove post")
 
 
+"""
+Description: 
+- Retrieves all posts created from a specified user_id
+
+Args:
+- token String: to be used for session validation
+- user_id Integer: id of user for which posts would like to be viewed
+
+Return:
+- posts List: List of post objects 
+
+"""
 @app.route("/post/getposts", methods=["GET"])
 def getPosts():
 
     token = request.args.get('token')
     user_id = request.args.get('user_id')
-    #page_no = int(request.args.get('page'))
     user = get_user(token)
+
     posts = Post.query.filter_by(user_id = user_id).all()
     posts_list = []
     for post in posts:
@@ -136,10 +215,22 @@ def getPosts():
         posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
-    #posts_list = posts_list[10*(page_no-1): 10*page_no]
     return dumps({'posts' : posts_list})
 
 
+
+"""
+Description: 
+- Retrieves personal feed for the current user
+- The personal feed consists of all the posts from users which the current user follows
+
+Args:
+- token String: to be used for session validation
+
+Return:
+- posts List: List of post objects sorted by time most recently
+
+"""
 @app.route("/post/getfeed", methods=["GET"])
 def getFeed():
 
@@ -158,23 +249,22 @@ def getFeed():
 
 
 
+
+"""
+Description: 
+- Retrieves list of followings for a specified user
+
+Args:
+- token String: to be used for session validation
+- user_id Integer: id of user for which we want to find followings for
+
+Return:
+- followings List: List of user objects with only relevant information 
+
+"""
 @app.route("/user/getfollowing", methods=["GET"])
 def getfollowing():
-    """
-    Function for user to to get all user he's following
-    Args:
-        user_id (int): id of the user
-    Returns:
-        - followings (list):
-            - user_id (int)
-            - username (str)
-    Raises:
-        NotFoundError: when the book does not exist in the collection
-        AccessError:
-          - when the user does not have permission to remove book
-        BadReqError:
-          - when removing book fails
-    """
+
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
@@ -194,24 +284,21 @@ def getfollowing():
     })
 
 
-#SAME THING HERE!
+"""
+Description: 
+- Retrieves list of followers for a specified user
+
+Args:
+- token String: to be used for session validation
+- user_id Integer: id of user for which we want to find followers for
+
+Return:
+- followings List: List of user objects with only relevant information 
+
+"""
 @app.route("/user/getfollower", methods=["GET"])
 def getfollower():
-    """
-    Function for user to to get all followers
-    Args:
 
-    Returns:
-        - followers (list):
-            - user_id (int)
-            - username (str)
-    Raises:
-        NotFoundError: when the book does not exist in the collection
-        AccessError:
-          - when the user does not have permission to remove book
-        BadReqError:
-          - when removing book fails
-    """
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
@@ -232,6 +319,17 @@ def getfollower():
     })
 
 
+"""
+Description: 
+- Retrieves public post feed that is not user specific
+
+Args:
+- none
+
+Return:
+- posts List: List of post objects correspondign to public feed
+
+"""
 @app.route("/post/getpublicfeed", methods=["GET"])
 def getPublicFeed():
 
