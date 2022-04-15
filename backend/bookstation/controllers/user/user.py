@@ -1,4 +1,6 @@
 from json import dumps
+from bookstation.models.event_sys import User_badge
+from bookstation.models.event_sys import Badge,Quiz
 from bookstation.models.book_sys import Collection_book
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Collection, Goal
@@ -23,7 +25,7 @@ def get_goal():
         AccessError: login check
         NotFoundError: when the user is not found
     '''
-    
+
     token = request.args.get('token')
 #     login_status_check(operator_email, token)
 
@@ -122,7 +124,6 @@ def get_all_goal():
     It gets goal histories of a user
     Args (GET):
         token (string): valid token
-
     Returns:
         "goal_history" (list):
             - created_time (date): created date of the goal (frontend will only display year and month, day is irrelevant)
@@ -159,7 +160,7 @@ def get_user_profile():
     '''
     It returns profile data of target user.
     Args (GET):
-        
+
         user_id (string): target user's id
         token (string): valid token
     Returns:
@@ -174,9 +175,9 @@ def get_user_profile():
         1. add returns
         2. find a way to prevent potential security issues
     '''
-    user_id = request.args.get('user_id')
+    user_id = int(request.args.get('user_id'))
     token = request.args.get('token')
-#     login_status_check(operator_email, token)
+    # login_status_check(operator_email, token)
     # sql select user
     print("HERE",token, user_id)
     operator = User.query.filter_by(token=token).first()
@@ -187,12 +188,30 @@ def get_user_profile():
     isFollowing = False
     if Follow_relationship.query.filter_by(follower_user_id = operator.user_id, user_id = user_id).first() != None:
         isFollowing = True
+
+    badges = User_badge.query.filter_by(user_id=user_id).all()
+    print(badges)
+    badgelist = []
+    for badge in badges:
+        badgeobj = {}
+
+        quiz = Quiz.query.filter_by(badge_id=badge.badge_id).first()
+        badgeobj['badge_id'] = badge.badge_id
+        badgeobj['badge_image'] = Badge.query.get(badge.badge_id).image
+        badgeobj['quiz_id'] = quiz.quiz_id
+        badgeobj['quiz_name'] = quiz.quiz_name
+        badgeobj['quiz_description'] = quiz.description
+        print(quiz.description)
+        badgelist.append(badgeobj)
+    print(badgelist)
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
         "email": user.email,
         "avatar": user.avatar,
-        "isFollowing" : isFollowing
+        "isFollowing" : isFollowing,
+        "badges": badgelist
+
     })
 
 @app.route(url_prefix + '/update', methods=["POST"])
@@ -273,4 +292,3 @@ def update_user_avatar():
     db.session.add(user)
     db.session.commit()
     return dumps({})
-

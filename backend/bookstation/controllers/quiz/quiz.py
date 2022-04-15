@@ -1,6 +1,9 @@
+from getpass import getuser
 from json import dumps
 
 from pymysql import NULL
+from sympy import true
+from bookstation.models.event_sys import Quiz_user, User_badge
 from bookstation.models.event_sys import Question, Answer, Badge
 from bookstation.models.event_sys import Quiz
 from bookstation.models.event_sys import Admin
@@ -127,6 +130,43 @@ def getallquiz():
       result.append(quizobj)
   
     return dumps({ 'quizzes' : result})
+
+@app.route("/quiz/getopenquiz", methods=["GET"])
+def getopenquiz():
+    token = request.args.get('token')
+ 
+    user = get_user(token)
+    quizzes = Quiz.query.filter_by(publish_status=1).all()
+    result = []
+    
+    for quiz in quizzes:
+        quiz_id = quiz.quiz_id
+        quiz_name = quiz.quiz_name
+        badge = Badge.query.get(quiz.badge_id)
+        quizobj = {}
+        quizobj['id'] = quiz_id
+        quizobj['description'] = quiz.description
+        quizobj['quiz_name'] = quiz_name
+        quizobj['badge_id'] = badge.badge_id
+        quizobj['badge_image'] = badge.image
+        participants = Quiz_user.query.filter_by(quiz_id=quiz_id).all()
+        quizobj['num_participants'] = len(participants)
+        badges_get = User_badge.query.filter_by(badge_id=badge.badge_id).all()
+        if len(participants) > 0:
+            quizobj['pass_rate'] = round(len(badges_get)/len(participants)*100,2)
+        else:
+            quizobj['pass_rate'] = -1
+        if User_badge.query.filter_by(badge_id=badge.badge_id,user_id=user.user_id).first() != None:
+            quizobj['complete_status'] = 1
+        elif Quiz_user.query.filter_by(quiz_id=quiz_id,user_id=user.user_id).first() != None:
+            quizobj['complete_status'] = 2
+        else:
+            quizobj['complete_status'] = 0
+        result.append(quizobj)
+   
+    newres = sorted(result, key=lambda x:x['complete_status'])
+  
+    return dumps({ 'quizzes' : newres})
 
 @app.route("/quiz/openquiz", methods=["POST"])
 def openquiz():
@@ -283,8 +323,9 @@ def updatequiz():
 def getquiz():
     token = request.args.get('token')
     admin = Admin.query.filter_by(token=token).first()
-    if admin == None:
-        raise error.NotFoundError(description='Target admin not found')
+    user = get_user(token)
+    if admin == None and user == None:
+        raise error.NotFoundError(description='No access right')
 
     quizid = int(request.args.get('quiz_id'))
     quiz = Quiz.query.get(quizid)
@@ -319,3 +360,80 @@ def getquiz():
         'badge': badge.image,
         'questions': questionlist
     })
+
+
+def getrightanswer(q_id):
+    ans = Answer.query.filter_by(question_id=q_id).all()
+    for answer in ans:
+        if answer.tag == True:
+            print(answer.answer_id)
+            return answer.answer_id
+
+@app.route("/quiz/submitanswer", methods=["POST"])
+def checkanswer():
+    body = request.get_json()
+    token = body.get('token')
+    anslist = body.get('ans')
+    print(anslist)
+    quiz_id = body.get('quiz_id')
+    status = "FAIL"
+    user = get_user(token)
+    if user == None:
+        raise error.NotFoundError(description='No access right')
+    
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    print(questions)
+    totalpoints = len(questions)
+    gainedpoints = 0
+    for question in questions:
+        if str(anslist[str(question.question_id)]) == str(getrightanswer(question.question_id)):
+            gainedpoints +=1
+    if round(gainedpoints/totalpoints,2) >= 0.6:
+        status = "PASS"
+        quiz = Quiz.query.get(int(quiz_id))
+        if User_badge.query.filter_by(badge_id = quiz.badge_id,user_id = user.user_id).first() == None:
+            newuser_badge = User_badge(badge_id = quiz.badge_id,user_id = user.user_id)
+            db.session.add(newuser_badge)
+            db.session.commit()
+    if Quiz_user.query.filter_by(quiz_id=quiz_id,user_id=user.user_id).first() == None:
+        newquiz_user = Quiz_user(quiz_id=quiz_id,user_id=user.user_id)
+        db.session.add(newquiz_user)
+        db.session.commit()
+
+    
+    return dumps({ 
+        'status': status,
+        'result': round(gainedpoints/totalpoints,2)*100
+    })
+'''
+@app.route("/quiz/checkcompleted", methods=["GET"])
+def checkcompleted():
+    body = request.get_json()
+    token = body.get('token')
+    anslist = body.get('ans')
+    quiz_id = body.get('quiz_id')
+    status = "FAIL"
+    user = get_user(token)
+    if user == None:
+        raise error.NotFoundError(description='No access right')
+    
+    questions = Question.query.filter_by(quiz_id=quiz_id).all()
+    totalpoints = len(questions)
+    gainedpoints = 0
+    for question in questions:
+        if anslist[question.question_id] == getrightanswer(question.question_id):
+            gainedpoints +=1
+    if gainedpoints >= totalpoints*0.6:
+        status = "PASS"
+        quiz = Quiz.query.get(int(quiz_id))
+        newuser_badge = User_badge(badge_id = quiz.badge_id,user_id = user.user_id)
+        db.session.add(newuser_badge)
+    newquiz_user = Quiz_user(quiz_id=quiz_id,user_id=user.user_id)
+    db.session.add(newquiz_user)
+    db.session.commit()
+
+    
+    return dumps({ 
+        status: status
+    })
+'''

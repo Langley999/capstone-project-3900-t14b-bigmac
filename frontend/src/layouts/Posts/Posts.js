@@ -132,9 +132,48 @@ const Posts = ({userInfo}) => {
     })
   }
 
+  const PostSection = ({postInfo}) => {
+    const removePost = () => {
+      axios.post(`${url}/post/removepost`, {
+        token: localStorage.getItem('token'),
+        post_id: postInfo.post_id
+      }).then(res=> {
+        let temp = [...posts];
+        temp = temp.filter(post => post.post_id !== postInfo.post_id);
+        setPosts(temp);
+        setPageCount(Math.ceil(temp.length / pageSize))
+        let p = page;
+        if (page > Math.ceil(temp.length / pageSize)) {
+          setPage(page - 1);
+          p = p-1
+        }
+        const start1 = (p-1)*pageSize;
+        const end1 = p * pageSize;
+        setPagePosts(temp.slice(start1, end1));
+      })
+    }
 
-  const CreatePost = () => {
     return (
+      <FeedListing post={postInfo} username={values.username} avatar={values.avatar} id={values.user_id} removePost={removePost} isSelf={isSelf} />
+    )
+  };
+
+  return (
+    <>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
+      <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
+      <div style={{textAlign: "center", height: "25px", marginTop: "10px"}}>
+        {isSelf ? <>Share your</> : <>Their</>} thoughts about books{isSelf ? <> with your followers</> : <></>}!
+      </div>
+      {isSelf ?
+        <Button
+          onClick={handleAddPost}
+          variant="outlined"
+          sx={{marginBottom: '10px'}}
+        >
+          Add Post
+        </Button>
+        : null}
       <Dialog onClose={handleAddPostClose} open={postFormOn}>
         <Box
           sx={{
@@ -168,49 +207,6 @@ const Posts = ({userInfo}) => {
 
         </Box>
       </Dialog>
-    )
-  }
-
-  const PostSection = ({postInfo}) => {
-    const removePost = () => {
-      axios.post(`${url}/post/removepost`, {
-        token: localStorage.getItem('token'),
-        post_id: postInfo.post_id
-      }).then(res=> {
-        let temp = [...posts];
-        temp = temp.filter(post => post.post_id !== postInfo.post_id);
-        setPosts(temp);
-        setPageCount(Math.ceil(temp.length / pageSize))
-        let p = page;
-        if (page > Math.ceil(temp.length / pageSize)) {
-          setPage(page - 1);
-          p = p-1
-        }
-        const start1 = (p-1)*pageSize;
-        const end1 = p * pageSize;
-        setPagePosts(temp.slice(start1, end1));
-      })
-    }
-
-    return (
-      <FeedListing post={postInfo} username={values.username} avatar={values.avatar} id={values.user_id} removePost={removePost} isSelf={isSelf} />
-    )
-  };
-
-  return (
-    <>
-      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
-      <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
-      {isSelf ?
-        <Button
-          onClick={handleAddPost}
-          variant="outlined"
-          sx={{marginBottom: '10px'}}
-        >
-          Add Post
-        </Button>
-        : null}
-      <CreatePost/>
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -223,7 +219,7 @@ const Posts = ({userInfo}) => {
             </Box>
           )
         })}
-        {posts.length === 0 ? <h2>There is no post here.</h2> : null}
+        {posts.length === 0 ? <h2>There is no post here.</h2> : <></>}
         <Pagination sx={{marginBottom: '10px'}} count={pageCount} page={page} onChange={handleChangePage} />
       </Box>
     </>

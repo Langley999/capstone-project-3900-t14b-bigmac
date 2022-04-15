@@ -109,19 +109,22 @@ const Login = ({ updateLogin, updateUserInfo }) => {
           token: response.data.token
         }})
         .then(function (res) {
+          console.log(res.data.badges)
           updateUserInfo({
             email: email,
             user_id: response.data.user_id,
             username: res.data.username,
             password: pass.password,
-            avatar: res.data.avatar
+            avatar: res.data.avatar,
+            badges: res.data.badges
           });
           localStorage.setItem('user', JSON.stringify({
             email: email,
             user_id: response.data.user_id,
             username: res.data.username,
             password: pass.password,
-            avatar: res.data.avatar
+            avatar: res.data.avatar,
+            badges: res.data.badges
           }));
           navigate('/');
         })

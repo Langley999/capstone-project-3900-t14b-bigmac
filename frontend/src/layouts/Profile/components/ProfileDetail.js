@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -7,7 +7,8 @@ import {
   CardHeader,
   Divider,
   TextField,
-  Typography
+  Typography,
+  Avatar
 } from '@mui/material';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -22,6 +23,7 @@ import {url, checkProfileInput} from '../../../components/Helper';
 import {useParams, useLocation, useNavigate} from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
 
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const params = useParams();
@@ -34,6 +36,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const [successMsg, setSuccessMsg] = useState('');
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [currentBadge, setCurrentBadge] = useState({});
+  const [openBadge, setOpenBadge] = useState(false);
 
   useEffect(async () => {
     const user_id = Number(window.location.pathname.split('/')[2]);
@@ -47,11 +51,15 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     })
       .then(function (res) {
         if (user_id === userInfo.user_id) {
-          setValues(userInfo);
+          setValues({
+            ...userInfo,
+            badges: res.data.badges
+          });
         } else {
           setValues({
             username: res['data']['username'],
-            avatar: res.data.avatar
+            avatar: res.data.avatar,
+            badges: res.data.badges
           });
         }
       })
@@ -60,6 +68,14 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
       });
 
   }, [window.location.href, userInfo])
+
+  const handleClickOpenBadge = () => {
+    setOpenBadge(true);
+  };
+
+  const handleCloseBadge = () => {
+    setOpenBadge(false);
+  };
 
 
   const handleChange = (event) => {
@@ -101,13 +117,13 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         email: values.email,
         username: values.username,
         password: values.password,
-        avatar: userInfo.avatar
+        avatar: userInfo.avatar,
+        badges: userInfo.badges
       }))
       setSuccessMsg('Profile details updated');
       setShowSuccess(true);
       
     }).catch(function (error) {
-      console.log(error.message)
       setErrorMsg(JSON.stringify(error.message));
       setShowError(true);
     });
@@ -121,8 +137,34 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
     padding: '0 30px'
   }
 
+  const openBadgeInfo = (badge) => {
+    handleClickOpenBadge();
+    setCurrentBadge(badge);
+  }
+
   return (
     <>
+    {values.badges && 
+      <div>
+      <Dialog open={openBadge} onClose={handleCloseBadge}>
+        <DialogTitle>Badge Information</DialogTitle>
+        <DialogContent>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            <Avatar src={currentBadge.badge_image} sx={{height: 50, width: 50}}/>
+            <Typography><b>Quiz:</b> {currentBadge.quiz_name}</Typography>
+            <Typography><b>Quiz Description:</b></Typography>
+            <Typography>{currentBadge.quiz_description}</Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant='outlined'
+            onClick={handleCloseBadge}
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
         <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
@@ -158,9 +200,17 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 >
                   < Typography
                     color='#616161'
+                    sx={{marginRight: '10px'}}
                   >
-                    Badge: Empty
+                    Badges:
                   </ Typography>
+                  {values.badges.length > 0 ? values.badges.map((badge) => {
+                    return (
+                      <IconButton onClick={() => openBadgeInfo(badge)}>
+                        <Avatar src={badge.badge_image} key={badge.badge_id} sx={{height: 50, width: 50}}/>
+                      </IconButton>
+                    )
+                  }) : <Typography>Empty</Typography>}
                 </Box>
                 <TextField
                   disabled
@@ -229,35 +279,39 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
           <CardContent>
             <Box
               sx={{
-                alignItems: 'flex-start',
+                alignItems: 'center',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '30px',
+                justifyContent: 'space-evenly',
               }}
-            >
-              <Box
-                display='flex'
-                flexDirection='row'
-                justifyContent="flex-start"
-                width='100%'
-              >
-                < Typography
-                  color='#616161'
-                  variant='h5'
-                >
-                  Badge: Empty
-                </ Typography>
-              </Box>
+            > 
               < Typography
                 color='#616161'
                 variant='h5'
+                sx={{marginRight: '10px', textAlign: "center"}}
               >
-                {`Username: ${values.username}`}
+                Badge Collection
               </ Typography>
+                <br/>
+                <Box
+                  display='flex'
+                  flexDirection='row'
+                  justifyContent="center"
+                  width='100%'
+                >
+                {values.badges.length > 0 ? values.badges.map((badge) => {
+                  return ( 
+                    <IconButton onClick={() => openBadgeInfo(badge)}>
+                      <Avatar src={badge.badge_image} key={badge.badge_id} sx={{height: 50, width: 50}}/>
+                    </IconButton>
+                  )
+                }) : <Typography>Empty</Typography>}
+              </Box>
             </Box>
           </CardContent>
         </Card>
       }
+      </div>}
     </>
   );
 };

@@ -95,6 +95,7 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }})
     .then(function (res) {
+      console.log(res)
       if (isSelf)
         setValues(userInfo);
       else {
@@ -173,7 +174,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
         email: userInfo.email,
         username: userInfo.username,
         password: userInfo.password,
-        avatar: selected
+        avatar: selected,
+        badges: userInfo.badges
       }))
       setShowSuccess(true);
       setSuccessMsg("Upload avatar success!");

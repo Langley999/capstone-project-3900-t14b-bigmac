@@ -28,14 +28,17 @@ const VerifyPopup = ({setShowVerify, username, email, password, setErrorMsg, set
         email: email,
         username: username,
         password: password,
-        avatar: ''
+        avatar: '',
+        badges: []
       });
       localStorage.setItem('user', JSON.stringify({
         user_id: response.data.user_id,
         email: email,
         username: username,
         password: password,
-        avatar: ''
+        avatar: '',
+        badges: []
+
       }));
       localStorage.setItem('token', response.data.token);
       navigate('/');

@@ -7,6 +7,7 @@ from bookstation.models.user_sys import *
 from bookstation.models.book_sys import *
 from datetime import datetime
 from random import randint
+from bookstation.models.user_sys import Notification_history
 
 from flask import session
 #from config import SECRET
@@ -170,6 +171,10 @@ def verify():
     new_history_collection = Collection(2, "Reading History", datetime.now(), new_user.user_id)
     db.session.add(new_default_collection)
     db.session.add(new_history_collection)
+
+    newhistory = Notification_history(user_id=new_user.user_id,last_read=0)
+    db.session.add(newhistory)
+
     db.session.commit()
     return dumps({
         'token': token,
