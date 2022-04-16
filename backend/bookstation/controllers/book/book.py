@@ -471,7 +471,6 @@ def checkCompleted():
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
         db.session.commit()
-        db.session.flush()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection != None:
         return dumps({"success": True})
