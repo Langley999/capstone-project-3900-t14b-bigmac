@@ -33,6 +33,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import {TextField} from "@material-ui/core";
 import { withSnackbar } from 'notistack';
 import { useSnackbar } from 'notistack';
+import ErrorPopup from './ErrorPopup';
 
 const HeaderContainer = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -49,6 +50,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const [rating, setRating] = useState(0);
   const [toRead, setToRead] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -150,7 +153,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       navigate('searchbooks');
     })
     .catch(function (error) {
-      alert(error.response.data.message);
+      setErrorMsg(error.response.data.message);
+      setShowError(true);
     });
   }
 
@@ -393,6 +397,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
           }
           <Dropdown/>
         </Toolbar>
+        <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       </HeaderContainer>
   );
 }

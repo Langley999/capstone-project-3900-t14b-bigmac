@@ -3,6 +3,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * @returns a home icon button that redirects to the main page url
+ */
 const HomeButton = () => {
   const navigate = useNavigate();
   const pressHome = () => {
@@ -10,14 +13,14 @@ const HomeButton = () => {
   }
 
   const buttonStyle = {
-    width: "40px",
-    height: "40px",
-    marginLeft: "-30px",
-    marginTop: "-15px"
+    width: '40px',
+    height: '40px',
+    marginLeft: '-30px',
+    marginTop: '-15px'
   }
 
   return (
-    <IconButton aria-label="home" onClick={pressHome} style={buttonStyle}>
+    <IconButton aria-label='home' onClick={pressHome} style={buttonStyle}>
       <HomeIcon/>
     </IconButton>
   )

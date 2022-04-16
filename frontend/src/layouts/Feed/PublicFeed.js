@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import ErrorPopup from '../../components/ErrorPopup';
 import FeedListing from './FeedListing';
-import axios from "axios";
+import axios from 'axios';
 import {url} from '../../components/Helper';
 import Pagination from '@mui/material/Pagination';
 
+/**
+ * @returns list of posts created by all users, paginated to show 10 per page
+ */
 const PublicFeed = () => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showError, setShowError] = React.useState(false);
@@ -19,6 +22,7 @@ const PublicFeed = () => {
     getPublicFeed();
   }, []);
 
+  // fetch public feed
   const getPublicFeed = () => {
     axios.get(`${url}/post/getpublicfeed`, {params: {
     }})
@@ -37,7 +41,6 @@ const PublicFeed = () => {
     setPage(value);
     const start = (value-1)*pageSize;
     const end = value * pageSize;
-    console.log(feed.length, value, start, end)
     setPagePosts(feed.slice(start, end));
   }
   
@@ -49,7 +52,7 @@ const PublicFeed = () => {
         return (
           <FeedListing post={post} isPublic={localStorage.getItem('token') ? false : true}/>
         )
-      }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>No one has posted yet</div>}
+      }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>No one has posted yet</div>}
       {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}
     </div>
   );

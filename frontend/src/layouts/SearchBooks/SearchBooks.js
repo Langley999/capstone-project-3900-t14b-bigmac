@@ -5,9 +5,13 @@ import BookSection from './BookSection';
 import Box from "@mui/material/Box";
 import {Pagination} from "@mui/material";
 import {url} from "../../components/Helper";
+import ErrorPopup from "../../components/ErrorPopup";
 
 
 const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, tempsearchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating, followingFav}) => {
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showError, setShowError] = useState(false);
+  
   const pageSize = 12;
 
   const handleChangePage = (event, value) => {
@@ -26,7 +30,8 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
           updateSearchResult(res.data.books);
         })
         .catch(function (error) {
-          alert(error.response.data.message);
+          setErrorMsg(error.response.data.message);
+          setShowError(true);
         });
     } else if (searchType === 'byGenre') {
       axios.get(`${url}/search/genre`, {params: {
@@ -38,7 +43,8 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
           updateSearchResult(res.data.books);
         })
         .catch(function (error) {
-          alert(error.message);
+          setErrorMsg(error.response.data.message);
+          setShowError(true);
         });
     } else {
       const start = (value-1)*pageSize;
@@ -63,6 +69,7 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
         }) : <div style={{paddingTop: "50px"}}>There were no books that matched the phrase</div>}
       </Grid>
       <Pagination sx={{marginBottom: '20px', marginTop: '30px'}} count={pageCount} page={page} onChange={handleChangePage} />
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
     </Box>
   );
 };

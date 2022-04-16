@@ -1,8 +1,12 @@
 import Button from '@mui/material/Button';
-import axios from "axios";
+import axios from 'axios';
 import {url} from './Helper';
 
+/**
+ * @returns a button that sends post request to follow a user if it is clicked
+ */
 const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
+  
   const followUser = () => {
     axios.post(`${url}/user/follow`, {
       token: localStorage.getItem('token'),
@@ -12,7 +16,11 @@ const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowin
       if (res['status'] === 200) {
         setSuccessMsg(`Followed ${username}!`);
         setShowSuccess(true);
+
+        // set following to true, initially false
         setIsFollowing(!isFollowing);
+
+        // increment follower count of current user if setFollowerCount is given
         if (setFollowerCount !== null) {
           setFollowerCount(followerCount+1);
         }
@@ -25,7 +33,7 @@ const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowin
   }
 
   return (
-    <Button onClick={followUser} variant="outlined">Follow</Button>
+    <Button onClick={followUser} variant='outlined'>Follow</Button>
   )
 }
 

@@ -13,6 +13,11 @@ import axios from 'axios';
 import ErrorPopup from '../../components/ErrorPopup';
 import { useLocation } from 'react-router-dom';
 
+/**
+ * Genre page displaying proportions of top 5 genres and authors in the form of pie charts
+ * @param {Object} userInfo information of the user currently logged in 
+ * @returns analytics genre page information
+ */
 const GenrePage = ({userInfo}) => {
   const [genres, setGenres] = React.useState([]);
   const [authors, setAuthors] = React.useState([]);
@@ -21,6 +26,7 @@ const GenrePage = ({userInfo}) => {
   const location = useLocation();
   const [id, setId] = React.useState(parseInt(location.pathname.split('/')[2]));
 
+  // fetch data for top 5 authors and genres
   React.useEffect(() =>{
     getFavGenres();
     getFavAuthors();
@@ -32,8 +38,6 @@ const GenrePage = ({userInfo}) => {
       user_id: id
     }}).then(function (response) {
       setGenres(response['data']['genres']);
-      console.log(response['data']['genres']);
-      console.log(id);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setSnackBarOpen(true);
@@ -45,13 +49,13 @@ const GenrePage = ({userInfo}) => {
       user_id: id
     }}).then(function (response) {
       setAuthors(response['data']['authors']);
-      console.log(response['data']['authors']);
     }).catch(function (error) {
       setErrorMsg(JSON.stringify(error.message));
       setSnackBarOpen(true);
     })
   }
 
+  // returns a pie chart, given the necessary descriptions and data
   const CustomPieChart = ({title, value, argument, data, errorMsg, palette}) => {
     function customizeText(arg) {
       return `${arg.argument} (${arg.percentText})`;
@@ -59,19 +63,19 @@ const GenrePage = ({userInfo}) => {
     return (
       <>
       {data.length >= 5 ? 
-        <PieChart dataSource={data} palette={palette} resolveLabelOverlapping="shift" title={title}>/
+        <PieChart dataSource={data} palette={palette} resolveLabelOverlapping='shift' title={title}>/
         <Legend
           visible={false}
-          orientation="horizontal"
-          itemTextPosition="right"
-          horizontalAlignment="center"
-          verticalAlignment="bottom"
+          orientation='horizontal'
+          itemTextPosition='right'
+          horizontalAlignment='center'
+          verticalAlignment='bottom'
           columnCount={4}
         />
         <Series valueField={value} argumentField={argument}>
           <Label
             visible={true}
-            position="columns"
+            position='columns'
             customizeText={customizeText}>
             <Font size={12} />
             <Connector visible={true} width={0.5} />
@@ -86,16 +90,16 @@ const GenrePage = ({userInfo}) => {
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
-      <h2 style={{fontWeight: "normal"}}>{userInfo.user_id === id ? <>Your</> : <>Their</>} Genres</h2>
-      <div style={{display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
-        <Box m={0} p={0} style={{width: "425px", height: "100px"}}>
-          <Paper elevation={3} style={{padding: "10px"}} >
-            <CustomPieChart title={`Top 5 Genres in ${userInfo.user_id === id ? "Your" : "Their"} Collections`} value="percentage" argument="genre" data={genres} errorMsg={userInfo.user_id === id ?"Add books to your collection to see proportion of genres":"Book genre information is not available"} palette="Bright"/>
+      <h2 style={{fontWeight: 'normal'}}>{userInfo.user_id === id ? <>Your</> : <>Their</>} Genres</h2>
+      <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        <Box m={0} p={0} style={{width: '425px', height: '100px'}}>
+          <Paper elevation={3} style={{padding: '10px'}} >
+            <CustomPieChart title={`Top 5 Genres in ${userInfo.user_id === id ? 'Your' : 'Their'} Collections`} value='percentage' argument='genre' data={genres} errorMsg={userInfo.user_id === id ?'Add books to your collection to see proportion of genres':'Book genre information is not available'} palette='Bright'/>
           </Paper>
         </Box>
-        <Box m={0} p={0} style={{width: "425px", height: "100px"}}>
-          <Paper elevation={3} style={{padding: "10px"}} >
-            <CustomPieChart title={`Top 5 Authors in ${userInfo.user_id === id ? "Your" : "Their"} Collections`} value="percentage" argument="author" data={authors}  errorMsg={userInfo.user_id === id ?"Add books to your collection to see proportion of authors":"Author information is not available"} palette="Dark Violet"/>
+        <Box m={0} p={0} style={{width: '425px', height: '100px'}}>
+          <Paper elevation={3} style={{padding: '10px'}} >
+            <CustomPieChart title={`Top 5 Authors in ${userInfo.user_id === id ? 'Your' : 'Their'} Collections`} value='percentage' argument='author' data={authors}  errorMsg={userInfo.user_id === id ?'Add books to your collection to see proportion of authors':'Author information is not available'} palette='Dark Violet'/>
           </Paper>
         </Box>
       </div>

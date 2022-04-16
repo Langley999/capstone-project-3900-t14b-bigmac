@@ -23,6 +23,11 @@ import {
   Grid,
 } from 'devextreme-react/chart';
 
+/**
+ * Goal page includes input form for setting reading goal for current month
+ * and shows statistics for monthly and yearly goal progress
+ * @returns analytics goal page information
+ */
 const GoalPage = () => {
   const [goal, setGoal] = React.useState(0);
   const [goalSubmit, setGoalSubmit] = React.useState(0);
@@ -32,25 +37,29 @@ const GoalPage = () => {
   const [enableEditGoal, setEnableEditGoal] = React.useState(false);
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const [allGoal, setAllGoal] = React.useState([]);
+
+  // fetch user's goal information on refresh
   React.useEffect(() => {
     getGoal();
     getAllGoal();
   }, []);
 
+  // calculate days until end of month
   const date = new Date();
   const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
   if (daysUntilEndOfMonth !== 1) daySuffix = 's';
 
-  function monthDiff(d1, d2) {
-    var months;
-    months = (d2.getFullYear() - d1.getFullYear()) * 12;
-    months -= d1.getMonth();
-    months += d2.getMonth();
+  function monthDiff(month1, month2) {
+    let months;
+    months = (month2.getFullYear() - month1.getFullYear()) * 12;
+    months -= month1.getMonth();
+    months += month2.getMonth();
     return months <= 0 ? 0 : months;
   }
 
+  // get goal history of last 12 months, not including current month
   const getAllGoal = () => {
     axios.get(`${url}/user/getallgoal`, {params: {
         token: localStorage.getItem('token')
@@ -69,7 +78,6 @@ const GoalPage = () => {
           }
         }
         setAllGoal(temp);
-        console.log(response['data']['goal_history']);
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
       setSuccessMsg('');
@@ -128,20 +136,21 @@ const GoalPage = () => {
   }
 
   const goalStyle = {
-    display: "flex",
-    flexDirection: "row",
-    gap: "40px",
-    marginBottom: "50px"
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '40px',
+    marginBottom: '50px'
   }
 
+  // input form for setting reading goal number
   const GoalLine = () => {
     return (
       <span>
         <span >I want to read</span>
-          <FormControl disabled={!enableEditGoal} sx={{ m: 2, width: '4ch' }} variant="standard" style={{marginTop: '5px', marginLeft:'5px', marginRight:'3px'}}>
+          <FormControl disabled={!enableEditGoal} sx={{ m: 2, width: '4ch' }} variant='standard' style={{marginTop: '5px', marginLeft:'5px', marginRight:'3px'}}>
             <Input
-              type="number"
-              size="small"
+              type='number'
+              size='small'
               value={goal}
               onChange={e => setGoal(e.target.value)}
             />
@@ -149,7 +158,7 @@ const GoalPage = () => {
         <span>books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
         </span>
         <IconButton
-          aria-label="toggle password visibility"
+          aria-label='toggle password visibility'
           onClick={toggleEditGoal}
         >
           {enableEditGoal ? <CheckCircleIcon onClick={submitGoal}/> : <EditIcon />}
@@ -158,21 +167,22 @@ const GoalPage = () => {
     )
   }
 
+  // card showing books read and books remaining for current month
   const ProgressCard = () => {
     return (
-      <Card sx={{ minWidth: 200 }} style={{backgroundColor: "#b5943f", marginTop: "-30px"}} >
-        <CardContent style={{color: "white"}}>
-          <div style={{display: "flex", flexDirection:"row", justifyContent:"space-between"}}>
+      <Card sx={{ minWidth: 200 }} style={{backgroundColor: '#b5943f', marginTop: '-30px'}} >
+        <CardContent style={{color: 'white'}}>
+          <div style={{display: 'flex', flexDirection:'row', justifyContent:'space-between'}}>
             <div>
               <span>Completed</span>
-              <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
-                <CardContent style={{padding: "10px", textAlign: "center"}}>{completed}</CardContent>
+              <Card sx={{ minWidth: 50 }} style={{backgroundColor: 'white', marginTop: '10px'}} >
+                <CardContent style={{padding: '10px', textAlign: 'center'}}>{completed}</CardContent>
               </Card>
             </div>
             <div>
               <span>Remaining</span>
-              <Card sx={{ minWidth: 50 }} style={{backgroundColor: "white", marginTop: "10px"}} >
-                <CardContent style={{padding: "10px", textAlign: "center"}}>{(goalSubmit-completed) < 0 ? 0 : (goalSubmit-completed)}</CardContent>
+              <Card sx={{ minWidth: 50 }} style={{backgroundColor: 'white', marginTop: '10px'}} >
+                <CardContent style={{padding: '10px', textAlign: 'center'}}>{(goalSubmit-completed) < 0 ? 0 : (goalSubmit-completed)}</CardContent>
               </Card>
             </div>
           </div>
@@ -181,22 +191,24 @@ const GoalPage = () => {
     )
   }
 
+  // card showing days left in the month
   const TimeCard = () => {
     return (
-      <Card sx={{ minWidth: 200 }} style={{backgroundColor: "#b5593f", marginTop: "-30px"}} >
-        <CardContent style={{color: "white", textAlign: "center"}}>
+      <Card sx={{ minWidth: 200 }} style={{backgroundColor: '#b5593f', marginTop: '-30px'}} >
+        <CardContent style={{color: 'white', textAlign: 'center'}}>
           <span>Time Left</span>
-          <div style={{display: "flex", flexDirection:"row", justifyContent:"space-evenly", paddingTop: "10px"}}>
-            <Card sx={{ minWidth: 75 }} style={{backgroundColor: "white"}} >
-              <CardContent style={{padding: "10px"}}>{daysUntilEndOfMonth}</CardContent>
+          <div style={{display: 'flex', flexDirection:'row', justifyContent:'space-evenly', paddingTop: '10px'}}>
+            <Card sx={{ minWidth: 75 }} style={{backgroundColor: 'white'}} >
+              <CardContent style={{padding: '10px'}}>{daysUntilEndOfMonth}</CardContent>
             </Card>
-            <span style={{paddingTop: "10px"}}>day{daySuffix}</span>
+            <span style={{paddingTop: '10px'}}>day{daySuffix}</span>
           </div>
         </CardContent>
       </Card>
     )
   }
 
+  // graph showing reading goal history in last 12 months
   const GoalGraph = () => {
     const statSources = [{value:'goal', name: 'Goal'}, {value:'books_completed', name: 'Books Completed'}];
     return (
@@ -204,12 +216,12 @@ const GoalPage = () => {
       {allGoal.length > 0 ?
       <Chart
         dataSource={allGoal}
-        palette="Harmony Light"
-        resolveLabelOverlapping="stack"
+        palette='Harmony Light'
+        resolveLabelOverlapping='stack'
       >
         <CommonSeriesSettings
-          argumentField="created_time"
-          type="line"
+          argumentField='created_time'
+          type='line'
         />
         {
           statSources.map((item) => <Series
@@ -220,17 +232,17 @@ const GoalPage = () => {
         <Margin bottom={20} />
         <ArgumentAxis
           valueMarginsEnabled={false}
-          discreteAxisDivisionMode="crossLabels"
+          discreteAxisDivisionMode='crossLabels'
         >
           <Grid visible={true} />
         </ArgumentAxis>
         <Legend
-          verticalAlignment="bottom"
-          horizontalAlignment="center"
-          itemTextPosition="bottom"
+          verticalAlignment='bottom'
+          horizontalAlignment='center'
+          itemTextPosition='bottom'
         />
-        <Title text="Goals and Reading History">
-          <Subtitle text="(within the last year)" />
+        <Title text='Goals and Reading History'>
+          <Subtitle text='(within the last year)' />
         </Title>
         <Tooltip enabled={true} />
       </Chart> :
@@ -243,13 +255,13 @@ const GoalPage = () => {
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <SuccessPopup successMsg={successMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
-      <h2 style={{fontWeight: "normal"}}>Reading Goal</h2>
+      <h2 style={{fontWeight: 'normal'}}>Reading Goal</h2>
       <div style={goalStyle}>
         <GoalLine/>
         <ProgressCard/>
         <TimeCard/>
       </div>
-      <div style={{paddingLeft: "20px", paddingRight: "20px"}} >
+      <div style={{paddingLeft: '20px', paddingRight: '20px'}} >
         <GoalGraph/>
       </div>
     </div>

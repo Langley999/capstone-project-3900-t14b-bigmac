@@ -1,9 +1,10 @@
 import React from 'react';
 import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import Snackbar from '@mui/material/Snackbar';
 
-// Shows an error message in a popup at the top of the screen
+/**
+ * @returns an error message in a snackbar popup at the bottom of the screen
+ */
 const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
 
   // do nothing if message is empty
@@ -11,20 +12,18 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
     return null;
   }
 
+  // remove p tags or quotes from the beginning and end of error message if it exists
   if (typeof errorMsg === 'string') {
-    if (errorMsg.startsWith("\"") && errorMsg.endsWith("\"")) {
+    if (errorMsg.startsWith('\"') && errorMsg.endsWith('\"')) {
       errorMsg = errorMsg.substring(1, errorMsg.length - 1);
     }
-    if (errorMsg.startsWith("<p>") && errorMsg.endsWith("</p>")) {
+    if (errorMsg.startsWith('<p>') && errorMsg.endsWith('</p>')) {
       errorMsg = errorMsg.substring(3, errorMsg.length - 4);
     }
   }
+
   const handleClose = (event, reason) => {
-    /*
-      if (reason === 'clickaway') {
-        return;
-      }*/
-      setSnackBarOpen(false);
+    setSnackBarOpen(false);
   };
   
   const errorStyle = {
@@ -36,8 +35,8 @@ const ErrorPopup = ({ errorMsg, snackBarOpen, setSnackBarOpen }) => {
   }
 
   return (
-    <Snackbar  sx={{}} anchorOrigin={{vertical: "bottom", horizontal: "center"}} open={snackBarOpen}  onClose={handleClose} autoHideDuration={1500} >
-      <Alert severity="warning" style={errorStyle}  sx={{ width: '100%' }} >
+    <Snackbar  sx={{}} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}} open={snackBarOpen}  onClose={handleClose} autoHideDuration={1500} >
+      <Alert severity='warning' style={errorStyle}  sx={{ width: '100%' }} >
         {errorMsg }
       </Alert>
     </Snackbar>

@@ -48,9 +48,9 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       token: localStorage.getItem('token')
     }})
     .then(function (res) {
-      if (user_id === userInfo.user_id)
+      if (user_id === userInfo.user_id) {
         setValues(userInfo);
-      else {
+      } else {
         setValues({
           username: res.data.username,
           avatar: res.data.avatar
@@ -59,7 +59,8 @@ export const ProfileAvatar = ({userInfo, updateUserInfo}) => {
       }
     })
     .catch(function (error) {
-      alert(error.response.data.message)
+      setErrorMsg(error.response.data.message);
+      setShowError(true);
     });
     // get follower list
     axios.get(`${url}/user/getfollower`, {params: {

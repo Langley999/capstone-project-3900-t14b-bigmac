@@ -110,7 +110,8 @@ const Genres = ({updateSearchResult, updateSearchType, updateGenreRating, genreR
         navigate('searchbooks');
       })
       .catch(function (error) {
-        alert(error.message);
+        setErrorMsg(error.message);
+        setShowError(true);
       });
     handleCloseGenre();
   }

@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import ErrorPopup from '../../components/ErrorPopup';
 import FeedListing from './FeedListing';
-import axios from "axios";
+import axios from 'axios';
 import {url} from '../../components/Helper';
 import Pagination from '@mui/material/Pagination';
 
+/**
+ * @returns list of posts from users that the logged in user follows, paginated to show 10 per page
+ */
 const Feed = () => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showError, setShowError] = React.useState(false);
@@ -18,13 +21,13 @@ const Feed = () => {
     getFeed();
   }, []);
 
+  // fetch logged in user's feed
   const getFeed = () => {
     axios.get(`${url}/post/getfeed`, {params: {
       token: localStorage.getItem('token'),
       page: 1
     }})
     .then(res => {
-      console.log(res.data.posts);
       updateFeed(res.data.posts);
       setPage(1);
       setPageCount(Math.ceil(res.data.posts.length / pageSize));
@@ -51,7 +54,7 @@ const Feed = () => {
         return (
           <FeedListing post={post}/>
         )
-      }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>Follow other users to see their posts</div>}
+      }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>Follow other users to see their posts</div>}
       {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}
     </div>
   );

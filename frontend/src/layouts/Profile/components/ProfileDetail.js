@@ -64,7 +64,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         }
       })
       .catch(function (error) {
-        alert(error.response.data.message)
+        setErrorMsg(error.response.data.message);
+        setShowError(true);
       });
 
   }, [window.location.href, userInfo])

@@ -454,7 +454,8 @@ const Collections = ({userInfo}) => {
         setPageBooks(newC['books'].slice(start1, end1));
       })
         .catch(error => {
-          alert(error.response.data.message);
+          setwarningcontent(error.response.data.message);
+          setwarningopen(true);
         });
     }
 

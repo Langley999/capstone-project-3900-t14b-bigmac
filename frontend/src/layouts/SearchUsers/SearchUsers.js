@@ -2,14 +2,16 @@ import React from 'react';
 import UserListing from './UserListing';
 import ErrorPopup from '../../components/ErrorPopup';
 import SuccessPopup from '../../components/SuccessPopup';
-import axios from "axios";
+import axios from 'axios';
 import {url} from '../../components/Helper';
 import {Box, TextField} from '@mui/material';
 import Button from '@mui/material/Button';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
 
+/**
+ * Search user page that has an input form for searching for a matching phrase in usernames,
+ * and a list of UserListing results based on the phrase entered
+ * @returns page for searching existing usernames
+ */
 const SearchUsers = () => {
   const [successMsg, setSuccessMsg] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
@@ -22,6 +24,7 @@ const SearchUsers = () => {
     searchUser();
   }, []);
 
+  // Send a search request that returns a list of user information
   const searchUser = (e) => {
     if (e) e.preventDefault();
     // show user search results
@@ -40,29 +43,28 @@ const SearchUsers = () => {
 
   const handleChangeSearchUser = (event) => {
     setSearchValue(event.target.value);
-    console.log(event.target.value);
   }
 
   return (
     <div>
       <SuccessPopup successMsg={successMsg} snackBarOpen={showSuccess} setSnackBarOpen={setShowSuccess} />
       <ErrorPopup successMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
-      <div style={{display: "flex", flexDirection: "row", margin: "30px", marginLeft: "5px"}}>
-        <Box component="form" style={{marginLeft: "70px"}} onSubmit={(e) => searchUser(e)}>
+      <div style={{display: 'flex', flexDirection: 'row', margin: '30px', marginLeft: '5px'}}>
+        <Box component='form' style={{marginLeft: '70px'}} onSubmit={(e) => searchUser(e)}>
           <TextField
-            placeholder="Search Users"
+            placeholder='Search Users'
             value={searchValue}
             onChange={handleChangeSearchUser}
             inputProps={{ 'aria-label': 'search' }}
           />
         </Box>
-        <Button type="submit" variant="contained" sx={{marginLeft: '10px'}}>Search</Button>
+        <Button type='submit' variant='contained' sx={{marginLeft: '10px'}}>Search</Button>
       </div>
       {users.length > 0 ? users.map((searchedUser) => {
         return (
           <UserListing searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
         )
-      }) : <div style={{paddingTop: "50px", textAlign:"vertical"}}>There were no usernames that matched the phrase "{searchValue}"</div>}
+      }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>There were no usernames that matched the phrase</div>}
     </div>
   );
 };

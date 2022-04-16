@@ -10,17 +10,22 @@ import GenrePage from '../Analytics/GenrePage';
 import FriendPage from '../Analytics/FriendPage';
 import { useLocation } from 'react-router-dom';
 
+/**
+ * Analytics page that handles whether goals, friend or genre analytics are shown
+ * @param {Object} userInfo information of the user who is logged in
+ * @returns analytics page in user profile
+ */
 const Analytics = ({ userInfo }) => {
-  // can be goals, friends or genres
   const location = useLocation();
   const [id, setId] = React.useState(parseInt(location.pathname.split('/')[2]));
-
   const [analyticView, setAnalyticView] = React.useState(userInfo.user_id === id ? 'goals' : 'friends');
 
+  // get id of user from url on refresh
   React.useEffect(() => {
     setId(parseInt(location.pathname.split('/')[2]));
   }, [location]);
 
+  // sets the current analytic view depending on which option is clicked
   const clickGoals = () => {
     setAnalyticView('goals');
   }
@@ -30,6 +35,7 @@ const Analytics = ({ userInfo }) => {
   const clickGenres = () => {
     setAnalyticView('genres');
   }
+
   // sidebar with reading progress (goals), friends and genres
   const Sidebar = () => {
     return (
@@ -55,7 +61,7 @@ const Analytics = ({ userInfo }) => {
     )
   }
 
-
+  // information corresponding to the selected analytics view
   const Data = () => {
     return (
     <Paper sx={{
@@ -68,9 +74,9 @@ const Analytics = ({ userInfo }) => {
       <h1>Analytics</h1>
       <p>View {userInfo.user_id === id ? <>your</>:<>their</>} reading progress!</p>
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
-      {analyticView === "goals" ? <GoalPage/> : <></>}
-      {analyticView === "friends" ? <FriendPage userInfo={userInfo}/> : <></>}
-      {analyticView === "genres" ? <GenrePage userInfo={userInfo}/> : <></>}
+      {analyticView === 'goals' ? <GoalPage/> : <></>}
+      {analyticView === 'friends' ? <FriendPage userInfo={userInfo}/> : <></>}
+      {analyticView === 'genres' ? <GenrePage userInfo={userInfo}/> : <></>}
     </Paper>
     )
   }

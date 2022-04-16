@@ -25,6 +25,8 @@ import nonfiction from '../../assets/nonfiction.webp';
 import novels from '../../assets/novels.jpeg';
 import romance from '../../assets/romance.jpeg';
 import youngAdult from '../../assets/young adult.jpeg';
+import WarningPopup from '../../components/WarningPopup';
+import ErrorPopup from '../../components/ErrorPopup';
 
 const itemData = [
   {
@@ -84,6 +86,10 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
   const [favGenres, setFavGenres] = useState([]);
   const [openAuthors, setOpenAuthors] = useState(false);
   const [openGenres, setOpenGenres] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
+
   const pageSize = 12;
 
   useEffect(async () => {
@@ -92,7 +98,8 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
         setTopBooks(res.data.books);
       })
       .catch(error => {
-        alert(error.message);
+        setErrorMsg(error.message);
+        setShowError(true);
       })
 
     if (ifLogin) {
@@ -134,7 +141,8 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
   const Recommendations = () => {
     const getFavAuthors = () => {
       if (favAuthors[0] === 'Find More Authors') {
-        alert("Please add books to your collection");
+        setErrorMsg("Please add books to your collection");
+        setShowWarning(true);
         return;
       }
 
@@ -163,7 +171,8 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
 
     const getFavGenres = () => {
       if (favGenres[0] === 'Find More Genres') {
-        alert("Please add books to your collection");
+        setErrorMsg("Please add books to your collection");
+        setShowWarning(true);
         return;
       }
 
@@ -187,13 +196,15 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           navigate('searchbooks');
         })
         .catch(function (error) {
-          alert(error.message);
+          setErrorMsg(error.message);
+          setShowError(true);
         });
     }
 
     const getFollowingBooks = () => {
       if (followingFav.length === 0) {
-        alert("Please follow some users");
+        setErrorMsg("Please follow some users");
+        setShowWarning(true);
         return;
       }
       updateSearchResult(followingFav.slice(0, pageSize));
@@ -329,12 +340,15 @@ const Home = ({ifLogin, updateSearchResult, updateSearchType, updateSearchGenres
           navigate('searchbooks');
         })
         .catch(function (error) {
-          alert(error.message);
+          setErrorMsg(error.message);
+          setShowError(true);
         });
     }
 
     return (
       <>
+        <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
+        <WarningPopup warningMsg={errorMsg} snackBarOpen={showWarning} setSnackBarOpen={setShowWarning} />
         <h1>Popular Genres</h1>
         <div className='subjects-container'>
           {itemData.map((item, idx) => (
