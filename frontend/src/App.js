@@ -29,6 +29,7 @@ import EditQuiz from  './layouts/Quiz/EditQuiz';
 import SearchBooks from './layouts/SearchBooks/SearchBooks';
 import Posts from './layouts/Posts/Posts';
 import { withSnackbar } from 'notistack';
+import Recommendations from "./layouts/Recommendations";
 
 function App() {
   const [ifLogin, setIfLogin] = useState(false);
@@ -155,8 +156,6 @@ function App() {
                 updatePage={updatePage}
                 updatePageCount={updatePageCount}
                 updateGenreRating={updateGenreRating}
-                updateTempsearchRating={updateTempsearchRating}
-                updateSearchValue={updateSearchValue}
                 updateFollowingFav={updateFollowingFav}
                 followingFav={followingFav}
               />}
@@ -188,6 +187,7 @@ function App() {
                 followingFav={followingFav}
               />}
             />
+            <Route path='recommendations' element={<Recommendations searchType={searchType}/>}/>
             <Route path='notifications' element={<Notifications notifs={newNotif}/>} />
             <Route path='user/:userid' element={
               <>
