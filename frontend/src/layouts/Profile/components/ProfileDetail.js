@@ -201,7 +201,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 >
                   < Typography
                     color='#616161'
-                    sx={{marginRight: '10px'}}
                   >
                     Badges:
                   </ Typography>
@@ -289,9 +288,9 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               < Typography
                 color='#616161'
                 variant='h5'
-                sx={{marginRight: '10px', textAlign: 'center'}}
+                sx={{ textAlign: 'center'}}
               >
-                Badge Collection:
+                Badge Collection
               </ Typography>
                 <br/>
                 <Box
@@ -308,12 +307,6 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   )
                 }) : <Typography>Empty</Typography>}
               </Box>
-              < Typography
-                color='#616161'
-                variant='h5'
-              >
-                {`Username: ${values.username}`}
-              </ Typography>
             </Box>
           </CardContent>
         </Card>

@@ -319,7 +319,8 @@ def get_savedCollections():
 	collections = Saved_collection.query.filter_by(user_id = user_id).all()
 	collection_list = []
 	for collection in collections:
-		collection_dict = {'collection_id' : collection.collection_id, 'name' : collection.collection.name, 'is_default' : collection.collection.is_default, 'created_time' : str(collection.collection.created_time), 'user_id' : collection.collection.user.user_id, 'username' : collection.collection.user.username}
+		if collection.collection != None:
+			collection_dict = {'collection_id' : collection.collection_id, 'name' : collection.collection.name, 'is_default' : collection.collection.is_default, 'created_time' : str(collection.collection.created_time), 'user_id' : collection.collection.user.user_id, 'username' : collection.collection.user.username}
 		collection_list.append(collection_dict)
 
 

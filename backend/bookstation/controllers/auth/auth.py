@@ -146,7 +146,6 @@ def verify():
 
     db.session.add(new_user)
     db.session.commit()
-    db.session.flush()
     new_default_collection = Collection(1, "Favourite", datetime.now(), new_user.user_id)
     new_history_collection = Collection(2, "Reading History", datetime.now(), new_user.user_id)
     db.session.add(new_default_collection)

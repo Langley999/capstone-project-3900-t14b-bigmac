@@ -6,7 +6,6 @@ import {
   Outlet,
   Route,
 } from 'react-router-dom';
-import Main from './components/Main';
 import Header from './components/Header';
 import Login from './layouts/Login';
 import Register from './layouts/Register';
@@ -190,7 +189,6 @@ function App() {
               />}
             />
             <Route path='notifications' element={<Notifications notifs={newNotif}/>} />
-            <Route path='main' element={<Main />} />
             <Route path='user/:userid' element={
               <>
                 <AvatarBanner userInfo={userInfo}/>

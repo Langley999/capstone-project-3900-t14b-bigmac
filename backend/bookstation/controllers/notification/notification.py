@@ -54,8 +54,10 @@ def getallnotif():
 			notif['book_id'] = notification.type_id
 			notif['book_name'] = Book.query.get(notification.type_id).title
 		all_notifications.append(notif)
-		history = Notification_history.query.filter_by(user_id=user.user_id).first()
-
+	print('my token'+str(token))
+	print('my id'+str(user.user_id))
+	history = Notification_history.query.filter_by(user_id=user.user_id).first()
+	print(history)
 	history.last_read = len(all_notifications)
 	db.session.add(history)
 	db.session.commit()
