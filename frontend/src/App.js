@@ -27,7 +27,7 @@ import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
 import BookDetail from  './layouts/BookDetails/BookDetail';
 import EditQuiz from  './layouts/Quiz/EditQuiz';
-import SearchBooks from "./layouts/SearchBooks/SearchBooks";
+import SearchBooks from './layouts/SearchBooks/SearchBooks';
 import Posts from './layouts/Posts/Posts';
 import { withSnackbar } from 'notistack';
 

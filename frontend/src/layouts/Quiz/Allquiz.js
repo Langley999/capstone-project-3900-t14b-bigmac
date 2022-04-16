@@ -9,7 +9,7 @@ import ErrorPopup from '../../components/ErrorPopup';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import {Link, useParams} from "react-router-dom";
+import {Link, useParams} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -106,29 +106,29 @@ const Allquiz = () => {
 
 
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-        <Grid container direction="row" spacing={10} justifyContent="center" >
+        <Grid container direction='row' spacing={10} justifyContent='center' >
 
           <Grid item  xs={4}>
             <List >
-            <Typography variant="h4" gutterBottom component="div">
+            <Typography variant='h4' gutterBottom component='div'>
              Current quizzes
             </Typography>
             {allquiz.length > 0 &&  allquiz.map((item, i) =>   
             <ListItem
                 key={item['id']}
               > 
-              <IconButton edge="end" aria-label="delete" onClick={() => deleteQuiz(item['id'])}>
+              <IconButton edge='end' aria-label='delete' onClick={() => deleteQuiz(item['id'])}>
                 <DeleteIcon sx={{ fontSize: 30 }}/>
               </IconButton>
               {item['status'] == 0 &&
-                <IconButton edge="end" onClick={() => openQuiz(item['id'])}>
+                <IconButton edge='end' onClick={() => openQuiz(item['id'])}>
                   <ToggleOffIcon  sx={{ fontSize: 30 }}/>
                 </IconButton>
               }
 
               {item['status'] == 1 &&
-                <IconButton edge="end" onClick={() => closeQuiz(item['id'])}>
-                  <ToggleOnIcon color="primary" sx={{ fontSize: 30 }}/>
+                <IconButton edge='end' onClick={() => closeQuiz(item['id'])}>
+                  <ToggleOnIcon color='primary' sx={{ fontSize: 30 }}/>
                 </IconButton>
               }   
 
@@ -136,7 +136,7 @@ const Allquiz = () => {
                 primary={item['quiz_name']}
               />
               {item['status'] === 0 &&
-                <Button variant="outlined" component = {Link} to={`/bookstation/editquiz/?id=${item['id']}`}>
+                <Button variant='outlined' component = {Link} to={`/bookstation/editquiz/?id=${item['id']}`}>
                   Edit
                 </Button>              
               }
@@ -147,14 +147,14 @@ const Allquiz = () => {
             </List>  
           </Grid>   
           <Grid item  xs={3}>
-            <Grid container direction="column" spacing={3}>    
+            <Grid container direction='column' spacing={3}>    
               <Grid item  xs={2}>
-                <Button onClick={handleLogOut} variant="contained" sx={{ marginTop: 1, fontSize:15}}>
+                <Button onClick={handleLogOut} variant='contained' sx={{ marginTop: 1, fontSize:15}}>
                 Log Out
                 </Button>
               </Grid> 
               <Grid item  xs={3}>
-                <Button edge="start" color="primary" variant="outlined" sx={{ marginTop: 5, paddingRight: 3 }} onClick={handleCreateQuiz}>
+                <Button edge='start' color='primary' variant='outlined' sx={{ marginTop: 5, paddingRight: 3 }} onClick={handleCreateQuiz}>
                   <AddCircleIcon sx={{ paddingRight: 2 }} />
                   Create Quiz
                 </Button>   

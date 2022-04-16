@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 import {url} from '../../components/Helper';
 
 /**
@@ -31,32 +31,32 @@ const SimilarBooks = ({book_id, setwarningcontent, setwarningopen}) => {
   }, [window.location.href]);
 
   return (
-    <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
+    <Grid container direction='column' alignItems='center' justifyContent='flex-start' spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h6" display="block" gutterBottom>
+        <Typography variant='h6' display='block' gutterBottom>
           You may also like ...
         </Typography>
       </Grid>
       {similarbooks.length > 0 &&  similarbooks.map((item, i) =>
           
-      <Grid item xs={12} style={{textAlign: "center"}} key={i}>
-        <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={2}>
-          <Grid item xs={12} style={{textAlign: "center"}}>
+      <Grid item xs={12} style={{textAlign: 'center'}} key={i}>
+        <Grid container direction='column' alignItems='center' justifyContent='flex-start' spacing={2}>
+          <Grid item xs={12} style={{textAlign: 'center'}}>
           <Box component={Link} to={`/book/?id=${item['id']}`}  >
             <Box
-              component="img"
+              component='img'
               sx={{
                 width: 100,
                 ml: 0
               }}
-              alt="book cover"
+              alt='book cover'
               src={item['cover_image']}
             />
           </Box>               
           </Grid>
-          <Grid item xs={12} style={{textAlign: "center"}}> 
-            <Box component={Link} to={`/book/?id=${item['id']}`} style={{width: "600px",textDecoration: 'none'}} >
-              <Button color="primary" style={{width: "150px", textDecoration: 'none'}}>
+          <Grid item xs={12} style={{textAlign: 'center'}}> 
+            <Box component={Link} to={`/book/?id=${item['id']}`} style={{width: '600px',textDecoration: 'none'}} >
+              <Button color='primary' style={{width: '150px', textDecoration: 'none'}}>
                 {item['title']}
               </Button>               
             </Box>

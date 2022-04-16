@@ -23,12 +23,12 @@ const EditQuiz = (userInfo) => {
   const [quizdescription, setquizdescription] =  React.useState('');
   const [badge, setBadge] = React.useState('');
   const [snackbaropen,setsnackbaropen] = useState(false);
-  const [snackbarcontent, setsnackbarcontent] = useState("");
+  const [snackbarcontent, setsnackbarcontent] = useState('');
   const [warningopen,setwarningopen] = useState(false);
-  const [warningcontent, setwarningcontent] = useState("");
+  const [warningcontent, setwarningcontent] = useState('');
   const [components, setComponents] = useState([{
-    question:"",
-    ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+    question:'',
+    ans:[{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false}]
   }]);
   
   const [errorMsg, setErrorMsg] = React.useState('');
@@ -39,22 +39,22 @@ const EditQuiz = (userInfo) => {
 
   const handleSubmitQuiz = () => {
     let canSubmit = true;
-    if (badge === "") {
-      setErrorMsg("Please select a badge");
+    if (badge === '') {
+      setErrorMsg('Please select a badge');
       setSnackBarOpen(true);
       canSubmit = false;
-    } else if (quizdescription === "") {
-      setErrorMsg("Please enter a quiz description");
+    } else if (quizdescription === '') {
+      setErrorMsg('Please enter a quiz description');
       setSnackBarOpen(true);
       canSubmit = false;
-    } else if (quizname === "") {
-      setErrorMsg("Please enter quiz name");
+    } else if (quizname === '') {
+      setErrorMsg('Please enter quiz name');
       setSnackBarOpen(true);
       canSubmit = false;
     } else {
       for(let i = 0; i < components.length; i++){
-        if (components[i]['question'] === "") {
-          setErrorMsg("Please complete your input for question");
+        if (components[i]['question'] === '') {
+          setErrorMsg('Please complete your input for question');
           setSnackBarOpen(true);
           canSubmit = false;
           break;
@@ -62,7 +62,7 @@ const EditQuiz = (userInfo) => {
           let flag = 0;
           let answernull = 0;
           for(let j = 0; j < 4; j++){
-            if (components[i]['ans'][j]['content'] === "") {
+            if (components[i]['ans'][j]['content'] === '') {
               answernull ++;
             }
             if (components[i]['ans'][j]['is_correct'] === true) {
@@ -71,13 +71,13 @@ const EditQuiz = (userInfo) => {
           
           }
           if (answernull > 0) {
-            setErrorMsg("Please complete your input for answer");
+            setErrorMsg('Please complete your input for answer');
             setSnackBarOpen(true);
             canSubmit = false;
             break;
           }
           if (flag !== 1) {
-            setErrorMsg("Please choose one correct answer per question");
+            setErrorMsg('Please choose one correct answer per question');
             setSnackBarOpen(true);
             canSubmit = false;
             break;
@@ -100,10 +100,10 @@ const EditQuiz = (userInfo) => {
       axios.put(`${url}/quiz/editquiz`, 
         body
       ).then(function (res) {
-        setquizname("");
+        setquizname('');
         setComponents([{
-          question:"",
-          ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+          question:'',
+          ans:[{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false}]
         }]);
 
         navigate('/bookstation/allquiz');
@@ -117,8 +117,8 @@ const EditQuiz = (userInfo) => {
 
   function addComponent() {  
     setComponents([...components, {
-      question:"",
-      ans:[{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false},{"content":"", "is_correct":false}]
+      question:'',
+      ans:[{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false},{'content':'', 'is_correct':false}]
     }])  
   } 
 
@@ -165,27 +165,27 @@ const EditQuiz = (userInfo) => {
   }, [window.location.href, userInfo]);
     return (
       <Box mx={30} pt={0} >
-            <Button onClick={handleBack} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
+            <Button onClick={handleBack} variant='contained' sx={{ marginTop: 10, fontSize:15}}>
               Back
             </Button>  
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-        <Grid container direction="column" spacing={5} justifyContent="center" alignContent="center" alignItems="center">  
+        <Grid container direction='column' spacing={5} justifyContent='center' alignContent='center' alignItems='center'>  
           <Grid item  xs={2}>
              
           </Grid>
           <Grid item  xs={10}>
-            <Typography variant="h4" gutterBottom component="div">
+            <Typography variant='h4' gutterBottom component='div'>
              Update Quiz 
             </Typography>
-            <Typography variant="body2" gutterBottom component="div">
+            <Typography variant='body2' gutterBottom component='div'>
              (Please choose only 1 correct answer per question)
             </Typography>
-            <TextField id="standard-basic" label="Quiz Name" variant="outlined" sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
-            <TextField id="standard-basic" label="Quiz Description" variant="outlined" sx={{ marginBottom: 3 }} multiline={true} rows={3} style = {{width: 760}} value={quizdescription} onChange={(event) => setquizdescription(event.target.value)}/>
+            <TextField id='standard-basic' label='Quiz Name' variant='outlined' sx={{ marginBottom: 3 }} style = {{width: 760}} value={quizname} onChange={(event) => setquizname(event.target.value)}/>
+            <TextField id='standard-basic' label='Quiz Description' variant='outlined' sx={{ marginBottom: 3 }} multiline={true} rows={3} style = {{width: 760}} value={quizdescription} onChange={(event) => setquizdescription(event.target.value)}/>
             <div></div>
             <input
-                type="file"
-                id="upload"
+                type='file'
+                id='upload'
                 accept='image/*'
                 onChange={onImageChange}
               />
@@ -207,14 +207,14 @@ const EditQuiz = (userInfo) => {
             {components.map((item, i) => ( <div>
               <QuizComponent id={i} question={item['question']} ans={item['ans']} components={components} setComponents={setComponents}/> <Button onClick={(event) =>handleRemoveComponent(event,i)}>Remove</Button> </div>)
             )} 
-            <IconButton edge="start" color="primary" sx={{ marginTop: 10, paddingRight: 3, fontSize:20}} onClick={addComponent}>
+            <IconButton edge='start' color='primary' sx={{ marginTop: 10, paddingRight: 3, fontSize:20}} onClick={addComponent}>
               <AddCircleIcon sx={{ paddingRight: 2 }} />
               Add Question
             </IconButton>
 
           </Grid> 
           <Grid item  xs={2}>
-            <Button onClick={handleSubmitQuiz} variant="contained" sx={{ marginTop: 10, fontSize:15}}>
+            <Button onClick={handleSubmitQuiz} variant='contained' sx={{ marginTop: 10, fontSize:15}}>
               Submit
             </Button>               
           </Grid>

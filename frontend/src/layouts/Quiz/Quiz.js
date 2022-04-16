@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ErrorPopup from '../../components/ErrorPopup';
 import Avatar from '@mui/material/Avatar';
-import {Link} from "react-router-dom";
+import {Link} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { url } from '../../components/Helper';
@@ -34,36 +34,36 @@ const Quiz = () => {
   return (
     <Box m={2} pt={2}>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-      <Grid container direction="column" spacing={12} justifyContent="center" >
+      <Grid container direction='column' spacing={12} justifyContent='center' >
         <Grid item  xs={12}>
-          <Typography variant="h5" gutterBottom component="div">
+          <Typography variant='h5' gutterBottom component='div'>
             Current running quizzes
           </Typography>
         </Grid>
         <Grid item xs={12}>
           {allquiz.length > 0 &&  allquiz.map((item, i) =>   
-            <Grid container direction="row" spacing={1} justifyContent="center" sx={{ marginBottom:5 }} >
+            <Grid container direction='row' spacing={1} justifyContent='center' sx={{ marginBottom:5 }} >
               <Grid item xs ={9} >
-                <Grid container direction="row" spacing={1} justifyContent="left-satrt" >
+                <Grid container direction='row' spacing={1} justifyContent='left-satrt' >
                   <Grid item xs ={1}>
                     <Avatar src={item['badge_image']} />
                   </Grid>
                   <Grid item xs ={3}>
-                    <Typography variant="body1" gutterBottom component="div">
+                    <Typography variant='body1' gutterBottom component='div'>
                       <b>{item['quiz_name']}</b>
                     </Typography>
                   </Grid>
                   <Grid item xs ={2}>
                     {item['complete_status'] === 0 &&
-                      <Button variant="contained"  sx={{ width:110 }}  component = {Link} to={`/enterquiz/?id=${item['id']}`}>
+                      <Button variant='contained'  sx={{ width:110 }}  component = {Link} to={`/enterquiz/?id=${item['id']}`}>
                         Enter
                       </Button>}          
                       {item['complete_status'] === 1 &&
-                      <Button sx={{ width:110 }} variant="contained" disabled>
+                      <Button sx={{ width:110 }} variant='contained' disabled>
                         PASSED
                       </Button>}    
                       {item['complete_status'] === 2 &&
-                      <Button sx={{ width:110 }} variant="contained" disabled>
+                      <Button sx={{ width:110 }} variant='contained' disabled>
                         COMPLETED 
                       </Button>}
                   </Grid>
@@ -71,7 +71,7 @@ const Quiz = () => {
               </Grid>
          
               <Grid item xs ={10}>
-                <Box component="span" sx={{
+                <Box component='span' sx={{
                       display: 'block',
                       pt: 1,
                       pl: 2,
@@ -89,7 +89,7 @@ const Quiz = () => {
               </Grid>
               {item['complete_status'] === 0 &&
                 <Grid item xs ={10}>
-                  <Box component="span" sx={{
+                  <Box component='span' sx={{
                         display: 'block',
                         p: 1,
                         width: 800,

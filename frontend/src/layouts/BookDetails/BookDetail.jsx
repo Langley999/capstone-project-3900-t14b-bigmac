@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -16,11 +16,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import ErrorPopup from '../../components/ErrorPopup';
 import SuccessPopup from '../../components/SuccessPopup';
 import {convertDate,months} from '../../components/Helper';
-import AddCollection from "./AddCollection";
-import SimilarBooks from "./SimilarBooks";
+import AddCollection from './AddCollection';
+import SimilarBooks from './SimilarBooks';
 import {url} from '../../components/Helper';
 
-import Review from "./Review";
+import Review from './Review';
 
 /**
  * Book detail page: contains all actions and information about a book
@@ -37,25 +37,25 @@ const BookDetail = ({userInfo}) => {
   const [collection_names, setCollection_names] = React.useState([]);
   const [collection_ids, setCollection_ids] = React.useState([]);
   const [create_form, setCreateForm] = React.useState(false);
-  const [textFieldValue, settextFieldValue] = React.useState("");
-  const [readingButtonText, setreadingButtonText] = React.useState("Complete");
+  const [textFieldValue, settextFieldValue] = React.useState('');
+  const [readingButtonText, setreadingButtonText] = React.useState('Complete');
   const [btnDisabled, setbtnDisabled] = React.useState(false);
-  const [publishdate, setPublishdate] = React.useState("");
+  const [publishdate, setPublishdate] = React.useState('');
   const [reviewButtonshow, setreviewButtonshow] = React.useState(true);
-  const [authur, setAuther] = React.useState("");
-  const [cover, setCover] = React.useState("");
-  const [publisher, setPublisher] = React.useState("");
-  const [genres, setGenres] = React.useState("None");
+  const [authur, setAuther] = React.useState('');
+  const [cover, setCover] = React.useState('');
+  const [publisher, setPublisher] = React.useState('');
+  const [genres, setGenres] = React.useState('None');
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const [searchParams, setSearchParams] = useSearchParams();
   const [snackbaropen,setsnackbaropen] = useState(false);
-  const [snackbarcontent, setsnackbarcontent] = useState("");
+  const [snackbarcontent, setsnackbarcontent] = useState('');
   const [warningopen,setwarningopen] = useState(false);
-  const [warningcontent, setwarningcontent] = useState("");
+  const [warningcontent, setwarningcontent] = useState('');
   const [myreview,setmyreview] = useState([]);
-  const [sort, setSort] = useState("time");
+  const [sort, setSort] = useState('time');
   const book_id = searchParams.get('id');
   
   const handleAddCollection = (event) => {
@@ -98,7 +98,7 @@ const BookDetail = ({userInfo}) => {
               setsnackbarcontent('Book has been added to new collection');
               setsnackbaropen(true);
               setCreateForm(false);
-              settextFieldValue("");
+              settextFieldValue('');
               setAnchorEl(null);
               setCollection_ids([...collection_ids, c_id]);
               setCollection_names([...collection_names, textFieldValue]);
@@ -128,7 +128,7 @@ const BookDetail = ({userInfo}) => {
       book_id: book_id
     }).then(res => {
 
-      setsnackbarcontent("Book has been added to collection");
+      setsnackbarcontent('Book has been added to collection');
       setsnackbaropen(true);
       setAnchorEl(null);
     }).catch(error => {
@@ -225,7 +225,7 @@ const BookDetail = ({userInfo}) => {
       }
     })
     .then(function (response) {
-      if (response['data']['publish_date'] === "" ) {
+      if (response['data']['publish_date'] === '' ) {
         setPublishdate('Not Available');
       } else {
         if (months.includes(response['data']['publish_date'].split(' ')[0]) ) {
@@ -236,26 +236,26 @@ const BookDetail = ({userInfo}) => {
         } 
       }
       
-      if (response['data']['publisher'] === "") {
+      if (response['data']['publisher'] === '') {
         setPublisher('Not Available');
       } else {
         setPublisher(response['data']['publisher']);
       }
      
-      let genres = "";
+      let genres = '';
       for (let i = 0; i < response['data']['genres'].length; i++) {
         genres = genres+response['data']['genres'][i];
-        genres = genres+", ";
+        genres = genres+', ';
       }
-      if (genres !== "") {
+      if (genres !== '') {
         genres = genres.substring(0,genres.length-2);
       }
   
-      if (genres === "") {
-        genres = "None";
+      if (genres === '') {
+        genres = 'None';
       }
       setGenres(genres);
-      if (response['data']['cover_image']==="") {
+      if (response['data']['cover_image']==='') {
         setCover('https://islandpress.org/sites/default/files/default_book_cover_2015.jpg');
       } else{
         setCover(response['data']['cover_image']);
@@ -275,7 +275,7 @@ const BookDetail = ({userInfo}) => {
       {cover &&
       <Box sx={{ flexGrow: 1, mt: 2,mx: -20 }} >
 
-        <Grid container direction="row" spacing={3}>
+        <Grid container direction='row' spacing={3}>
           <Grid item xs={3}>
             <AddCollection  btnDisabled={btnDisabled} setbtnDisabled={setbtnDisabled} book_id={book_id} setreadingButtonText={setreadingButtonText} setsnackbarcontent={setsnackbarcontent} setsnackbaropen={setsnackbaropen}
             setwarningcontent={setwarningcontent} setwarningopen={setwarningopen} cover={cover} readingButtonText={readingButtonText} publisher={publisher}
@@ -301,7 +301,7 @@ const BookDetail = ({userInfo}) => {
           }}
         >
           <Typography sx={{ p: 2 }}>Add to collection</Typography>
-          <Grid container direction="column" spacing={0}>
+          <Grid container direction='column' spacing={0}>
             <Button startIcon={<AddIcon />} onClick={() => handleCreateCollection()}>Create</Button>
             {collection_names && collection_names.length >0 &&
             collection_names.map((item, i) =>
@@ -323,19 +323,19 @@ const BookDetail = ({userInfo}) => {
             </DialogContentText>
             <TextField
               autoFocus
-              margin="dense"
-              id="name"
-              label="collection name"
-              type="text"
+              margin='dense'
+              id='name'
+              label='collection name'
+              type='text'
               fullWidth
-              variant="standard"
+              variant='standard'
               value={textFieldValue}
               onChange={(e) => settextFieldValue(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
             
-            <Button type="submit" onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
+            <Button type='submit' onClick={handleCreateCollectionForm}>Create and Add to collection</Button>
           </DialogActions>
 
         </Dialog>

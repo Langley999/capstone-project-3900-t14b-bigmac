@@ -67,7 +67,7 @@ const Admin = () => {
 
     })
     .catch(function (error) {
-      setErrorMsg("Invalid admin id or password!");
+      setErrorMsg('Invalid admin id or password!');
       setSnackBarOpen(true);
     });
 
@@ -76,78 +76,78 @@ const Admin = () => {
 
   // style of the login form box
   const formStyle = {
-    display: "flex",
-    justifyContent: "space-evenly",
-    flexDirection: "column",
-    width: "400px",
-    height: "450px",
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    marginTop: "-275px",
-    marginLeft: "-270px",
-    paddingLeft: "70px",
-    paddingRight: "70px",
-    paddingBottom: "30px",
-    outline: "1px solid grey",
-    borderRadius: "15px"
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexDirection: 'column',
+    width: '400px',
+    height: '450px',
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    marginTop: '-275px',
+    marginLeft: '-270px',
+    paddingLeft: '70px',
+    paddingRight: '70px',
+    paddingBottom: '30px',
+    outline: '1px solid grey',
+    borderRadius: '15px'
   }
 
   const headingStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "row",
-    marginLeft: "-10px"
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    marginLeft: '-10px'
   }
 
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
       <Box
-        component="form"
+        component='form'
         noValidate
-        autoComplete="off"
+        autoComplete='off'
         style={formStyle}
         onSubmit={(e) => submitLogin(e)}
       >
-        <Stack direction="row" style={headingStyle}>
+        <Stack direction='row' style={headingStyle}>
           <HomeButton/>
-          <h1 style={{textAlign: "center"}}>Admin Login</h1>
-          <div style={{width: "30px"}}></div>
+          <h1 style={{textAlign: 'center'}}>Admin Login</h1>
+          <div style={{width: '30px'}}></div>
         </Stack>
         
         <TextField
           required
-          id="outlined-email"
-          label="Admin ID"
-          type="id"
+          id='outlined-email'
+          label='Admin ID'
+          type='id'
           onChange={e => setId(e.target.value)}
         />
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <FormControl variant='outlined'>
+          <InputLabel htmlFor='outlined-adornment-password'>Password</InputLabel>
           <OutlinedInput
-            id="outlined-adornment-password"
+            id='outlined-adornment-password'
             type={pass.showPassword ? 'text' : 'password'}
             value={pass.password}
             onChange={handlePassChange('password')}
             endAdornment={
-              <InputAdornment position="end">
+              <InputAdornment position='end'>
                 <IconButton
-                  aria-label="toggle password visibility"
+                  aria-label='toggle password visibility'
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
-                  edge="end"
+                  edge='end'
                 >
                   {pass.showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>
               </InputAdornment>
             }
-            label="Password"
+            label='Password'
           />
         </FormControl>
 
-        <Button variant="contained" type="submit">Login</Button>
-        <span style={{height: "20px", textAlign: "center"}}>Login as a user? <a href="http://localhost:3000/bookstation/login">Login</a></span>
+        <Button variant='contained' type='submit'>Login</Button>
+        <span style={{height: '20px', textAlign: 'center'}}>Login as a user? <a href='http://localhost:3000/bookstation/login'>Login</a></span>
       </Box>
     </div>
   );

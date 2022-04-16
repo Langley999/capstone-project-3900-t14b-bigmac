@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -20,7 +20,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import {Pagination} from "@mui/material";
+import {Pagination} from '@mui/material';
 import ReviewContent from './ReviewContent';
 import {url} from '../../components/Helper';
 
@@ -35,10 +35,10 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [collection_names, setCollection_names] = React.useState([]);
   const [collection_ids, setCollection_ids] = React.useState([]);
-  const [title,setTitle] = React.useState("");
-  const [blurb, setBlurb] = React.useState("");
+  const [title,setTitle] = React.useState('');
+  const [blurb, setBlurb] = React.useState('');
 
-  const [authur, setAuther] = React.useState("");
+  const [authur, setAuther] = React.useState('');
 
   const [ave_rating, setaveRating] = React.useState(0);
   const [n_rating, setN_rating] = React.useState(0);
@@ -47,9 +47,9 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
   const [reviews, setReviews] =  React.useState([]);
   const open = Boolean(anchorEl);
   const [myreview,setmyreview] = useState([]);
-  const [sort, setSort] = useState("time");
+  const [sort, setSort] = useState('time');
   const [reviewform, setReviewform] = useState(false);
-  const [newreview, setNewreview] = useState("");
+  const [newreview, setNewreview] = useState('');
   const handleAddReviewClose = () => {
     setReviewFormOn(false);
   }
@@ -68,7 +68,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
     .then(function (response) {
       if (response['status'] === 200) {
         setReviewform(false);
-        setNewreview("");
+        setNewreview('');
         axios.get(`${url}/book/ownreview`, {
           params: {
             token: localStorage.getItem('token'),
@@ -204,10 +204,10 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
   }
   const handleSubmitReview = () => {
     if (rating === 0) {
-      setwarningcontent("Please select a rating!");
+      setwarningcontent('Please select a rating!');
       setwarningopen(true);
-    } else if (reviewValue === "") { 
-      setwarningcontent("Please enter a review!");
+    } else if (reviewValue === '') { 
+      setwarningcontent('Please enter a review!');
       setwarningopen(true);
     } else {
       const body = JSON.stringify( {
@@ -232,7 +232,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
         }).then(function(response){
           setmyreview(response['data']['review']);
         });
-        setreviewValue("");
+        setreviewValue('');
         setbtnDisabled(true);
         setreadingButtonText('completed');
       })
@@ -371,7 +371,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
     .then(function (response) {
       setTitle(response['data']['title']);
       setBlurb(response['data']['blurb']);
-      if (response['data']['author_string'] === "") {
+      if (response['data']['author_string'] === '') {
         setAuther('unknown');
       } else {
         setAuther(response['data']['author_string']);        
@@ -387,24 +387,24 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
   }, [window.location.href, userInfo]);
 
   return (
-    <Grid container direction="row" spacing={1}>
+    <Grid container direction='row' spacing={1}>
     <Grid item xs={12}>
-      <Typography variant="h4" style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component="div">{title}</Typography>
+      <Typography variant='h4' style={{ fontWeight: 500,paddingTop:10 }} gutterBottom component='div'>{title}</Typography>
     </Grid>
     <Grid item xs={12}>
-      <Grid container direction="row" spacing={0}>
+      <Grid container direction='row' spacing={0}>
         <Grid item xs={7}>
           <Box sx={{ flexGrow: 1, mb: 3}} >
-            <Typography variant="subtitle1" style={{ fontWeight: 800 }} gutterBottom component="div">by {authur}</Typography>
+            <Typography variant='subtitle1' style={{ fontWeight: 800 }} gutterBottom component='div'>by {authur}</Typography>
           </Box>
         </Grid>
         <Grid item xs={2}>
           <Box sx={{ flexGrow: 1, ml: 5}} >
             <Rating
-              name="simple-controlled"
+              name='simple-controlled'
               value={ave_rating}
               precision={0.1}
-              size="small"
+              size='small'
               readOnly
             />
           </Box>
@@ -412,22 +412,22 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
 
         <Grid item xs={3}>
           <Box sx={{ flexGrow: 1, ml: 3}} >
-            <Typography variant="caption" display="block" gutterBottom>{ave_rating} ({n_rating} rating{n_rating === 1? <></>: <>s</> })</Typography>
+            <Typography variant='caption' display='block' gutterBottom>{ave_rating} ({n_rating} rating{n_rating === 1? <></>: <>s</> })</Typography>
           </Box>
         </Grid>
       </Grid>
     </Grid>
 
     <Grid item xs={12}>
-      <Typography variant="body1" gutterBottom>{blurb}</Typography>
+      <Typography variant='body1' gutterBottom>{blurb}</Typography>
     </Grid>
 
 
     <Grid item xs={12} >
-      <Grid container direction="row" spacing={2}>
+      <Grid container direction='row' spacing={2}>
         <Grid item xs={12}>
           <Box sx={{ flexGrow: 1, mt: 8,ml: 0 }} >
-            <Typography variant="h6" gutterBottom component="div">Community Reviews</Typography>
+            <Typography variant='h6' gutterBottom component='div'>Community Reviews</Typography>
           </Box>
           <Divider sx={{ mb: 2}}/>
         </Grid>
@@ -435,7 +435,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
         <Grid item xs={2}>
           <Box sx={{ flexGrow: 1, mt: 1}}>
             <Rating
-              name="simple-controlled"
+              name='simple-controlled'
               value={rating}
               onChange={(event, newValue) => {
 
@@ -450,12 +450,12 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
           <Button startIcon={<DriveFileRenameOutlineIcon />} onClick={() => handleAddReview()}>Add Review</Button>}
         </Grid>}
         <FormControl >
-          <InputLabel style ={{width: '100%'}} id="demo-simple-select-label">Sort by </InputLabel>
+          <InputLabel style ={{width: '100%'}} id='demo-simple-select-label'>Sort by </InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId='demo-simple-select-label'
+            id='demo-simple-select'
             value={sort}
-            label="Time"
+            label='Time'
             onChange={handleChangeSort}
             autoWidth
             style={{ fontSize:14,height: 40 }}
@@ -470,34 +470,34 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
 
     <Grid item xs={12} >
 
-      {(reviews.length == 0 && myreview.length == 0) &&  <Typography variant="h6" gutterBottom component="div">No reviews yet</Typography>}
+      {(reviews.length == 0 && myreview.length == 0) &&  <Typography variant='h6' gutterBottom component='div'>No reviews yet</Typography>}
       
       {myreview.length > 0 &&  myreview.map((item, i) =>
-      <Grid container direction="row" spacing={0} key={i} style={{ marginBottom: 0 }} >
+      <Grid container direction='row' spacing={0} key={i} style={{ marginBottom: 0 }} >
         <Grid item xs = {10}>
           <ReviewContent item={item} i = {i}></ReviewContent>
         </Grid>
         <Grid item xs={1} style={{ marginLeft: -62}}> 
-          <IconButton aria-label="edit" size="small" onClick={() => handleEditReview(item['review_id'])}>
-              <EditIcon fontSize="inherit" color="white" style={{ color: 'white',backgroundColor: '#1976d2' , borderRadius:'15px',padding: '4px'}}/> 
+          <IconButton aria-label='edit' size='small' onClick={() => handleEditReview(item['review_id'])}>
+              <EditIcon fontSize='inherit' color='white' style={{ color: 'white',backgroundColor: '#1976d2' , borderRadius:'15px',padding: '4px'}}/> 
           </IconButton>                      
         </Grid>
         { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
-            <ThumbUpOffAltIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' onClick={() => handleLikeReview(item['review_id'])}>
+            <ThumbUpOffAltIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}
           </Grid>}
         { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
-            <ThumbUpIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' onClick={() => handleUnlikeReview(item['review_id'])}>
+            <ThumbUpIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}
         </Grid>}
     
         { localStorage.getItem('token') === null && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" disabled>
-            <ThumbUpOffAltIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' disabled>
+            <ThumbUpOffAltIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}      
           </Grid>}         
@@ -505,26 +505,26 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
 
       )}
       {reviews.length > 0 &&  reviews.map((item, i) =>
-      <Grid container direction="row" spacing={0} key={i} style={{ marginBottom: 0 }} >
+      <Grid container direction='row' spacing={0} key={i} style={{ marginBottom: 0 }} >
         <Grid item xs = {10}>
           <ReviewContent item={item} i = {i}></ReviewContent>
         </Grid>
           { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" onClick={() => handleLikeReview(item['review_id'])}>
-            <ThumbUpOffAltIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' onClick={() => handleLikeReview(item['review_id'])}>
+            <ThumbUpOffAltIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}
         </Grid>}
         { localStorage.getItem('token') && item['is_liked'] && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" onClick={() => handleUnlikeReview(item['review_id'])}>
-            <ThumbUpIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' onClick={() => handleUnlikeReview(item['review_id'])}>
+            <ThumbUpIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}
         </Grid>}
     
         { localStorage.getItem('token') === null && <Grid item xs={1}>
-          <IconButton aria-label="delete" size="small" disabled>
-            <ThumbUpOffAltIcon fontSize="inherit" /> 
+          <IconButton aria-label='delete' size='small' disabled>
+            <ThumbUpOffAltIcon fontSize='inherit' /> 
           </IconButton>
             {item['likes']}      
           </Grid>}         
@@ -533,7 +533,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
       )}
 
     {reviews.length > 0 &&
-      <Grid container direction="row" justifyContent="center" spacing={2}  style={{ marginTop: 40 }} >
+      <Grid container direction='row' justifyContent='center' spacing={2}  style={{ marginTop: 40 }} >
         <Pagination count={reviews['pages']} page={1} onChange={handleChangePage} />
       </Grid>
     }
@@ -544,7 +544,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
         <DialogContent>
           <TextField 
             style={{ width: '500px' }}
-            fullWidth label="" id="fullWidth" multiline={true} value={newreview}
+            fullWidth label='' id='fullWidth' multiline={true} value={newreview}
             onChange={(e) => setNewreview(e.target.value)}
           />
         </DialogContent>
@@ -561,10 +561,10 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
               maxWidth: '100%',
             }}
           >
-            <Grid container direction="column" alignItems="center" justifyContent="flex-start" spacing={0}>
+            <Grid container direction='column' alignItems='center' justifyContent='flex-start' spacing={0}>
               <DialogTitle>Write a review</DialogTitle>
               <Rating
-                name="simple-controlled"
+                name='simple-controlled'
                 value={rating}
                 onChange={(event, newValue) => {
                   handleSubmitRating(newValue);
@@ -577,7 +577,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
                   maxWidth: '100%',
                 }}
               >
-                <TextField fullWidth label="" id="fullWidth" multiline={true} value={reviewValue}
+                <TextField fullWidth label='' id='fullWidth' multiline={true} value={reviewValue}
                            onChange={(e) => setreviewValue(e.target.value)} rows={12} />
               </Box>
               <Button onClick={handleSubmitReview}>Submit</Button>
