@@ -44,7 +44,6 @@ function App() {
   const [genreRating, setGenreRating] = useState(0);
   const [searchGenres, setSearchGenres] = useState('');
   const [tempsearchRating, setTempsearchRating] = useState(0);
-  const [tempgenreRating, setTempgenreRating] = useState(0);
   const [followingFav, setFollowingFav] = useState([]);
   const [newNotif, setNewNotif] = useState('');
 
@@ -65,10 +64,6 @@ function App() {
 
   const updateTempsearchRating = (newRating) => {
     setTempsearchRating(newRating);
-  }
-
-  const updateTempgenreRating = (newRating) => {
-    setTempgenreRating(newRating);
   }
 
   const updateSearchGenres = (newGenres) => {
@@ -143,7 +138,6 @@ function App() {
                 updateGenreRating={updateGenreRating}
                 updateSearchGenres={updateSearchGenres}
                 updateTempsearchRating={updateTempsearchRating}
-                updateTempgenreRating={updateTempgenreRating}
                 updateNewNotif={updateNewNotif}
               />
               <div className='centre'>
