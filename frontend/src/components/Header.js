@@ -1,7 +1,6 @@
 import {Avatar, Badge, Box, Divider, IconButton, Toolbar, Tooltip} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import { styled} from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import HelpIcon from '@mui/icons-material/Help';
 import GroupIcon from '@mui/icons-material/Group';
@@ -46,7 +45,7 @@ const Slogan = styled('h1')(({ theme }) => ({
 }));
 
 
-function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, genreRating, searchGenres, updateSearchGenres, updateTempsearchRating, updateNewNotif}) {
+function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValue, radioValue, updateRadioValue, updateSearchResult, updateTabValue, searchRating, updateSearchRating, updatePageCount, updatePage, updateSearchType, updateGenreRating, updateSearchGenres, updateTempsearchRating, updateNewNotif}) {
   const [rating, setRating] = useState(0);
   const [toRead, setToRead] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -132,9 +131,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
 
   const submitSearch = (e) => {
     e.preventDefault();
-    console.log(radioValue)
-    console.log(searchValue)
-    console.log(searchRating)
     axios.get(`${url}/search/searchbook`, {params: {
         type: radioValue,
         value: searchValue,
@@ -148,7 +144,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
       updateSearchType('byValue');
       updatePageCount(res.data.pages);
       updateSearchResult(res.data.books);
-      // updateSearchRating(0);
       setRating(0);
       navigate('searchbooks');
     })
@@ -179,16 +174,6 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   }
 
   function NavBarV2 () {
-    // const showNotifications = () => {
-    //   axios.get(`${url}/notification/getall`, {
-    //     params: {
-    //       token: localStorage.getItem('token')
-    //     }
-    //   }).then(res => {
-    //     updateNotifications(res.data.notifications);
-    //   })
-    // }
-
     return (
       <>
         <PublicFeedIcon/>
@@ -308,6 +293,8 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
 
 
   return (
+    <>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
       <HeaderContainer position="fixed" className='header'
         sx={{
           width: {
@@ -325,7 +312,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         >
           <Box component={Link} to='/' className='remove-underline' sx={{color: '#6985c4'}} >
             <Slogan >
-                BookStation
+              BookStation
             </Slogan>
           </Box>
           <Box
@@ -361,12 +348,12 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
               <FormControlLabel value="author" control={<Radio />} label="by author" />
             </RadioGroup>
           </FormControl>
-         <Filter updateSearchRating={updateSearchRating} updateRating={updateRating} rating={rating}/>
+          <Filter updateSearchRating={updateSearchRating} updateRating={updateRating} rating={rating}/>
           <Divider
             orientation="vertical"
             style={{ minHeight: "inherit", color: "red", marginLeft: '20px', marginRight: '20px'}}
           />
-          <Genres updateSearchResult={updateSearchResult} updateGenreRating={updateGenreRating} updateSearchType={updateSearchType} genreRating={genreRating} updateSearchGenres={updateSearchGenres} updatePageCount={updatePageCount} updatePage={updatePage}/>
+          <Genres updateSearchResult={updateSearchResult} updateGenreRating={updateGenreRating} updateSearchType={updateSearchType} updateSearchGenres={updateSearchGenres} updatePageCount={updatePageCount} updatePage={updatePage}/>
           <Box sx={{ flexGrow: 1 }} />
           {ifLogin ? <NavBarV2/> : <NavBarV1/>}
           {ifLogin ?
@@ -399,6 +386,7 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
         </Toolbar>
         <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />
       </HeaderContainer>
+    </>
   );
 }
 

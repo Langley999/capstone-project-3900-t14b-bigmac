@@ -11,22 +11,22 @@ import Header from './components/Header';
 import Login from './layouts/Login';
 import Register from './layouts/Register';
 import Home from './layouts/Home/Home';
-import Quiz from './layouts/Quiz';
-import EnterQuiz from './layouts/EnterQuiz';
+import Quiz from './layouts/Quiz/Quiz';
+import EnterQuiz from './layouts/Quiz/EnterQuiz';
 import Feed from './layouts/Feed/Feed';
 import PublicFeed from './layouts/Feed/PublicFeed';
 import SearchUsers from './layouts/SearchUsers/SearchUsers';
 import Notifications from './layouts/Notifications';
-import Admin from './layouts/Admin';
-import Addquiz from './layouts/Addquiz';
-import Allquiz from './layouts/Allquiz';
+import Admin from './layouts/Quiz/Admin';
+import Addquiz from './layouts/Quiz/Addquiz';
+import Allquiz from './layouts/Quiz/Allquiz';
 import Profile from './layouts/Profile/Profile';
 import Collections from './layouts/Collections/Collections';
 import Analytics from './layouts/Analytics/Analytics';
 import NavTabs from './components/NavTabs';
 import {AvatarBanner} from './components/AvatarBanner';
-import BookDetail from  './layouts/BookDetail';
-import EditQuiz from  './layouts/EditQuiz';
+import BookDetail from  './layouts/BookDetails/BookDetail';
+import EditQuiz from  './layouts/Quiz/EditQuiz';
 import SearchBooks from "./layouts/SearchBooks/SearchBooks";
 import Posts from './layouts/Posts/Posts';
 import { withSnackbar } from 'notistack';
@@ -45,7 +45,6 @@ function App() {
   const [genreRating, setGenreRating] = useState(0);
   const [searchGenres, setSearchGenres] = useState('');
   const [tempsearchRating, setTempsearchRating] = useState(0);
-  const [tempgenreRating, setTempgenreRating] = useState(0);
   const [followingFav, setFollowingFav] = useState([]);
   const [newNotif, setNewNotif] = useState('');
 
@@ -66,10 +65,6 @@ function App() {
 
   const updateTempsearchRating = (newRating) => {
     setTempsearchRating(newRating);
-  }
-
-  const updateTempgenreRating = (newRating) => {
-    setTempgenreRating(newRating);
   }
 
   const updateSearchGenres = (newGenres) => {
@@ -142,11 +137,8 @@ function App() {
                 updatePage={updatePage}
                 updateSearchType={updateSearchType}
                 updateGenreRating={updateGenreRating}
-                genreRating={genreRating}
-                searchGenres={searchGenres}
                 updateSearchGenres={updateSearchGenres}
                 updateTempsearchRating={updateTempsearchRating}
-                updateTempgenreRating={updateTempgenreRating}
                 updateNewNotif={updateNewNotif}
               />
               <div className='centre'>
@@ -166,17 +158,16 @@ function App() {
                 updateGenreRating={updateGenreRating}
                 updateTempsearchRating={updateTempsearchRating}
                 updateSearchValue={updateSearchValue}
-                updateRadioValue={updateRadioValue}
                 updateFollowingFav={updateFollowingFav}
                 followingFav={followingFav}
               />}
             />
-            <Route path="book" element={<BookDetail userInfo={userInfo}/>}>
-              <Route path=":id" element={<BookDetail userInfo={userInfo}/>} />
+            <Route path='book' element={<BookDetail userInfo={userInfo}/>}>
+              <Route path=':id' element={<BookDetail userInfo={userInfo}/>} />
             </Route>
             <Route path='quiz' element={<Quiz />} />
-            <Route path="enterquiz" element={<EnterQuiz />}>
-              <Route path=":id" element={<EnterQuiz />} />
+            <Route path='enterquiz' element={<EnterQuiz />}>
+              <Route path=':id' element={<EnterQuiz />} />
             </Route>
             <Route path='feed' element={<Feed />} />
             <Route path='publicfeed' element={<PublicFeed />} />
@@ -214,16 +205,16 @@ function App() {
             </Route>
           </Route>
 
-          <Route path="bookstation" element={
+          <Route path='bookstation' element={
               <Outlet />
           }>
-            <Route path="login" element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="register" element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="makequiz" element={<Addquiz />} />
-            <Route path="allquiz" element={<Allquiz />} />
-            <Route path="editquiz" element={<EditQuiz userInfo={userInfo}/>}>
-              <Route path=":id" element={<EditQuiz userInfo={userInfo}/>} />
+            <Route path='login' element={<Login updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path='register' element={<Register updateLogin={updateLogin} updateUserInfo={updateUserInfo}/>} />
+            <Route path='admin' element={<Admin />} />
+            <Route path='makequiz' element={<Addquiz />} />
+            <Route path='allquiz' element={<Allquiz />} />
+            <Route path='editquiz' element={<EditQuiz userInfo={userInfo}/>}>
+              <Route path=':id' element={<EditQuiz userInfo={userInfo}/>} />
             </Route>
 
           </Route>

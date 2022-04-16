@@ -6,15 +6,17 @@ import {
   Divider,
   Typography
 } from '@mui/material';
-import {CardMedia} from "@material-ui/core";
+import {CardMedia} from '@material-ui/core';
 import banner from '../assets/banner.png';
 import banner2 from '../assets/banner2.jpeg';
-import React, { useState, useRef, useEffect } from 'react';
-import {useParams} from "react-router-dom";
-import axios from "axios";
-import {url} from "./Helper";
+import React, { useState, useEffect } from 'react';
+import {useParams} from 'react-router-dom';
+import axios from 'axios';
+import {url} from './Helper';
 
-
+/**
+ * Showing the user's avatar, username and a banner in user's profile
+ */
 export const AvatarBanner = ({userInfo}) => {
   const urlParams = useParams();
   const [target, setTarget] = useState({});
@@ -36,17 +38,17 @@ export const AvatarBanner = ({userInfo}) => {
             avatar: res.data.avatar
           });
       });
-  }, [window.location.href, userInfo])
+  }, [window.location.href, userInfo]);
 
 
   return (
     <Card>
       <CardMedia
-        component="img"
-        alt="Contemplative Reptile"
-        height="100"
+        component='img'
+        alt='Contemplative Reptile'
+        height='100'
         image={user_id === userInfo.user_id ? banner : banner2}
-        title="Contemplative Reptile"
+        title='Contemplative Reptile'
       />
       <CardContent>
         <Box
@@ -57,7 +59,7 @@ export const AvatarBanner = ({userInfo}) => {
           }}
         >
           {target.avatar === undefined ?
-          <Avatar fontSize="large"
+          <Avatar fontSize='large'
           sx={{
             height: 64,
             mb: 2,
@@ -73,8 +75,8 @@ export const AvatarBanner = ({userInfo}) => {
             }}
           />}
           <Typography
-            color="textPrimary"
-            variant="h5"
+            color='textPrimary'
+            variant='h5'
           >
             {target.username}
           </Typography>

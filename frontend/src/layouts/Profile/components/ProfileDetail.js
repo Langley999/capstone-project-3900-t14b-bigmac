@@ -14,24 +14,24 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import FormControl from "@mui/material/FormControl";
-import axios from "axios";
+import {Visibility, VisibilityOff} from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import axios from 'axios';
 import ErrorPopup from '../../../components/ErrorPopup';
-import SuccessPopup from '../../../components/ErrorPopup';
 import {url, checkProfileInput} from '../../../components/Helper';
-import {useParams, useLocation, useNavigate} from "react-router-dom";
+import {useParams} from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import {Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 
+/**
+ * Showing the user's profile detail in profile page
+ */
 export const ProfileDetail = ({updateUserInfo, userInfo}) => {
   const params = useParams();
   const [values, setValues] = useState({});
   const [ifVisible, setIfVisible] = useState(false);
   const [isSelf, setIsSelf] = useState(true);
-
-  const [ifShow, setIfShow] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [showError, setShowError] = useState(false);
@@ -68,7 +68,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         setShowError(true);
       });
 
-  }, [window.location.href, userInfo])
+  }, [window.location.href, userInfo]);
 
   const handleClickOpenBadge = () => {
     setOpenBadge(true);
@@ -167,21 +167,21 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
         </DialogActions>
       </Dialog>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError}/>
-      <Snackbar  sx={{ height: "100%" }} anchorOrigin={{vertical: "top", horizontal: "center"}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
-        <Alert severity="success" style={{successStyle}} sx={{ width: '100%' }} >
+      <Snackbar  sx={{ height: '100%' }} anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={showSuccess}  onClose = {() => setShowSuccess(false)} autoHideDuration={1500} >
+        <Alert severity='success' style={{successStyle}} sx={{ width: '100%' }} >
           {successMsg}
         </Alert>
       </Snackbar>
       {isSelf ?
         <form
-          autoComplete="off"
+          autoComplete='off'
           noValidate
         >
 
           <Card>
             <CardHeader
-              subheader="The information can be edited"
-              title="Account Profile"
+              subheader='The information can be edited'
+              title='Account Profile'
             />
             <Divider />
             <CardContent>
@@ -196,7 +196,7 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 <Box
                   display='flex'
                   flexDirection='row'
-                  justifyContent="flex-start"
+                  justifyContent='flex-start'
                   width='100%'
                 >
                   < Typography
@@ -216,44 +216,44 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                 <TextField
                   disabled
                   fullWidth
-                  label="Email"
-                  name="email"
+                  label='Email'
+                  name='email'
                   onChange={handleChange}
                   value={values.email ?? ''}
-                  variant="outlined"
+                  variant='outlined'
                 />
                 <TextField
                   fullWidth
-                  label="Username"
-                  name="username"
+                  label='Username'
+                  name='username'
                   onChange={handleChange}
                   value={values.username ?? ''}
-                  variant="outlined"
+                  variant='outlined'
                 />
                 <FormControl
                   sx={{ m: 1, width: '100%'}}
-                  variant="outlined"
+                  variant='outlined'
                 >
-                  <InputLabel htmlFor="input-password">Password</InputLabel>
+                  <InputLabel htmlFor='input-password'>Password</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    id="input-password"
+                    id='input-password'
                     type={ifVisible ? 'text' : 'password'}
                     value={values.password ?? ''}
                     onChange={handleChangePwd('password')}
                     endAdornment={
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label='toggle password visibility'
                           onClick={clickShowPassword}
                           onMouseDown={mouseDownPassword}
-                          edge="end"
+                          edge='end'
                         >
                           {ifVisible ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                     }
-                    label="Password"
+                    label='Password'
                   />
                 </FormControl>
               </Box>
@@ -266,8 +266,8 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               }}
             >
               <Button
-                color="primary"
-                variant="contained"
+                color='primary'
+                variant='contained'
                 onClick={handleSubmit}
               >
                 Save details
@@ -289,15 +289,15 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
               < Typography
                 color='#616161'
                 variant='h5'
-                sx={{marginRight: '10px', textAlign: "center"}}
+                sx={{marginRight: '10px', textAlign: 'center'}}
               >
-                Badge Collection
+                Badge Collection:
               </ Typography>
                 <br/>
                 <Box
                   display='flex'
                   flexDirection='row'
-                  justifyContent="center"
+                  justifyContent='center'
                   width='100%'
                 >
                 {values.badges.length > 0 ? values.badges.map((badge) => {
@@ -308,6 +308,12 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   )
                 }) : <Typography>Empty</Typography>}
               </Box>
+              < Typography
+                color='#616161'
+                variant='h5'
+              >
+                {`Username: ${values.username}`}
+              </ Typography>
             </Box>
           </CardContent>
         </Card>

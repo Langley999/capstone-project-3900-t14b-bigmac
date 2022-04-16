@@ -1,41 +1,36 @@
-from csv import unregister_dialect
 from datetime import datetime
 from json import dumps
 import ast
-import csv
 import math
-import time
 
-from itsdangerous import NoneAlgorithm
 from bookstation.models.user_sys import Follow_relationship, Notification
 from bookstation.models.user_sys import Post
-# from typing import Collection
-from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre, Genre, Review, Author
-from bookstation.models.user_sys import User, Collection
+from bookstation.models.book_sys import Collection_book, User_likes, Book, Book_author, Book_genre,  Review
+from bookstation.models.user_sys import Collection
 from bookstation.models.event_sys import User_badge
 from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
 
-from flask import session
+'''
 
-import hashlib
-import jwt
+Retrieve all book details relevant infromation
 
+Args (GET):
+    token (string) (optional): used for user session validation
+    bookId (integer): request bookId
+    sort (string): can be 'time', 'likes', 'badges'
 
+Returns:
+    book_dict: Dictionary of book objecsts
+        - relevant book fields
+        - reviews (list): list of all reviews associated with particualr book
 
-
+Raises:
+    InputError: no book has been found for book_id
+'''
 @app.route("/book/details", methods=["GET"])
 def getDetails():
-    '''
-    Get book details
-    Args (GET):
-        bookId (integer): request bookId
-        sort (string): can be 'time', 'likes', 'badges'
-    Returns:
-        json object of book details
-    Raises:
-        InputError: no book has been found for book_id
-    '''
+
     #get input
     token = request.args.get('token') 
     sort = request.args.get('sort')
@@ -44,7 +39,6 @@ def getDetails():
     book_id = request.args.get('bookId')
     page_no = int(request.args.get('page'))
     book = Book.query.get(book_id)
-
 
     #check book is db
     if book == None:
@@ -88,11 +82,23 @@ def getDetails():
     return dumps(book_dict)
 
 
+
+"""
+Retrieve the current users review for a particular book
+Args:
+    token (string) : used for user session validation
+	book_id (integer): id of the book
+
+Returns:
+    review (dict): Dictionary containing review relevant information
+
+"""
 @app.route("/book/ownreview", methods=["GET"])
 def ownReview():
     token = request.args.get('token') 
     book_id = request.args.get('bookId')
     user = get_user(token)
+
     review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
     review_dict = []
     if review != None and review.content != None:
@@ -107,13 +113,21 @@ def ownReview():
         review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username,'badges':badges, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
     return dumps({'review' : review_dict})
 
+
+
+"""
+Create a like for specified book
+Args:
+    token (string) : used for user session validation
+	review_id (integer): id of the review to like
+
+Raises:
+    BadReqError: User already liked the specified review
+
+"""
 @app.route("/book/likereview", methods=["POST"])
 def likeReview():
 
-    """
-    Arg: review_id to like
-    
-    """
     body = request.get_json()
     user = get_user(body['token'])
     review_id = body['review_id']
@@ -129,16 +143,11 @@ def likeReview():
     return dumps({})
 
 
+
 @app.route("/book/editreview", methods=["POST"])
 def editReview():
 
-    """
-    Arg: review_id to like
-    review: new content of review
-    
-    """
     body = request.get_json()
-    print(body)
     user = get_user(body['token'])
 
     review_id = body['review_id']
@@ -155,7 +164,16 @@ def editReview():
     return dumps({})
 
 
+"""
+Remove a like for specified book
+Args:
+    token (string) : used for user session validation
+	review_id (integer): id of the review to unlike
 
+Raises:
+    BadReqError: User never liked the specified review
+
+"""
 @app.route("/book/unlikereview", methods=["POST"])
 def unlikeReview():
     """
@@ -178,25 +196,32 @@ def unlikeReview():
 
 
 
+"""
+Algorithm to find the most similar books to a given book
 
+Args:
+	book_id (integer): id of book to compare to
+
+Returns:
+    return_list (list): List of book objects
+        - id (integer): id of book
+        - title (string): title of book
+        - cover_image (string): cover image of book
+"""
 @app.route("/book/similarbooks", methods=["GET"])
 def similarBooks():
 
-    """
-    Arg: book_id of book to get simialr books from
-
-    Returns: list of book objects that are similar to target book
-    
-    """
     book_id = request.args.get('book_id')
+
+    #get all genres for the specified book and create genre set for comparison
     target_tags = set()
     similarity_set = set()
     genres = Book_genre.query.filter_by(book_id = book_id).all()
-
     for genre in genres:
         target_tags.add(genre.genre_id)
 
-
+    # get all books from author(s) of the specified book 
+    # quanitfy similarity value based on interesction length with genre tags
     authors = Book_author.query.filter_by(book_id = book_id).all()
     for author in authors:
         author_books = Book_author.query.filter_by(author_id = author.author_id).all()
@@ -209,48 +234,44 @@ def similarBooks():
                 comptags.add(compgenre.genre_id)
             similarity = len(target_tags.intersection(comptags))
             similarity_set.add((book.book_id, similarity))
-            
+
+    #handling cases where author does not have many other books
+    #return best rated books instead
     book_list = sorted(similarity_set, key = lambda x: x[1])
     if len(book_list) == 0:
         no_similar_list = []
         books = Book.query.order_by(Book.average_rating.desc()).limit(3).all()
         for book in books:
+            if book.book_id == book_id:
+                continue
             no_similar_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
             no_similar_list.append(no_similar_dict)
         return dumps({'books' : no_similar_list})
-
+    
     return_list = []
-    i = 0
     for book_tup in book_list:
         book = Book.query.get(book_tup[0])
-        if book.cover_image != "":
-            return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
-            return_list.append(return_dict)
-            i += 1
-            if i > 3:
-                break
-    
+        return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
+        return_list.append(return_dict)
 
     return dumps({'books' : return_list})
 
 
 
-#get reviews for a user_id doesnt seem to be used
+'''
+Get reviews for a user given a book
+Args (GET):
+    token: token of the operator
+    bookId (integer): book_id of user requesting reviews
+Returns:
+    json object of user reviews
+'''
 @app.route("/book/reviews", methods=["GET"])
 def getReview():
-    '''
-    Get reviews for a user given a book
-    Args (GET):
-        email
-        token
-        bookId (integer): book_id of user requesting reviews
-    Returns:
-        json object of user reviews
-    '''
     #get input
     token = request.args.get('token')
     book_id = request.args.get('bookId')
-    user = User.query.filter_by(token = token).first()
+    user = get_user(token)
     #target_user_id = session.get(token)
     review = Review.query.filter_by(user_id=user.user_id, book_id=book_id).first()
     reviews = []
@@ -265,26 +286,25 @@ def getReview():
     else:
         return dumps({"reviews": []})
 
-#add rating only
+'''
+Add rating only
+Args (POST):
+    book_id (integer): bookId of book being dded
+    email (integer): email of user who's adding
+    rating (integer): rating value
+    created_time (string): time of review creation
+Returns:
+    none
+'''
 @app.route("/book/ratings", methods=["POST"])
 def addRating():
-    '''
-    Add rating only
-    Args (POST):
-        book_id (integer): bookId of book being dded
-        email (integer): email of user who's adding
-        rating (integer): rating value
-        created_time (string): time of review creation
-    Returns:
-        none
-    '''
+
     #get body
     body = request.get_json()
-
     #extract information
     book_id = body['book_id']
     token = body['token']
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     new_rating = body['rating']
 
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
@@ -293,56 +313,51 @@ def addRating():
     if review == None:
         #create record
         review = Review(book_id = book_id, user_id = user.user_id, rating = new_rating, content = None, created_time = datetime.now(), likes=0)
-        #post to databse
+        #post to database
         book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
         book.num_rating = book.num_rating + 1
         db.session.add(book)
-        db.session.add(review)
-        db.session.commit()
     else:
         book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)
         db.session.add(book)
         review.rating = new_rating
         review.created_time = datetime.now()
-        db.session.add(review)
-        db.session.commit()
+    db.session.add(review)
 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
-        db.session.commit()
-        db.session.flush()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection == None:
         new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
         db.session.add(new_book_collection)
-        db.session.commit()
+    db.session.commit()
 
     return dumps({"success": True})
 
 
-#add comment and rating
+'''
+Add rating and review
+Args (POST):
+    book_id (integer): bookId of book being dded
+    token (string): token of user who's adding
+    rating (integer): rating value
+    created_time (string): time of review creation
+    review (string): content of review
+Returns:
+    none
+'''
 @app.route("/book/ratings_reviews", methods=["POST"])
 def addRatingReview():
-    '''
-    Add rating and review
-    Args (POST):
-        book_id (integer): bookId of book being dded
-        email (integer): email of user who's adding
-        rating (integer): rating value
-        created_time (string): time of review creation
-        review (string): content of review
-    Returns:
-        none
-    '''
+
     #get body
     body = request.get_json()
     new_review_id = 0
     #extract information
     book_id = body['book_id']
     token = body['token']
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
     new_rating = body['rating']
     content = body['review']
     review = Review.query.filter_by(book_id = book_id, user_id = user.user_id).first()
@@ -354,28 +369,20 @@ def addRatingReview():
         #post to databse
         book.average_rating = (book.num_rating * book.average_rating+new_rating)/(book.num_rating + 1)
         book.num_rating = book.num_rating + 1
-        db.session.add(book)
-        db.session.add(review)
-        db.session.commit()
-        db.session.flush()
-        new_review_id = review.review_id
     else:
         book.average_rating = (book.num_rating * book.average_rating+new_rating-review.rating)/(book.num_rating)
-        db.session.add(book)
         review.rating = new_rating
         review.content = content
         review.created_time = datetime.now()
-        db.session.add(review)
-        db.session.commit()
-        db.session.flush()
-        new_review_id = review.review_id
+    db.session.add(book)
+    db.session.add(review)
+    db.session.commit()
+    new_review_id = review.review_id
 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
-        db.session.commit()
-        db.session.flush()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection == None:
         new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
@@ -389,7 +396,6 @@ def addRatingReview():
     for follower in followers:
         newnotif = Notification(user_id=follower.follower_user_id, type='review', type_id = book_id, time= datetime.now(), sender_id=user.user_id)
         db.session.add(newnotif)
-        db.session.commit()
     db.session.add(newPost)
     db.session.commit()
    
@@ -398,62 +404,61 @@ def addRatingReview():
 
 
 
+'''
+Mark a book as completed
+Args (POST):
+    book_id (integer): book being marked
+    token (string): token of the operator
+Returns:
+    None
+Raises:
+    BadReqError: post body error
+    BadReqError: Cannot add the book to this collection
+    BadReqError: This book has already been added to the collection
 
-#complete reading
+'''
+
 @app.route("/book/completereading", methods=["POST"])
 def completeReading():
-    '''
-    Delete review
-    Args (DELETE):
-        review_id (integer): review being deleted
-    Returns:
-        None
-    Raises:
-        BadReqError: Review cannot be deleted
-    '''
     try:
         data = request.get_json()
         token, book_id = data['token'], data['book_id']
     except:
         raise error.BadReqError(description="post body error")
 
-    user = User.query.filter_by(token=token).first()
+    user = get_user(token)
 
     collection = Collection.query.filter_by(name='Reading History', user_id=user.user_id).first()
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
         db.session.commit()
-        db.session.flush()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection != None:
-      raise error.BadReqError(description="This book has already been added to the collection")
+        raise error.BadReqError(description="This book has already been added to the collection")
 
     try:
-      new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
-      db.session.add(new_book_collection)
-      db.session.commit()
+        new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
+        db.session.add(new_book_collection)
+        db.session.commit()
 
-      return dumps({
-          "success": []
-      })
+        return dumps({
+            "success": []
+        })
     except:
       raise error.BadReqError(description="Cannot add the book to this collection")
 
 
-
-#add rating and review
+'''
+Check if a book is completed by user
+Args (GET):
+    book_id (integer): bookId of book being checked
+    token (string): token of the operator
+Returns:
+    flag: whether user has completed
+'''
 @app.route("/book/check_completed", methods=["GET"])
 def checkCompleted():
-    '''
-    Add rating and review
-    Args (GET):
-        book_id (integer): bookId of book being dded
-        email (integer): email of user who's adding
-        token
-    Returns:
-        none
-    '''
     #extract information
     token = request.args.get('token')
     book_id = request.args.get('bookId')
@@ -463,7 +468,6 @@ def checkCompleted():
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
         db.session.commit()
-        db.session.flush()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection != None:
         return dumps({"success": True})

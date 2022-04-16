@@ -1,6 +1,6 @@
-import axios from "axios";
-import React, { useState, useRef } from 'react';
-import {Grid} from "@material-ui/core";
+import axios from 'axios';
+import React from 'react';
+import {Grid} from '@material-ui/core';
 import BookSection from './BookSection';
 import Box from "@mui/material/Box";
 import {Pagination} from "@mui/material";
@@ -8,15 +8,17 @@ import {url} from "../../components/Helper";
 import ErrorPopup from "../../components/ErrorPopup";
 
 
+/**
+ * Showing the search results
+ */
 const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue, tempsearchRating, updatePage, page, pageCount, searchType, searchGenres, genreRating, followingFav}) => {
-  const [errorMsg, setErrorMsg] = useState('');
-  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const [showError, setShowError] = React.useState(false);
   
   const pageSize = 12;
 
   const handleChangePage = (event, value) => {
     updatePage(value);
-    console.log(searchType)
     if (searchType === 'byValue') {
       axios.get(`${url}/search/searchbook`, {
         params: {
@@ -58,7 +60,7 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
       <Grid
         container
         spacing={3}
-        justifyContent="center"
+        justifyContent='center'
       >
         {searchResult.length > 0 ? searchResult.map((bookInfo) => {
           return (
@@ -66,7 +68,7 @@ const SearchBooks = ({searchResult, updateSearchResult, radioValue, searchValue,
               <BookSection bookInfo={bookInfo}/>
             </Grid>
           )
-        }) : <div style={{paddingTop: "50px"}}>There were no books that matched the phrase</div>}
+        }) : <div style={{paddingTop: '50px'}}>There were no books that matched the phrase</div>}
       </Grid>
       <Pagination sx={{marginBottom: '20px', marginTop: '30px'}} count={pageCount} page={page} onChange={handleChangePage} />
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={showError} setSnackBarOpen={setShowError} />

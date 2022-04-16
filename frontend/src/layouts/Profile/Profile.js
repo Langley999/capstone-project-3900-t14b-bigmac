@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { Box, Container, Grid, Typography } from '@mui/material';
+import React from 'react';
+import { Box, Container, Grid} from '@mui/material';
 import { ProfileAvatar } from './components/ProfileAvatar';
 import { ProfileDetail } from './components/ProfileDetail';
 
-
+/**
+ * Profile page for a user
+ */
 const Profile = ({userInfo, updateUserInfo}) => {
   return (
     <Box

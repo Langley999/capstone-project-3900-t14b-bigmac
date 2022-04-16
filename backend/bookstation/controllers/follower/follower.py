@@ -6,14 +6,27 @@ from bookstation.utils.auth_util import get_user
 from datetime import date, datetime
 from sqlalchemy import desc
 
+"""
+Description: 
+- Searches for a users in the system based on some key phrase
+
+Args:
+- token String: to be used for session validation
+- search_phrase String: phrase for pattern matching
+
+Return:
+- userf_list List: List of users in the sytem, augmented to include following status.
+
+"""
 @app.route("/user/search", methods=["GET"])
 def findUsers():
-    print("reach search")
+
     token = request.args.get('token')
     search_prhase = request.args.get('search_phrase')
     user = get_user(token)
     users = User.query.filter(User.username.ilike('%'+ search_prhase +'%'))
     userf_list = []
+    
     for userf in users:
         if userf.user_id == user.user_id:
             continue
@@ -29,6 +42,19 @@ def findUsers():
     return dumps({ 'users' : userf_list})
 
 
+
+"""
+Establish a following relationship between the current user and a target user
+
+Args:
+    token (string): to be used for session validation
+    target_user_id (integer): user id of the requested user to be unfollowed
+
+Raises:
+    NotFoundError: When the target user to be followed does not exist
+    BadReqError: When the user already follows the target user
+
+"""
 @app.route("/user/follow", methods=["POST"])
 def follow():
 
@@ -51,6 +77,21 @@ def follow():
 
     return dumps({})
 
+
+
+
+"""
+Delete a following relationship between the current user and a target user
+
+Args:
+    token (string): to be used for session validation
+    target_user_id (integer): user id of the requested user to be unfollowed
+
+Raises:
+    NotFoundError: When the target user to be unfollowed does not exist
+    BadReqError: When the user doesn't follow the target user
+
+"""
 @app.route("/user/unfollow", methods=["POST"])
 def unfollow():
 
@@ -73,6 +114,18 @@ def unfollow():
 
 
 
+"""
+Description: 
+    - Create a new comment post for the current user
+    - Sends notification to all followers
+
+Args:
+    token (string): to be used for session validation
+    content (string): information to be posted
+
+Return: post_id (integer): Id of the newly created post after commiting to database
+
+"""
 @app.route("/post/addpost", methods=["POST"])
 def addPost():
 
@@ -83,7 +136,6 @@ def addPost():
 
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     
-
     followers = Follow_relationship.query.filter_by(user_id = user.user_id).all()
     for follower in followers:
         newnotif = Notification(user_id=follower.follower_user_id, type='post', type_id = -1, time= datetime.now(), sender_id=user.user_id)
@@ -97,6 +149,25 @@ def addPost():
     })
 
 
+"""
+Description: 
+    - Remove comment post for the current user
+    - Checks whether post exists and throws error accordingly
+    - Checks whether current user is the owner of the post, throws error accordingly
+
+Args:
+    token (string): to be used for session validation
+    post_id (integer): token of the post being requested for removal
+
+Return:
+    sucess: confirmation of susscessful post removal
+
+Raises:
+    NotFoundError: Post does not exist
+    BadReqError: Post cannot be deleted from the databse
+    AccessError: Post is not owned by the current user
+
+"""
 @app.route("/post/removepost", methods=["POST"])
 def removePost():
 
@@ -122,24 +193,59 @@ def removePost():
         raise error.BadReqError(description="Cannot remove post")
 
 
+"""
+Description: 
+- Retrieves all posts created from a specified user_id
+
+Args:
+    token (string): to be used for session validation
+    user_id (integer): id of user for which posts would like to be viewed
+
+Return:
+    posts (list): List of post objects 
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
+
+"""
 @app.route("/post/getposts", methods=["GET"])
 def getPosts():
 
     token = request.args.get('token')
     user_id = request.args.get('user_id')
-    #page_no = int(request.args.get('page'))
     user = get_user(token)
+
     posts = Post.query.filter_by(user_id = user_id).all()
     posts_list = []
     for post in posts:
-        post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
+        post_dict = {
+            'post_id': post.post_id, 
+            'content': post.content, 
+            'time_created': str(post.created_time)}
         posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
-    #posts_list = posts_list[10*(page_no-1): 10*page_no]
     return dumps({'posts' : posts_list})
 
 
+
+"""
+Description: 
+    - Retrieves personal feed for the current user
+    - onsists of all the posts from users which the current user follows
+
+Args:
+    token (string): to be used for session validation
+
+Return:
+    posts (list): List of post objects sorted by time most recently
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
+        - user_id (integer): id of the user whom created the post
+        - username (string):  username of the user whom created the post
+        - avatar (string): avatr of the user whom created the post
+"""
 @app.route("/post/getfeed", methods=["GET"])
 def getFeed():
 
@@ -158,34 +264,36 @@ def getFeed():
 
 
 
+
+"""
+Description: 
+    - Retrieves list of followings for a specified user
+
+Args:
+    token (string): to be used for session validation
+    user_id (integer): id of user for which we want to find followings for
+
+Return:
+    followings (list): List of user objects with only relevant information 
+        - user_id (integer): user id of the following user
+        - username (string): username of the following suer
+        - avatar (string): avatr of the following user
+"""
 @app.route("/user/getfollowing", methods=["GET"])
 def getfollowing():
-    """
-    Function for user to to get all user he's following
-    Args:
-        user_id (int): id of the user
-    Returns:
-        - followings (list):
-            - user_id (int)
-            - username (str)
-    Raises:
-        NotFoundError: when the book does not exist in the collection
-        AccessError:
-          - when the user does not have permission to remove book
-        BadReqError:
-          - when removing book fails
-    """
+
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
     followings = Follow_relationship.query.filter_by(follower_user_id = user_id).all()
     result = []
     for following in followings:
-        userinfo = {}
         user = User.query.get(following.user_id) 
-        userinfo['user_id'] = following.user_id
-        userinfo['username'] = user.username
-        userinfo['avatar'] = user.avatar
+        userinfo = {
+            'user_id': following.user_id,
+            'username': user.username,
+            'avatar': user.avatar
+        }
         result.append(userinfo)
         
     result.sort(key = lambda x: x['username'])
@@ -194,36 +302,36 @@ def getfollowing():
     })
 
 
-#SAME THING HERE!
+"""
+Description: 
+    - Retrieves list of followers for a specified user
+
+Args:
+    token (string): to be used for session validation
+    user_id (integer): id of user for which we want to find followers for
+
+Return:
+    followers (list): List of user objects with only relevant information 
+        - user_id (integer): user id of the follower user
+        - username (string): username of the follower suer
+        - avatar (string): avatr of the follower user
+"""
 @app.route("/user/getfollower", methods=["GET"])
 def getfollower():
-    """
-    Function for user to to get all followers
-    Args:
 
-    Returns:
-        - followers (list):
-            - user_id (int)
-            - username (str)
-    Raises:
-        NotFoundError: when the book does not exist in the collection
-        AccessError:
-          - when the user does not have permission to remove book
-        BadReqError:
-          - when removing book fails
-    """
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
 
     followings = Follow_relationship.query.filter_by(user_id = user_id).all()
     result = []
-    for following in followings:
-        userinfo = {}
+    for following in followings:  
         user = User.query.get(following.follower_user_id) 
-        userinfo['user_id'] = following.follower_user_id
-        userinfo['username'] = user.username
-        userinfo['avatar'] = user.avatar
+        userinfo = {
+            'user_id': following.follower_user_id,
+            'username': user.username,
+            'avatar': user.avatar
+        }
         result.append(userinfo)
 
     result.sort(key = lambda x: x['username'])
@@ -232,6 +340,20 @@ def getfollower():
     })
 
 
+"""
+Description: 
+    - Retrieves public post feed that is not user specific
+
+Return:
+    posts (list)): List of post objects corresponding to public feed
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
+        - user_id (integer): id of the user whom created the post
+        - username (string):  username of the user whom created the post
+        - avatar (string): avatr of the user whom created the post
+
+"""
 @app.route("/post/getpublicfeed", methods=["GET"])
 def getPublicFeed():
 
