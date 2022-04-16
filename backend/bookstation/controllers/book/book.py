@@ -40,7 +40,6 @@ def getDetails():
     page_no = int(request.args.get('page'))
     book = Book.query.get(book_id)
 
-
     #check book is db
     if book == None:
         raise error.InputError(description="book does not exist")
