@@ -44,14 +44,13 @@ def toprating():
 
 """
 Description: 
-- Get recommendation based on user activity in particular the most most frequent Genre
+	- Get recommendation based on user activity in particular the most most frequent Genre
 
 Args:
-- token String: to be used for session validation
+	token (string): to be used for session validation
 
 Return:
-- dict: Dictionary containing list of most popular Genres
-
+	favourite_genres (list): list containing of names of most popular Genres
 """		
 @app.route(url_prefix + "/favouriteGenre", methods=["GET"])
 def favouriteGenre():
@@ -84,13 +83,17 @@ def favouriteGenre():
 		
 """
 Description: 
-- Get recommendation based on user activity in particular the most most frequent Author's books
+	- Get recommendation based on user activity in particular the most most frequent Author's books
 
 Args:
-- token String: to be used for session validation
+	- token (string): to be used for session validation
 
 Return:
-- dict: Dictionary containing list of Favourite Authors and their corresponding books
+	favourite_authors (list): list containing names of favourite authors
+	books (list): list of book objects from those authors
+		- book_id (integer): id of the book
+		- title (string): title of the book
+		- rating (integer): average rating of the book
 
 """		
 @app.route(url_prefix + "/favouriteAuthor", methods=["GET"])
@@ -132,7 +135,10 @@ def favouriteAuthor():
 		books = Book_author.query.filter_by(author_id = author.author_id).all()
 		for book_author in books:
 			book = book_author.book
-			book_dict = {'book_id': book.book_id, 'title' : book.title, 'rating' : book.average_rating}
+			book_dict = {
+				'book_id': book.book_id, 
+				'title' : book.title, 
+				'rating' : book.average_rating }
 			if book.book_id not in author_book_set:
 				books_list.append(book_dict)
 				author_book_set.add(book.book_id)
@@ -140,15 +146,16 @@ def favouriteAuthor():
 	books_list.sort(key = lambda x: x['rating'], reverse=True)
 	return dumps({'favourite_authors' : max_authors, 'books' : books_list})
 
+
 """
 Description: 
-- Get recommendation based the users the current user follows
+	- Get recommendation based the users the current user follows
 
 Args:
-- token String: to be used for session validation
+	token (string): to be used for session validation
 
 Return:
-- dict: Dictionary containing list of Favourite books from followings of user
+	favourite_followed_book (list): list Favourite book objects from followings of user
 
 """	
 @app.route(url_prefix + "/favouriteFollowed", methods=["GET"])

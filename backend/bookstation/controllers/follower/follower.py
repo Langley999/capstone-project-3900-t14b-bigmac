@@ -44,16 +44,15 @@ def findUsers():
 
 
 """
-Description: 
-- Establish a following relationship between the current user and a target user
-- Checks whether there is already a pre-existing relatinoship and throw errors accordingly
+Establish a following relationship between the current user and a target user
 
 Args:
-- token String: to be used for session validation
-- target_user_id Integer: user id of the requested following user
+    token (string): to be used for session validation
+    target_user_id (integer): user id of the requested user to be unfollowed
 
-Return:
-- none
+Raises:
+    NotFoundError: When the target user to be followed does not exist
+    BadReqError: When the user already follows the target user
 
 """
 @app.route("/user/follow", methods=["POST"])
@@ -79,17 +78,18 @@ def follow():
     return dumps({})
 
 
+
+
 """
-Description: 
-- Delete a following relationship between the current user and a target user
-- Checks whether the relationship doesn't alreayd exist and throw errors accordingly
+Delete a following relationship between the current user and a target user
 
 Args:
-- token String: to be used for session validation
-- target_user_id Integer: user id of the requested user to be unfollowed
+    token (string): to be used for session validation
+    target_user_id (integer): user id of the requested user to be unfollowed
 
-Return:
-- none
+Raises:
+    NotFoundError: When the target user to be unfollowed does not exist
+    BadReqError: When the user doesn't follow the target user
 
 """
 @app.route("/user/unfollow", methods=["POST"])
@@ -113,17 +113,17 @@ def unfollow():
     return dumps({})
 
 
+
 """
 Description: 
-- Create a new comment post for the current user
-- Sends notification to all followers
+    - Create a new comment post for the current user
+    - Sends notification to all followers
 
 Args:
-- token String: to be used for session validation
-- content String: information to be posted
+    token (string): to be used for session validation
+    content (string): information to be posted
 
-Return:
-- post_id Integer: Id of the newly created post after commiting to database
+Return: post_id (integer): Id of the newly created post after commiting to database
 
 """
 @app.route("/post/addpost", methods=["POST"])
@@ -152,16 +152,21 @@ def addPost():
 
 """
 Description: 
-- Remvoe comment post for the current user
-- Checks whether post exists and throws error accordingly
-- Checks whether current user is the owner of the post, throws error accordingly
+    - Remove comment post for the current user
+    - Checks whether post exists and throws error accordingly
+    - Checks whether current user is the owner of the post, throws error accordingly
 
 Args:
-- token String: to be used for session validation
-- post_id Integer: token of the post being requested for removal
+    token (string): to be used for session validation
+    post_id (integer): token of the post being requested for removal
 
 Return:
-- dict: Confirmation JSON object
+    sucess: confirmation of susscessful post removal
+
+Raises:
+    NotFoundError: Post does not exist
+    BadReqError: Post cannot be deleted from the databse
+    AccessError: Post is not owned by the current user
 
 """
 @app.route("/post/removepost", methods=["POST"])
@@ -194,11 +199,14 @@ Description:
 - Retrieves all posts created from a specified user_id
 
 Args:
-- token String: to be used for session validation
-- user_id Integer: id of user for which posts would like to be viewed
+    token (string): to be used for session validation
+    user_id (integer): id of user for which posts would like to be viewed
 
 Return:
-- posts List: List of post objects 
+    posts (list): List of post objects 
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
 
 """
 @app.route("/post/getposts", methods=["GET"])
@@ -211,7 +219,10 @@ def getPosts():
     posts = Post.query.filter_by(user_id = user_id).all()
     posts_list = []
     for post in posts:
-        post_dict = {'post_id': post.post_id, 'content': post.content, 'time_created': str(post.created_time)}
+        post_dict = {
+            'post_id': post.post_id, 
+            'content': post.content, 
+            'time_created': str(post.created_time)}
         posts_list.append(post_dict)
 
     posts_list.sort(key = lambda x: x['time_created'], reverse=True)
@@ -221,15 +232,20 @@ def getPosts():
 
 """
 Description: 
-- Retrieves personal feed for the current user
-- The personal feed consists of all the posts from users which the current user follows
+    - Retrieves personal feed for the current user
+    - onsists of all the posts from users which the current user follows
 
 Args:
-- token String: to be used for session validation
+    token (string): to be used for session validation
 
 Return:
-- posts List: List of post objects sorted by time most recently
-
+    posts (list): List of post objects sorted by time most recently
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
+        - user_id (integer): id of the user whom created the post
+        - username (string):  username of the user whom created the post
+        - avatar (string): avatr of the user whom created the post
 """
 @app.route("/post/getfeed", methods=["GET"])
 def getFeed():
@@ -252,15 +268,17 @@ def getFeed():
 
 """
 Description: 
-- Retrieves list of followings for a specified user
+    - Retrieves list of followings for a specified user
 
 Args:
-- token String: to be used for session validation
-- user_id Integer: id of user for which we want to find followings for
+    token (string): to be used for session validation
+    user_id (integer): id of user for which we want to find followings for
 
 Return:
-- followings List: List of user objects with only relevant information 
-
+    followings (list): List of user objects with only relevant information 
+        - user_id (integer): user id of the following user
+        - username (string): username of the following suer
+        - avatar (string): avatr of the following user
 """
 @app.route("/user/getfollowing", methods=["GET"])
 def getfollowing():
@@ -286,15 +304,17 @@ def getfollowing():
 
 """
 Description: 
-- Retrieves list of followers for a specified user
+    - Retrieves list of followers for a specified user
 
 Args:
-- token String: to be used for session validation
-- user_id Integer: id of user for which we want to find followers for
+    token (string): to be used for session validation
+    user_id (integer): id of user for which we want to find followers for
 
 Return:
-- followings List: List of user objects with only relevant information 
-
+    followers (list): List of user objects with only relevant information 
+        - user_id (integer): user id of the follower user
+        - username (string): username of the follower suer
+        - avatar (string): avatr of the follower user
 """
 @app.route("/user/getfollower", methods=["GET"])
 def getfollower():
@@ -321,13 +341,16 @@ def getfollower():
 
 """
 Description: 
-- Retrieves public post feed that is not user specific
-
-Args:
-- none
+    - Retrieves public post feed that is not user specific
 
 Return:
-- posts List: List of post objects correspondign to public feed
+    posts (list)): List of post objects corresponding to public feed
+        - post_id (integer): id of post
+        - content (string): content of post
+        - time_created (datetime): time of post creation
+        - user_id (integer): id of the user whom created the post
+        - username (string):  username of the user whom created the post
+        - avatar (string): avatr of the user whom created the post
 
 """
 @app.route("/post/getpublicfeed", methods=["GET"])

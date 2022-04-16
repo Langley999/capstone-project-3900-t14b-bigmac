@@ -126,12 +126,20 @@ def get_fav_authors():
     })
 
 
+"""
+Retrieve following and follower growth over 5 month interval
+Args:
+    user_id (integer): user id of the 
+	token (string): to be used for session validation
+Returns:
+    Stats (list): List of follow objects
+        - month (string): month of relevance
+        - followings (integer): number of followings gained
+		- followers (integer): number of followers gained
+"""
 @app.route(url_prefix + '/followstats', methods=["GET"]) 
 def followStats():
-    """
-    Returns: followers and followings gained each month over past 6 months
-    
-    """
+
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
@@ -164,14 +172,18 @@ def followStats():
     return dumps({'follow_stats' : stats})
 
 
+"""
+Get number of saves for a given collection
+Args:
+    collection_id (integer): collection id of the collection
+	token (string): to be used for session validation
+Returns:
+    saves (integer): number of saves for given collection
+
+"""
 @app.route(url_prefix + '/saves', methods=["GET"])
 def get_save1():
 
-	"""
-	Args: collection_id: collection to find number of saves
-	Returns: number of people who saved this collection
-	
-	"""
 	token = request.args.get('token')
 	user = get_user(token)
 	collection_id = int(request.args.get('collection_id'))

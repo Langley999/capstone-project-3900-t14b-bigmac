@@ -252,16 +252,16 @@ def remove_collection():
 	except:
 		raise error.BadReqError(description="Cannot remove collection")
 
-
+"""
+Save a given collection for the current user
+Args:
+	token (string): used for user session validation
+	collection_id (int): id of the collection to be saved
+Raises:
+	BadReqError: User has already saved the specified collection.
+"""
 @app.route(url_prefix + '/savecollection', methods=["POST"])
 def save_collections():
-	"""
-	Args: collection_id : collection id to be saved
-		  token			: identifies and authenticates user
-
-	Returns: confirmation
-	"""
-
 	body = request.get_json()
 	user = get_user(body['token'])
 	collection_id = body['collection_id']
@@ -274,15 +274,16 @@ def save_collections():
 
 	return dumps({})
 
-
+"""
+Unsave a given collection for the current user
+Args:
+	token (string): used for user session validation
+	collection_id (int): id of the collection to be unsaved
+Raises:
+	BadReqError: User never saved the specified collection.
+"""
 @app.route(url_prefix + '/unsavecollection', methods=["POST"])
 def unsave_collections():
-	"""
-	Args: collection_id : collection id to be unsaved
-		  token			: identifies and authenticates user
-
-	Returns: confirmation
-	"""
 
 	body = request.get_json()
 	user = get_user(body['token'])
@@ -296,21 +297,24 @@ def unsave_collections():
 
 	return dumps({})
 
+"""
+Get the saved collections for a specified user 
+Args:
+    user_id (integer): user id of the user to retrieve collections for
 
+Returns:
+    collections (list): list of collection objects 
+		- collection_id (integer): id of the colleciton
+		- collection_name (string): name of the collection
+		- is_default (integer): flag to indicate status of collection
+		- created_time (datetime): time of creation of collection
+		- user_id (integer): id of the user whom colleciton is owned by
+		- username (string): usename of the user whom collection is owned by
+"""
 @app.route(url_prefix + '/savedcollections', methods=["GET"])
 def get_savedCollections():
 
-	"""
-	Args: token : user for which we want to find saved collections
-
-	Returns: list of collection objects (id, name, is_default), frontend should not give add/remove books button for these collections. (even if they try backend will deny as user is not owner of the collection)
-
-	"""
-
-	try:
-		user_id = request.args.get('user_id')
-	except:
-		raise error.InputError(description="not a valid user")
+	user_id = request.args.get('user_id')
 
 	collections = Saved_collection.query.filter_by(user_id = user_id).all()
 	collection_list = []
@@ -322,17 +326,19 @@ def get_savedCollections():
 	return dumps({'collections' : collection_list})
 
 
+"""
+Rename specified collection 
+Args:
+	token (string): used for user session validation
+	collection_id (integer): id of the collection to be renamed
+	name (string): new name to change collection's name to 
 
+Raises:
+	BadReqError: Collection does not exist
+	AccessError: User does not own the collection to be renamed
+"""
 @app.route(url_prefix + '/rename', methods=["POST"])
 def rename_collection():
-
-	"""
-	Args: collection_id: collection to rename
-		  name		   : new name of collection
-
-	Returns: confirmation
-
-	"""
 	body = request.get_json()
 	user = get_user(body['token'])
 	collection_id = body['collection_id']
@@ -342,7 +348,7 @@ def rename_collection():
 	if collection == None:
 		raise error.BadReqError(description="Collection does not exist")
 	if collection.user_id != user.user_id:
-		raise error.BadReqError(description="user does not own collection")
+		raise error.AccessError(description="user does not own collection")
 
 	collection.name = new_name
 	db.session.commit()

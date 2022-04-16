@@ -12,12 +12,19 @@ from bookstation import app, request, db, error
 from bookstation.utils.auth_util import get_user
 
 '''
-Get book details
+
+Retrieve all book details relevant infromation
+
 Args (GET):
+    token (string) (optional): used for user session validation
     bookId (integer): request bookId
     sort (string): can be 'time', 'likes', 'badges'
+
 Returns:
-    json object of book details
+    book_dict: Dictionary of book objecsts
+        - relevant book fields
+        - reviews (list): list of all reviews associated with particualr book
+
 Raises:
     InputError: no book has been found for book_id
 '''
@@ -76,11 +83,23 @@ def getDetails():
     return dumps(book_dict)
 
 
+
+"""
+Retrieve the current users review for a particular book
+Args:
+    token (string) : used for user session validation
+	book_id (integer): id of the book
+
+Returns:
+    review (dict): Dictionary containing review relevant information
+
+"""
 @app.route("/book/ownreview", methods=["GET"])
 def ownReview():
     token = request.args.get('token') 
     book_id = request.args.get('bookId')
     user = get_user(token)
+
     review = Review.query.filter_by(user_id = user.user_id, book_id = book_id).first()
     review_dict = []
     if review != None and review.content != None:
@@ -95,13 +114,21 @@ def ownReview():
         review_dict.append({'review_id': review.review_id, 'avatar': review.user.avatar, 'user_id': review.user_id, 'username': review.user.username,'badges':badges, 'avatar' : review.user.avatar,'rating': review.rating, 'content': review.content, 'time': str(review.created_time), 'likes' : review.likes, 'is_liked' : is_liked})
     return dumps({'review' : review_dict})
 
+
+
+"""
+Create a like for specified book
+Args:
+    token (string) : used for user session validation
+	review_id (integer): id of the review to like
+
+Raises:
+    BadReqError: User already liked the specified review
+
+"""
 @app.route("/book/likereview", methods=["POST"])
 def likeReview():
 
-    """
-    Arg: review_id to like
-    
-    """
     body = request.get_json()
     user = get_user(body['token'])
     review_id = body['review_id']
@@ -117,16 +144,11 @@ def likeReview():
     return dumps({})
 
 
+
 @app.route("/book/editreview", methods=["POST"])
 def editReview():
 
-    """
-    Arg: review_id to like
-    review: new content of review
-    
-    """
     body = request.get_json()
-    print(body)
     user = get_user(body['token'])
 
     review_id = body['review_id']
@@ -143,7 +165,16 @@ def editReview():
     return dumps({})
 
 
+"""
+Remove a like for specified book
+Args:
+    token (string) : used for user session validation
+	review_id (integer): id of the review to unlike
 
+Raises:
+    BadReqError: User never liked the specified review
+
+"""
 @app.route("/book/unlikereview", methods=["POST"])
 def unlikeReview():
     """
@@ -166,25 +197,32 @@ def unlikeReview():
 
 
 
+"""
+Algorithm to find the most similar books to a given book
 
+Args:
+	book_id (integer): id of book to compare to
+
+Returns:
+    return_list (list): List of book objects
+        - id (integer): id of book
+        - title (string): title of book
+        - cover_image (string): cover image of book
+"""
 @app.route("/book/similarbooks", methods=["GET"])
 def similarBooks():
 
-    """
-    Arg: book_id of book to get simialr books from
-
-    Returns: list of book objects that are similar to target book
-    
-    """
     book_id = request.args.get('book_id')
+
+    #get all genres for the specified book and create genre set for comparison
     target_tags = set()
     similarity_set = set()
     genres = Book_genre.query.filter_by(book_id = book_id).all()
-
     for genre in genres:
         target_tags.add(genre.genre_id)
 
-
+    # get all books from author(s) of the specified book 
+    # quanitfy similarity value based on interesction length with genre tags
     authors = Book_author.query.filter_by(book_id = book_id).all()
     for author in authors:
         author_books = Book_author.query.filter_by(author_id = author.author_id).all()
@@ -197,27 +235,25 @@ def similarBooks():
                 comptags.add(compgenre.genre_id)
             similarity = len(target_tags.intersection(comptags))
             similarity_set.add((book.book_id, similarity))
-            
+
+    #handling cases where author does not have many other books
+    #return best rated books instead
     book_list = sorted(similarity_set, key = lambda x: x[1])
     if len(book_list) == 0:
         no_similar_list = []
         books = Book.query.order_by(Book.average_rating.desc()).limit(3).all()
         for book in books:
+            if book.book_id == book_id:
+                continue
             no_similar_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
             no_similar_list.append(no_similar_dict)
         return dumps({'books' : no_similar_list})
-
+    
     return_list = []
-    i = 0
     for book_tup in book_list:
         book = Book.query.get(book_tup[0])
-        if book.cover_image != "":
-            return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
-            return_list.append(return_dict)
-            i += 1
-            if i > 3:
-                break
-    
+        return_dict = {'title' : book.title, 'cover_image' : book.cover_image, 'id': book.book_id}
+        return_list.append(return_dict)
 
     return dumps({'books' : return_list})
 
