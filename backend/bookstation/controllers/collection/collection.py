@@ -216,7 +216,7 @@ def remove_book():
 """
 Function for users to to remove a collection
 Args:
-	email (string): email of the user
+	token (string): token of the user
 	collection_id (int): id of the collection
 Returns:
 	success message

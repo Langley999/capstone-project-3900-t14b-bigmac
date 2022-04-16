@@ -136,7 +136,6 @@ def addPost():
 
     newPost = Post(user_id=user.user_id, content= new_content, created_time= datetime.now())
     
-
     followers = Follow_relationship.query.filter_by(user_id = user.user_id).all()
     for follower in followers:
         newnotif = Notification(user_id=follower.follower_user_id, type='post', type_id = -1, time= datetime.now(), sender_id=user.user_id)
@@ -289,11 +288,12 @@ def getfollowing():
     followings = Follow_relationship.query.filter_by(follower_user_id = user_id).all()
     result = []
     for following in followings:
-        userinfo = {}
         user = User.query.get(following.user_id) 
-        userinfo['user_id'] = following.user_id
-        userinfo['username'] = user.username
-        userinfo['avatar'] = user.avatar
+        userinfo = {
+            'user_id': following.user_id,
+            'username': user.username,
+            'avatar': user.avatar
+        }
         result.append(userinfo)
         
     result.sort(key = lambda x: x['username'])
@@ -325,12 +325,13 @@ def getfollower():
 
     followings = Follow_relationship.query.filter_by(user_id = user_id).all()
     result = []
-    for following in followings:
-        userinfo = {}
+    for following in followings:  
         user = User.query.get(following.follower_user_id) 
-        userinfo['user_id'] = following.follower_user_id
-        userinfo['username'] = user.username
-        userinfo['avatar'] = user.avatar
+        userinfo = {
+            'user_id': following.follower_user_id,
+            'username': user.username,
+            'avatar': user.avatar
+        }
         result.append(userinfo)
 
     result.sort(key = lambda x: x['username'])

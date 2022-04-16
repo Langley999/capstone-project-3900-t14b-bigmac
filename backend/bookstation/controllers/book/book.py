@@ -384,7 +384,6 @@ def addRatingReview():
     if collection == None:
         new_history_collection = Collection(2, "Reading History", datetime.now(), user.user_id)
         db.session.add(new_history_collection)
-        db.session.commit()
     book_collection = Collection_book.query.filter_by(collection_id=collection.collection_id, book_id=book_id).first()
     if book_collection == None:
         new_book_collection = Collection_book(collection.collection_id, book_id, datetime.now())
@@ -398,7 +397,6 @@ def addRatingReview():
     for follower in followers:
         newnotif = Notification(user_id=follower.follower_user_id, type='review', type_id = book_id, time= datetime.now(), sender_id=user.user_id)
         db.session.add(newnotif)
-        db.session.commit()
     db.session.add(newPost)
     db.session.commit()
    

@@ -26,6 +26,7 @@ def checknewnotif():
 	else:
 		notification_history.last_read
 		return dumps({ 'to_read' : len(notifications)-notification_history.last_read})
+		
 """
 Function for users to get all notification history
 Args:

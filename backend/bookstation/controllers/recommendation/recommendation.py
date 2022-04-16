@@ -26,14 +26,15 @@ def toprating():
 	results = []
 	books = Book.query.order_by(desc(Book.average_rating)).all()
 	for book in books[0:20]:
-		book_info = {}
-		book_info['id'] = book.book_id
-		book_info['title'] = book.title
-		book_info['author'] = book.author_string
-		book_info['num_rating'] = book.num_rating
-		book_info['cover'] = book.cover_image
-		book_info['average_rating'] = book.average_rating
-		book_info['publish_date'] = book.publish_date
+		book_info = {
+			'id': book.book_id,
+			'title': book.title,
+			'author': book.author_string,
+			'num_rating': book.num_rating,
+			'cover': book.cover_image,
+			'average_rating': book.average_rating,
+			'publish_date': book.publish_date
+		}
 		results.append(book_info)
 			
 	return dumps({
