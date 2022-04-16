@@ -1,35 +1,29 @@
 from json import dumps
-import time
-from bookstation.models.book_sys import Genre, Book_genre, Book, Collection_book, Book_author, Author, Saved_collection
+from bookstation.models.book_sys import Genre, Book_genre, Collection_book, Book_author, Author, Saved_collection
 from bookstation.models.user_sys import Follow_relationship
 from bookstation.utils.auth_util import get_user
-from bookstation import app, request, db, error
-from bookstation.models.user_sys import User, Collection
+from bookstation import app, request
+from bookstation.models.user_sys import Collection
 
-from flask import session
 
 from datetime import datetime
 url_prefix = "/analytics"
-
+"""
+Function for users to one user's fav genres 
+Args:
+    user_id (string): user_id of the user.
+Returns:
+    genres (list): list of genres and their percentages
+        - genre (string): name of the genre
+        - percentage (float): percentage of the genre
+        
+Raises:
+    NotFoundError: when the collection with the name does not exist
+"""
 @app.route(url_prefix + '/getfavgenres', methods=["GET"])
 def get_fav_genres():
-    """
-    Function for users to one user's fav genres 
-    Args:
-        user_id (string): user_id of the user.
-    Returns:
-        genres (list): list of genres and their percentages
-           - genre (string): name of the genre
-           - percentage (float): percentage of the genre
-           
-    Raises:
-        NotFoundError: when the collection with the name does not exist
-    """
-  
     user_id = request.args.get('user_id')
-
     collections = Collection.query.filter_by(user_id = user_id).all()
-    #collections = user.collections
     genrelist = {}
     bookids = []
     for collection in collections:
@@ -49,50 +43,46 @@ def get_fav_genres():
           genrelist[genre] = 1
     newlist = sorted(genrelist.items(), key=lambda x:x[1],reverse=True)
     total = 0
-    print(newlist)
+
     for name,value in newlist:
       total += value
-    i = 0
+
     result = []
     sofar = 0
-    for name,value in newlist:
-      item = {}
-      item['genre'] = name
-      item['percentage'] = value/total
+    for name,value in newlist[:5]:
+      item = {
+        'genre': name,
+        'percentage': value/total
+      }
       result.append(item)
       sofar += value/total
-      i+=1
-      if i > 4:
-        break
-    item = {}
-    item['genre'] = 'other'
-    item['percentage'] = 1 - sofar
+
+    item = {
+      'genre':'other',
+      'percentage': 1 - sofar
+    }
     result.append(item)
     return dumps({
         "genres": result
     })
 
 
-
+"""
+Function for users to one user's fav authors
+Args:
+    user_id (string): user_id of the user.
+Returns:
+    authors (list): list of authors and their percentages
+        - author (string): name of the author
+        - percentage (float): percentage of the author
+        
+Raises:
+    NotFoundError: when the collection with the name does not exist
+"""
 @app.route(url_prefix + '/getfavauthors', methods=["GET"])
 def get_fav_authors():
-    """
-    Function for users to one user's fav authors
-    Args:
-        user_id (string): user_id of the user.
-    Returns:
-        authors (list): list of authors and their percentages
-           - author (string): name of the author
-           - percentage (float): percentage of the author
-           
-    Raises:
-        NotFoundError: when the collection with the name does not exist
-    """
-  
     user_id = request.args.get('user_id')
-
     collections = Collection.query.filter_by(user_id = user_id).all()
-    #collections = user.collections
     authorlist = {}
     bookids = []
     for collection in collections:
@@ -115,33 +105,41 @@ def get_fav_authors():
     
     for name,value in newlist:
       total += value
-    i = 0
+
     result = []
     sofar = 0
-    for name,value in newlist:
-      item = {}
-      item['author'] = name
-      item['percentage'] = value/total
+    for name,value in newlist[:5]:
+      item = {
+        'author': name,
+        'percentage': value/total
+      }
       result.append(item)
       sofar += value/total
-      i+=1
-      if i > 4:
-        break
-    item = {}
-    item['author'] = 'other'
-    item['percentage'] = 1 - sofar
+
+    item = {
+      'author': 'other',
+      'percentage': 1 - sofar
+    }
     result.append(item)
     return dumps({
         "authors": result
     })
 
 
+"""
+Retrieve following and follower growth over 5 month interval
+Args:
+    user_id (integer): user id of the 
+	token (string): to be used for session validation
+Returns:
+    Stats (list): List of follow objects
+        - month (string): month of relevance
+        - followings (integer): number of followings gained
+		- followers (integer): number of followers gained
+"""
 @app.route(url_prefix + '/followstats', methods=["GET"]) 
 def followStats():
-    """
-    Returns: followers and followings gained each month over past 6 months
-    
-    """
+
     token = request.args.get('token')
     user_id = request.args.get('user_id')
     user = get_user(token)
@@ -174,14 +172,18 @@ def followStats():
     return dumps({'follow_stats' : stats})
 
 
+"""
+Get number of saves for a given collection
+Args:
+    collection_id (integer): collection id of the collection
+	token (string): to be used for session validation
+Returns:
+    saves (integer): number of saves for given collection
+
+"""
 @app.route(url_prefix + '/saves', methods=["GET"])
 def get_save1():
 
-	"""
-	Args: collection_id: collection to find number of saves
-	Returns: number of people who saved this collection
-	
-	"""
 	token = request.args.get('token')
 	user = get_user(token)
 	collection_id = int(request.args.get('collection_id'))

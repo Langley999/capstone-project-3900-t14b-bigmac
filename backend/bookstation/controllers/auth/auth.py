@@ -17,73 +17,37 @@ import jwt
 
 url_prefix = "/auth"
 
-@app.route(url_prefix, methods=["POST"])
-def test():
-    user = User.query.filter_by(user_id=4).first()
-    for r in user.collections:
-        print(r.name)
-    '''test1'''
-    # collection = Collection(name="test")
-    # collection.user_id = 4
-    # collection.created_time = '2022-03-09 22:10:57'
-    # db.session.add(collection)
-    # db.session.commit()
-    # for r in user.collections:
-    #     print(r.name)
-    '''test2'''
-    # collection = user.collections[-1]
-    # print(collection.name)
-    # print(collection.books)
-    # collection_book = Collection_book()
-    # collection_book.book_id = 12
-    # collection_book.collection_id = collection.collection_id
-    # collection_book.created_time = '2022-03-09 22:10:57'
-    # db.session.add(collection_book)
-    # db.session.commit()
-    # for book in collection.books:
-    #     print(book.title)
-    return dumps({})
 
+"""
+Log the requested user into the system
+Args:
+    email (string): email address of the user
+	password (string): asscociated password of the user
+
+Returns:
+    (dict): Dictionary containing user related information
+        - token (string): token to be used for user session validation
+        - username (string): username of the logged user
+		- user_id (integer): user_id of the logged user
+Raises:
+    NotFoundError: no user associated with email
+    InputError: incorrect password for user
+"""
 @app.route(url_prefix + "/login", methods=["POST"])
 def login():
-    """
-    Function for users to login. It will store new valid token to
-    redis and session.
-    Args (POST body):
-        email (string): user email.
-        password (string): raw password.
-    Returns:
-        token (string): the new valid token
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters a unregistered email
-            2. incorrect password
 
-    TODO:
-        modify error msg
-    """
-    # try read data
-    try:
-        data = request.get_json()
-        email, password = data['email'], data['password']
-    except:
-        raise error.BadReqError(description="post body error")
-    # sql select user and check password
+    data = request.get_json()
+    email, password = data['email'], data['password']
+
     user = User.query.filter_by(email = email).first()
     if user is None:
-        raise error.InputError(description="not a valid user")
+        raise error.NotFoundError(description="not a valid user")
     if pw_encode(password) != user.password:
         raise error.InputError(description="wrong password")
-    # generate token and store
+
     token = generate_token(user.username)
     user.token = token
-    print('user is', user.user_id)
-    print('token is', user.token)
-    #db.session.add(user)
     db.session.commit()
-    #session[token] = user.user_id
-    #session[email] = token
 
     return dumps({
         'token': token,
@@ -92,46 +56,49 @@ def login():
 
     })
 
+
+"""
+Check for registration capability for the requested user
+Args:
+    username (string): username of the user
+    email (string): email address of the user
+	password (string): asscociated password of the user
+
+Returns:
+    valid_user: Confirmation of user validity 
+
+Raises:
+    InputError: Email invalid already exists in the system
+    InputError: Username invalid already exists in the system
+"""
 @app.route(url_prefix + "/register", methods=["POST"])
 def register():
-    """
-    Function for users to register an account. It will store new valid token to
-    redis and session. It will stored encoded passwords into database.
-    Args (POST body):
-        email (string): user email.
-        password (string): raw password.
-        username (string): username
-    Returns:
-        token (string): the new valid token
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters a registerd email
-            2. when user enters a registerd username
 
-    TODO:
-        modify error msg
-    """
-    # try read data
-    try:
-        data = request.get_json()
-        username, email, password = data['username'], data['email'], data['password']
-    except:
-        raise error.BadReqError(description="post body error")
-    # check validity of email
+    data = request.get_json()
+    username, email, password = data['username'], data['email'], data['password']
 
     if User.query.filter_by(email = email).first() is not None:
         raise error.InputError(description="email already exists")
-    # check validity of username
+
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
-    # store new user
-
 
     return dumps({
         'valid_user' : True
     })
 
+
+"""
+Send validation code to verify potential user
+Args:
+    email (string): email address of the user
+
+Returns:
+    sent_email: Confirmation of sending to email
+
+Raises:
+    NotFoundError: Failed to send email to requested address
+"""
 @app.route(url_prefix + "/sendCode", methods=["POST"])
 def sendCode():
     body = request.get_json()
@@ -151,7 +118,20 @@ def sendCode():
     })
 
 
+"""
+Intiate a verification request for user
+Args:
+    username (string): username of the user
+    email (string): email address of the user
+	password (string): asscociated password of the user
 
+Returns:
+    token (string): token to be used for user session validation
+    user_id (string): user_id of newly registered user
+
+Raises:
+    InputError: Invalid code, does not match server's buffered one.
+"""
 @app.route(url_prefix + "/verified", methods=["POST"])
 def verify():
     data = request.get_json()
@@ -183,57 +163,41 @@ def verify():
 
 
 
+"""
+Logs the current user out of the system
+Args:
+    token (string): token used to identify and validate user session
+Raises:
+    AccessErorr: Token is invalid or expired from the system
+"""
 @app.route(url_prefix + "/logout", methods=["POST"])
 def logout():
-    """
-    Function for users to logout. It will clean the valid token.
-    Args (POST body):
-        email (string): user email
-        token (string): valid token
-    Returns:
-        no returns
-    Raises:
-        BadReqError: when body data is invalid
-        InputError:
-            1. when user enters an unregistered email
-            2. incorrect password
+    data = request.get_json()
+    token = data['token']
 
-    TODO:
-        modify error msg
-    """
-    try:
-        data = request.get_json()
-        token = data['token']
-    except:
-        raise error.BadReqError(description="post body error")
     try:
         user = User.query.filter_by(token=token).first()
         user.token = None
         db.session.commit()
     except:
-        raise error.AccessError(description="user doesn't exist or invalid token")
+        raise error.NotFoundError(description="user doesn't exist or invalid token")
 
-    #session.pop(token, None)
     return dumps({})
 
+
+"""
+Helper method to create a hash digest of password
+"""
 def pw_encode(password):
-    '''
-    It will encode raw password by sha256 from hashlib.
-    Args:
-        password (string): raw password
-    Return:
-        (string) encoded password
-    '''
     return hashlib.sha256(password.encode()).hexdigest()
 
+
+"""
+Helper method to create hash of username and time.
+Time inclusion ensures freshness of tokens
+"""
 def generate_token(username):
-    '''
-    It will generate a new token by username and current time with SECRET.
-    Args:
-        username (string): username
-    Return:
-        (string) encoded token
-    '''
+
     return jwt.encode({
             "username": username,
             "time": time.time()
