@@ -116,6 +116,10 @@ content-type: application/json
 
 GET http://127.0.0.1:8080/collection/savedcollections?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QzMSIsInRpbWUiOjE2NDc0NDM3MDMuNDY5ODM4MX0.yqUhCtMJPMqTrn-1IQuyeBJj6zm7A3XZFMFrn3lqAUk
 
+### get saved collections for user13
+
+GET http://127.0.0.1:8080/collection/savedcollections?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6IjIyM2xvbHdoeXd3ZGVydCIsInRpbWUiOjE2NDk5MjM1ODMuMTU3NTA0fQ._M0oadbHDhVvDVNTveHAuNzHuFpd0Um1CeWPeQFeiFM
+
 
 
 ### check those other people how many saved those collections
