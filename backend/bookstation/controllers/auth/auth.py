@@ -36,10 +36,8 @@ Raises:
 @app.route(url_prefix + "/login", methods=["POST"])
 def login():
 
-
     data = request.get_json()
     email, password = data['email'], data['password']
-
 
     user = User.query.filter_by(email = email).first()
     if user is None:
@@ -84,7 +82,6 @@ def register():
 
     if User.query.filter_by(username = username).first() is not None:
         raise error.InputError(description="username already exists")
-
 
     return dumps({
         'valid_user' : True
