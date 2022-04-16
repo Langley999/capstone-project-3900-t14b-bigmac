@@ -1,36 +1,15 @@
-import axios from "axios";
-import React, { useState, useRef, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Rating from '@mui/material/Rating';
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
-import AddIcon from '@mui/icons-material/Add';
-import Popover from '@mui/material/Popover';
 import Badge from '@mui/material/Badge';
-import TextField from '@mui/material/TextField';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import { makeStyles } from '@mui/styles';
-
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import IconButton from '@mui/material/IconButton';
-import {Link, useParams} from "react-router-dom";
+import {Link} from "react-router-dom";
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-
 import Avatar from '@mui/material/Avatar';
 import { styled } from "@material-ui/core";
+
 
 const StyledBadge = styled(Badge)({
   "& .MuiBadge-badge": {
@@ -40,8 +19,10 @@ const StyledBadge = styled(Badge)({
   }
 });
 
-const Review = ({item,i}) => {
-
+/**
+ * Format review contents
+ */
+const ReviewContent = ({item,i}) => {
   const createDate = (str) => {
     let li = str.split(' ');
     let time = li[1];
@@ -93,7 +74,6 @@ const Review = ({item,i}) => {
    
         </Grid>
 
-
         <Grid item xs={3}>
           <Rating
             size="small"
@@ -109,14 +89,10 @@ const Review = ({item,i}) => {
             {item['content']}
           </Typography>
         </Grid>
-
       </Grid>
-     
-
-
     </Grid>
    
   </Grid>)
 
 }
-export default Review;
+export default ReviewContent;

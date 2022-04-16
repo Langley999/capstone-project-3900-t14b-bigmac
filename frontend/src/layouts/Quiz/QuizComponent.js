@@ -1,20 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 
+/**
+ * Component to allow adding new question for a quiz
+ */
 const QuizComponent = ({id, question,ans, components, setComponents}) => { 
-  
-  //console.log(id);
   const key = id;
   const [check1,setcheck1] = React.useState(components[key]['ans'][0]['is_correct']);
   const [check2,setcheck2] = React.useState(components[key]['ans'][1]['is_correct']);
   const [check3,setcheck3] = React.useState(components[key]['ans'][2]['is_correct']);
   const [check4,setcheck4] = React.useState(components[key]['ans'][3]['is_correct']);
-  console.log('----')
-  console.log(components[key]['ans'][0]['content']);
-  console.log(components[key]['ans'][0]['is_correct']);
-
   const handleChangeAnswer = (content,i)=> {
     let componentsCopy = [...components];
     componentsCopy[id]['ans'][i]['content'] = content;
@@ -29,8 +26,6 @@ const QuizComponent = ({id, question,ans, components, setComponents}) => {
     let componentsCopy = [...components];
     componentsCopy[id]['ans'][i]['is_correct'] = flag;
     setComponents(componentsCopy); 
-
-
   }
 
   useEffect(() => {
@@ -43,8 +38,6 @@ const QuizComponent = ({id, question,ans, components, setComponents}) => {
   return ( 
     
     <div className="Component"> 
-    
-     
       <TextField id="standard-basic" label="Question" variant="standard" sx={{ marginBottom: 3 }} style = {{width: 760}} value={components[key]['question']} onChange={(event) => handleChangeQuestion(event.target.value)}/>
       <Grid container direction="row" spacing={2} justifyContent="center"  sx={{ marginBottom: 3 }}>
         <Grid item xs={7}>

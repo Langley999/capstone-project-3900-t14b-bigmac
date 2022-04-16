@@ -1,48 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { url } from '../components/Helper'
+import React, { useState, useEffect } from 'react';
+import { url } from '../../components/Helper';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import HomeButton from '../components/HomeButton';
-import {checkProfileInput} from '../components/Helper';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import FolderIcon from '@mui/icons-material/Folder';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ErrorPopup from '../components/ErrorPopup';
-import SuccessPopup from '../components/SuccessPopup';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
-import ToggleOffIcon from '@mui/icons-material/ToggleOff';
-import WysiwygIcon from '@mui/icons-material/Wysiwyg';
+import ErrorPopup from '../../components/ErrorPopup';
+import SuccessPopup from '../../components/SuccessPopup';
 import { QuizComponent } from './QuizComponent.js'; 
-import { TryRounded } from '@mui/icons-material';
 
+/**
+ * Component to edit existing quizzes
+ */
 const EditQuiz = (userInfo) => {
   const quiz_id = Number(window.location.search.split('=')[1]);
-  console.log(quiz_id)
-  console.log(window.location.search.split('=')[1])
   const [quizname,setquizname] = React.useState('');
   const [quizdescription, setquizdescription] =  React.useState('');
   const [badge, setBadge] = React.useState('');
@@ -113,7 +89,6 @@ const EditQuiz = (userInfo) => {
 
     if (canSubmit) {
       let id = Number(window.location.search.split('=')[1]);
-      console.log(id);
       let body = {
         id: id,
         name: quizname,
@@ -171,7 +146,7 @@ const EditQuiz = (userInfo) => {
   }
   useEffect(() => {
     const quiz_id = Number(window.location.search.split('=')[1]);
-    axios.get('http://127.0.0.1:8080/quiz/getquiz', {
+    axios.get(`${url}/quiz/getquiz`, {
       params: {
         quiz_id: quiz_id,
         token: localStorage.getItem('admin_token')
@@ -179,7 +154,6 @@ const EditQuiz = (userInfo) => {
     })
     .then(function (response) {
       let data = response['data'];
-      console.log(data['questions'])
       setBadge(data['badge']);
       setquizname(data['quizname']);
       setquizdescription(data['description']);

@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { url } from '../components/Helper'
+import React from 'react';
+import { url } from '../../components/Helper';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Box from '@mui/material/Box';
@@ -12,13 +12,14 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Button from '@mui/material/Button';
-import ErrorPopup from '../components/ErrorPopup';
+import ErrorPopup from '../../components/ErrorPopup';
 import Stack from '@mui/material/Stack';
-import HomeButton from '../components/HomeButton';
-import {checkProfileInput} from '../components/Helper';
+import HomeButton from '../../components/HomeButton';
 
 
-
+/**
+ * Admin login page
+ */
 const Admin = () => {
 
   // sets password and its visibility
@@ -50,12 +51,11 @@ const Admin = () => {
       setSnackBarOpen(true);
       return;
     }
-    console.log(pass);
     const body = JSON.stringify( {
       admin_id: id,
       password: pass['password'],
     });
-    axios.post('http://127.0.0.1:8080/admin/login', body,{
+    axios.post(`${url}/admin/login`, body,{
       headers: {
         'Content-Type': 'application/json'
       }
@@ -67,7 +67,6 @@ const Admin = () => {
 
     })
     .catch(function (error) {
-      //console.log(JSON.stringify(error));
       setErrorMsg("Invalid admin id or password!");
       setSnackBarOpen(true);
     });
@@ -101,56 +100,56 @@ const Admin = () => {
     marginLeft: "-10px"
   }
 
-    return (
-      <div>
-        <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          style={formStyle}
-          onSubmit={(e) => submitLogin(e)}
-        >
-          <Stack direction="row" style={headingStyle}>
-            <HomeButton/>
-            <h1 style={{textAlign: "center"}}>Admin Login</h1>
-            <div style={{width: "30px"}}></div>
-          </Stack>
-          
-          <TextField
-            required
-            id="outlined-email"
-            label="Admin ID"
-            type="id"
-            onChange={e => setId(e.target.value)}
+  return (
+    <div>
+      <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen} />
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+        style={formStyle}
+        onSubmit={(e) => submitLogin(e)}
+      >
+        <Stack direction="row" style={headingStyle}>
+          <HomeButton/>
+          <h1 style={{textAlign: "center"}}>Admin Login</h1>
+          <div style={{width: "30px"}}></div>
+        </Stack>
+        
+        <TextField
+          required
+          id="outlined-email"
+          label="Admin ID"
+          type="id"
+          onChange={e => setId(e.target.value)}
+        />
+        <FormControl variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            type={pass.showPassword ? 'text' : 'password'}
+            value={pass.password}
+            onChange={handlePassChange('password')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {pass.showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
           />
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              type={pass.showPassword ? 'text' : 'password'}
-              value={pass.password}
-              onChange={handlePassChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {pass.showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
+        </FormControl>
 
-          <Button variant="contained" type="submit">Login</Button>
-          <span style={{height: "20px", textAlign: "center"}}>Login as a user? <a href="http://localhost:3000/bookstation/login">Login</a></span>
-        </Box>
-      </div>
-    );
-  };
+        <Button variant="contained" type="submit">Login</Button>
+        <span style={{height: "20px", textAlign: "center"}}>Login as a user? <a href="http://localhost:3000/bookstation/login">Login</a></span>
+      </Box>
+    </div>
+  );
+};
 export default Admin;
