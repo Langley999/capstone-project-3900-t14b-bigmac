@@ -243,6 +243,9 @@ def remove_collection():
 		raise error.AccessError(description="You don't have permission to add this book")
 	try:
 		Collection_book.query.filter_by(collection_id = c_id).delete()
+		saved_collections = Saved_collection.query.filter_by(collection_id = c_id).all()
+		for saved in saved_collections:
+			db.session.delete(saved)
 		db.session.delete(collection)
 		db.session.commit()
 
