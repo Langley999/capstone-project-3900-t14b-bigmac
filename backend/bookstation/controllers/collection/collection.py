@@ -266,6 +266,10 @@ def remove_collection():
 	except:
 		raise error.BadReqError(description="Cannot remove collection")
 
+	saved_collections = Saved_collection.query.filter_by(collection_id = c_id).all()
+	for saved in saved_collections:
+		db.session.delete(saved)
+
 
 @app.route(url_prefix + '/savecollection', methods=["POST"])
 def save_collections():

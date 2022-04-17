@@ -82,7 +82,8 @@ def favouriteGenre():
 				genre_freq[genre] = 1
 	
 	max_genres = [keys for keys, values in genre_freq.items() if values == max(genre_freq.values())]
-
+	max_genres = sorted(genre_freq, key=genre_freq.get)
+	max_genres = max_genres[:5]
 	return dumps({'favourite_genres' : max_genres})
 		
 """
@@ -124,7 +125,11 @@ def favouriteAuthor():
 				author_freq[author] = 1
 	
 	#sort this mapping so that we retrieve the most frequent author(s) 
-	max_authors = [keys for keys, values in author_freq.items() if values == max(author_freq.values())]
+
+
+	#max_authors = [keys for keys, values in author_freq.items() if values == max(author_freq.values())]
+	max_authors = sorted(author_freq, key=author_freq.get)
+	max_authors = max_authors[::5]
 
 	author_book_set = set()
 	books_list = []
