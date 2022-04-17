@@ -18,7 +18,6 @@ import { QuizComponent } from './QuizComponent.js';
  * Component to edit existing quizzes
  */
 const EditQuiz = (userInfo) => {
-  const quiz_id = Number(window.location.search.split('=')[1]);
   const [quizname,setquizname] = React.useState('');
   const [quizdescription, setquizdescription] =  React.useState('');
   const [badge, setBadge] = React.useState('');
