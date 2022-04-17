@@ -30,7 +30,7 @@ const FeedListing = ({ post, isPublic, username, avatar, id, removePost, isSelf 
         <div style={{marginTop: '5px', marginLeft: '55px', overflowWrap: 'break-word', display: 'flex', justifyContent: 'space-between'}}>
           <div>
           {post.content.match('^Added a review for') ?
-            <>{postSplit[0]}<b>{bookReview[0]}</b><br/><br/>'<i>{bookReview[1].substring(2)} </i>'</>
+            <>{postSplit[0]}<b>{bookReview[0]}</b><br/><br/>"<i>{bookReview[1].substring(2)} </i>"</>
           : <>{post.content}</>
           }</div>
           {isSelf ? <Button onClick={removePost}>Remove</Button> : null}
