@@ -27,7 +27,7 @@ import {url} from '../../components/Helper';
 /**
  * The design of book detail page for handling reviews
  */
-const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDisabled,setreadingButtonText}) => {
+const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDisabled,setreadingButtonText,updateTabValue}) => {
 
   const [rating, setRating] = React.useState(0);
   const [page,setpage] = useState(1);
@@ -475,7 +475,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
       {myreview.length > 0 &&  myreview.map((item, i) =>
       <Grid container direction='row' spacing={0} key={i} style={{ marginBottom: 0 }} >
         <Grid item xs = {10}>
-          <ReviewContent item={item} i = {i}></ReviewContent>
+          <ReviewContent item={item} i = {i} updateTabValue={updateTabValue}/>
         </Grid>
         <Grid item xs={1} style={{ marginLeft: -62}}> 
           <IconButton aria-label='edit' size='small' onClick={() => handleEditReview(item['review_id'])}>
@@ -507,7 +507,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
       {reviews.length > 0 &&  reviews.map((item, i) =>
       <Grid container direction='row' spacing={0} key={i} style={{ marginBottom: 0 }} >
         <Grid item xs = {10}>
-          <ReviewContent item={item} i = {i}></ReviewContent>
+          <ReviewContent item={item} i = {i} updateTabValue={updateTabValue}/>
         </Grid>
           { localStorage.getItem('token') && item['is_liked'] === false && <Grid item xs={1}>
           <IconButton aria-label='delete' size='small' onClick={() => handleLikeReview(item['review_id'])}>

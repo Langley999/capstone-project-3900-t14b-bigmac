@@ -25,7 +25,7 @@ import Review from './Review';
 /**
  * Book detail page: contains all actions and information about a book
  */
-const BookDetail = ({userInfo}) => {
+const BookDetail = ({userInfo, updateTabValue}) => {
   let u_id = -1;
   if (localStorage.getItem('user')) {
     u_id =  JSON.parse(localStorage.getItem('user'))['user_id'];
@@ -283,7 +283,7 @@ const BookDetail = ({userInfo}) => {
           </Grid>
 
           <Grid item xs={6}>
-            <Review book_id={book_id} u_id={u_id} userInfo={userInfo} setwarningcontent={setwarningcontent} setwarningopen={setwarningopen} setbtnDisabled={setbtnDisabled} setreadingButtonText={setreadingButtonText}/>
+            <Review book_id={book_id} u_id={u_id} userInfo={userInfo} setwarningcontent={setwarningcontent} setwarningopen={setwarningopen} setbtnDisabled={setbtnDisabled} setreadingButtonText={setreadingButtonText} updateTabValue={updateTabValue}/>
           </Grid>
           <Grid item xs={3}>
               <SimilarBooks book_id={book_id} setwarningopen={setwarningopen} />
