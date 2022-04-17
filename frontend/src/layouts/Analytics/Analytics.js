@@ -64,13 +64,15 @@ const Analytics = ({ userInfo }) => {
   // information corresponding to the selected analytics view
   const Data = () => {
     return (
-    <Paper sx={{
-      width: '100%',
-      height: '500px',
-      marginLeft: '40px',
-      padding: '20px',
-      overflow: 'auto'
-    }}>
+    <Paper
+      sx={{
+        width: '100%',
+        height: '500px',
+        marginLeft: '40px',
+        padding: '20px',
+        overflow: 'auto',
+      }}
+    >
       <h1>Analytics</h1>
       <p>View {userInfo.user_id === id ? <>your</>:<>their</>} reading progress!</p>
       <Divider sx={{marginTop: '10px', marginBottom: '10px'}}/>
@@ -82,12 +84,12 @@ const Analytics = ({ userInfo }) => {
   }
 
   return (
-    <>
+    <div style={{marginBottom: '100px'}}>
       <Box sx={{display: 'flex'}}>
         <Sidebar/>
         <Data/>
       </Box>
-    </>
+    </div>
   );
 };
 export default Analytics;
