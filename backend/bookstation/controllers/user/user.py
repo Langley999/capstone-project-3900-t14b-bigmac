@@ -177,14 +177,15 @@ def get_user_profile():
     badgelist = []
     for badge in badges:
         quiz = Quiz.query.filter_by(badge_id=badge.badge_id).first()
-        badgeobj = {
-            'badge_id': badge.badge_id,
-            'badge_image': Badge.query.get(badge.badge_id).image,
-            'quiz_id': quiz.quiz_id,
-            'quiz_name': quiz.quiz_name,
-            'quiz_description': quiz.description
-        }
-        badgelist.append(badgeobj)
+        if quiz != None:
+            badgeobj = {
+                'badge_id': badge.badge_id,
+                'badge_image': Badge.query.get(badge.badge_id).image,
+                'quiz_id': quiz.quiz_id,
+                'quiz_name': quiz.quiz_name,
+                'quiz_description': quiz.description
+            }
+            badgelist.append(badgeobj)
     return dumps({
         "is_self": True if (operator.user_id == user_id) else False,
         "username": user.username,
