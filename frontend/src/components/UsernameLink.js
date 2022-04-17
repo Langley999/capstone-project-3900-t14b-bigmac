@@ -9,9 +9,9 @@ const UsernameLink = ({username, id, avatar, getProfile, hideFollowers, hideFoll
 
   // load profile of user if username link is clicked and hide follower/followings list if it is open
   const userClick = () => {
-    getProfile();
-    if (hideFollowers !== null) hideFollowers();
-    if (hideFollowings !== null) hideFollowings();
+    if (getProfile) getProfile();
+    if (hideFollowers) hideFollowers();
+    if (hideFollowings) hideFollowings();
   }
   return (
     <div style={{display: 'flex',flexDirection: 'row'}}>

@@ -31,7 +31,6 @@ const Register = ({ updateLogin, updateUserInfo }) => {
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
-  const [passErr, setPassErr] = React.useState('');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
 
@@ -161,7 +160,6 @@ const Register = ({ updateLogin, updateUserInfo }) => {
             id='outlined-adornment-password'
             type={pass.showPassword ? 'text' : 'password'}
             value={pass.password}
-            helperText={passErr}
             onChange={handlePassChange('password')}
             endAdornment={
               <InputAdornment position='end'>

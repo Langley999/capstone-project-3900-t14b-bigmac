@@ -57,11 +57,13 @@ const SearchUsers = () => {
         </Box>
         <Button type='submit' onClick={(e) => searchUser(e)} variant='contained' sx={{marginLeft: '10px'}}>Search</Button>
       </div>
-      {users.length > 0 ? users.map((searchedUser, key) => {
-        return (
-          <UserListing key={key} searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
-        )
-      }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>There were no usernames that matched the phrase</div>}
+      <div>
+        {users.length > 0 ? users.map((searchedUser, key) => {
+          return (
+            <UserListing key={key} searchUser={searchUser} searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
+          )
+        }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>There were no usernames that matched the phrase</div>}
+      </div>
     </div>
   );
 };

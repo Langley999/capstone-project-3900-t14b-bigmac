@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { url } from '../../components/Helper';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,7 +9,7 @@ import ErrorPopup from '../../components/ErrorPopup';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import {Link, useParams} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -117,16 +117,16 @@ const Allquiz = () => {
             <ListItem
                 key={item['id']}
               > 
-              {item['status'] == 0 &&
+              {item['status'] === 0 &&
                 <IconButton edge='end' aria-label='delete' onClick={() => deleteQuiz(item['id'])}>
                   <DeleteIcon sx={{ fontSize: 30 }}/>
                 </IconButton>}
-              {item['status'] == 0 &&
+              {item['status'] === 0 &&
                 <IconButton edge='end' onClick={() => openQuiz(item['id'])}>
                   <ToggleOffIcon  sx={{ fontSize: 30 }}/>
                 </IconButton>}
 
-              {item['status'] == 1 &&
+              {item['status'] === 1 &&
                 <IconButton edge='end' onClick={() => closeQuiz(item['id'])}>
                   <ToggleOnIcon color='primary' sx={{ fontSize: 30 }}/>
                 </IconButton>}   

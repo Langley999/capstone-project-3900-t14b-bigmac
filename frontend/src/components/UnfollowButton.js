@@ -5,7 +5,7 @@ import {url} from './Helper';
 /**
  * @returns a button that sends post request to unfollow a user if it is clicked
  */
-const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
+const FollowButton = ({searchUser, followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
   
   const unfollowUser = () => {
     axios.post(`${url}/user/unfollow`, {
@@ -16,14 +16,13 @@ const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowin
       if (res['status'] === 200) {
         setSuccessMsg(`Unfollowed ${username}!`);
         setShowSuccess(true);
+        if (searchUser) searchUser();
 
         // set following to false, initially true
-        setIsFollowing(!isFollowing);
+        if (setIsFollowing) setIsFollowing(!isFollowing);
 
         // decrement follower count of current user if setFollowerCount is given
-        if (setFollowerCount !== null) {
-          setFollowerCount(followerCount-1);
-        }
+        if (setFollowerCount) setFollowerCount(followerCount-1);
       }
     })
     .catch(function (error) {

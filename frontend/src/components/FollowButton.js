@@ -5,7 +5,7 @@ import {url} from './Helper';
 /**
  * @returns a button that sends post request to follow a user if it is clicked
  */
-const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
+const FollowButton = ({searchUser, followerCount, setFollowerCount, id, username, isFollowing, setIsFollowing, setShowError, setShowSuccess, setSuccessMsg, setErrorMsg}) => {
   
   const followUser = () => {
     axios.post(`${url}/user/follow`, {
@@ -16,14 +16,13 @@ const FollowButton = ({followerCount, setFollowerCount, id, username, isFollowin
       if (res['status'] === 200) {
         setSuccessMsg(`Followed ${username}!`);
         setShowSuccess(true);
+        if (searchUser) searchUser();
 
         // set following to true, initially false
-        setIsFollowing(!isFollowing);
+        if (setIsFollowing) setIsFollowing(!isFollowing);
 
         // increment follower count of current user if setFollowerCount is given
-        if (setFollowerCount !== null) {
-          setFollowerCount(followerCount+1);
-        }
+        if (setFollowerCount) setFollowerCount(followerCount+1);
       }
     })
     .catch(function (error) {
