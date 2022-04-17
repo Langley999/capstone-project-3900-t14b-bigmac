@@ -22,7 +22,7 @@ const StyledBadge = styled(Badge)({
 /**
  * Format review contents
  */
-const ReviewContent = ({item,i}) => {
+const ReviewContent = ({item, i, updateTabValue}) => {
   const createDate = (str) => {
     let li = str.split(' ');
     let time = li[1];
@@ -68,7 +68,7 @@ const ReviewContent = ({item,i}) => {
           {localStorage.getItem('token')==null ?
             <Button disabled='true' style={{textTransform: 'none', fontSize:'16px',width:'100px',justifyContent: 'flex-start'}}>
               {item['username']} </Button>
-            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: 'none', fontSize:'16px',width:'100px',justifyContent: 'flex-start'}}>
+            : <Button component = {Link} to={`/user/${item['user_id']}/profile`} style={{textTransform: 'none', fontSize:'16px',width:'100px',justifyContent: 'flex-start'}} onClick={() => updateTabValue(0)}>
                {item['username']}</Button>
             }
    

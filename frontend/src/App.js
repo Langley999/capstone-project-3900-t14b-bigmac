@@ -160,8 +160,8 @@ function App() {
                 followingFav={followingFav}
               />}
             />
-            <Route path='book' element={<BookDetail userInfo={userInfo}/>}>
-              <Route path=':id' element={<BookDetail userInfo={userInfo}/>} />
+            <Route path='book' element={<BookDetail userInfo={userInfo} updateTabValue={updateTabValue}/>}>
+              <Route path=':id' element={<BookDetail userInfo={userInfo} updateTabValue={updateTabValue}/>} />
             </Route>
             <Route path='quiz' element={<Quiz />} />
             <Route path='enterquiz' element={<EnterQuiz />}>
