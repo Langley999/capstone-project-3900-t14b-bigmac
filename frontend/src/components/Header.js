@@ -59,22 +59,25 @@ function Header ({ ifLogin, updateLogin, userInfo, searchValue, updateSearchValu
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(()=>{
+
     let myInterval = setInterval(() => {
-      axios.get(`${url}/notification/checknew`, {
-        params: {
-          token: localStorage.getItem('token')
-        }
-      }).then(res => {
-        if (location.pathname === "/notifications" && toRead !== 0) {
-          setToRead(0);
-        } else {
-          setToRead(toRead + res.data.to_read);
-        }
-        if (res.data.to_read > 0) {
-          updateNewNotif(res.data);
-          addNotifPopup(res.data.to_read);
-        }
-      })
+      if (localStorage.getItem('token')) {
+        axios.get(`${url}/notification/checknew`, {
+          params: {
+            token: localStorage.getItem('token')
+          }
+        }).then(res => {
+          if (location.pathname === "/notifications" && toRead !== 0) {
+            setToRead(0);
+          } else {
+            setToRead(toRead + res.data.to_read);
+          }
+          if (res.data.to_read > 0) {
+            updateNewNotif(res.data);
+            addNotifPopup(res.data.to_read);
+          }
+        })
+      }
     }, 2000)
     return () => {
       clearInterval(myInterval);
