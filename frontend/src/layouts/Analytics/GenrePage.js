@@ -88,7 +88,7 @@ const GenrePage = ({userInfo}) => {
   }
 
   return (
-    <div>
+    <div style={{paddingBottom: '300px'}}>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: 'normal'}}>{userInfo.user_id === id ? <>Your</> : <>Their</>} Genres</h2>
       <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
