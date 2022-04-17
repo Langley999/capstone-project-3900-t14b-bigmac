@@ -312,13 +312,21 @@ def deletequiz():
     quiz = Quiz.query.get(quiz_id)
     if quiz == None:
         raise error.NotFoundError(description='Target quiz not found')
-    
+    badge = Badge.query.get(quiz.badge_id)
+    user_badges = User_badge.query.filter_by(badge_id=quiz.badge_id).all()
+    for user_badge in user_badges:
+        db.session.delete(user_badge)
+    user_quizs = Quiz_user.query.filter_by(quiz_id=quiz_id).all()
+    for user_quiz in user_quizs:
+        db.session.delete(user_quiz)
+
     questions = Question.query.filter_by(quiz_id=quiz_id).all()
     for question in questions:
       answers = Answer.query.filter_by(question_id=question.question_id).all()
       for answer in answers:
         db.session.delete(answer)
       db.session.delete(question)
+    db.session.delete(badge)
     db.session.delete(quiz)
     db.session.commit()
     return dumps({ 'success' :[] })
@@ -345,6 +353,7 @@ def updatequiz():
     
     body = request.get_json()
     token = body.get('token')
+    print(token)
     admin = Admin.query.filter_by(token=token).first()
     if admin == None:
         raise error.NotFoundError(description='Target admin not found')
@@ -407,9 +416,8 @@ Raises:
 def getquiz():
     token = request.args.get('token')
     admin = Admin.query.filter_by(token=token).first()
-    user = get_user(token)
-    if admin == None and user == None:
-        raise error.NotFoundError(description='No access right')
+    if admin == None:
+        user = get_user(token)
 
     quizid = int(request.args.get('quiz_id'))
     quiz = Quiz.query.get(quizid)

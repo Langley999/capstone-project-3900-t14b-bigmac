@@ -117,20 +117,19 @@ const Allquiz = () => {
             <ListItem
                 key={item['id']}
               > 
-              <IconButton edge='end' aria-label='delete' onClick={() => deleteQuiz(item['id'])}>
-                <DeleteIcon sx={{ fontSize: 30 }}/>
-              </IconButton>
+              {item['status'] == 0 &&
+                <IconButton edge='end' aria-label='delete' onClick={() => deleteQuiz(item['id'])}>
+                  <DeleteIcon sx={{ fontSize: 30 }}/>
+                </IconButton>}
               {item['status'] == 0 &&
                 <IconButton edge='end' onClick={() => openQuiz(item['id'])}>
                   <ToggleOffIcon  sx={{ fontSize: 30 }}/>
-                </IconButton>
-              }
+                </IconButton>}
 
               {item['status'] == 1 &&
                 <IconButton edge='end' onClick={() => closeQuiz(item['id'])}>
                   <ToggleOnIcon color='primary' sx={{ fontSize: 30 }}/>
-                </IconButton>
-              }   
+                </IconButton>}   
 
               <ListItemText sx={{ paddingLeft: 2 }} 
                 primary={item['quiz_name']}

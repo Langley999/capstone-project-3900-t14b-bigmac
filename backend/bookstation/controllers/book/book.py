@@ -211,7 +211,7 @@ Returns:
 @app.route("/book/similarbooks", methods=["GET"])
 def similarBooks():
 
-    book_id = request.args.get('book_id')
+    book_id = int(request.args.get('book_id'))
 
     #get all genres for the specified book and create genre set for comparison
     target_tags = set()
