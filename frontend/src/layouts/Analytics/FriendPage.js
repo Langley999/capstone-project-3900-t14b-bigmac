@@ -142,7 +142,7 @@ const FriendPage = ({userInfo}) => {
           horizontalAlignment='center'
           itemTextPosition='bottom'
         />
-        <Title text='Follow fluctuations in the last 6 months'>
+        <Title text='Follow count in the last 6 months'>
           <Subtitle text='(followers and followings)' />
         </Title>
         <Tooltip enabled={true} />
