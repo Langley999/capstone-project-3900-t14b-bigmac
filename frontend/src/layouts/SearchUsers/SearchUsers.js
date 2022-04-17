@@ -32,7 +32,7 @@ const SearchUsers = () => {
         token: localStorage.getItem('token'),
         search_phrase: searchValue
       }})
-      .then(res => {
+      .then(function(res) {
         setUsers(res.data.users);
       })
       .catch(function (error) {
@@ -41,9 +41,6 @@ const SearchUsers = () => {
       });
   }
 
-  const handleChangeSearchUser = (event) => {
-    setSearchValue(event.target.value);
-  }
 
   return (
     <div>
@@ -54,15 +51,15 @@ const SearchUsers = () => {
           <TextField
             placeholder='Search Users'
             value={searchValue}
-            onChange={handleChangeSearchUser}
+            onChange={e => setSearchValue(e.target.value)}
             inputProps={{ 'aria-label': 'search' }}
           />
         </Box>
-        <Button type='submit' variant='contained' sx={{marginLeft: '10px'}}>Search</Button>
+        <Button type='submit' onClick={(e) => searchUser(e)} variant='contained' sx={{marginLeft: '10px'}}>Search</Button>
       </div>
-      {users.length > 0 ? users.map((searchedUser) => {
+      {users.length > 0 ? users.map((searchedUser, key) => {
         return (
-          <UserListing searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
+          <UserListing key={key} searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
         )
       }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>There were no usernames that matched the phrase</div>}
     </div>
