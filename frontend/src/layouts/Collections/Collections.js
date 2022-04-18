@@ -62,7 +62,7 @@ const Collections = ({userInfo}) => {
         setCollections(res['data']['collections']);
         initialCollections = [...res['data']['collections']]
         // default show Favourite Collection
-        getCollection(getFavouriteCollectionIdByFlag(), 'no');
+        getCollection(getFavouriteCollectionIdByFlag(), 'no', '');
       })
       .catch(function (error) {
         setwarningcontent(error.message);
@@ -156,7 +156,7 @@ const Collections = ({userInfo}) => {
   }
 
   // show books when click a specific collection
-  const getCollection = (collection_id, isSavedFlag) => {
+  const getCollection = (collection_id, isSavedFlag, save_from) => {
     if (collection_id) {
       axios.get(`${url}/collection/getcollection`, {params: {
           token: localStorage.getItem('token'),
@@ -168,7 +168,8 @@ const Collections = ({userInfo}) => {
             collection_id: collection_id,
             name: res.data.name,
             books: res.data.books,
-            has_saved: res.data.has_saved
+            has_saved: res.data.has_saved,
+            save_from: save_from
           })
           setPage(1);
           setPageCount(Math.ceil(res.data.books.length / pageSize));
@@ -204,9 +205,9 @@ const Collections = ({userInfo}) => {
 
     const clickSavedCollection = (c) => {
       if (isSelf)
-        getCollection(c.collection_id, 'my');
+        getCollection(c.collection_id, 'my', c.username);
       else
-        getCollection(c.collection_id, 'other');
+        getCollection(c.collection_id, 'other', c.username);
     }
 
     return (
@@ -227,13 +228,15 @@ const Collections = ({userInfo}) => {
             }
             <Divider />
             {collections.map((collection) =>
+              <>
                 <MenuItem
                   key={collection.id}
-                  onClick={() => getCollection(collection.id,'no')}
+                  onClick={() => getCollection(collection.id,'no', '')}
                 >
                   <ListItemText>{collection.name}</ListItemText>
                 </MenuItem>
-
+                <Divider/>
+              </>
             )}
           </MenuList>
         </Paper>
@@ -245,13 +248,18 @@ const Collections = ({userInfo}) => {
             </MenuItem>
             <Divider />
             {saved.map((c) =>
-                <MenuItem
-                  key={c.collection_id}
-                  onClick={() => clickSavedCollection(c)}
-                >
-                  <ListItemText>{c.name} ({c.username})</ListItemText>
-                </MenuItem>
-
+              <>
+                  <MenuItem
+                    key={c.collection_id}
+                    onClick={() => clickSavedCollection(c)}
+                  >
+                    <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <ListItemText>{c.name}</ListItemText>
+                      <ListItemText>({c.username})</ListItemText>
+                    </Box>
+                  </MenuItem>
+                  <Divider/>
+              </>
             )}
           </MenuList>
         </Paper>
@@ -318,7 +326,7 @@ const Collections = ({userInfo}) => {
               fav = collection.id;
             }
           }
-          getCollection(fav, 'no');
+          getCollection(fav, 'no', '');
         })
         .catch(error => {
           setwarningcontent(error.message);
@@ -345,7 +353,7 @@ const Collections = ({userInfo}) => {
               fav = collection.id;
             }
           }
-          getCollection(fav, 'no');
+          getCollection(fav, 'no', '');
         })
         .catch(error => {
           setwarningcontent(error.message);
@@ -407,7 +415,10 @@ const Collections = ({userInfo}) => {
           </DialogActions>
         </Dialog>
         <Box sx={{display: 'flex'}}>
-          <h1>{currentCollection.name}</h1>
+          <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <Typography variant='h4'>{currentCollection.name}</Typography>
+            {currentCollection.save_from !== '' ? <Typography sx={{marginBottom: '20px'}}>({currentCollection.save_from})</Typography> : null}
+          </Box>
           {currentCollection.name === 'Recently Added' || currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf || isSaved !== 'no'?
             null :
             <>
@@ -512,6 +523,7 @@ const Collections = ({userInfo}) => {
               )
             })}
           </Grid>
+          {page}
           <Pagination count={pageCount} page={page} onChange={handleChangePage} />
         </Box>
       </Paper>
