@@ -64,15 +64,10 @@ const GoalPage = () => {
     axios.get(`${url}/user/getallgoal`, {params: {
         token: localStorage.getItem('token')
       }}).then(function (response) {
-        console.log(response['data']['goal_history'])
-        let temp = response['data']['goal_history'];
+        const temp = response['data']['goal_history'];
         const now = new Date();
-        console.log(temp);
-        for (let currTemp of temp) {
-          let historyDate = new Date(currTemp['created_time']);
-          currTemp['created_time'] = historyDate.toLocaleString('en-us', {month: 'long'}) + ' ' + historyDate.getFullYear().toString();
-          console.log(currTemp)
-          let i = temp.indexOf(currTemp);
+        for (let i = 0; i < temp.length; i++) {
+          const historyDate = new Date(temp[i]['created_time']);
           // remove current month's data
           if (historyDate.getFullYear() === now.getFullYear() && historyDate.getMonth() === now.getMonth()){
             temp.splice(i, 1);
@@ -80,6 +75,10 @@ const GoalPage = () => {
           // limit to last 12 entries
           if (monthDiff(historyDate, now) > 11) {
             temp.splice(i, 1);
+        }
+        for (let currTemp of temp) {
+          const historyDate = new Date(currTemp['created_time']);
+          currTemp['created_time'] = historyDate.toLocaleString('en-us', {month: 'long'}) + ' ' + historyDate.getFullYear().toString();
           }
         }
         setAllGoal(temp.reverse());
