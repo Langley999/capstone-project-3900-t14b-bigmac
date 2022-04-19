@@ -31,3 +31,23 @@ Week 5
 Week 6:
   - remodeled quiz-answer table
   - added email verification functionality to registration system
+ 
+Week 7:
+  - modified book details page to not include logged in user reivew and separate api for own review
+  - udpated quiz and badges models
+  - implemented pagination for some functions
+ 
+
+Week 8:
+  - implemeneted backend functions for recommendations based on user data and following data
+  - functions based on favouriteAuthors, favourite genres and favourite followed
+  - added functionality to sort reviews by time, likes, badges 
+  
+  
+Week 9:
+  - implemented backend notification model
+  - wrote notification alert functions
+  - standardised and refactored code in backend functions
+  
+Week 10:
+  - added documenation for system archiecture diagram
