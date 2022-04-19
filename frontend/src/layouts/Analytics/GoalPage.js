@@ -21,7 +21,9 @@ import {
   Subtitle,
   Tooltip,
   Grid,
+  CommonSeriesSettingsHoverStyle,
 } from 'devextreme-react/chart';
+import { CompressOutlined } from '@mui/icons-material';
 
 /**
  * Goal page includes input form for setting reading goal for current month
@@ -64,24 +66,19 @@ const GoalPage = () => {
     axios.get(`${url}/user/getallgoal`, {params: {
         token: localStorage.getItem('token')
       }}).then(function (response) {
-        const temp = response['data']['goal_history'];
+        let temp = response['data']['goal_history'];
+        console.log(temp)
         const now = new Date();
-        for (let i = 0; i < temp.length; i++) {
-          const historyDate = new Date(temp[i]['created_time']);
-          // remove current month's data
-          if (historyDate.getFullYear() === now.getFullYear() && historyDate.getMonth() === now.getMonth()){
-            temp.splice(i, 1);
-          }
-          // limit to last 12 entries
-          if (monthDiff(historyDate, now) > 11) {
-            temp.splice(i, 1);
-        }
         for (let currTemp of temp) {
           const historyDate = new Date(currTemp['created_time']);
           currTemp['created_time'] = historyDate.toLocaleString('en-us', {month: 'long'}) + ' ' + historyDate.getFullYear().toString();
-          }
+          
         }
-        setAllGoal(temp.reverse());
+        temp.reverse()
+        console.log(temp)
+        temp = temp.slice(-14, -1)
+        setAllGoal(temp);
+       
     }).catch(function (error) {
       // show error message if goal cannot be retrieved
       setSuccessMsg('');
