@@ -25,24 +25,23 @@ Week 5
   - added follow, unfollow, search users functions
   - added post, and getfeed from followers functions
   - added like and unlike option to reviews which now are sorted based off that
+  - created saved collections and api including save, unsave, getsaved
   - added get follow statistics and get saves functions for analytics 
   
-
 Week 6:
   - remodeled quiz-answer table
   - added email verification functionality to registration system
+  - re-designed reoutes of register to send email and sendCode to authenticate and register
  
 Week 7:
   - modified book details page to not include logged in user reivew and separate api for own review
   - udpated quiz and badges models
   - implemented pagination for some functions
  
-
 Week 8:
   - implemeneted backend functions for recommendations based on user data and following data
   - functions based on favouriteAuthors, favourite genres and favourite followed
   - added functionality to sort reviews by time, likes, badges 
-  
   
 Week 9:
   - implemented backend notification model
