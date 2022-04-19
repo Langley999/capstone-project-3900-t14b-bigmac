@@ -523,7 +523,6 @@ const Collections = ({userInfo}) => {
               )
             })}
           </Grid>
-          {page}
           <Pagination count={pageCount} page={page} onChange={handleChangePage} />
         </Box>
       </Paper>
