@@ -233,12 +233,11 @@ export const ProfileDetail = ({updateUserInfo, userInfo}) => {
                   sx={{ m: 1, width: '100%'}}
                   variant='outlined'
                 >
-                  <InputLabel htmlFor='input-password'>Password</InputLabel>
+                  <InputLabel htmlFor='input-password'>New Password</InputLabel>
                   <OutlinedInput
                     fullWidth
                     id='input-password'
                     type={ifVisible ? 'text' : 'password'}
-                    value={values.password ?? ''}
                     onChange={handleChangePwd('password')}
                     endAdornment={
                       <InputAdornment position='end'>
