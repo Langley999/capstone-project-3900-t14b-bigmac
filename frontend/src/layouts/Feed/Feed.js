@@ -8,7 +8,7 @@ import Pagination from '@mui/material/Pagination';
 /**
  * @returns list of posts from users that the logged in user follows, paginated to show 10 per page
  */
-const Feed = () => {
+const Feed = ({updateTabValue}) => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showError, setShowError] = React.useState(false);
   const [feed, updateFeed] = React.useState([]);
@@ -52,7 +52,7 @@ const Feed = () => {
       <h1 style={{height: '40px'}}>Feed</h1>
       {pagePosts.length > 0 ? pagePosts.map((post) => {
         return (
-          <FeedListing post={post}/>
+          <FeedListing post={post} updateTabValue={updateTabValue}/>
         )
       }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>Follow other users to see their posts</div>}
       {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}

@@ -11,7 +11,7 @@ import UnfollowButton from '../../components/UnfollowButton';
  * @param {Object} searchedUser contains avatar, id, username, isFollowing
  * @returns Card with user information
  */
-const UserListing = ({ searchUser, searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg, setShowError }) => {
+const UserListing = ({ searchUser, searchedUser, setSuccessMsg, setShowSuccess, setErrorMsg, setShowError, updateTabValue}) => {
 
   const listingStyle = {
     display: 'flex',
@@ -22,7 +22,7 @@ const UserListing = ({ searchUser, searchedUser, setSuccessMsg, setShowSuccess, 
   return (
     <Card style={{width: '1000px', margin: 'auto'}}>
       <CardContent style={listingStyle}>
-        <UsernameLink username={searchedUser.username} id={searchedUser.user_id} avatar={searchedUser.avatar} />
+        <UsernameLink username={searchedUser.username} id={searchedUser.user_id} avatar={searchedUser.avatar} updateTabValue={updateTabValue}/>
         {searchedUser.isFollowing ? <UnfollowButton id={searchedUser.user_id} searchUser={searchUser} username={searchedUser.username} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>
           : <FollowButton id={searchedUser.user_id} searchUser={searchUser} username={searchedUser.username} setShowError={setShowError} setShowSuccess={setShowSuccess} setSuccessMsg={setSuccessMsg} setErrorMsg={setErrorMsg}/>}
       </CardContent>

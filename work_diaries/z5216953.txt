@@ -18,7 +18,7 @@ Week 4:
 
 Week 5:
 - Implemented editing user profile, creating collections, removing collections, adding books
-to collections, searching books by title or author, showing searching result for frontend.
+to collections, searching books by title or author, showing searching result for frontend
 
 Week 6:
 - Implemented consistent login
@@ -28,5 +28,21 @@ Week 6:
 
 Week 7:
 - Implemented top 10 recently added books, saving other readers' collections,
-adding & removing & showing posts for frontend.
+adding & removing & showing posts for frontend
 - Adding pagination for search books result, collections, posts for frontend
+
+Week 8:
+- Fixed some bugs and tested for Demo B
+- Implemented part of recommendations for frontend
+
+Week 9:
+- Added badge in user profile for frontend
+- Implemented part of Notifications for frontend
+- Implemented recommendations for frontend
+
+Week 10:
+- Fixed some bugs
+- Prepared for final demo
+- Wrote final report with teammates
+
+
