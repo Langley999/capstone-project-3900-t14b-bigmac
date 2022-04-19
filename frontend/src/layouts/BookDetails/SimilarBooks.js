@@ -56,9 +56,11 @@ const SimilarBooks = ({book_id, setwarningcontent, setwarningopen}) => {
           </Grid>
           <Grid item xs={12} style={{textAlign: 'center'}}> 
             <Box component={Link} to={`/book/?id=${item['id']}`} style={{width: '600px',textDecoration: 'none'}} >
-              <Button color='primary' style={{width: '150px', textDecoration: 'none'}}>
+              <Button color='primary' style={{ textDecoration: 'none'}}>
+                <Typography style={{width: '150px', fontSize: '1em'}} noWrap>
                 {item['title']}
-              </Button>               
+                </Typography> 
+              </Button>  
             </Box>
           </Grid>
 
