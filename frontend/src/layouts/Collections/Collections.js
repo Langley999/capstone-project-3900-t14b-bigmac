@@ -417,7 +417,7 @@ const Collections = ({userInfo}) => {
         <Box sx={{display: 'flex'}}>
           <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <Typography variant='h4'>{currentCollection.name}</Typography>
-            {currentCollection.save_from !== '' ? <Typography sx={{marginBottom: '20px'}}>({currentCollection.save_from})</Typography> : null}
+            {(currentCollection.save_from !== '' && currentCollection.name !== 'Recently Added') ? <Typography sx={{marginBottom: '20px'}}>({currentCollection.save_from})</Typography> : null}
           </Box>
           {currentCollection.name === 'Recently Added' || currentCollection.name === 'Favourite' || currentCollection.name === 'Reading History' || !isSelf || isSaved !== 'no'?
             null :

@@ -9,7 +9,7 @@ import {createDate, formatAMPM} from '../../components/Helper';
  * @returns a post listing to be shown in the following or public feed,
  * given the post and poster's information
  */
-const FeedListing = ({ post, isPublic, username, avatar, id, removePost, isSelf }) => {
+const FeedListing = ({ post, isPublic, username, avatar, id, removePost, isSelf, updateTabValue}) => {
 
   // split posts containing reviews for further formatting
   let postSplit = [];
@@ -23,7 +23,7 @@ const FeedListing = ({ post, isPublic, username, avatar, id, removePost, isSelf 
     <Card>
       <CardContent>
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}} >
-          <UsernameLink username={username ? username: post.username} id={id? id:post.user_id} avatar={avatar? avatar: post.avatar} isPublic={isPublic} />
+          <UsernameLink username={username ? username: post.username} id={id? id:post.user_id} avatar={avatar? avatar: post.avatar} isPublic={isPublic} updateTabValue={updateTabValue}/>
           <div>{formatAMPM(post.time_created)} {createDate(post.time_created).toLocaleDateString('en-AU')}</div>
         </div>
         <br/>

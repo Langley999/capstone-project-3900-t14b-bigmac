@@ -8,7 +8,7 @@ import Pagination from '@mui/material/Pagination';
 /**
  * @returns list of posts created by all users, paginated to show 10 per page
  */
-const PublicFeed = () => {
+const PublicFeed = ({updateTabValue}) => {
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showError, setShowError] = React.useState(false);
   const [feed, updateFeed] = React.useState([]);
@@ -50,7 +50,7 @@ const PublicFeed = () => {
       <h1 style={{height: '40px'}}>Public Feed</h1>
       {feed.length > 0 ? pagePosts.map((post) => {
         return (
-          <FeedListing post={post} isPublic={localStorage.getItem('token') ? false : true}/>
+          <FeedListing post={post} isPublic={localStorage.getItem('token') ? false : true} updateTabValue={updateTabValue}/>
         )
       }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>No one has posted yet</div>}
       {feed.length > 0 ? <Pagination sx={{margin: '20px'}} count={pageCount} page={page} onChange={handleChangePage} /> : <></>}

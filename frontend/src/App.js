@@ -167,9 +167,9 @@ function App() {
             <Route path='enterquiz' element={<EnterQuiz />}>
               <Route path=':id' element={<EnterQuiz />} />
             </Route>
-            <Route path='feed' element={<Feed />} />
-            <Route path='publicfeed' element={<PublicFeed />} />
-            <Route path='users' element={<SearchUsers  updateSearchResult={updateSearchResult} searchResult={searchResult} searchValue={searchValue}/>} />
+            <Route path='feed' element={<Feed updateTabValue={updateTabValue}/>} />
+            <Route path='publicfeed' element={<PublicFeed updateTabValue={updateTabValue}/>} />
+            <Route path='users' element={<SearchUsers updateTabValue={updateTabValue}/>} />
             <Route path='searchbooks' element={
               <SearchBooks
                 searchResult={searchResult}

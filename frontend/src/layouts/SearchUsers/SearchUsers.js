@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
  * and a list of UserListing results based on the phrase entered
  * @returns page for searching existing usernames
  */
-const SearchUsers = () => {
+const SearchUsers = ({updateTabValue}) => {
   const [successMsg, setSuccessMsg] = React.useState('');
   const [errorMsg, setErrorMsg] = React.useState('');
   const [showSuccess, setShowSuccess] = React.useState(false);
@@ -60,7 +60,7 @@ const SearchUsers = () => {
       <div>
         {users.length > 0 ? users.map((searchedUser, key) => {
           return (
-            <UserListing key={key} searchUser={searchUser} searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError}/>
+            <UserListing key={key} searchUser={searchUser} searchedUser={searchedUser} setSuccessMsg={setSuccessMsg} setShowSuccess={setShowSuccess} setErrorMsg={setErrorMsg} setShowError={setShowError} updateTabValue={updateTabValue}/>
           )
         }) : <div style={{paddingTop: '50px', textAlign:'vertical'}}>There were no usernames that matched the phrase</div>}
       </div>
