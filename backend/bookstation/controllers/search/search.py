@@ -139,14 +139,15 @@ def genre():
     books2.sort(key = lambda x: x[1], reverse=True)
     for id,rating in books2[page*12:page*12+13]:
         book = Book.query.get(id)
-        book_info = {}
-        book_info['id'] = book.book_id
-        book_info['title'] = book.title
-        book_info['author'] = book.author_string
-        book_info['num_rating'] = book.num_rating
-        book_info['cover'] = book.cover_image
-        book_info['average_rating'] = book.average_rating
-        book_info['publish_date'] = book.publish_date
+        book_info = {
+            'id': book.book_id,
+            'title': book.title,
+            'author': book.author_string,
+            'num_rating': book.num_rating,
+            'cover': book.cover_image,
+            'average_rating': book.average_rating,
+            'publish_date': book.publish_date
+        }
         results.append(book_info)  
     return dumps({
       "books": results,
