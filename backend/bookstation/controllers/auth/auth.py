@@ -183,21 +183,3 @@ def logout():
 
     return dumps({})
 
-
-"""
-Helper method to create a hash digest of password
-"""
-def pw_encode(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-
-"""
-Helper method to create hash of username and time.
-Time inclusion ensures freshness of tokens
-"""
-def generate_token(username):
-
-    return jwt.encode({
-            "username": username,
-            "time": time.time()
-        }, 'BIGMAC', algorithm='HS256').decode('utf-8')
