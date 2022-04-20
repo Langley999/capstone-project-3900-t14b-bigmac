@@ -1,19 +1,12 @@
 from json import dumps
-import time
 from bookstation import app, request, db, error, code
-from bookstation.utils.auth_util import get_user, pw_encode, generate_token
+from bookstation.utils.auth_util import  pw_encode, generate_token
 from flask_mail import Mail, Message
 from bookstation.models.user_sys import *
 from bookstation.models.book_sys import *
 from datetime import datetime
 from random import randint
 from bookstation.models.user_sys import Notification_history
-
-from flask import session
-#from config import SECRET
-import hashlib
-import jwt
-
 
 url_prefix = "/auth"
 

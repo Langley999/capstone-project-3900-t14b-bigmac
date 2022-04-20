@@ -3,7 +3,7 @@ from bookstation.models.user_sys import Notification
 from bookstation import app, request, db, error
 from bookstation.models.user_sys import Follow_relationship, User, Post
 from bookstation.utils.auth_util import get_user
-from datetime import date, datetime
+from datetime import datetime
 from sqlalchemy import desc
 
 """
