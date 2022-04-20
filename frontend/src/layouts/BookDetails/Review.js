@@ -47,7 +47,7 @@ const Review = ({book_id,u_id,userInfo,setwarningcontent,setwarningopen,setbtnDi
   const [reviews, setReviews] =  React.useState([]);
   const open = Boolean(anchorEl);
   const [myreview,setmyreview] = useState([]);
-  const [sort, setSort] = useState('time');
+  const [sort, setSort] = useState('likes');
   const [reviewform, setReviewform] = useState(false);
   const [newreview, setNewreview] = useState('');
   const handleAddReviewClose = () => {
