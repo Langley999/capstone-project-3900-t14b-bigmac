@@ -15,9 +15,10 @@
 
     - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-&emsp;&emsp;&emsp;&emsp;`pip3 install -r requirement.txt`\
+&emsp;&emsp;&emsp;&emsp;`pip3 install -r requirement.txt`
 </br>
 &emsp;&emsp;&emsp;&emsp;`pip3 install sympy`
+
 </br>
 4. Frontend Configuration
     - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
