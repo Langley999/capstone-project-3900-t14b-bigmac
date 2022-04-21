@@ -45,3 +45,7 @@ week 9
 - I debugged and modified qedit quiz
 - I fixed the code styles of backend api and frontend book detail and quiz
 - I added to the report for implementation challenges
+
+week 10
+- I edited report about functionalities and implementation challenges
+- I preapared and did demo with my team
