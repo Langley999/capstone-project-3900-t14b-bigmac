@@ -11,7 +11,7 @@ import {url} from '../../components/Helper';
 /**
  * Function to handle collection related actions in book details page
  */
-const AddCollection = ({btnDisabled, setbtnDisabled,book_id,handleAddCollection,setreadingButtonText,setsnackbarcontent,setsnackbaropen,setwarningcontent,setwarningopen,cover,readingButtonText,publisher,publishdate,genres}) => {
+const AddCollection = ({numCompleted, setNumCompleted, btnDisabled, setbtnDisabled,book_id,handleAddCollection,setreadingButtonText,setsnackbarcontent,setsnackbaropen,setwarningcontent,setwarningopen,cover,readingButtonText,publisher,publishdate,genres}) => {
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
@@ -31,7 +31,7 @@ const AddCollection = ({btnDisabled, setbtnDisabled,book_id,handleAddCollection,
         setreadingButtonText('completed');
         setsnackbarcontent('Book has been added to Reading History');
         setsnackbaropen(true);
-        
+        setNumCompleted(numCompleted+1);
       }
     })
     .catch(function (error) {
@@ -54,6 +54,7 @@ const AddCollection = ({btnDisabled, setbtnDisabled,book_id,handleAddCollection,
         src={cover}
       />
     </Grid>
+    <div style={{fontSize: '20px', fontWeight: 'bold'}} >{numCompleted} Reader{numCompleted === 1 ? <></> : <>s</>}</div>
     {localStorage.getItem('token') &&
     <Grid item xs={6}>
       <Button variant='contained' style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<CheckCircleOutlineIcon />} disabled={btnDisabled} onClick={handleCompleteReading}>{readingButtonText}</Button>

@@ -10,20 +10,8 @@ import SuccessPopup from '../../components/SuccessPopup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import {url} from '../../components/Helper';
-import {
-  Chart,
-  Series,
-  ArgumentAxis,
-  CommonSeriesSettings,
-  Legend,
-  Margin,
-  Title,
-  Subtitle,
-  Tooltip,
-  Grid,
-  CommonSeriesSettingsHoverStyle,
-} from 'devextreme-react/chart';
-import { CompressOutlined } from '@mui/icons-material';
+import GoalHistoryGraph from './GoalHistoryGraph';
+import Box from '@mui/material/Box';
 
 /**
  * Goal page includes input form for setting reading goal for current month
@@ -38,12 +26,10 @@ const GoalPage = () => {
   const [successMsg, setSuccessMsg] = React.useState('');
   const [enableEditGoal, setEnableEditGoal] = React.useState(false);
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
-  const [allGoal, setAllGoal] = React.useState([]);
 
   // fetch user's goal information on refresh
   React.useEffect(() => {
     getGoal();
-    getAllGoal();
   }, []);
 
   // calculate days until end of month
@@ -52,40 +38,6 @@ const GoalPage = () => {
   const daysUntilEndOfMonth = lastDayOfMonth - date.getDate();
   let daySuffix = '';
   if (daysUntilEndOfMonth !== 1) daySuffix = 's';
-
-  function monthDiff(month1, month2) {
-    let months;
-    months = (month2.getFullYear() - month1.getFullYear()) * 12;
-    months -= month1.getMonth();
-    months += month2.getMonth();
-    return months <= 0 ? 0 : months;
-  }
-
-  // get goal history of last 12 months, not including current month
-  const getAllGoal = () => {
-    axios.get(`${url}/user/getallgoal`, {params: {
-        token: localStorage.getItem('token')
-      }}).then(function (response) {
-        let temp = response['data']['goal_history'];
-        console.log(temp)
-        const now = new Date();
-        for (let currTemp of temp) {
-          const historyDate = new Date(currTemp['created_time']);
-          currTemp['created_time'] = historyDate.toLocaleString('en-us', {month: 'long'}) + ' ' + historyDate.getFullYear().toString();
-          
-        }
-        temp.reverse()
-        console.log(temp)
-        temp = temp.slice(-14, -1)
-        setAllGoal(temp);
-       
-    }).catch(function (error) {
-      // show error message if goal cannot be retrieved
-      setSuccessMsg('');
-      setErrorMsg(JSON.stringify(error.message));
-      setSnackBarOpen(true);
-    });
-  }
 
   // get goal that user set
   const getGoal = () => {
@@ -108,7 +60,8 @@ const GoalPage = () => {
   }
 
   // set new reading goal
-  const submitGoal = () => {
+  const submitGoal = (e) => {
+    if (e) e.preventDefault();
     if (goal < 0) {
       setSnackBarOpen(true);
       getGoal();
@@ -141,31 +94,6 @@ const GoalPage = () => {
     flexDirection: 'row',
     gap: '40px',
     marginBottom: '50px'
-  }
-
-  // input form for setting reading goal number
-  const GoalLine = () => {
-    return (
-      <span>
-        <span >I want to read</span>
-          <FormControl disabled={!enableEditGoal} sx={{ m: 2, width: '4ch' }} variant='standard' style={{marginTop: '5px', marginLeft:'5px', marginRight:'3px'}}>
-            <Input
-              type='number'
-              size='small'
-              value={goal}
-              onChange={e => setGoal(e.target.value)}
-            />
-          </FormControl>
-        <span>books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
-        </span>
-        <IconButton
-          aria-label='toggle password visibility'
-          onClick={toggleEditGoal}
-        >
-          {enableEditGoal ? <CheckCircleIcon onClick={submitGoal}/> : <EditIcon />}
-        </IconButton>
-      </span>
-    )
   }
 
   // card showing books read and books remaining for current month
@@ -209,61 +137,38 @@ const GoalPage = () => {
     )
   }
 
-  // graph showing reading goal history in last 12 months
-  const GoalGraph = () => {
-    const statSources = [{value:'goal', name: 'Goal'}, {value:'books_completed', name: 'Books Completed'}];
-    return (
-      <>
-      {allGoal.length > 0 ?
-      <Chart
-        dataSource={allGoal}
-        palette='Harmony Light'
-        resolveLabelOverlapping='stack'
-      >
-        <CommonSeriesSettings
-          argumentField='created_time'
-          type='line'
-        />
-        {
-          statSources.map((item) => <Series
-            key={item.value}
-            valueField={item.value}
-            name={item.name} />)
-        }
-        <Margin bottom={20} />
-        <ArgumentAxis
-          valueMarginsEnabled={false}
-          discreteAxisDivisionMode='crossLabels'
-        >
-          <Grid visible={true} />
-        </ArgumentAxis>
-        <Legend
-          verticalAlignment='bottom'
-          horizontalAlignment='center'
-          itemTextPosition='bottom'
-        />
-        <Title text='Goals and Reading History'>
-          <Subtitle text='(within the last year)' />
-        </Title>
-        <Tooltip enabled={true} />
-      </Chart> :
-      <div>You don't have past reading goal history, check again next month</div>}
-      </>
-    )
-  }
-
   return (
     <div>
       <ErrorPopup errorMsg={errorMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <SuccessPopup successMsg={successMsg} snackBarOpen={snackBarOpen} setSnackBarOpen={setSnackBarOpen}/>
       <h2 style={{fontWeight: 'normal'}}>Reading Goal</h2>
       <div style={goalStyle}>
-        <GoalLine/>
+        <span>
+          <Box component='form' onSubmit={(e) => {submitGoal(e); toggleEditGoal()}}>
+            <span>I want to read</span>
+            <FormControl disabled={!enableEditGoal} sx={{ m: 2, width: '4ch' }} variant='standard' style={{marginTop: '5px', marginLeft:'5px', marginRight:'3px'}}>
+              <Input
+                type='number'
+                size='small'
+                value={goal}
+                onChange={e => setGoal(e.target.value)}
+              />
+            </FormControl>
+            <span>books in {date.toLocaleString('en-us', { month: 'long' })} {date.getFullYear()}&nbsp;
+            </span>
+            <IconButton
+              aria-label='toggle password visibility'
+              onClick={toggleEditGoal}
+            >
+              {enableEditGoal ? <CheckCircleIcon type='submit' onClick={(e) => submitGoal(e)}/> : <EditIcon />}
+            </IconButton>
+          </Box>
+        </span>
         <ProgressCard/>
         <TimeCard/>
       </div>
       <div style={{paddingLeft: '20px', paddingRight: '20px'}} >
-        <GoalGraph/>
+        <GoalHistoryGraph setSuccesMsg={setSuccessMsg} setErrorMsg={setErrorMsg} setSnackBarOpen={setSnackBarOpen} />
       </div>
     </div>
   )
