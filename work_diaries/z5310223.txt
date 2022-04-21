@@ -58,5 +58,6 @@ Week 9
 - Fixed bugs in search user and analytics
 
 Week 10
-- Practiced demo with group
-- Worked on project report
+- Practiced final demonstration with group
+- Worked on, finished and submitted project report
+- Made fixes on analytics goal page
