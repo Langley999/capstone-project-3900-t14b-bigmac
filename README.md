@@ -21,7 +21,7 @@
 4. Frontend Configuration
     - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-&emsp;&emsp;`npm install`
+&emsp;&emsp;&emsp;&emsp;`npm install`
 
 ## Run our project
 
