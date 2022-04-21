@@ -42,7 +42,6 @@ const BookDetail = ({userInfo, updateTabValue}) => {
   const [btnDisabled, setbtnDisabled] = React.useState(false);
   const [publishdate, setPublishdate] = React.useState('');
   const [reviewButtonshow, setreviewButtonshow] = React.useState(true);
-  const [authur, setAuther] = React.useState('');
   const [cover, setCover] = React.useState('');
   const [publisher, setPublisher] = React.useState('');
   const [genres, setGenres] = React.useState('None');
@@ -56,6 +55,7 @@ const BookDetail = ({userInfo, updateTabValue}) => {
   const [warningcontent, setwarningcontent] = useState('');
   const [myreview,setmyreview] = useState([]);
   const [sort, setSort] = useState('time');
+  const [numCompleted, setNumCompleted] = useState(0);
   const book_id = searchParams.get('id');
   
   const handleAddCollection = (event) => {
@@ -157,6 +157,16 @@ const BookDetail = ({userInfo, updateTabValue}) => {
       setCollection_ids(nlist);   
   })
     .catch(function (error) {
+      setwarningcontent(error.response.data.message);
+      setwarningopen(true);
+    });
+
+    axios.get(`${url}/book/numreads`, {
+      params: {bookId: book_id}
+    })
+    .then(function(response) {
+      setNumCompleted(response['data']['num_reads']);
+    }).catch(function(error){
       setwarningcontent(error.response.data.message);
       setwarningopen(true);
     });
@@ -277,7 +287,7 @@ const BookDetail = ({userInfo, updateTabValue}) => {
 
         <Grid container direction='row' spacing={3}>
           <Grid item xs={3}>
-            <AddCollection  btnDisabled={btnDisabled} setbtnDisabled={setbtnDisabled} book_id={book_id} setreadingButtonText={setreadingButtonText} setsnackbarcontent={setsnackbarcontent} setsnackbaropen={setsnackbaropen}
+            <AddCollection numCompleted={numCompleted} btnDisabled={btnDisabled} setbtnDisabled={setbtnDisabled} book_id={book_id} setreadingButtonText={setreadingButtonText} setsnackbarcontent={setsnackbarcontent} setsnackbaropen={setsnackbaropen}
             setwarningcontent={setwarningcontent} setwarningopen={setwarningopen} cover={cover} readingButtonText={readingButtonText} publisher={publisher}
             publishdate={publishdate} genres={genres} handleAddCollection={handleAddCollection} />
           </Grid>
