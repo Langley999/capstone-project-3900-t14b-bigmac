@@ -11,27 +11,27 @@
       where #.#.# is the version you download
 
 3. Backend Configuration
-  * Ensure an up-to-date Python version (>= 3.6.8) is downloaded
+  - Ensure an up-to-date Python version (>= 3.6.8) is downloaded
 
-  * In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+  - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip3 install -r requirement.txt`\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip3 install sympy`
+&emsp;&emsp;`pip3 install -r requirement.txt`\
+&emsp;&emsp;`pip3 install sympy`
 
 4. Frontend Configuration
-  * In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+  - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`npm install`
+&emsp;&emsp;`npm install`
 
 ## Run our project
 
-  * In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+  - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`python3 run.py`
+&emsp;&emsp;`python3 run.py`
 
-  * In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+  - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`npm start`
+&emsp;&emsp;`npm start`
 
 ### Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
 
