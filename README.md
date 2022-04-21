@@ -10,7 +10,7 @@
       *	`sudo mv node-v#.#.#-linux-x64/lib/node_modules/ /usr/local/lib/`
       where #.#.# is the version you download
 </br>
-3. Backend Configuration
+3. Backend Configuration</br>
     - Ensure an up-to-date Python version (>= 3.6.8) is downloaded
     - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
@@ -19,7 +19,7 @@
 &emsp;&emsp;&emsp;&emsp;`pip3 install sympy`
 
 </br>
-4. Frontend Configuration\
+4. Frontend Configuration</br>
     - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
 &emsp;&emsp;&emsp;&emsp;`npm install`
