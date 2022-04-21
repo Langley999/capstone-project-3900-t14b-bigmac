@@ -84,6 +84,31 @@ def getDetails():
 
 
 """
+Get the total number of people who've read a particular book
+Args:
+    book_id (integer): id of the book
+
+Returns
+    num_reads (integer): number of users that read book
+"""
+@app.route("/book/numreads", methods=["GET"])
+def numReads():
+
+    book_id = int(request.args.get('bookId'))
+    num_reads = 0
+
+    #retrieve all history collections
+    collections = Collection.query.filter_by(is_default = 2).all()
+    for collection in collections:
+        exists = len(Collection_book.query.filter_by(book_id = book_id, collection_id = collection.collection_id).all())
+        if exists == 1:
+            num_reads += 1
+
+    return dumps({'num_reads':  num_reads})
+
+
+
+"""
 Retrieve the current users review for a particular book
 Args:
     token (string) : used for user session validation
