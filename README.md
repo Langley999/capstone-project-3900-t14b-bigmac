@@ -33,7 +33,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`npm start`
 
-Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
+### Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
 
 ## Our Home Page
 ![BookStation Home Page](home.png?raw=true "BookStation Home Page")
