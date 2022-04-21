@@ -11,25 +11,25 @@
       where #.#.# is the version you download
 
 3. Backend Configuration
-  - Ensure an up-to-date Python version (>= 3.6.8) is downloaded
+    - Ensure an up-to-date Python version (>= 3.6.8) is downloaded
 
-  - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+    - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
 &emsp;&emsp;`pip3 install -r requirement.txt`\
 &emsp;&emsp;`pip3 install sympy`
 
 4. Frontend Configuration
-  - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+    - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
 &emsp;&emsp;`npm install`
 
 ## Run our project
 
-  - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+    - In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
 &emsp;&emsp;`python3 run.py`
 
-  - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+    - In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
 &emsp;&emsp;`npm start`
 
