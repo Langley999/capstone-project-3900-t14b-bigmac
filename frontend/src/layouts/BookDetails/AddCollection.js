@@ -54,7 +54,7 @@ const AddCollection = ({numCompleted, setNumCompleted, btnDisabled, setbtnDisabl
         src={cover}
       />
     </Grid>
-    <div style={{fontSize: '20px', fontWeight: 'bold'}} >{numCompleted} Reader{numCompleted === 1 ? <></> : <>s</>}</div>
+    <div style={{fontSize: '14px', fontWeight: '1em'}} >{numCompleted} reader{numCompleted === 1 ? <></> : <>s</> } completed this book</div>
     {localStorage.getItem('token') &&
     <Grid item xs={6}>
       <Button variant='contained' style={{maxWidth: '150px', minWidth: '150px'}} startIcon={<CheckCircleOutlineIcon />} disabled={btnDisabled} onClick={handleCompleteReading}>{readingButtonText}</Button>
