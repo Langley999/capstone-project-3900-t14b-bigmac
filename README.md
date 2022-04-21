@@ -15,23 +15,23 @@
 
 * In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-&nbsp;&nbsp;`pip3 install -r requirement.txt`
-&nbsp;&nbsp;`pip3 install sympy`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip3 install -r requirement.txt`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`pip3 install sympy`
 
 4. Frontend Configuration
 * In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-&nbsp;&nbsp;`npm install`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`npm install`
 
 ## Run our project
 
 * In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-&nbsp;&nbsp;`python3 run.py`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`python3 run.py`
 
 * In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-&nbsp;&nbsp;`npm start`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`npm start`
 
 Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
 
