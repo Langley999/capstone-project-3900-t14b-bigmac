@@ -33,3 +33,5 @@ In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
 Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
 
+Our Home Page
+![BookStation Home Page](home.png?raw=true "BookStation Home Page")
