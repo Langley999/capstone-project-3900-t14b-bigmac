@@ -287,7 +287,7 @@ const BookDetail = ({userInfo, updateTabValue}) => {
 
         <Grid container direction='row' spacing={3}>
           <Grid item xs={3}>
-            <AddCollection numCompleted={numCompleted} btnDisabled={btnDisabled} setbtnDisabled={setbtnDisabled} book_id={book_id} setreadingButtonText={setreadingButtonText} setsnackbarcontent={setsnackbarcontent} setsnackbaropen={setsnackbaropen}
+            <AddCollection numCompleted={numCompleted} setNumCompleted={setNumCompleted} btnDisabled={btnDisabled} setbtnDisabled={setbtnDisabled} book_id={book_id} setreadingButtonText={setreadingButtonText} setsnackbarcontent={setsnackbarcontent} setsnackbaropen={setsnackbaropen}
             setwarningcontent={setwarningcontent} setwarningopen={setwarningopen} cover={cover} readingButtonText={readingButtonText} publisher={publisher}
             publishdate={publishdate} genres={genres} handleAddCollection={handleAddCollection} />
           </Grid>

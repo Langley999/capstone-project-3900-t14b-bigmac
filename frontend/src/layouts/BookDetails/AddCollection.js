@@ -11,7 +11,7 @@ import {url} from '../../components/Helper';
 /**
  * Function to handle collection related actions in book details page
  */
-const AddCollection = ({numCompleted, btnDisabled, setbtnDisabled,book_id,handleAddCollection,setreadingButtonText,setsnackbarcontent,setsnackbaropen,setwarningcontent,setwarningopen,cover,readingButtonText,publisher,publishdate,genres}) => {
+const AddCollection = ({numCompleted, setNumCompleted, btnDisabled, setbtnDisabled,book_id,handleAddCollection,setreadingButtonText,setsnackbarcontent,setsnackbaropen,setwarningcontent,setwarningopen,cover,readingButtonText,publisher,publishdate,genres}) => {
 
   const handleCompleteReading = () => {
     const body = JSON.stringify( {
@@ -31,7 +31,7 @@ const AddCollection = ({numCompleted, btnDisabled, setbtnDisabled,book_id,handle
         setreadingButtonText('completed');
         setsnackbarcontent('Book has been added to Reading History');
         setsnackbaropen(true);
-        
+        setNumCompleted(numCompleted+1);
       }
     })
     .catch(function (error) {
