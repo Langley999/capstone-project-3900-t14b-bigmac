@@ -12,19 +12,23 @@ Set up a virtual environment
 Ensure an up-to-date Python version (>= 3.6.8) is downloaded
 
 In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+
 `pip3 install -r requirement.txt`
 `pip3 install sympy`
 
 4. Frontend Configuration
 In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+
 `npm install`
 
 3.1.2 Run our project
 
 In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+
 `python3 run.py`
 
 In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+
 `npm start`
 
 Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
