@@ -1,6 +1,8 @@
-Set up a virtual environment
+# Configuring and Building BookStation
+
+## Set up a virtual environment
 1. Set up Lubuntu 20.4.1 LTS virtual machine image in VirtualBox correctly using the instructions from this page.
-2. Install nodejs(>= v16.14.0) and npm(>= 8.3.1) correctly.
+2. Install nodejs(>= v16.14.0) and npm(>= 8.3.1) correctly.\
   •	Suggested way to install nodejs:
       *	Download the latest tar.xz NodeJS file by running the following commands from https://nodejs.org/en/download/ 
       *	`tar  -xf  node-v#.#.#-linux-x64.tar.xz`
@@ -9,29 +11,29 @@ Set up a virtual environment
       where #.#.# is the version you download
 
 3. Backend Configuration
-Ensure an up-to-date Python version (>= 3.6.8) is downloaded
+* Ensure an up-to-date Python version (>= 3.6.8) is downloaded
 
-In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+* In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-`pip3 install -r requirement.txt`
-`pip3 install sympy`
+&nbsp;&nbsp;`pip3 install -r requirement.txt`
+&nbsp;&nbsp;`pip3 install sympy`
 
 4. Frontend Configuration
-In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+* In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-`npm install`
+&nbsp;&nbsp;`npm install`
 
-3.1.2 Run our project
+## Run our project
 
-In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
+* In ‘/capstone-project-3900-t14b-bigmac/backend/’ directory, run:
 
-`python3 run.py`
+&nbsp;&nbsp;`python3 run.py`
 
-In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
+* In ‘/capstone-project-3900-t14b-bigmac/frontend/’ directory, run:
 
-`npm start`
+&nbsp;&nbsp;`npm start`
 
 Navigate to http://localhost:3000/ in Google Chrome browser to use our book recommendation system!
 
-Our Home Page
+## Our Home Page
 ![BookStation Home Page](home.png?raw=true "BookStation Home Page")
